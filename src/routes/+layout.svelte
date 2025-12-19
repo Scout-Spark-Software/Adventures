@@ -1,18 +1,9 @@
 <script lang="ts">
 	import '../app.css';
-	import { page } from '$app/stores';
-	import { goto } from '$app/navigation';
+	import type { LayoutData } from './$types';
 
-	let user = $state<{ id: string; email: string; name?: string } | null>(null);
-
-	$effect(() => {
-		// Check if user is logged in (placeholder - will be replaced with actual auth check)
-		// For now, we'll check localStorage or cookies
-		const checkAuth = async () => {
-			// This will be replaced with actual auth check
-		};
-		checkAuth();
-	});
+	export let data: LayoutData;
+	$: user = data.user;
 </script>
 
 <nav class="bg-white shadow">

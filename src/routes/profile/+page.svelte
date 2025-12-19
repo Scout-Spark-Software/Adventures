@@ -18,6 +18,10 @@
 				
 				<div class="space-y-4">
 					<div>
+						<label class="block text-sm font-medium text-gray-700">User ID</label>
+						<p class="mt-1 text-sm text-gray-900 font-mono">{data.user.id}</p>
+					</div>
+					<div>
 						<label class="block text-sm font-medium text-gray-700">Email</label>
 						<p class="mt-1 text-sm text-gray-900">{data.user.email}</p>
 					</div>

@@ -1,16 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	let error = $state<string | null>(null);
+	import type { ActionData } from './$types';
 
-	async function handleSubmit(event: Event) {
-		error = null;
-		const form = event.target as HTMLFormElement;
-		const formData = new FormData(form);
-		
-		// Placeholder for Neon Auth signup
-		// This will be replaced with actual Neon Auth implementation
-		error = 'Authentication not yet configured. Please set up Neon Auth credentials.';
-	}
+	export let form: ActionData;
 </script>
 
 <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -20,10 +12,10 @@
 				Create your account
 			</h2>
 		</div>
-		<form method="POST" action="?/signup" use:enhance={handleSubmit} class="mt-8 space-y-6">
-			{#if error}
+		<form method="POST" action="?/signup" use:enhance class="mt-8 space-y-6">
+			{#if form?.error}
 				<div class="rounded-md bg-red-50 p-4">
-					<div class="text-sm text-red-800">{error}</div>
+					<div class="text-sm text-red-800">{form.error}</div>
 				</div>
 			{/if}
 			<div class="rounded-md shadow-sm space-y-4">

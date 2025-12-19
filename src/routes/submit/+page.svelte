@@ -5,7 +5,7 @@
 	export let data: PageData;
 	export let form: ActionData;
 
-	let type = $state<'hike' | 'camping_site'>('hike');
+	let type: 'hike' | 'camping_site' = 'hike';
 </script>
 
 <svelte:head>

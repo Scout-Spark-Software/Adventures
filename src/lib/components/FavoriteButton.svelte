@@ -5,8 +5,8 @@
 	export let campingSiteId: string | null = null;
 	export let userId: string | null = null;
 
-	let isFavorite = $state(false);
-	let loading = $state(false);
+	let isFavorite = false;
+	let loading = false;
 
 	onMount(async () => {
 		if (!userId) return;

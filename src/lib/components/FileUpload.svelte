@@ -3,9 +3,9 @@
 	export let entityId: string;
 	export let fileType: 'image' | 'document' = 'image';
 
-	let files = $state<File[]>([]);
-	let uploading = $state(false);
-	let error = $state<string | null>(null);
+	let files: File[] = [];
+	let uploading = false;
+	let error: string | null = null;
 
 	async function handleFileSelect(event: Event) {
 		const input = event.target as HTMLInputElement;
