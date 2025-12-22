@@ -14,7 +14,9 @@
     "db:migrate": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "migrate": "tsx scripts/migrate.ts",
-    "set-admin": "tsx scripts/set-admin.ts"
+    "set-admin": "tsx scripts/set-admin.ts",
+    "seed:hikes": "tsx scripts/seed-hikes.ts",
+    "seed:camping": "tsx scripts/seed-camping.ts"
   },
   "devDependencies": {
     "@sveltejs/adapter-vercel": "^5.0.0",
