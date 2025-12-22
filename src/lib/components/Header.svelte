@@ -20,7 +20,7 @@
             />
             <div class="hidden sm:block">
               <div class="text-lg font-bold text-slate-900 leading-tight">
-                Scouts Adventures
+                Adventures
               </div>
               <div class="text-xs text-slate-500 font-medium">
                 by Unit Spark
