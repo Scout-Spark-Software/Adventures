@@ -14,7 +14,7 @@ export const actions: Actions = {
 
     try {
       // Sign in with WorkOS
-      const { accessToken, refreshToken } = await workosAuth.signIn(
+      const { user, accessToken, refreshToken } = await workosAuth.signIn(
         email,
         password,
       );
@@ -52,7 +52,39 @@ export const actions: Actions = {
       ) {
         throw error;
       }
+
       console.error("Login error:", error);
+
+      // Check if error is about email verification
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+
+      if (
+        errorMessage.includes("Email ownership must be verified") ||
+        errorMessage.includes("email verification") ||
+        errorMessage.includes("verify")
+      ) {
+        // Get user ID to send verification email
+        // We need to fetch the user by email to get their ID
+        try {
+          // Since we can't sign in, we need to handle this differently
+          // Redirect to signup page which will show verification form
+          throw redirect(
+            303,
+            `/signup?email=${encodeURIComponent(email)}&needsVerification=true`,
+          );
+        } catch (redirectError) {
+          // Re-throw redirect
+          if (
+            typeof redirectError === "object" &&
+            redirectError !== null &&
+            "status" in redirectError
+          ) {
+            throw redirectError;
+          }
+        }
+      }
+
       return fail(500, {
         error:
           error instanceof Error

@@ -1,9 +1,13 @@
 <script lang="ts">
   import logo from "$lib/assets/Scout-Spark-Hiking.png";
   import { page } from "$app/stores";
-  import type { User } from "@stackframe/stack";
 
-  export let user: User | null;
+  export let user: {
+    id: string;
+    email: string;
+    name?: string;
+    isAdmin?: boolean;
+  } | null;
   $: currentPath = $page.url.pathname;
 </script>
 

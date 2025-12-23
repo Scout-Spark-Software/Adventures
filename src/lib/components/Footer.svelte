@@ -1,8 +1,12 @@
 <script lang="ts">
   import logo from "$lib/assets/Scout-Spark-Hiking.png";
-  import type { User } from "@stackframe/stack";
 
-  export let user: User | null;
+  export let user: {
+    id: string;
+    email: string;
+    name?: string;
+    isAdmin?: boolean;
+  } | null;
 </script>
 
 <footer class="bg-slate-900 text-slate-300 mt-12">

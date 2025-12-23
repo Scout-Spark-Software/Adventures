@@ -37,7 +37,7 @@ export const hikes = pgTable("hikes", {
   parkingInfo: text("parking_info"),
   status: statusEnum("status").default("pending").notNull(),
   featured: boolean("featured").default(false).notNull(),
-  createdBy: uuid("created_by").notNull(),
+  createdBy: text("created_by").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

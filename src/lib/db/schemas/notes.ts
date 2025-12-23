@@ -5,7 +5,7 @@ import { campingSites } from "./camping-sites";
 
 export const notes = pgTable("notes", {
   id: uuid("id").defaultRandom().primaryKey(),
-  userId: uuid("user_id").notNull(),
+  userId: text("user_id").notNull(),
   hikeId: uuid("hike_id").references(() => hikes.id, { onDelete: "cascade" }),
   campingSiteId: uuid("camping_site_id").references(() => campingSites.id, {
     onDelete: "cascade",

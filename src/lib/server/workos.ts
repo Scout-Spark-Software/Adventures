@@ -1,4 +1,5 @@
 import { WorkOS } from "@workos-inc/node";
+import { jwtVerify, createRemoteJWKSet } from "jose";
 import {
   WORKOS_API_KEY,
   WORKOS_CLIENT_ID,
@@ -38,13 +39,13 @@ export const workosAuth = {
     lastName?: string,
   ) {
     try {
-      // Create user with email already verified (bypass verification flow)
+      // Create user (email verification required)
       const user = await workos.userManagement.createUser({
         email,
         password,
         firstName,
         lastName,
-        emailVerified: true, // Auto-verify email to bypass verification code
+        emailVerified: false, // Require email verification
       });
 
       // Add user to the organization as a member
@@ -87,8 +88,25 @@ export const workosAuth = {
   // Verify session with access token
   async verifySession(accessToken: string) {
     try {
-      // Get user by access token
-      const user = await workos.userManagement.getUser(accessToken);
+      // Create JWKS endpoint for WorkOS
+      const JWKS = createRemoteJWKSet(
+        new URL(`https://api.workos.com/sso/jwks/${workosConfig.clientId}`),
+      );
+
+      // Verify the JWT
+      const { payload } = await jwtVerify(accessToken, JWKS, {
+        issuer: `https://api.workos.com/user_management/${workosConfig.clientId}`,
+      });
+
+      // Extract user ID from the 'sub' claim
+      const userId = payload.sub;
+
+      if (!userId) {
+        return null;
+      }
+
+      // Fetch the full user details
+      const user = await workos.userManagement.getUser(userId);
       return user;
     } catch (error) {
       console.error("Session verification failed:", error);
@@ -150,5 +168,53 @@ export const workosAuth = {
     }
     // Session cleanup happens via cookie deletion
     return true;
+  },
+
+  // Send email verification code
+  async sendVerificationEmail(userId: string) {
+    try {
+      await workos.userManagement.sendVerificationEmail({ userId });
+      return true;
+    } catch (error) {
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : "Failed to send verification email",
+      );
+    }
+  },
+
+  // Verify email with code
+  async verifyEmail(userId: string, code: string) {
+    try {
+      const response = await workos.userManagement.verifyEmail({
+        userId,
+        code,
+      });
+      return response.user;
+    } catch (error) {
+      throw new Error(
+        error instanceof Error ? error.message : "Failed to verify email",
+      );
+    }
+  },
+
+  // Get user by email
+  async getUserByEmail(email: string) {
+    try {
+      const { data: users } = await workos.userManagement.listUsers({
+        email,
+        organizationId: workosConfig.organizationId,
+      });
+
+      if (users.length === 0) {
+        return null;
+      }
+
+      return users[0];
+    } catch (error) {
+      console.error("Failed to get user by email:", error);
+      return null;
+    }
   },
 };
