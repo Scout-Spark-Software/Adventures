@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+  import { browser } from "$app/environment";
   import type { PageData } from "./$types";
   import FavoriteButton from "$lib/components/FavoriteButton.svelte";
   import ModerationBadge from "$lib/components/ModerationBadge.svelte";
@@ -26,6 +28,22 @@
 
   let activeTab = "details";
   let notesCount = data.notesCount;
+
+  // Handle URL hash navigation
+  onMount(() => {
+    const hash = window.location.hash.slice(1); // Remove the #
+    if (hash && ["details", "reviews", "notes"].includes(hash)) {
+      activeTab = hash;
+    }
+  });
+
+  // Update URL when tab changes
+  $: if (browser) {
+    const newHash = `#${activeTab}`;
+    if (window.location.hash !== newHash) {
+      history.replaceState(null, "", newHash);
+    }
+  }
 
   $: tabs = [
     { id: "details", label: "Details" },

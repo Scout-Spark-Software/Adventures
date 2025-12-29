@@ -70,23 +70,52 @@
         {/if}
 
         <!-- Star visual -->
-        <svg
-          class="{sizeClasses[size]} pointer-events-none"
-          viewBox="0 0 24 24"
-        >
-          <defs>
-            <linearGradient id="star-gradient-{i}-{rating}">
-              <stop offset="{getStarFill(i)}%" stop-color="#FBBF24" />
-              <stop offset="{getStarFill(i)}%" stop-color="#E5E7EB" />
-            </linearGradient>
-          </defs>
-          <path
-            fill="url(#star-gradient-{i}-{rating})"
-            stroke="#F59E0B"
-            stroke-width="1"
-            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-          />
-        </svg>
+        {#if getStarFill(i) === 100}
+          <!-- Full star -->
+          <svg
+            class="{sizeClasses[size]} pointer-events-none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              fill="#FBBF24"
+              stroke="#F59E0B"
+              stroke-width="1"
+              d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+            />
+          </svg>
+        {:else if getStarFill(i) === 50}
+          <!-- Half star -->
+          <svg
+            class="{sizeClasses[size]} pointer-events-none"
+            viewBox="0 0 24 24"
+          >
+            <defs>
+              <linearGradient id="half-star-{i}">
+                <stop offset="50%" stop-color="#FBBF24" />
+                <stop offset="50%" stop-color="#E5E7EB" />
+              </linearGradient>
+            </defs>
+            <path
+              fill="url(#half-star-{i})"
+              stroke="#F59E0B"
+              stroke-width="1"
+              d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+            />
+          </svg>
+        {:else}
+          <!-- Empty star -->
+          <svg
+            class="{sizeClasses[size]} pointer-events-none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              fill="#E5E7EB"
+              stroke="#F59E0B"
+              stroke-width="1"
+              d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+            />
+          </svg>
+        {/if}
       </div>
     {/each}
   </div>
