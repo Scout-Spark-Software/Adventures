@@ -12,3 +12,5 @@ export * from "./amenity-types";
 export * from "./facility-types";
 export * from "./feature-types";
 export * from "./trail-types";
+export * from "./ratings";
+export * from "./rating-aggregates";

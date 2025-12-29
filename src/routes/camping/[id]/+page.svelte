@@ -17,6 +17,9 @@
   import CampingIcon from "$lib/components/icons/CampingIcon.svelte";
   import UserIcon from "$lib/components/icons/UserIcon.svelte";
   import MapIcon from "$lib/components/icons/MapIcon.svelte";
+  import CompactRating from "$lib/components/ratings/CompactRating.svelte";
+  import ReviewsTab from "$lib/components/ratings/ReviewsTab.svelte";
+  import HeroRatingDisplay from "$lib/components/ratings/HeroRatingDisplay.svelte";
 
   export let data: PageData;
 
@@ -27,8 +30,17 @@
 
   $: tabs = [
     { id: "details", label: "Details" },
+    {
+      id: "reviews",
+      label: "Reviews",
+      count: data.ratingAggregate?.totalReviews || 0,
+    },
     { id: "notes", label: "Notes", count: notesCount },
   ];
+
+  function scrollToReviews() {
+    activeTab = "reviews";
+  }
 
   // Prepare badges for hero
   $: heroBadges = [
@@ -106,6 +118,14 @@
           {badge.text}
         </Badge>
       {/each}
+      {#if data.ratingAggregate}
+        <CompactRating
+          averageRating={data.ratingAggregate.averageRating}
+          totalRatings={data.ratingAggregate.totalRatings}
+          clickable={true}
+          onRatingClick={scrollToReviews}
+        />
+      {/if}
     </div>
 
     <FavoriteButton
@@ -113,6 +133,17 @@
       campingSiteId={data.campingSite.id}
       userId={data.userId}
     />
+
+    <div slot="rating-display">
+      {#if data.ratingAggregate}
+        <HeroRatingDisplay
+          averageRating={data.ratingAggregate.averageRating}
+          totalRatings={data.ratingAggregate.totalRatings}
+          clickable={true}
+          onRatingClick={scrollToReviews}
+        />
+      {/if}
+    </div>
   </DetailPageHero>
 
   <!-- Main Content -->
@@ -150,6 +181,8 @@
             <CampingLocationSidebar address={data.address} />
           </div>
         </div>
+      {:else if activeTab === "reviews"}
+        <ReviewsTab campingSiteId={data.campingSite.id} userId={data.userId} />
       {:else if activeTab === "notes"}
         <NotesSection
           campingSiteId={data.campingSite.id}

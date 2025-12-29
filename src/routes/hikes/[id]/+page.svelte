@@ -16,6 +16,9 @@
   import ClockIcon from "$lib/components/icons/ClockIcon.svelte";
   import ArrowIcon from "$lib/components/icons/ArrowIcon.svelte";
   import MapIcon from "$lib/components/icons/MapIcon.svelte";
+  import CompactRating from "$lib/components/ratings/CompactRating.svelte";
+  import ReviewsTab from "$lib/components/ratings/ReviewsTab.svelte";
+  import HeroRatingDisplay from "$lib/components/ratings/HeroRatingDisplay.svelte";
 
   export let data: PageData;
 
@@ -26,8 +29,17 @@
 
   $: tabs = [
     { id: "details", label: "Details" },
+    {
+      id: "reviews",
+      label: "Reviews",
+      count: data.ratingAggregate?.totalReviews || 0,
+    },
     { id: "notes", label: "Notes", count: notesCount },
   ];
+
+  function scrollToReviews() {
+    activeTab = "reviews";
+  }
 
   // Prepare badges for hero
   $: heroBadges = [
@@ -106,6 +118,17 @@
       hikeId={data.hike.id}
       userId={data.userId}
     />
+
+    <div slot="rating-display">
+      {#if data.ratingAggregate}
+        <HeroRatingDisplay
+          averageRating={data.ratingAggregate.averageRating}
+          totalRatings={data.ratingAggregate.totalRatings}
+          clickable={true}
+          onRatingClick={scrollToReviews}
+        />
+      {/if}
+    </div>
   </DetailPageHero>
 
   <!-- Main Content -->
@@ -132,6 +155,8 @@
             <HikeLocationSidebar address={data.address} />
           </div>
         </div>
+      {:else if activeTab === "reviews"}
+        <ReviewsTab hikeId={data.hike.id} userId={data.userId} />
       {:else if activeTab === "notes"}
         <NotesSection
           hikeId={data.hike.id}
