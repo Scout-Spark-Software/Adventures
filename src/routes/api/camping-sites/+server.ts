@@ -91,91 +91,79 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     }
   }
 
-  // Build query with optional joins for search and rating filter
-  const needsJoin = search || minRating;
+  // Always join with addresses to include location data
+  let query = db
+    .select({
+      id: campingSites.id,
+      name: campingSites.name,
+      description: campingSites.description,
+      addressId: campingSites.addressId,
+      capacity: campingSites.capacity,
+      amenities: campingSites.amenities,
+      facilities: campingSites.facilities,
+      reservationInfo: campingSites.reservationInfo,
+      costPerNight: campingSites.costPerNight,
+      baseFee: campingSites.baseFee,
+      operatingSeasonStart: campingSites.operatingSeasonStart,
+      operatingSeasonEnd: campingSites.operatingSeasonEnd,
+      petPolicy: campingSites.petPolicy,
+      reservationRequired: campingSites.reservationRequired,
+      siteType: campingSites.siteType,
+      firePolicy: campingSites.firePolicy,
+      status: campingSites.status,
+      featured: campingSites.featured,
+      createdBy: campingSites.createdBy,
+      createdAt: campingSites.createdAt,
+      updatedAt: campingSites.updatedAt,
+      address: {
+        id: addresses.id,
+        address: addresses.address,
+        city: addresses.city,
+        state: addresses.state,
+        country: addresses.country,
+        postalCode: addresses.postalCode,
+        latitude: addresses.latitude,
+        longitude: addresses.longitude,
+      },
+    })
+    .from(campingSites)
+    .leftJoin(addresses, eq(campingSites.addressId, addresses.id));
 
-  if (needsJoin) {
-    // Join with addresses for location search and/or rating_aggregates for rating filter
-    let query = db
-      .select({
-        id: campingSites.id,
-        name: campingSites.name,
-        description: campingSites.description,
-        addressId: campingSites.addressId,
-        capacity: campingSites.capacity,
-        amenities: campingSites.amenities,
-        facilities: campingSites.facilities,
-        reservationInfo: campingSites.reservationInfo,
-        costPerNight: campingSites.costPerNight,
-        baseFee: campingSites.baseFee,
-        operatingSeasonStart: campingSites.operatingSeasonStart,
-        operatingSeasonEnd: campingSites.operatingSeasonEnd,
-        petPolicy: campingSites.petPolicy,
-        reservationRequired: campingSites.reservationRequired,
-        siteType: campingSites.siteType,
-        firePolicy: campingSites.firePolicy,
-        policies: campingSites.policies,
-        status: campingSites.status,
-        featured: campingSites.featured,
-        createdBy: campingSites.createdBy,
-        createdAt: campingSites.createdAt,
-        updatedAt: campingSites.updatedAt,
-      })
-      .from(campingSites);
-
-    // Add address join if searching
-    if (search) {
-      query = query.leftJoin(
-        addresses,
-        eq(campingSites.addressId, addresses.id),
-      );
-    }
-
-    // Add rating join if filtering by rating
-    if (minRating) {
-      query = query.leftJoin(
-        ratingAggregates,
-        eq(campingSites.id, ratingAggregates.campingSiteId),
-      );
-    }
-
-    // Build where conditions
-    const whereConditions = [...conditions];
-
-    if (search) {
-      whereConditions.push(
-        or(
-          ilike(campingSites.name, `%${search}%`),
-          ilike(campingSites.description, `%${search}%`),
-          ilike(addresses.city, `%${search}%`),
-          ilike(addresses.state, `%${search}%`),
-        ),
-      );
-    }
-
-    if (minRating) {
-      whereConditions.push(sql`${ratingAggregates.averageRating} IS NOT NULL`);
-      whereConditions.push(gte(ratingAggregates.averageRating, minRating));
-    }
-
-    query = query
-      .where(whereConditions.length > 0 ? and(...whereConditions) : undefined)
-      .limit(limit)
-      .offset(offset)
-      .orderBy(desc(campingSites.createdAt));
-
-    const results = await query;
-    return json(results);
-  } else {
-    const results = await db.query.campingSites.findMany({
-      where: conditions.length > 0 ? and(...conditions) : undefined,
-      limit,
-      offset,
-      orderBy: [desc(campingSites.createdAt)],
-    });
-
-    return json(results);
+  // Add rating join if filtering by rating
+  if (minRating) {
+    query = query.leftJoin(
+      ratingAggregates,
+      eq(campingSites.id, ratingAggregates.campingSiteId),
+    );
   }
+
+  // Build where conditions
+  const whereConditions = [...conditions];
+
+  if (search) {
+    whereConditions.push(
+      or(
+        ilike(campingSites.name, `%${search}%`),
+        ilike(campingSites.description, `%${search}%`),
+        ilike(addresses.city, `%${search}%`),
+        ilike(addresses.state, `%${search}%`),
+      ),
+    );
+  }
+
+  if (minRating) {
+    whereConditions.push(sql`${ratingAggregates.averageRating} IS NOT NULL`);
+    whereConditions.push(gte(ratingAggregates.averageRating, minRating));
+  }
+
+  query = query
+    .where(whereConditions.length > 0 ? and(...whereConditions) : undefined)
+    .limit(limit)
+    .offset(offset)
+    .orderBy(desc(campingSites.createdAt));
+
+  const results = await query;
+  return json(results);
 };
 
 export const POST: RequestHandler = async ({ request, locals }) => {

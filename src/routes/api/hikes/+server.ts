@@ -74,89 +74,81 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     }
   }
 
-  // Build query with optional joins for search and rating filter
-  const needsJoin = search || minRating;
+  // Always join with addresses to include location data
+  let query = db
+    .select({
+      id: hikes.id,
+      name: hikes.name,
+      description: hikes.description,
+      addressId: hikes.addressId,
+      difficulty: hikes.difficulty,
+      distance: hikes.distance,
+      distanceUnit: hikes.distanceUnit,
+      duration: hikes.duration,
+      durationUnit: hikes.durationUnit,
+      elevation: hikes.elevation,
+      elevationUnit: hikes.elevationUnit,
+      trailType: hikes.trailType,
+      features: hikes.features,
+      dogFriendly: hikes.dogFriendly,
+      permitsRequired: hikes.permitsRequired,
+      bestSeason: hikes.bestSeason,
+      waterSources: hikes.waterSources,
+      parkingInfo: hikes.parkingInfo,
+      status: hikes.status,
+      featured: hikes.featured,
+      createdBy: hikes.createdBy,
+      createdAt: hikes.createdAt,
+      updatedAt: hikes.updatedAt,
+      address: {
+        id: addresses.id,
+        address: addresses.address,
+        city: addresses.city,
+        state: addresses.state,
+        country: addresses.country,
+        postalCode: addresses.postalCode,
+        latitude: addresses.latitude,
+        longitude: addresses.longitude,
+      },
+    })
+    .from(hikes)
+    .leftJoin(addresses, eq(hikes.addressId, addresses.id));
 
-  if (needsJoin) {
-    // Join with addresses for location search and/or rating_aggregates for rating filter
-    let query = db
-      .select({
-        id: hikes.id,
-        name: hikes.name,
-        description: hikes.description,
-        addressId: hikes.addressId,
-        difficulty: hikes.difficulty,
-        distance: hikes.distance,
-        distanceUnit: hikes.distanceUnit,
-        duration: hikes.duration,
-        durationUnit: hikes.durationUnit,
-        elevation: hikes.elevation,
-        elevationUnit: hikes.elevationUnit,
-        trailType: hikes.trailType,
-        features: hikes.features,
-        dogFriendly: hikes.dogFriendly,
-        permitsRequired: hikes.permitsRequired,
-        bestSeason: hikes.bestSeason,
-        waterSources: hikes.waterSources,
-        parkingInfo: hikes.parkingInfo,
-        status: hikes.status,
-        featured: hikes.featured,
-        createdBy: hikes.createdBy,
-        createdAt: hikes.createdAt,
-        updatedAt: hikes.updatedAt,
-      })
-      .from(hikes);
-
-    // Add address join if searching
-    if (search) {
-      query = query.leftJoin(addresses, eq(hikes.addressId, addresses.id));
-    }
-
-    // Add rating join if filtering by rating
-    if (minRating) {
-      query = query.leftJoin(
-        ratingAggregates,
-        eq(hikes.id, ratingAggregates.hikeId),
-      );
-    }
-
-    // Build where conditions
-    const whereConditions = [...conditions];
-
-    if (search) {
-      whereConditions.push(
-        or(
-          ilike(hikes.name, `%${search}%`),
-          ilike(hikes.description, `%${search}%`),
-          ilike(addresses.city, `%${search}%`),
-          ilike(addresses.state, `%${search}%`),
-        ),
-      );
-    }
-
-    if (minRating) {
-      whereConditions.push(sql`${ratingAggregates.averageRating} IS NOT NULL`);
-      whereConditions.push(gte(ratingAggregates.averageRating, minRating));
-    }
-
-    query = query
-      .where(whereConditions.length > 0 ? and(...whereConditions) : undefined)
-      .limit(limit)
-      .offset(offset)
-      .orderBy(desc(hikes.createdAt));
-
-    const results = await query;
-    return json(results);
-  } else {
-    const results = await db.query.hikes.findMany({
-      where: conditions.length > 0 ? and(...conditions) : undefined,
-      limit,
-      offset,
-      orderBy: [desc(hikes.createdAt)],
-    });
-
-    return json(results);
+  // Add rating join if filtering by rating
+  if (minRating) {
+    query = query.leftJoin(
+      ratingAggregates,
+      eq(hikes.id, ratingAggregates.hikeId),
+    );
   }
+
+  // Build where conditions
+  const whereConditions = [...conditions];
+
+  if (search) {
+    whereConditions.push(
+      or(
+        ilike(hikes.name, `%${search}%`),
+        ilike(hikes.description, `%${search}%`),
+        ilike(addresses.city, `%${search}%`),
+        ilike(addresses.state, `%${search}%`),
+      ),
+    );
+  }
+
+  if (minRating) {
+    whereConditions.push(sql`${ratingAggregates.averageRating} IS NOT NULL`);
+    whereConditions.push(gte(ratingAggregates.averageRating, minRating));
+  }
+
+  query = query
+    .where(whereConditions.length > 0 ? and(...whereConditions) : undefined)
+    .limit(limit)
+    .offset(offset)
+    .orderBy(desc(hikes.createdAt));
+
+  const results = await query;
+  return json(results);
 };
 
 export const POST: RequestHandler = async ({ request, locals }) => {

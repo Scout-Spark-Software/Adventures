@@ -4,15 +4,34 @@
 
   export let data: PageData;
 
-  let processing = false;
+  let processingIds = new Set<string>();
+
+  $: featuredHikesCount = data.hikes.filter((h) => h.featured).length;
+  $: featuredCampingSitesCount = data.campingSites.filter(
+    (c) => c.featured,
+  ).length;
 
   async function toggleFeatured(
     type: "hike" | "camping_site",
     id: string,
     currentlyFeatured: boolean,
   ) {
-    if (processing) return;
-    processing = true;
+    if (processingIds.has(id)) return;
+
+    // Check limits when adding to featured
+    if (!currentlyFeatured) {
+      if (type === "hike" && featuredHikesCount >= 3) {
+        alert("Maximum of 3 featured hikes reached. Remove one first.");
+        return;
+      }
+      if (type === "camping_site" && featuredCampingSitesCount >= 3) {
+        alert("Maximum of 3 featured camping sites reached. Remove one first.");
+        return;
+      }
+    }
+
+    processingIds.add(id);
+    processingIds = processingIds; // Trigger reactivity
 
     try {
       const response = await fetch(
@@ -37,8 +56,15 @@
       console.error("Failed to toggle featured status:", error);
       alert("Failed to update featured status. Please try again.");
     } finally {
-      processing = false;
+      processingIds.delete(id);
+      processingIds = processingIds; // Trigger reactivity
     }
+  }
+
+  function formatLocation(address: any): string {
+    if (!address) return "N/A";
+    const parts = [address.city, address.state].filter(Boolean);
+    return parts.length > 0 ? parts.join(", ") : "N/A";
   }
 </script>
 
@@ -87,7 +113,7 @@
                   {hike.name}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {hike.location}
+                  {formatLocation(hike.address)}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {hike.featured ? "Yes" : "No"}
@@ -96,10 +122,10 @@
                   <button
                     on:click={() =>
                       toggleFeatured("hike", hike.id, hike.featured)}
-                    disabled={processing}
+                    disabled={processingIds.has(hike.id)}
                     class="text-indigo-600 hover:text-indigo-900 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {processing
+                    {processingIds.has(hike.id)
                       ? "Processing..."
                       : hike.featured
                         ? "Remove from Featured"
@@ -150,7 +176,7 @@
                   {campingSite.name}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {campingSite.location}
+                  {formatLocation(campingSite.address)}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {campingSite.featured ? "Yes" : "No"}
@@ -163,10 +189,10 @@
                         campingSite.id,
                         campingSite.featured,
                       )}
-                    disabled={processing}
+                    disabled={processingIds.has(campingSite.id)}
                     class="text-indigo-600 hover:text-indigo-900 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {processing
+                    {processingIds.has(campingSite.id)
                       ? "Processing..."
                       : campingSite.featured
                         ? "Remove from Featured"
