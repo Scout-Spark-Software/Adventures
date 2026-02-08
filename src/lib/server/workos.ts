@@ -1,5 +1,5 @@
 import { WorkOS } from "@workos-inc/node";
-import { jwtVerify, createRemoteJWKSet } from "jose";
+import { jwtVerify, compactVerify, createRemoteJWKSet } from "jose";
 import {
   WORKOS_API_KEY,
   WORKOS_CLIENT_ID,
@@ -154,6 +154,28 @@ export const workosAuth = {
       return user;
     } catch (error) {
       throw new Error("Failed to get user");
+    }
+  },
+
+  // Extract session ID from an access token for logout.
+  // Verifies the JWS signature only (no exp/nbf validation) since
+  // users may log out after their token has expired.
+  async extractSessionId(accessToken: string): Promise<string | undefined> {
+    try {
+      // Verify signature without time-based claim validation
+      const { payload: rawPayload } = await compactVerify(accessToken, JWKS);
+      const payload = JSON.parse(new TextDecoder().decode(rawPayload));
+
+      // Manually check issuer
+      const expectedIssuer = `https://api.workos.com/user_management/${workosConfig.clientId}`;
+      if (payload.iss !== expectedIssuer) {
+        return undefined;
+      }
+
+      return typeof payload.sid === "string" ? payload.sid : undefined;
+    } catch (error) {
+      console.error("Failed to verify token for session extraction:", error);
+      return undefined;
     }
   },
 

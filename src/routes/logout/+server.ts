@@ -3,13 +3,12 @@ import type { RequestHandler } from "./$types";
 import { workosAuth } from "$lib/server/workos";
 
 export const POST: RequestHandler = async ({ cookies }) => {
-  // Get the access token (optional for signOut)
   const accessToken = cookies.get("workos_access_token");
 
   if (accessToken) {
     try {
-      // Sign out with WorkOS (optional - session cleanup via cookies)
-      await workosAuth.signOut();
+      const sessionId = await workosAuth.extractSessionId(accessToken);
+      await workosAuth.signOut(sessionId);
     } catch (error) {
       console.error("Logout error:", error);
     }
