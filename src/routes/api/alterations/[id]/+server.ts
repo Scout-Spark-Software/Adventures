@@ -52,6 +52,45 @@ export const PUT: RequestHandler = async (event) => {
 
   // If approved and apply is true, apply the alteration to the entity
   if (status === "approved" && apply) {
+    // Defense-in-depth: validate fieldName even on the apply path
+    const ALLOWED_ALTERATION_FIELDS = [
+      "name",
+      "description",
+      "difficulty",
+      "distance",
+      "distanceUnit",
+      "duration",
+      "durationUnit",
+      "elevation",
+      "elevationUnit",
+      "trailType",
+      "features",
+      "permitsRequired",
+      "bestSeason",
+      "waterSources",
+      "parkingInfo",
+      "dogFriendly",
+      "capacity",
+      "amenities",
+      "facilities",
+      "reservationInfo",
+      "costPerNight",
+      "baseFee",
+      "operatingSeasonStart",
+      "operatingSeasonEnd",
+      "petPolicy",
+      "reservationRequired",
+      "siteType",
+      "firePolicy",
+    ];
+
+    if (!ALLOWED_ALTERATION_FIELDS.includes(alteration.fieldName)) {
+      throw error(
+        400,
+        `Cannot apply alteration: field "${alteration.fieldName}" is not allowed`,
+      );
+    }
+
     if (alteration.hikeId) {
       await db
         .update(hikes)
