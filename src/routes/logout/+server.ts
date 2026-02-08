@@ -1,16 +1,13 @@
 import { redirect } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { workosAuth } from "$lib/server/workos";
-import { decodeJwt } from "jose";
 
 export const POST: RequestHandler = async ({ cookies }) => {
-  // Get the access token (optional for signOut)
   const accessToken = cookies.get("workos_access_token");
 
   if (accessToken) {
     try {
-      const payload = decodeJwt(accessToken);
-      const sessionId = payload.sid as string | undefined;
+      const sessionId = await workosAuth.extractSessionId(accessToken);
       await workosAuth.signOut(sessionId);
     } catch (error) {
       console.error("Logout error:", error);

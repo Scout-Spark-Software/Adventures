@@ -157,6 +157,22 @@ export const workosAuth = {
     }
   },
 
+  // Extract session ID from an access token, verifying the signature
+  // but allowing expired tokens (users may log out after expiry).
+  async extractSessionId(accessToken: string): Promise<string | undefined> {
+    try {
+      const { payload } = await jwtVerify(accessToken, JWKS, {
+        issuer: `https://api.workos.com/user_management/${workosConfig.clientId}`,
+        clockTolerance: 7 * 24 * 60 * 60, // 7 days tolerance for logout
+      });
+      const sid = payload.sid;
+      return typeof sid === "string" ? sid : undefined;
+    } catch (error) {
+      console.error("Failed to verify token for session extraction:", error);
+      return undefined;
+    }
+  },
+
   // Sign out (invalidate session)
   async signOut(sessionId?: string) {
     if (sessionId) {
