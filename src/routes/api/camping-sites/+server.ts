@@ -26,13 +26,20 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
   const conditions = [];
 
+  const isPrivileged =
+    locals.user?.role === "admin" || locals.user?.role === "moderator";
+
   if (status) {
+    // Only admins/moderators can filter by status
+    if (!isPrivileged) {
+      throw error(403, "Not authorized to filter by status");
+    }
     conditions.push(
       eq(campingSites.status, status as "pending" | "approved" | "rejected"),
     );
   } else {
-    // By default, only show approved camping sites to non-admins
-    if (!locals.userId) {
+    // By default, only show approved camping sites to non-admins/moderators
+    if (!isPrivileged) {
       conditions.push(eq(campingSites.status, "approved"));
     }
   }

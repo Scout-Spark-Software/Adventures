@@ -51,8 +51,10 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     throw error(404, "Camping site not found");
   }
 
-  // Only show approved camping sites to non-authenticated users
-  if (!locals.userId && campingSite.status !== "approved") {
+  // Only show approved camping sites to non-admins/moderators
+  const isPrivileged =
+    locals.user?.role === "admin" || locals.user?.role === "moderator";
+  if (!isPrivileged && campingSite.status !== "approved") {
     throw error(404, "Camping site not found");
   }
 

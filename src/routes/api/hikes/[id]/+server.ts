@@ -53,8 +53,10 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     throw error(404, "Hike not found");
   }
 
-  // Only show approved hikes to non-authenticated users
-  if (!locals.userId && hike.status !== "approved") {
+  // Only show approved hikes to non-admins/moderators
+  const isPrivileged =
+    locals.user?.role === "admin" || locals.user?.role === "moderator";
+  if (!isPrivileged && hike.status !== "approved") {
     throw error(404, "Hike not found");
   }
 
