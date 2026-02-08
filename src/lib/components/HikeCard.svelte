@@ -11,7 +11,7 @@
 
 <a
   href="/hikes/{hike.id}"
-  class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 block"
+  class="group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 block"
 >
   <!-- Image Placeholder -->
   <div
