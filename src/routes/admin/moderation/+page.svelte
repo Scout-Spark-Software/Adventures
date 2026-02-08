@@ -60,7 +60,7 @@
 </script>
 
 <svelte:head>
-  <title>Moderation Queue - Scouts Adventures</title>
+  <title>Moderation Queue - Adventure Spark</title>
 </svelte:head>
 
 <div class="min-h-screen bg-gray-50 py-12">

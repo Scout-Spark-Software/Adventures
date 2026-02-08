@@ -108,7 +108,7 @@
 </script>
 
 <svelte:head>
-  <title>Manage Types - Admin - Scouts Adventures</title>
+  <title>Manage Types - Admin - Adventure Spark</title>
 </svelte:head>
 
 <div class="min-h-screen bg-gray-50 py-12">
@@ -187,9 +187,7 @@
                 >
                   <div class="flex-1">
                     <div class="flex items-center">
-                      <span class="font-medium text-gray-900"
-                        >{item.name}</span
-                      >
+                      <span class="font-medium text-gray-900">{item.name}</span>
                       {#if !item.active}
                         <span
                           class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-200 text-gray-800"
@@ -239,7 +237,8 @@
           <div class="bg-white shadow rounded-lg sticky top-4">
             <div class="px-4 py-5 sm:p-6">
               <h3 class="text-lg font-medium text-gray-900 mb-4">
-                {isCreating ? "Create New" : "Edit"} {activeTab === "features"
+                {isCreating ? "Create New" : "Edit"}
+                {activeTab === "features"
                   ? "Feature"
                   : activeTab === "amenities"
                     ? "Amenity"

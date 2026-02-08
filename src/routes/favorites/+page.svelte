@@ -7,7 +7,7 @@
 </script>
 
 <svelte:head>
-  <title>My Favorites - Scouts Adventures</title>
+  <title>My Favorites - Adventure Spark</title>
 </svelte:head>
 
 <div class="min-h-screen bg-gray-50 py-12">

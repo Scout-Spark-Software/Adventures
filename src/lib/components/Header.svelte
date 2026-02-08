@@ -19,15 +19,12 @@
           <a href="/" class="flex items-center gap-2 group">
             <img
               src={logo}
-              alt="Scouts Adventures Logo"
+              alt="Adventure Spark Logo"
               class="w-10 h-10 transition-transform group-hover:rotate-12"
             />
             <div class="hidden sm:block">
               <div class="text-lg font-bold text-slate-900 leading-tight">
-                Adventures
-              </div>
-              <div class="text-xs text-slate-500 font-medium">
-                by Unit Spark
+                Adventure Spark
               </div>
             </div>
           </a>

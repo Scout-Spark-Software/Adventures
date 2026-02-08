@@ -13,7 +13,7 @@
 </script>
 
 <svelte:head>
-  <title>Scouts Adventures - Discover Hikes & Camping Sites</title>
+  <title>Adventure Spark - Discover Hikes & Camping Sites</title>
 </svelte:head>
 
 <div class="min-h-screen bg-slate-50">

@@ -10,7 +10,7 @@
 </script>
 
 <svelte:head>
-  <title>Verify Email - Adventures</title>
+  <title>Verify Email - Adventure Spark</title>
 </svelte:head>
 
 <div

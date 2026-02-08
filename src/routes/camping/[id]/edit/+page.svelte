@@ -78,7 +78,7 @@
 <svelte:head>
   <title
     >{isAdmin ? "Edit" : "Suggest Edit for"}
-    {data.campingSite.name} - Scouts Adventures</title
+    {data.campingSite.name} - Adventure Spark</title
   >
 </svelte:head>
 

@@ -113,7 +113,7 @@
 </script>
 
 <svelte:head>
-  <title>{data.campingSite.name} - Scouts Adventures</title>
+  <title>{data.campingSite.name} - Adventure Spark</title>
 </svelte:head>
 
 <div class="min-h-screen bg-gray-50">

@@ -21,7 +21,9 @@
 </script>
 
 <svelte:head>
-  <title>{showVerification ? "Verify Email" : "Sign Up"} - Adventures</title>
+  <title
+    >{showVerification ? "Verify Email" : "Sign Up"} - Adventure Spark</title
+  >
 </svelte:head>
 
 <div

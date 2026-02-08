@@ -14,8 +14,8 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
       <div>
         <div class="flex items-center gap-2 mb-3">
-          <img src={logo} alt="Scouts Adventures" class="w-8 h-8" />
-          <span class="text-white font-bold">Scouts Adventures</span>
+          <img src={logo} alt="Adventure Spark" class="w-8 h-8" />
+          <span class="text-white font-bold">Adventure Spark</span>
         </div>
         <p class="text-sm text-slate-400">
           Navigate your next outdoor adventure with confidence
@@ -72,7 +72,7 @@
     </div>
     <div class="border-t border-slate-800 pt-6">
       <p class="text-center text-slate-400 text-sm">
-        &copy; {new Date().getFullYear()} Adventures by Unit Spark. All rights reserved.
+        &copy; {new Date().getFullYear()} Adventure Spark. All rights reserved.
       </p>
     </div>
   </div>
