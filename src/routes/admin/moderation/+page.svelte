@@ -11,44 +11,27 @@
     return `${entityType}:${entityId}`;
   }
 
-  async function approveItem(entityType: string, entityId: string) {
-    const key = itemKey(entityType, entityId);
-    if (processingItems.has(key)) return;
-
-    processingItems.add(key);
-    processingItems = processingItems;
-    errors.delete(key);
-    errors = errors;
-
-    try {
-      const response = await fetch("/api/moderation", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ entityType, entityId, status: "approved" }),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        errors.set(
-          key,
-          `Failed to approve: ${error.message || "Unknown error"}`,
-        );
-        errors = errors;
-        return;
+  function pruneErrors() {
+    if (!data.queue) return;
+    const activeKeys = new Set(
+      data.queue.map((item) => itemKey(item.entityType, item.entityId)),
+    );
+    for (const key of errors.keys()) {
+      if (!activeKeys.has(key)) {
+        errors.delete(key);
       }
-
-      await invalidateAll();
-    } catch (error) {
-      console.error("Failed to approve item:", error);
-      errors.set(key, "Failed to approve item. Please try again.");
-      errors = errors;
-    } finally {
-      processingItems.delete(key);
-      processingItems = processingItems;
     }
+    errors = errors;
   }
 
-  async function rejectItem(entityType: string, entityId: string) {
+  async function moderateItem(
+    entityType: string,
+    entityId: string,
+    status: "approved" | "rejected",
+  ) {
+    const action = status === "approved" ? "approve" : "reject";
+    if (!confirm(`Are you sure you want to ${action} this item?`)) return;
+
     const key = itemKey(entityType, entityId);
     if (processingItems.has(key)) return;
 
@@ -61,23 +44,24 @@
       const response = await fetch("/api/moderation", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ entityType, entityId, status: "rejected" }),
+        body: JSON.stringify({ entityType, entityId, status }),
       });
 
       if (!response.ok) {
         const error = await response.json();
         errors.set(
           key,
-          `Failed to reject: ${error.message || "Unknown error"}`,
+          `Failed to ${action}: ${error.message || "Unknown error"}`,
         );
         errors = errors;
         return;
       }
 
       await invalidateAll();
+      pruneErrors();
     } catch (error) {
-      console.error("Failed to reject item:", error);
-      errors.set(key, "Failed to reject item. Please try again.");
+      console.error(`Failed to ${action} item:`, error);
+      errors.set(key, `Failed to ${action} item. Please try again.`);
       errors = errors;
     } finally {
       processingItems.delete(key);
@@ -117,14 +101,16 @@
               </div>
               <div class="flex space-x-2">
                 <button
-                  on:click={() => approveItem(item.entityType, item.entityId)}
+                  on:click={() =>
+                    moderateItem(item.entityType, item.entityId, "approved")}
                   disabled={processingItems.has(key)}
                   class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {processingItems.has(key) ? "Processing..." : "Approve"}
                 </button>
                 <button
-                  on:click={() => rejectItem(item.entityType, item.entityId)}
+                  on:click={() =>
+                    moderateItem(item.entityType, item.entityId, "rejected")}
                   disabled={processingItems.has(key)}
                   class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
