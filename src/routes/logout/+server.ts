@@ -18,6 +18,6 @@ export const POST: RequestHandler = async ({ cookies }) => {
   cookies.delete("workos_access_token", { path: "/" });
   cookies.delete("workos_refresh_token", { path: "/" });
 
-  // Redirect to login page
-  throw redirect(303, "/login");
+  // Redirect to home page
+  throw redirect(303, "/");
 };
