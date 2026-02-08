@@ -27,11 +27,14 @@
   // Mobile drawer state
   let isDrawerOpen = false;
   let isApplyingFilters = false;
-  let searchTimeout: ReturnType<typeof setTimeout>;
+  let searchTimeout: ReturnType<typeof setTimeout> | null = null;
   let isInitialized = false;
 
   onDestroy(() => {
-    clearTimeout(searchTimeout);
+    if (searchTimeout !== null) {
+      clearTimeout(searchTimeout);
+      searchTimeout = null;
+    }
   });
 
   // Initialize flag after first render to prevent auto-submit on mount
