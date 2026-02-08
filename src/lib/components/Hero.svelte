@@ -1,61 +1,25 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { tweened } from "svelte/motion";
+  import { cubicOut } from "svelte/easing";
 
-  let trails = 0;
-  let campsites = 0;
-  let scouts = 0;
+  const trailCount = tweened(0, { duration: 2000, easing: cubicOut });
+  const campsiteCount = tweened(0, { duration: 2000, easing: cubicOut });
+  const scoutCount = tweened(0, { duration: 2000, easing: cubicOut });
+
   let loading = true;
-
-  // Animate a number from 0 to target value
-  function animateNumber(
-    element: HTMLElement,
-    target: number,
-    duration: number = 2000,
-  ) {
-    const start = 0;
-    const startTime = performance.now();
-
-    function update(currentTime: number) {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-
-      // Easing function for smooth animation
-      const easeOutQuad = 1 - (1 - progress) * (1 - progress);
-      const current = Math.floor(start + (target - start) * easeOutQuad);
-
-      element.textContent = current.toLocaleString() + "+";
-
-      if (progress < 1) {
-        requestAnimationFrame(update);
-      }
-    }
-
-    requestAnimationFrame(update);
-  }
 
   onMount(async () => {
     try {
       const response = await fetch("/api/stats");
       if (response.ok) {
         const data = await response.json();
-        trails = data.trails;
-        campsites = data.campsites;
-        scouts = data.scouts;
-
-        // Trigger animations after a short delay
-        setTimeout(() => {
-          const trailsEl = document.getElementById("stat-trails");
-          const campsitesEl = document.getElementById("stat-campsites");
-          const scoutsEl = document.getElementById("stat-scouts");
-
-          if (trailsEl) animateNumber(trailsEl, trails, 2000);
-          if (campsitesEl) animateNumber(campsitesEl, campsites, 2000);
-          if (scoutsEl) animateNumber(scoutsEl, scouts, 2000);
-        }, 100);
+        $trailCount = data.trails;
+        $campsiteCount = data.campsites;
+        $scoutCount = data.scouts;
       }
     } catch (error) {
       console.error("Failed to fetch stats:", error);
-      // Keep default values on error
     } finally {
       loading = false;
     }
@@ -276,31 +240,37 @@
         <!-- Stats -->
         <div class="grid grid-cols-3 gap-4 mt-8 pt-6 border-t border-slate-700">
           <div>
-            <div id="stat-trails" class="text-2xl font-bold text-sky-400">
+            <div class="text-2xl font-bold text-sky-400">
               {#if loading}
                 <span class="animate-pulse">--</span>
               {:else}
-                0+
+                {Math.floor(
+                  $trailCount,
+                ).toLocaleString()}{#if $trailCount > 0}+{/if}
               {/if}
             </div>
             <div class="text-xs text-slate-400 mt-1">Trails</div>
           </div>
           <div>
-            <div id="stat-campsites" class="text-2xl font-bold text-sky-400">
+            <div class="text-2xl font-bold text-sky-400">
               {#if loading}
                 <span class="animate-pulse">--</span>
               {:else}
-                0+
+                {Math.floor(
+                  $campsiteCount,
+                ).toLocaleString()}{#if $campsiteCount > 0}+{/if}
               {/if}
             </div>
             <div class="text-xs text-slate-400 mt-1">Campsites</div>
           </div>
           <div>
-            <div id="stat-scouts" class="text-2xl font-bold text-sky-400">
+            <div class="text-2xl font-bold text-sky-400">
               {#if loading}
                 <span class="animate-pulse">--</span>
               {:else}
-                0+
+                {Math.floor(
+                  $scoutCount,
+                ).toLocaleString()}{#if $scoutCount > 0}+{/if}
               {/if}
             </div>
             <div class="text-xs text-slate-400 mt-1">Scouts</div>
