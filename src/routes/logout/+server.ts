@@ -8,8 +8,9 @@ export const POST: RequestHandler = async ({ cookies }) => {
 
   if (accessToken) {
     try {
-      // Sign out with WorkOS (optional - session cleanup via cookies)
-      await workosAuth.signOut();
+      const payload = JSON.parse(atob(accessToken.split(".")[1]));
+      const sessionId = payload.sid;
+      await workosAuth.signOut(sessionId);
     } catch (error) {
       console.error("Logout error:", error);
     }
