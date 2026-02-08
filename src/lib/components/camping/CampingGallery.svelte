@@ -1,7 +1,9 @@
 <script lang="ts">
-  import Card from '../Card.svelte';
+  import Card from "../Card.svelte";
 
-  export let files: Array<{ fileName: string; fileUrl: string; fileType: string }> | undefined;
+  export let files:
+    | Array<{ fileName: string; fileUrl: string; fileType: string }>
+    | undefined;
 </script>
 
 {#if files && files.length > 0}
@@ -11,11 +13,11 @@
     </h2>
     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
       {#each files as file}
-        {#if file.fileType === 'image'}
+        {#if file.fileType === "image"}
           <img
             src={file.fileUrl}
             alt={file.fileName}
-            class="w-full h-48 object-cover rounded-lg shadow hover:shadow-lg transition-shadow cursor-pointer"
+            class="w-full h-48 object-cover rounded-lg shadow"
           />
         {:else}
           <a
