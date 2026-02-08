@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
 
   export let hikeId: string | null = null;
   export let campingSiteId: string | null = null;
@@ -8,10 +8,15 @@
   let isFavorite = false;
   let loading = false;
   let justToggled = false;
+  let toggleTimer: ReturnType<typeof setTimeout> | null = null;
 
   onMount(async () => {
     if (!userId) return;
     await checkFavorite();
+  });
+
+  onDestroy(() => {
+    if (toggleTimer) clearTimeout(toggleTimer);
   });
 
   async function checkFavorite() {
@@ -67,8 +72,10 @@
         isFavorite = true;
       }
       justToggled = true;
-      setTimeout(() => {
+      if (toggleTimer) clearTimeout(toggleTimer);
+      toggleTimer = setTimeout(() => {
         justToggled = false;
+        toggleTimer = null;
       }, 300);
     } catch (error) {
       console.error("Error toggling favorite:", error);
@@ -79,43 +86,49 @@
   }
 </script>
 
-<span title={!userId ? "Log in to save favorites" : undefined}>
-  <button
-    on:click={toggleFavorite}
-    disabled={loading || !userId}
-    aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-    class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-  >
-    {#if isFavorite}
-      <svg
-        class="w-5 h-5 text-red-500 transition-transform duration-300 {justToggled
-          ? 'scale-125'
-          : 'scale-100'}"
-        fill="currentColor"
-        viewBox="0 0 20 20"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-          clip-rule="evenodd"
-        />
-      </svg>
-    {:else}
-      <svg
-        class="w-5 h-5 text-gray-400 transition-transform duration-300 {justToggled
-          ? 'scale-125'
-          : 'scale-100'}"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-        />
-      </svg>
-    {/if}
-  </button>
-</span>
+<button
+  type="button"
+  on:click={toggleFavorite}
+  disabled={loading}
+  aria-disabled={!userId || undefined}
+  aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+  aria-describedby={!userId ? "favorite-login-hint" : undefined}
+  class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 {!userId
+    ? 'opacity-50 cursor-not-allowed'
+    : ''}"
+>
+  {#if isFavorite}
+    <svg
+      class="w-5 h-5 text-red-500 transition-transform duration-300 {justToggled
+        ? 'scale-125'
+        : 'scale-100'}"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+    >
+      <path
+        fill-rule="evenodd"
+        d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+        clip-rule="evenodd"
+      />
+    </svg>
+  {:else}
+    <svg
+      class="w-5 h-5 text-gray-400 transition-transform duration-300 {justToggled
+        ? 'scale-125'
+        : 'scale-100'}"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+      />
+    </svg>
+  {/if}
+</button>
+{#if !userId}
+  <span id="favorite-login-hint" class="sr-only">Log in to save favorites</span>
+{/if}
