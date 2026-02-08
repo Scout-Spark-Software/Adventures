@@ -117,7 +117,7 @@
       </p>
     {/if}
 
-    {#if hike.location}
+    {#if hike.address && (hike.address.city || hike.address.state)}
       <div class="flex items-center text-sm text-gray-500 mb-2">
         <svg
           class="w-4 h-4 mr-1.5 flex-shrink-0"
@@ -138,7 +138,10 @@
             d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
           />
         </svg>
-        <span class="line-clamp-1">{hike.location}</span>
+        <span class="line-clamp-1"
+          >{hike.address.city}{#if hike.address.city && hike.address.state},
+          {/if}{hike.address.state}</span
+        >
       </div>
     {/if}
 

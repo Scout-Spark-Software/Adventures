@@ -110,7 +110,7 @@
       </p>
     {/if}
 
-    {#if campingSite.location}
+    {#if campingSite.address && (campingSite.address.city || campingSite.address.state)}
       <div class="flex items-center text-sm text-gray-500 mb-2">
         <svg
           class="w-4 h-4 mr-1.5 flex-shrink-0"
@@ -131,7 +131,11 @@
             d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
           />
         </svg>
-        <span class="line-clamp-1">{campingSite.location}</span>
+        <span class="line-clamp-1"
+          >{campingSite.address
+            .city}{#if campingSite.address.city && campingSite.address.state},
+          {/if}{campingSite.address.state}</span
+        >
       </div>
     {/if}
 
