@@ -2,6 +2,7 @@
   import type { AmenityType, FacilityType } from "$lib/db/schemas";
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
+  import { onDestroy } from "svelte";
 
   export let amenityTypes: AmenityType[] = [];
   export let facilityTypes: FacilityType[] = [];
@@ -28,6 +29,10 @@
   let isApplyingFilters = false;
   let searchTimeout: ReturnType<typeof setTimeout>;
   let isInitialized = false;
+
+  onDestroy(() => {
+    clearTimeout(searchTimeout);
+  });
 
   // Initialize flag after first render to prevent auto-submit on mount
   $: if (typeof window !== "undefined" && !isInitialized) {
