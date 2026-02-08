@@ -2,6 +2,7 @@
   import type { AmenityType, FacilityType } from "$lib/db/schemas";
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
+  import { onDestroy } from "svelte";
 
   export let amenityTypes: AmenityType[] = [];
   export let facilityTypes: FacilityType[] = [];
@@ -26,8 +27,15 @@
   // Mobile drawer state
   let isDrawerOpen = false;
   let isApplyingFilters = false;
-  let searchTimeout: ReturnType<typeof setTimeout>;
+  let searchTimeout: ReturnType<typeof setTimeout> | null = null;
   let isInitialized = false;
+
+  onDestroy(() => {
+    if (searchTimeout !== null) {
+      clearTimeout(searchTimeout);
+      searchTimeout = null;
+    }
+  });
 
   // Initialize flag after first render to prevent auto-submit on mount
   $: if (typeof window !== "undefined" && !isInitialized) {
