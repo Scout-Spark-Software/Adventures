@@ -2,6 +2,8 @@
   import type { PageData } from "./$types";
   import HikeCard from "$lib/components/HikeCard.svelte";
   import HikeFilters from "$lib/components/HikeFilters.svelte";
+  import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
+  import { navigating } from "$app/stores";
 
   export let data: PageData;
 </script>
@@ -47,7 +49,17 @@
       </aside>
 
       <!-- Main Content -->
-      <main>
+      <main class="relative">
+        <!-- Loading Overlay -->
+        {#if $navigating}
+          <div
+            class="absolute inset-0 bg-white/75 backdrop-blur-sm z-10 flex items-start justify-center pt-12"
+          >
+            <div class="bg-white rounded-lg shadow-lg p-6">
+              <LoadingSpinner size="lg" text="Loading hikes..." />
+            </div>
+          </div>
+        {/if}
         <!-- Results count -->
         {#if data.hikes && data.hikes.length > 0}
           <div class="mb-4 flex items-center justify-between">
