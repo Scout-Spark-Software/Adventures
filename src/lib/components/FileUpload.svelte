@@ -11,6 +11,7 @@
   let uploading = false;
   let error: string | null = null;
   let success = false;
+  let fileInput: HTMLInputElement;
 
   async function handleFileSelect(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -47,6 +48,7 @@
       }
 
       files = [];
+      if (fileInput) fileInput.value = "";
       success = true;
       dispatch("uploaded");
     } catch (err) {
@@ -66,7 +68,8 @@
       type="file"
       multiple
       accept={fileType === "image" ? "image/*" : ".pdf,.doc,.docx"}
-      onchange={handleFileSelect}
+      bind:this={fileInput}
+      on:change={handleFileSelect}
       class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
     />
   </div>
@@ -77,7 +80,7 @@
         <p class="text-sm text-gray-600">{file.name}</p>
       {/each}
       <button
-        onclick={uploadFiles}
+        on:click={uploadFiles}
         disabled={uploading}
         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
       >
