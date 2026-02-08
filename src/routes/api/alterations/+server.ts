@@ -5,6 +5,7 @@ import { alterations } from "$lib/db/schemas";
 import { eq, and, desc } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 import { addToModerationQueue } from "$lib/moderation";
+import { isAllowedAlterationField } from "$lib/allowed-fields";
 
 export const GET: RequestHandler = async ({ url, locals }) => {
   const status = url.searchParams.get("status");
@@ -45,47 +46,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   const body = await request.json();
   const { hikeId, campingSiteId, fieldName, oldValue, newValue, reason } = body;
 
-  if (!fieldName || !newValue) {
+  if (!fieldName || newValue === undefined || newValue === null) {
     throw error(400, "fieldName and newValue are required");
-  }
-
-  // Only allow alterations to safe content fields - prevent privilege escalation
-  // via fields like 'status', 'featured', 'createdBy', 'id'
-  const ALLOWED_ALTERATION_FIELDS = [
-    // Hike fields
-    "name",
-    "description",
-    "difficulty",
-    "distance",
-    "distanceUnit",
-    "duration",
-    "durationUnit",
-    "elevation",
-    "elevationUnit",
-    "trailType",
-    "features",
-    "permitsRequired",
-    "bestSeason",
-    "waterSources",
-    "parkingInfo",
-    "dogFriendly",
-    // Camping site fields
-    "capacity",
-    "amenities",
-    "facilities",
-    "reservationInfo",
-    "costPerNight",
-    "baseFee",
-    "operatingSeasonStart",
-    "operatingSeasonEnd",
-    "petPolicy",
-    "reservationRequired",
-    "siteType",
-    "firePolicy",
-  ];
-
-  if (!ALLOWED_ALTERATION_FIELDS.includes(fieldName)) {
-    throw error(400, `Field "${fieldName}" is not allowed for alterations`);
   }
 
   if (!hikeId && !campingSiteId) {
@@ -94,6 +56,16 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
   if (hikeId && campingSiteId) {
     throw error(400, "Cannot alter both hike and camping site at once");
+  }
+
+  // Validate fieldName against entity-specific allowlist to prevent
+  // privilege escalation via fields like 'status', 'featured', 'createdBy'
+  const entityType = hikeId ? "hike" : "campingSite";
+  if (!isAllowedAlterationField(fieldName, entityType)) {
+    throw error(
+      400,
+      `Field "${fieldName}" is not allowed for ${entityType} alterations`,
+    );
   }
 
   const [newAlteration] = await db
