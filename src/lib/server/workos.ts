@@ -29,6 +29,11 @@ export const workosConfig = {
   cookiePassword: WORKOS_COOKIE_PASSWORD,
 };
 
+// Create JWKS instance once at module level so jose can cache the keys
+const JWKS = createRemoteJWKSet(
+  new URL(`https://api.workos.com/sso/jwks/${WORKOS_CLIENT_ID}`),
+);
+
 // WorkOS User Management authentication methods
 export const workosAuth = {
   // Sign up new user in the organization
@@ -87,11 +92,6 @@ export const workosAuth = {
 
   // Verify session with access token
   async verifySession(accessToken: string) {
-    // Create JWKS endpoint for WorkOS
-    const JWKS = createRemoteJWKSet(
-      new URL(`https://api.workos.com/sso/jwks/${workosConfig.clientId}`),
-    );
-
     // Verify the JWT - let errors propagate for proper handling
     const { payload } = await jwtVerify(accessToken, JWKS, {
       issuer: `https://api.workos.com/user_management/${workosConfig.clientId}`,
