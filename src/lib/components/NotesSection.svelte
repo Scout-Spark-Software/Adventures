@@ -28,9 +28,19 @@
   let isDeleting = false;
 
   // Markdown rendering (simple implementation)
-  function renderMarkdown(text: string): string {
-    // Basic markdown rendering - you can use a library like 'marked' for full support
+  function escapeHtml(text: string): string {
     return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function renderMarkdown(text: string): string {
+    // Escape HTML entities first to prevent XSS via {@html}
+    const escaped = escapeHtml(text);
+    return escaped
       .replace(
         /^### (.*$)/gim,
         '<h3 class="text-lg font-bold mt-4 mb-2">$1</h3>',
