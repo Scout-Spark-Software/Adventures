@@ -1,8 +1,16 @@
 <script lang="ts">
-  import type { CampingSite } from "$lib/db/schemas";
+  import type { CampingSite, Address } from "$lib/db/schemas";
   import ModerationBadge from "./ModerationBadge.svelte";
 
-  export let campingSite: CampingSite;
+  export let campingSite: CampingSite & {
+    address?: Pick<Address, "city" | "state"> | null;
+  };
+
+  $: locationText = campingSite.address
+    ? [campingSite.address.city, campingSite.address.state]
+        .filter(Boolean)
+        .join(", ")
+    : "";
 </script>
 
 <a
@@ -110,7 +118,7 @@
       </p>
     {/if}
 
-    {#if campingSite.location}
+    {#if locationText}
       <div class="flex items-center text-sm text-gray-500 mb-2">
         <svg
           class="w-4 h-4 mr-1.5 flex-shrink-0"
@@ -131,7 +139,7 @@
             d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
           />
         </svg>
-        <span class="line-clamp-1">{campingSite.location}</span>
+        <span class="line-clamp-1">{locationText}</span>
       </div>
     {/if}
 

@@ -1,14 +1,53 @@
 import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
-import { hikes } from "$lib/db/schemas";
+import { hikes, addresses } from "$lib/db/schemas";
 import { eq } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 
 export const GET: RequestHandler = async ({ params, locals }) => {
-  const hike = await db.query.hikes.findFirst({
-    where: eq(hikes.id, params.id),
-  });
+  const rows = await db
+    .select({
+      id: hikes.id,
+      name: hikes.name,
+      description: hikes.description,
+      addressId: hikes.addressId,
+      difficulty: hikes.difficulty,
+      distance: hikes.distance,
+      distanceUnit: hikes.distanceUnit,
+      duration: hikes.duration,
+      durationUnit: hikes.durationUnit,
+      elevation: hikes.elevation,
+      elevationUnit: hikes.elevationUnit,
+      trailType: hikes.trailType,
+      features: hikes.features,
+      dogFriendly: hikes.dogFriendly,
+      permitsRequired: hikes.permitsRequired,
+      bestSeason: hikes.bestSeason,
+      waterSources: hikes.waterSources,
+      parkingInfo: hikes.parkingInfo,
+      status: hikes.status,
+      featured: hikes.featured,
+      createdBy: hikes.createdBy,
+      createdAt: hikes.createdAt,
+      updatedAt: hikes.updatedAt,
+      address: {
+        id: addresses.id,
+        address: addresses.address,
+        city: addresses.city,
+        state: addresses.state,
+        country: addresses.country,
+        postalCode: addresses.postalCode,
+        latitude: addresses.latitude,
+        longitude: addresses.longitude,
+      },
+    })
+    .from(hikes)
+    .leftJoin(addresses, eq(hikes.addressId, addresses.id))
+    .where(eq(hikes.id, params.id))
+    .limit(1);
+
+  const hike = rows[0];
 
   if (!hike) {
     throw error(404, "Hike not found");
