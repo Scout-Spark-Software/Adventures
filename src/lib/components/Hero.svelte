@@ -14,7 +14,6 @@
       const response = await fetch("/api/stats");
       if (response.ok) {
         const data = await response.json();
-        loading = false;
         $trailCount = data.trails;
         $campsiteCount = data.campsites;
         $scoutCount = data.scouts;
@@ -245,7 +244,9 @@
               {#if loading}
                 <span class="animate-pulse">--</span>
               {:else}
-                {Math.floor($trailCount)}+
+                {Math.floor(
+                  $trailCount,
+                ).toLocaleString()}{#if $trailCount > 0}+{/if}
               {/if}
             </div>
             <div class="text-xs text-slate-400 mt-1">Trails</div>
@@ -255,7 +256,9 @@
               {#if loading}
                 <span class="animate-pulse">--</span>
               {:else}
-                {Math.floor($campsiteCount)}+
+                {Math.floor(
+                  $campsiteCount,
+                ).toLocaleString()}{#if $campsiteCount > 0}+{/if}
               {/if}
             </div>
             <div class="text-xs text-slate-400 mt-1">Campsites</div>
@@ -265,7 +268,9 @@
               {#if loading}
                 <span class="animate-pulse">--</span>
               {:else}
-                {Math.floor($scoutCount)}+
+                {Math.floor(
+                  $scoutCount,
+                ).toLocaleString()}{#if $scoutCount > 0}+{/if}
               {/if}
             </div>
             <div class="text-xs text-slate-400 mt-1">Scouts</div>
