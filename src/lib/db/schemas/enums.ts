@@ -1,6 +1,8 @@
 import { pgEnum } from "drizzle-orm/pg-core";
 
 export const statusEnum = pgEnum("status", ["pending", "approved", "rejected"]);
+export const VALID_STATUSES = statusEnum.enumValues;
+export type Status = (typeof VALID_STATUSES)[number];
 export const roleEnum = pgEnum("role", ["admin", "moderator", "user"]);
 export const entityTypeEnum = pgEnum("entity_type", [
   "hike",

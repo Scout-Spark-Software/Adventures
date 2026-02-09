@@ -1,7 +1,4 @@
-import { error } from "@sveltejs/kit";
-
-const VALID_STATUSES = ["pending", "approved", "rejected"] as const;
-type Status = (typeof VALID_STATUSES)[number];
+import { VALID_STATUSES, type Status } from "$lib/db/schemas";
 
 /**
  * Check if the user has admin or moderator privileges.
@@ -20,9 +17,9 @@ function isValidStatus(value: string): value is Status {
 }
 
 /**
- * Parse and validate a status query param. Returns the validated status or
- * throws 400 for invalid values / 403 for non-privileged access to
- * pending/rejected.
+ * Parse and validate a status query param. Returns the validated status,
+ * coercing to "approved" for non-privileged users requesting restricted
+ * statuses, and ignoring unrecognized values.
  */
 export function parseStatusParam(
   status: string | null,
@@ -31,12 +28,12 @@ export function parseStatusParam(
   if (!status) return null;
 
   if (!isValidStatus(status)) {
-    throw error(400, "Invalid status value");
+    return null;
   }
 
-  // Non-privileged users may only request approved content explicitly
+  // Non-privileged users can only view approved content
   if (!privileged && status !== "approved") {
-    throw error(403, "Not authorized to filter by this status");
+    return "approved";
   }
 
   return status;

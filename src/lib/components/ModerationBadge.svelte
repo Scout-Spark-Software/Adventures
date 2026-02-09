@@ -1,5 +1,7 @@
 <script lang="ts">
-  export let status: "pending" | "approved" | "rejected";
+  import type { Status } from "$lib/db/schemas";
+
+  export let status: Status;
   export let userRole: "admin" | "moderator" | "user" | null = null;
 
   $: canViewBadge = userRole === "admin" || userRole === "moderator";

@@ -1,7 +1,7 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { db } from '$lib/db';
-import { moderationQueue, hikes, campingSites, alterations } from '$lib/db/schemas';
+import { moderationQueue, hikes, campingSites, alterations, VALID_STATUSES } from '$lib/db/schemas';
 import { eq, and, desc } from 'drizzle-orm';
 import { requireModerator } from '$lib/auth/middleware';
 import { updateModerationStatus } from '$lib/moderation';
@@ -70,7 +70,8 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
 		throw error(400, 'entityType, entityId, and status are required');
 	}
 
-	if (!['approved', 'rejected'].includes(status)) {
+	const allowedReviewStatuses = VALID_STATUSES.filter((s) => s !== 'pending');
+	if (!allowedReviewStatuses.includes(status)) {
 		throw error(400, 'status must be "approved" or "rejected"');
 	}
 
@@ -107,4 +108,3 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
 
 	return json({ success: true });
 };
-
