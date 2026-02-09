@@ -29,6 +29,10 @@ export const PUT: RequestHandler = async (event) => {
     throw error(400, 'status must be "approved" or "rejected"');
   }
 
+  if (apply !== undefined && apply !== true) {
+    throw error(400, "apply must be true if provided");
+  }
+
   const alteration = await db.query.alterations.findFirst({
     where: eq(alterations.id, event.params.id),
   });
