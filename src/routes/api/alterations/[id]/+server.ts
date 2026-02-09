@@ -1,7 +1,7 @@
 import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
-import { alterations, hikes, campingSites } from "$lib/db/schemas";
+import { alterations, hikes, campingSites, VALID_STATUSES } from "$lib/db/schemas";
 import { eq } from "drizzle-orm";
 import { requireAuth, requireModerator } from "$lib/auth/middleware";
 import { updateModerationStatus } from "$lib/moderation";
@@ -25,7 +25,8 @@ export const PUT: RequestHandler = async (event) => {
   const body = await event.request.json();
   const { status, apply } = body;
 
-  if (!status || !["approved", "rejected"].includes(status)) {
+  const allowedReviewStatuses = VALID_STATUSES.filter((s) => s !== "pending");
+  if (!status || !allowedReviewStatuses.includes(status)) {
     throw error(400, 'status must be "approved" or "rejected"');
   }
 

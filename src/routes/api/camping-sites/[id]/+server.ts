@@ -4,6 +4,7 @@ import { db } from "$lib/db";
 import { campingSites, addresses } from "$lib/db/schemas";
 import { eq } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
+import { isPrivilegedUser } from "$lib/auth/helpers";
 
 export const GET: RequestHandler = async ({ params, locals }) => {
   const rows = await db
@@ -51,8 +52,8 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     throw error(404, "Camping site not found");
   }
 
-  // Only show approved camping sites to non-authenticated users
-  if (!locals.userId && campingSite.status !== "approved") {
+  // Only show approved camping sites to non-admins/moderators
+  if (!isPrivilegedUser(locals.user) && campingSite.status !== "approved") {
     throw error(404, "Camping site not found");
   }
 

@@ -4,6 +4,7 @@ import { db } from "$lib/db";
 import { hikes, addresses } from "$lib/db/schemas";
 import { eq } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
+import { isPrivilegedUser } from "$lib/auth/helpers";
 
 export const GET: RequestHandler = async ({ params, locals }) => {
   const rows = await db
@@ -53,8 +54,8 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     throw error(404, "Hike not found");
   }
 
-  // Only show approved hikes to non-authenticated users
-  if (!locals.userId && hike.status !== "approved") {
+  // Only show approved hikes to non-admins/moderators
+  if (!isPrivilegedUser(locals.user) && hike.status !== "approved") {
     throw error(404, "Hike not found");
   }
 

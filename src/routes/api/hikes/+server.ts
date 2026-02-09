@@ -4,6 +4,7 @@ import { db } from "$lib/db";
 import { hikes, addresses, ratingAggregates } from "$lib/db/schemas";
 import { eq, and, or, desc, ilike, gte, lte, sql } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
+import { isPrivilegedUser, parseStatusParam } from "$lib/auth/helpers";
 import { addToModerationQueue } from "$lib/moderation";
 
 export const GET: RequestHandler = async ({ url, locals }) => {
@@ -24,15 +25,14 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
   const conditions = [];
 
-  if (status) {
-    conditions.push(
-      eq(hikes.status, status as "pending" | "approved" | "rejected"),
-    );
-  } else {
-    // By default, only show approved hikes to non-admins
-    if (!locals.userId) {
-      conditions.push(eq(hikes.status, "approved"));
-    }
+  const privileged = isPrivilegedUser(locals.user);
+  const validatedStatus = parseStatusParam(status, privileged);
+
+  if (validatedStatus) {
+    conditions.push(eq(hikes.status, validatedStatus));
+  } else if (!privileged) {
+    // By default, only show approved hikes to non-admins/moderators
+    conditions.push(eq(hikes.status, "approved"));
   }
 
   if (featured === "true") {
