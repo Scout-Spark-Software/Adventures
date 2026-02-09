@@ -30,12 +30,12 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   const validStatuses = ["pending", "approved", "rejected"] as const;
 
   if (status) {
-    // Only admins/moderators can filter by status
-    if (!isPrivileged) {
-      throw error(403, "Not authorized to filter by status");
-    }
     if (!validStatuses.includes(status as (typeof validStatuses)[number])) {
       throw error(400, "Invalid status value");
+    }
+    // Non-privileged users may only request approved hikes explicitly
+    if (!isPrivileged && status !== "approved") {
+      throw error(403, "Not authorized to filter by this status");
     }
     conditions.push(eq(hikes.status, status as (typeof validStatuses)[number]));
   } else {
