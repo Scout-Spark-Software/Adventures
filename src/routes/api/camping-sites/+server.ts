@@ -4,6 +4,7 @@ import { db } from "$lib/db";
 import { campingSites, addresses, ratingAggregates } from "$lib/db/schemas";
 import { eq, and, or, desc, ilike, gte, lte, sql } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
+import { isPrivilegedUser, parseStatusParam } from "$lib/auth/helpers";
 import { addToModerationQueue } from "$lib/moderation";
 
 export const GET: RequestHandler = async ({ url, locals }) => {
@@ -26,27 +27,14 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
   const conditions = [];
 
-  const isPrivileged =
-    locals.user?.role === "admin" || locals.user?.role === "moderator";
+  const privileged = isPrivilegedUser(locals.user);
+  const validatedStatus = parseStatusParam(status, privileged);
 
-  const validStatuses = ["pending", "approved", "rejected"] as const;
-
-  if (status) {
-    if (!validStatuses.includes(status as (typeof validStatuses)[number])) {
-      throw error(400, "Invalid status value");
-    }
-    // Non-privileged users may only request approved sites explicitly
-    if (!isPrivileged && status !== "approved") {
-      throw error(403, "Not authorized to filter by this status");
-    }
-    conditions.push(
-      eq(campingSites.status, status as (typeof validStatuses)[number]),
-    );
-  } else {
+  if (validatedStatus) {
+    conditions.push(eq(campingSites.status, validatedStatus));
+  } else if (!privileged) {
     // By default, only show approved camping sites to non-admins/moderators
-    if (!isPrivileged) {
-      conditions.push(eq(campingSites.status, "approved"));
-    }
+    conditions.push(eq(campingSites.status, "approved"));
   }
 
   if (featured === "true") {
