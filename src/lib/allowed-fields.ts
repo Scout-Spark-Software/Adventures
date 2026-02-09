@@ -36,11 +36,6 @@ export const CAMPING_SITE_ALTERABLE_FIELDS = [
   "firePolicy",
 ] as const;
 
-export const ALL_ALTERABLE_FIELDS = [
-  ...HIKE_ALTERABLE_FIELDS,
-  ...CAMPING_SITE_ALTERABLE_FIELDS,
-] as const;
-
 export function isAllowedAlterationField(
   fieldName: string,
   entityType: "hike" | "campingSite",

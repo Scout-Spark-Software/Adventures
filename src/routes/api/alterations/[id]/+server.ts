@@ -37,6 +37,29 @@ export const PUT: RequestHandler = async (event) => {
     throw error(404, "Alteration not found");
   }
 
+  // If approving with apply, validate fieldName BEFORE persisting status changes
+  if (status === "approved" && apply) {
+    // Ensure exactly one foreign key is set
+    const hasHikeId = !!alteration.hikeId;
+    const hasCampingSiteId = !!alteration.campingSiteId;
+    if (hasHikeId === hasCampingSiteId) {
+      throw error(500, "Alteration has invalid foreign key configuration");
+    }
+
+    const entityType = hasHikeId ? "hike" : "campingSite";
+    if (
+      !isAllowedAlterationField(
+        alteration.fieldName,
+        entityType as "hike" | "campingSite",
+      )
+    ) {
+      throw error(
+        400,
+        `Cannot apply alteration: field "${alteration.fieldName}" is not allowed for ${entityType}`,
+      );
+    }
+  }
+
   // Update moderation status
   await updateModerationStatus("alteration", alteration.id, status, user.id);
 
@@ -51,17 +74,8 @@ export const PUT: RequestHandler = async (event) => {
     .where(eq(alterations.id, event.params.id))
     .returning();
 
-  // If approved and apply is true, apply the alteration to the entity
+  // Apply the approved alteration to the entity
   if (status === "approved" && apply) {
-    // Defense-in-depth: validate fieldName against entity-specific allowlist
-    const entityType = alteration.hikeId ? "hike" : "campingSite";
-    if (!isAllowedAlterationField(alteration.fieldName, entityType)) {
-      throw error(
-        400,
-        `Cannot apply alteration: field "${alteration.fieldName}" is not allowed for ${entityType}`,
-      );
-    }
-
     if (alteration.hikeId) {
       await db
         .update(hikes)
