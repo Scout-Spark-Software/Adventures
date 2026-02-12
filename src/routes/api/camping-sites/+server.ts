@@ -182,7 +182,9 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     minRating ||
     amenitiesParam ||
     facilitiesParam ||
-    reservationRequired === "true";
+    reservationRequired === "true" ||
+    limit !== 50 ||
+    offset !== 0;
   if (!privileged && !hasFilters) {
     return json(results, {
       headers: {
