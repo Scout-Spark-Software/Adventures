@@ -148,6 +148,15 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     .orderBy(desc(hikes.createdAt));
 
   const results = await query;
+
+  if (featured === "true" && !privileged) {
+    return json(results, {
+      headers: {
+        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+      },
+    });
+  }
+
   return json(results);
 };
 

@@ -17,7 +17,7 @@
 </svelte:head>
 
 <div class="min-h-screen bg-slate-50">
-  <Hero />
+  <Hero stats={data.stats} />
 
   <FeaturedHikes hikes={data.featuredHikes} />
 
