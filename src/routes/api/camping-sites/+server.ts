@@ -163,6 +163,36 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     .orderBy(desc(campingSites.createdAt));
 
   const results = await query;
+
+  if (featured === "true" && !privileged) {
+    return json(results, {
+      headers: {
+        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+      },
+    });
+  }
+
+  const hasFilters =
+    search ||
+    siteType ||
+    petPolicy ||
+    firePolicy ||
+    minCost ||
+    maxCost ||
+    minRating ||
+    amenitiesParam ||
+    facilitiesParam ||
+    reservationRequired === "true" ||
+    limit !== 50 ||
+    offset !== 0;
+  if (!privileged && !hasFilters) {
+    return json(results, {
+      headers: {
+        "Cache-Control": "public, s-maxage=120, stale-while-revalidate=300",
+      },
+    });
+  }
+
   return json(results);
 };
 

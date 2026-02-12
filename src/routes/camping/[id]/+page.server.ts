@@ -1,7 +1,7 @@
 import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 import { db } from "$lib/db";
-import { addresses, notes, ratingAggregates } from "$lib/db/schemas";
+import { notes } from "$lib/db/schemas";
 import { eq, and, count } from "drizzle-orm";
 import { getUserRole } from "$lib/auth";
 
@@ -17,13 +17,17 @@ export const load: PageServerLoad = async ({ params, fetch, locals }) => {
     `/api/files?entity_type=camping_site&entity_id=${params.id}`,
   ).then((r) => r.json());
 
-  // Fetch address if addressId exists
-  let address = null;
-  if (campingSite.addressId) {
-    address = await db.query.addresses.findFirst({
-      where: eq(addresses.id, campingSite.addressId),
-    });
-  }
+  // Address and rating aggregate are now included in the API response
+  const address = campingSite.address?.id != null ? campingSite.address : null;
+  const rawAgg = campingSite.ratingAggregate;
+  const ratingAggregate =
+    rawAgg && rawAgg.averageRating != null
+      ? {
+          averageRating: parseFloat(rawAgg.averageRating),
+          totalRatings: rawAgg.totalRatings ?? 0,
+          totalReviews: rawAgg.totalReviews ?? 0,
+        }
+      : null;
 
   // Get user role if logged in
   let userRole = "user";
@@ -44,21 +48,6 @@ export const load: PageServerLoad = async ({ params, fetch, locals }) => {
         ),
       );
     notesCount = result[0]?.count || 0;
-  }
-
-  // Get rating aggregate
-  let ratingAggregate = null;
-  const aggregate = await db.query.ratingAggregates.findFirst({
-    where: eq(ratingAggregates.campingSiteId, params.id),
-  });
-  if (aggregate) {
-    ratingAggregate = {
-      averageRating: aggregate.averageRating
-        ? parseFloat(aggregate.averageRating)
-        : null,
-      totalRatings: aggregate.totalRatings,
-      totalReviews: aggregate.totalReviews,
-    };
   }
 
   return {

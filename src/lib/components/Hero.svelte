@@ -3,20 +3,38 @@
   import { tweened } from "svelte/motion";
   import { cubicOut } from "svelte/easing";
 
+  export let stats: {
+    trails: number;
+    campsites: number;
+    scouts: number;
+  } | null = null;
+
   const trailCount = tweened(0, { duration: 2000, easing: cubicOut });
   const campsiteCount = tweened(0, { duration: 2000, easing: cubicOut });
   const scoutCount = tweened(0, { duration: 2000, easing: cubicOut });
 
   let loading = true;
 
+  function applyStats(data: {
+    trails: number;
+    campsites: number;
+    scouts: number;
+  }) {
+    $trailCount = data.trails;
+    $campsiteCount = data.campsites;
+    $scoutCount = data.scouts;
+    loading = false;
+  }
+
   onMount(async () => {
+    if (stats) {
+      applyStats(stats);
+      return;
+    }
     try {
       const response = await fetch("/api/stats");
       if (response.ok) {
-        const data = await response.json();
-        $trailCount = data.trails;
-        $campsiteCount = data.campsites;
-        $scoutCount = data.scouts;
+        applyStats(await response.json());
       }
     } catch (error) {
       console.error("Failed to fetch stats:", error);

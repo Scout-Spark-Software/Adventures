@@ -1,7 +1,7 @@
 import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
-import { hikes, addresses } from "$lib/db/schemas";
+import { hikes, addresses, ratingAggregates } from "$lib/db/schemas";
 import { eq } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 import { isPrivilegedUser } from "$lib/auth/helpers";
@@ -42,9 +42,15 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         latitude: addresses.latitude,
         longitude: addresses.longitude,
       },
+      ratingAggregate: {
+        averageRating: ratingAggregates.averageRating,
+        totalRatings: ratingAggregates.totalRatings,
+        totalReviews: ratingAggregates.totalReviews,
+      },
     })
     .from(hikes)
     .leftJoin(addresses, eq(hikes.addressId, addresses.id))
+    .leftJoin(ratingAggregates, eq(hikes.id, ratingAggregates.hikeId))
     .where(eq(hikes.id, params.id))
     .limit(1);
 
@@ -59,7 +65,28 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     throw error(404, "Hike not found");
   }
 
-  return json(hike);
+  // Normalize LEFT JOIN results: null out nested objects when join missed
+  const result = {
+    ...hike,
+    address: hike.address?.id != null ? hike.address : null,
+    ratingAggregate:
+      hike.ratingAggregate?.averageRating != null
+        ? {
+            averageRating: hike.ratingAggregate.averageRating,
+            totalRatings: hike.ratingAggregate.totalRatings ?? 0,
+            totalReviews: hike.ratingAggregate.totalReviews ?? 0,
+          }
+        : null,
+  };
+
+  if (result.status === "approved") {
+    return json(result, {
+      headers: {
+        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+      },
+    });
+  }
+  return json(result);
 };
 
 export const PUT: RequestHandler = async (event) => {
