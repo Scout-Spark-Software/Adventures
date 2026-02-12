@@ -66,14 +66,28 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     throw error(404, "Camping site not found");
   }
 
-  if (campingSite.status === "approved") {
-    return json(campingSite, {
+  // Normalize LEFT JOIN results: null out nested objects when join missed
+  const result = {
+    ...campingSite,
+    address: campingSite.address?.id != null ? campingSite.address : null,
+    ratingAggregate:
+      campingSite.ratingAggregate?.averageRating != null
+        ? {
+            averageRating: campingSite.ratingAggregate.averageRating,
+            totalRatings: campingSite.ratingAggregate.totalRatings ?? 0,
+            totalReviews: campingSite.ratingAggregate.totalReviews ?? 0,
+          }
+        : null,
+  };
+
+  if (result.status === "approved") {
+    return json(result, {
       headers: {
         "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
       },
     });
   }
-  return json(campingSite);
+  return json(result);
 };
 
 export const PUT: RequestHandler = async (event) => {

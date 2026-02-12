@@ -65,14 +65,28 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     throw error(404, "Hike not found");
   }
 
-  if (hike.status === "approved") {
-    return json(hike, {
+  // Normalize LEFT JOIN results: null out nested objects when join missed
+  const result = {
+    ...hike,
+    address: hike.address?.id != null ? hike.address : null,
+    ratingAggregate:
+      hike.ratingAggregate?.averageRating != null
+        ? {
+            averageRating: hike.ratingAggregate.averageRating,
+            totalRatings: hike.ratingAggregate.totalRatings ?? 0,
+            totalReviews: hike.ratingAggregate.totalReviews ?? 0,
+          }
+        : null,
+  };
+
+  if (result.status === "approved") {
+    return json(result, {
       headers: {
         "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
       },
     });
   }
-  return json(hike);
+  return json(result);
 };
 
 export const PUT: RequestHandler = async (event) => {

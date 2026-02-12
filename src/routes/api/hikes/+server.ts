@@ -165,7 +165,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     maxDistance ||
     minRating ||
     featuresParam ||
-    dogFriendly;
+    dogFriendly === "true";
   if (!privileged && !hasFilters) {
     return json(results, {
       headers: {

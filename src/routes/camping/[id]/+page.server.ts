@@ -18,16 +18,16 @@ export const load: PageServerLoad = async ({ params, fetch, locals }) => {
   ).then((r) => r.json());
 
   // Address and rating aggregate are now included in the API response
-  const address = campingSite.address || null;
-  const ratingAggregate = campingSite.ratingAggregate
-    ? {
-        averageRating: campingSite.ratingAggregate.averageRating
-          ? parseFloat(campingSite.ratingAggregate.averageRating)
-          : null,
-        totalRatings: campingSite.ratingAggregate.totalRatings,
-        totalReviews: campingSite.ratingAggregate.totalReviews,
-      }
-    : null;
+  const address = campingSite.address?.id != null ? campingSite.address : null;
+  const rawAgg = campingSite.ratingAggregate;
+  const ratingAggregate =
+    rawAgg && rawAgg.averageRating != null
+      ? {
+          averageRating: parseFloat(rawAgg.averageRating),
+          totalRatings: rawAgg.totalRatings ?? 0,
+          totalReviews: rawAgg.totalReviews ?? 0,
+        }
+      : null;
 
   // Get user role if logged in
   let userRole = "user";

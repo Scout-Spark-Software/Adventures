@@ -7,7 +7,7 @@ import {
   addresses,
   ratingAggregates,
 } from "$lib/db/schemas";
-import { eq, and, inArray } from "drizzle-orm";
+import { eq, and, inArray, desc } from "drizzle-orm";
 
 export const load: PageServerLoad = async ({ locals, fetch }) => {
   requireAuth({ locals } as any);
@@ -68,6 +68,7 @@ export const load: PageServerLoad = async ({ locals, fetch }) => {
           .leftJoin(addresses, eq(hikes.addressId, addresses.id))
           .leftJoin(ratingAggregates, eq(hikes.id, ratingAggregates.hikeId))
           .where(and(inArray(hikes.id, hikeIds), eq(hikes.status, "approved")))
+          .orderBy(desc(hikes.createdAt))
       : Promise.resolve([]),
     campingSiteIds.length > 0
       ? db
@@ -121,12 +122,20 @@ export const load: PageServerLoad = async ({ locals, fetch }) => {
               eq(campingSites.status, "approved"),
             ),
           )
+          .orderBy(desc(campingSites.createdAt))
       : Promise.resolve([]),
   ]);
 
+  const normalizeResult = (item: any) => ({
+    ...item,
+    address: item.address?.id != null ? item.address : null,
+    ratingAggregate:
+      item.ratingAggregate?.averageRating != null ? item.ratingAggregate : null,
+  });
+
   return {
     favorites,
-    hikes: hikeResults,
-    campingSites: campingSiteResults,
+    hikes: hikeResults.map(normalizeResult),
+    campingSites: campingSiteResults.map(normalizeResult),
   };
 };
