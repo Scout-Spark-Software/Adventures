@@ -1,7 +1,7 @@
-import { json, error } from "@sveltejs/kit";
+import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
-import { files } from "$lib/db/schemas";
+import { files, hikes, campingSites } from "$lib/db/schemas";
 import { eq, and } from "drizzle-orm";
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -33,9 +33,24 @@ export const GET: RequestHandler = async ({ url }) => {
     where: conditions.length > 0 ? and(...conditions) : undefined,
   });
 
-  return json(results, {
-    headers: {
-      "Cache-Control": "public, s-maxage=600, stale-while-revalidate=3600",
-    },
-  });
+  // Only cache if we can verify the parent entity is approved
+  if (entityType && entityId) {
+    const table = entityType === "hike" ? hikes : campingSites;
+    const entity = await db.query[
+      entityType === "hike" ? "hikes" : "campingSites"
+    ].findFirst({
+      columns: { status: true },
+      where: eq(table.id, entityId),
+    });
+
+    if (entity?.status === "approved") {
+      return json(results, {
+        headers: {
+          "Cache-Control": "public, s-maxage=600, stale-while-revalidate=3600",
+        },
+      });
+    }
+  }
+
+  return json(results);
 };

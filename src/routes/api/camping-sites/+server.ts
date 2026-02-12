@@ -172,7 +172,18 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     });
   }
 
-  if (!privileged && !search) {
+  const hasFilters =
+    search ||
+    siteType ||
+    petPolicy ||
+    firePolicy ||
+    minCost ||
+    maxCost ||
+    minRating ||
+    amenitiesParam ||
+    facilitiesParam ||
+    reservationRequired;
+  if (!privileged && !hasFilters) {
     return json(results, {
       headers: {
         "Cache-Control": "public, s-maxage=120, stale-while-revalidate=300",

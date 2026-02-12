@@ -1,11 +1,16 @@
 import type { PageServerLoad } from "./$types";
 import { requireAuth } from "$lib/auth/middleware";
 import { db } from "$lib/db";
-import { hikes, campingSites, addresses } from "$lib/db/schemas";
-import { eq, inArray } from "drizzle-orm";
+import {
+  hikes,
+  campingSites,
+  addresses,
+  ratingAggregates,
+} from "$lib/db/schemas";
+import { eq, and, inArray } from "drizzle-orm";
 
 export const load: PageServerLoad = async ({ locals, fetch }) => {
-  const user = requireAuth({ locals } as any);
+  requireAuth({ locals } as any);
 
   const favorites = await fetch("/api/favorites").then((r) => r.json());
 
@@ -53,10 +58,16 @@ export const load: PageServerLoad = async ({ locals, fetch }) => {
               latitude: addresses.latitude,
               longitude: addresses.longitude,
             },
+            ratingAggregate: {
+              averageRating: ratingAggregates.averageRating,
+              totalRatings: ratingAggregates.totalRatings,
+              totalReviews: ratingAggregates.totalReviews,
+            },
           })
           .from(hikes)
           .leftJoin(addresses, eq(hikes.addressId, addresses.id))
-          .where(inArray(hikes.id, hikeIds))
+          .leftJoin(ratingAggregates, eq(hikes.id, ratingAggregates.hikeId))
+          .where(and(inArray(hikes.id, hikeIds), eq(hikes.status, "approved")))
       : Promise.resolve([]),
     campingSiteIds.length > 0
       ? db
@@ -92,10 +103,24 @@ export const load: PageServerLoad = async ({ locals, fetch }) => {
               latitude: addresses.latitude,
               longitude: addresses.longitude,
             },
+            ratingAggregate: {
+              averageRating: ratingAggregates.averageRating,
+              totalRatings: ratingAggregates.totalRatings,
+              totalReviews: ratingAggregates.totalReviews,
+            },
           })
           .from(campingSites)
           .leftJoin(addresses, eq(campingSites.addressId, addresses.id))
-          .where(inArray(campingSites.id, campingSiteIds))
+          .leftJoin(
+            ratingAggregates,
+            eq(campingSites.id, ratingAggregates.campingSiteId),
+          )
+          .where(
+            and(
+              inArray(campingSites.id, campingSiteIds),
+              eq(campingSites.status, "approved"),
+            ),
+          )
       : Promise.resolve([]),
   ]);
 
