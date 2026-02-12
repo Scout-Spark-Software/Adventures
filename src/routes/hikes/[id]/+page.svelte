@@ -67,12 +67,11 @@
             text:
               data.hike.difficulty.charAt(0).toUpperCase() +
               data.hike.difficulty.slice(1).replace("_", " "),
-            variant:
-              data.hike.difficulty === "easy"
-                ? "success"
-                : data.hike.difficulty === "moderate"
-                  ? "warning"
-                  : "error",
+            variant: (data.hike.difficulty === "easy"
+              ? "success"
+              : data.hike.difficulty === "moderate"
+                ? "warning"
+                : "error") as "success" | "warning" | "error",
           },
         ]
       : []),
@@ -181,7 +180,7 @@
       {:else if activeTab === "notes"}
         <NotesSection
           hikeId={data.hike.id}
-          userId={data.userId}
+          userId={data.userId ?? undefined}
           on:notesCountChanged={handleNotesCountChanged}
         />
       {/if}
