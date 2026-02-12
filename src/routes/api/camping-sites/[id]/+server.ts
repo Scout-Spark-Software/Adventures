@@ -57,7 +57,11 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     throw error(404, "Camping site not found");
   }
 
-  return json(campingSite);
+  const headers =
+    campingSite.status === "approved"
+      ? { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" }
+      : {};
+  return json(campingSite, { headers });
 };
 
 export const PUT: RequestHandler = async (event) => {

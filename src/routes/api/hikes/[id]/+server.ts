@@ -59,7 +59,11 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     throw error(404, "Hike not found");
   }
 
-  return json(hike);
+  const headers =
+    hike.status === "approved"
+      ? { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" }
+      : {};
+  return json(hike, { headers });
 };
 
 export const PUT: RequestHandler = async (event) => {

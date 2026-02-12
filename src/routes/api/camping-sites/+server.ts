@@ -172,6 +172,14 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     });
   }
 
+  if (!privileged && !search) {
+    return json(results, {
+      headers: {
+        "Cache-Control": "public, s-maxage=120, stale-while-revalidate=300",
+      },
+    });
+  }
+
   return json(results);
 };
 
