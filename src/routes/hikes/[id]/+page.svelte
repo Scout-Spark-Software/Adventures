@@ -114,7 +114,10 @@
   <DetailPageHero
     title={data.hike.name}
     location={data.address
-      ? { city: data.address.city, state: data.address.state }
+      ? {
+          city: data.address.city ?? undefined,
+          state: data.address.state ?? undefined,
+        }
       : undefined}
     stats={heroStats}
     backgroundType="gradient"
