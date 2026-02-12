@@ -13,7 +13,7 @@
   const campsiteCount = tweened(0, { duration: 2000, easing: cubicOut });
   const scoutCount = tweened(0, { duration: 2000, easing: cubicOut });
 
-  let loading = !stats;
+  let loading = true;
 
   function applyStats(data: {
     trails: number;

@@ -15,41 +15,44 @@ export const GET: RequestHandler = async ({ url }) => {
     | "document"
     | null;
 
-  const conditions = [];
-
-  if (entityType) {
-    conditions.push(eq(files.entityType, entityType));
+  if (!entityType || !entityId) {
+    return json(
+      { error: "entity_type and entity_id are required" },
+      { status: 400 },
+    );
   }
 
-  if (entityId) {
-    conditions.push(eq(files.entityId, entityId));
-  }
+  const conditions = [
+    eq(files.entityType, entityType),
+    eq(files.entityId, entityId),
+  ];
 
   if (fileType) {
     conditions.push(eq(files.fileType, fileType));
   }
 
   const results = await db.query.files.findMany({
-    where: conditions.length > 0 ? and(...conditions) : undefined,
+    where: and(...conditions),
   });
 
-  // Only cache if we can verify the parent entity is approved
-  if (entityType && entityId) {
-    const table = entityType === "hike" ? hikes : campingSites;
-    const entity = await db.query[
-      entityType === "hike" ? "hikes" : "campingSites"
-    ].findFirst({
-      columns: { status: true },
-      where: eq(table.id, entityId),
-    });
+  // Cache responses for approved entities
+  const entity =
+    entityType === "hike"
+      ? await db.query.hikes.findFirst({
+          columns: { status: true },
+          where: eq(hikes.id, entityId),
+        })
+      : await db.query.campingSites.findFirst({
+          columns: { status: true },
+          where: eq(campingSites.id, entityId),
+        });
 
-    if (entity?.status === "approved") {
-      return json(results, {
-        headers: {
-          "Cache-Control": "public, s-maxage=600, stale-while-revalidate=3600",
-        },
-      });
-    }
+  if (entity?.status === "approved") {
+    return json(results, {
+      headers: {
+        "Cache-Control": "public, s-maxage=600, stale-while-revalidate=3600",
+      },
+    });
   }
 
   return json(results);
