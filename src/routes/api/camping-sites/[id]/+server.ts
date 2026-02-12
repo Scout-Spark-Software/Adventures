@@ -1,7 +1,7 @@
 import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
-import { campingSites, addresses } from "$lib/db/schemas";
+import { campingSites, addresses, ratingAggregates } from "$lib/db/schemas";
 import { eq } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 import { isPrivilegedUser } from "$lib/auth/helpers";
@@ -40,9 +40,18 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         latitude: addresses.latitude,
         longitude: addresses.longitude,
       },
+      ratingAggregate: {
+        averageRating: ratingAggregates.averageRating,
+        totalRatings: ratingAggregates.totalRatings,
+        totalReviews: ratingAggregates.totalReviews,
+      },
     })
     .from(campingSites)
     .leftJoin(addresses, eq(campingSites.addressId, addresses.id))
+    .leftJoin(
+      ratingAggregates,
+      eq(campingSites.id, ratingAggregates.campingSiteId),
+    )
     .where(eq(campingSites.id, params.id))
     .limit(1);
 
@@ -57,11 +66,14 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     throw error(404, "Camping site not found");
   }
 
-  const headers =
-    campingSite.status === "approved"
-      ? { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" }
-      : {};
-  return json(campingSite, { headers });
+  if (campingSite.status === "approved") {
+    return json(campingSite, {
+      headers: {
+        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+      },
+    });
+  }
+  return json(campingSite);
 };
 
 export const PUT: RequestHandler = async (event) => {

@@ -1,7 +1,7 @@
 import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
-import { hikes, addresses } from "$lib/db/schemas";
+import { hikes, addresses, ratingAggregates } from "$lib/db/schemas";
 import { eq } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 import { isPrivilegedUser } from "$lib/auth/helpers";
@@ -42,9 +42,15 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         latitude: addresses.latitude,
         longitude: addresses.longitude,
       },
+      ratingAggregate: {
+        averageRating: ratingAggregates.averageRating,
+        totalRatings: ratingAggregates.totalRatings,
+        totalReviews: ratingAggregates.totalReviews,
+      },
     })
     .from(hikes)
     .leftJoin(addresses, eq(hikes.addressId, addresses.id))
+    .leftJoin(ratingAggregates, eq(hikes.id, ratingAggregates.hikeId))
     .where(eq(hikes.id, params.id))
     .limit(1);
 
@@ -59,11 +65,14 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     throw error(404, "Hike not found");
   }
 
-  const headers =
-    hike.status === "approved"
-      ? { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" }
-      : {};
-  return json(hike, { headers });
+  if (hike.status === "approved") {
+    return json(hike, {
+      headers: {
+        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+      },
+    });
+  }
+  return json(hike);
 };
 
 export const PUT: RequestHandler = async (event) => {
