@@ -1,6 +1,6 @@
 <script lang="ts">
+  import { Check, CircleAlert, Heart, House } from "lucide-svelte";
   import type { PageData } from "./$types";
-  import { Home, Heart, Check, AlertCircle } from "@lucide/svelte";
 
   export let data: PageData;
   $: stats = data.stats;
@@ -41,7 +41,7 @@
                 {stats.totalCampingSites}
               </p>
             </div>
-            <Home size={48} class="text-emerald-200" />
+            <House size={48} class="text-emerald-200" />
           </div>
           <p class="text-xs text-gray-500 mt-2">
             {stats.featuredCampingSites} featured
@@ -56,7 +56,7 @@
                 {stats.pendingHikes + stats.pendingCampingSites}
               </p>
             </div>
-            <AlertCircle size={48} class="text-amber-200" />
+            <CircleAlert size={48} class="text-amber-200" />
           </div>
           <p class="text-xs text-gray-500 mt-2">
             {stats.pendingHikes} hikes, {stats.pendingCampingSites} sites
