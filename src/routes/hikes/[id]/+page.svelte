@@ -14,6 +14,7 @@
   import HikeGallery from "$lib/components/hikes/HikeGallery.svelte";
   import HikeLocationSidebar from "$lib/components/hikes/HikeLocationSidebar.svelte";
   import DetailPageHero from "$lib/components/DetailPageHero.svelte";
+  import EditButton from "$lib/components/EditButton.svelte";
   import HikeIcon from "$lib/components/icons/HikeIcon.svelte";
   import ClockIcon from "$lib/components/icons/ClockIcon.svelte";
   import ArrowIcon from "$lib/components/icons/ArrowIcon.svelte";
@@ -128,9 +129,6 @@
       : undefined}
     stats={heroStats}
     backgroundType="gradient"
-    showEdit={!!data.userId}
-    editUrl="/hikes/{data.hike.id}/edit"
-    editText={isAdmin ? "Edit" : "Suggest Edit"}
   >
     <div slot="badges">
       <ModerationBadge status={data.hike.status} />
@@ -181,6 +179,14 @@
           <!-- Sidebar -->
           <div class="lg:col-span-1">
             <HikeLocationSidebar address={data.address} />
+            {#if data.userId}
+              <div class="max-w-7xl mx-auto mt-4">
+                <EditButton
+                  href="/hikes/{data.hike.id}/edit"
+                  text={isAdmin ? "Edit" : "Suggest Edit"}
+                />
+              </div>
+            {/if}
           </div>
         </div>
       {:else if activeTab === "reviews"}

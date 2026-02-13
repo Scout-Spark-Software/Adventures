@@ -17,6 +17,7 @@
   import CampingGallery from "$lib/components/camping/CampingGallery.svelte";
   import CampingLocationSidebar from "$lib/components/camping/CampingLocationSidebar.svelte";
   import DetailPageHero from "$lib/components/DetailPageHero.svelte";
+  import EditButton from "$lib/components/EditButton.svelte";
   import CampingIcon from "$lib/components/icons/CampingIcon.svelte";
   import UserIcon from "$lib/components/icons/UserIcon.svelte";
   import MapIcon from "$lib/components/icons/MapIcon.svelte";
@@ -126,9 +127,6 @@
       : undefined}
     stats={heroStats}
     backgroundType="gradient"
-    showEdit={!!data.userId}
-    editUrl="/camping/{data.campingSite.id}/edit"
-    editText={isAdmin ? "Edit" : "Suggest Edit"}
   >
     <div slot="badges">
       <ModerationBadge status={data.campingSite.status} />
@@ -198,6 +196,14 @@
           <!-- Sidebar -->
           <div class="lg:col-span-1">
             <CampingLocationSidebar address={data.address} />
+            {#if data.userId}
+              <div class="max-w-7xl mx-auto mt-4">
+                <EditButton
+                  href="/camping/{data.campingSite.id}/edit"
+                  text={isAdmin ? "Edit" : "Suggest Edit"}
+                />
+              </div>
+            {/if}
           </div>
         </div>
       {:else if activeTab === "reviews"}
