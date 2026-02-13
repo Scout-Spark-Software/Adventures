@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Card from '../Card.svelte';
-  import Badge from '../Badge.svelte';
-  import CheckIcon from '../icons/CheckIcon.svelte';
+  import Card from "../Card.svelte";
+  import Badge from "../Badge.svelte";
+  import CheckIcon from "../icons/CheckIcon.svelte";
 
   export let features: string[] | undefined;
 </script>

@@ -23,9 +23,7 @@
     const defaultLat = latitude || 37.7749;
     const defaultLng = longitude || -122.4194;
 
-    map = leaflet
-      .map(mapContainer)
-      .setView([defaultLat, defaultLng], latitude ? 13 : 4);
+    map = leaflet.map(mapContainer).setView([defaultLat, defaultLng], latitude ? 13 : 4);
 
     // Add OpenStreetMap tiles
     leaflet
@@ -117,9 +115,9 @@
         (error) => {
           console.error("Error getting location:", error);
           alert(
-            "Unable to get your location. Please enter coordinates manually or click on the map.",
+            "Unable to get your location. Please enter coordinates manually or click on the map."
           );
-        },
+        }
       );
     } else {
       alert("Geolocation is not supported by your browser.");
@@ -166,12 +164,7 @@
       on:click={getCurrentLocation}
       class="text-sm text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1"
     >
-      <svg
-        class="w-4 h-4"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -216,9 +209,7 @@
 
   <div class="grid grid-cols-2 gap-4">
     <div>
-      <label for="city" class="block text-sm font-medium text-gray-700 mb-1">
-        City *
-      </label>
+      <label for="city" class="block text-sm font-medium text-gray-700 mb-1"> City * </label>
       <input
         type="text"
         id="city"
@@ -245,10 +236,7 @@
 
   <div class="grid grid-cols-2 gap-4">
     <div>
-      <label
-        for="postal_code"
-        class="block text-sm font-medium text-gray-700 mb-1"
-      >
+      <label for="postal_code" class="block text-sm font-medium text-gray-700 mb-1">
         Postal Code
       </label>
       <input
@@ -261,9 +249,7 @@
       />
     </div>
     <div>
-      <label for="country" class="block text-sm font-medium text-gray-700 mb-1">
-        Country
-      </label>
+      <label for="country" class="block text-sm font-medium text-gray-700 mb-1"> Country </label>
       <input
         type="text"
         id="country"
@@ -277,12 +263,7 @@
 
   <div class="grid grid-cols-2 gap-4">
     <div>
-      <label
-        for="latitude"
-        class="block text-sm font-medium text-gray-700 mb-1"
-      >
-        Latitude
-      </label>
+      <label for="latitude" class="block text-sm font-medium text-gray-700 mb-1"> Latitude </label>
       <input
         type="number"
         step="any"
@@ -294,10 +275,7 @@
       />
     </div>
     <div>
-      <label
-        for="longitude"
-        class="block text-sm font-medium text-gray-700 mb-1"
-      >
+      <label for="longitude" class="block text-sm font-medium text-gray-700 mb-1">
         Longitude
       </label>
       <input

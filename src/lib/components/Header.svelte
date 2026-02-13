@@ -48,9 +48,7 @@
               class="w-10 h-10 transition-transform group-hover:rotate-12"
             />
             <div class="hidden sm:block">
-              <div class="text-lg font-bold text-slate-900 leading-tight">
-                Adventure Spark
-              </div>
+              <div class="text-lg font-bold text-slate-900 leading-tight">Adventure Spark</div>
             </div>
           </a>
         </div>
@@ -61,12 +59,7 @@
               ? 'border-sky-600 text-slate-900'
               : 'border-transparent text-slate-600 hover:border-slate-300 hover:text-slate-900'} inline-flex items-center px-4 pt-1 border-b-2 text-sm font-semibold transition-colors"
           >
-            <svg
-              class="w-4 h-4 mr-1.5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -82,12 +75,7 @@
               ? 'border-sky-600 text-slate-900'
               : 'border-transparent text-slate-600 hover:border-slate-300 hover:text-slate-900'} inline-flex items-center px-4 pt-1 border-b-2 text-sm font-semibold transition-colors"
           >
-            <svg
-              class="w-4 h-4 mr-1.5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -142,12 +130,7 @@
                     on:click={closeUserMenu}
                     class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-sky-700 hover:bg-slate-50"
                   >
-                    <svg
-                      class="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
@@ -170,12 +153,7 @@
                   on:click={closeUserMenu}
                   class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
                 >
-                  <svg
-                    class="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -190,12 +168,7 @@
                   on:click={closeUserMenu}
                   class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
                 >
-                  <svg
-                    class="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -210,12 +183,7 @@
                   on:click={closeUserMenu}
                   class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
                 >
-                  <svg
-                    class="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -231,12 +199,7 @@
                     type="submit"
                     class="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 text-left"
                   >
-                    <svg
-                      class="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         stroke-linecap="round"
                         stroke-linejoin="round"

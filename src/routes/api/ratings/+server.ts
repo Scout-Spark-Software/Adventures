@@ -35,12 +35,10 @@ export const GET: RequestHandler = async ({ url }) => {
   // Get aggregate stats
   const aggregateConditions = [];
   if (hikeId) aggregateConditions.push(eq(ratingAggregates.hikeId, hikeId));
-  if (campingSiteId)
-    aggregateConditions.push(eq(ratingAggregates.campingSiteId, campingSiteId));
+  if (campingSiteId) aggregateConditions.push(eq(ratingAggregates.campingSiteId, campingSiteId));
 
   const aggregate = await db.query.ratingAggregates.findFirst({
-    where:
-      aggregateConditions.length > 0 ? and(...aggregateConditions) : undefined,
+    where: aggregateConditions.length > 0 ? and(...aggregateConditions) : undefined,
   });
 
   return json(
@@ -56,7 +54,7 @@ export const GET: RequestHandler = async ({ url }) => {
       headers: {
         "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
       },
-    },
+    }
   );
 };
 
@@ -82,10 +80,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
   // Validate rating value (1.0, 1.5, 2.0, ..., 5.0)
   if (rating < 1.0 || rating > 5.0 || (rating * 2) % 1 !== 0) {
-    throw error(
-      400,
-      "Rating must be between 1.0 and 5.0 in half-star increments",
-    );
+    throw error(400, "Rating must be between 1.0 and 5.0 in half-star increments");
   }
 
   // Sanitize review text
@@ -111,9 +106,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       reviewText: sanitizedReview,
     })
     .onConflictDoUpdate({
-      target: hikeId
-        ? [ratings.userId, ratings.hikeId]
-        : [ratings.userId, ratings.campingSiteId],
+      target: hikeId ? [ratings.userId, ratings.hikeId] : [ratings.userId, ratings.campingSiteId],
       set: {
         rating: rating.toString(),
         reviewText: sanitizedReview,
@@ -163,10 +156,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
 };
 
 // Helper function to update aggregates (2-query upsert)
-async function updateRatingAggregates(
-  hikeId: string | null,
-  campingSiteId: string | null,
-) {
+async function updateRatingAggregates(hikeId: string | null, campingSiteId: string | null) {
   const conditions = [];
   if (hikeId) conditions.push(eq(ratings.hikeId, hikeId));
   if (campingSiteId) conditions.push(eq(ratings.campingSiteId, campingSiteId));
@@ -192,9 +182,7 @@ async function updateRatingAggregates(
       totalReviews: reviewCount,
     })
     .onConflictDoUpdate({
-      target: hikeId
-        ? [ratingAggregates.hikeId]
-        : [ratingAggregates.campingSiteId],
+      target: hikeId ? [ratingAggregates.hikeId] : [ratingAggregates.campingSiteId],
       set: {
         averageRating: avgRating ? avgRating.toString() : null,
         totalRatings: totalCount,

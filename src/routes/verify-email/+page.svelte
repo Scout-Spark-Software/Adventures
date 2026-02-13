@@ -21,12 +21,7 @@
       <div
         class="mx-auto h-16 w-16 bg-indigo-100 rounded-full flex items-center justify-center mb-4"
       >
-        <svg
-          class="h-8 w-8 text-indigo-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg class="h-8 w-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -37,9 +32,7 @@
       </div>
       <h2 class="text-3xl font-extrabold text-gray-900">Verify Your Email</h2>
       <p class="mt-2 text-sm text-gray-600">
-        We sent a verification code to <span class="font-semibold text-gray-900"
-          >{data.email}</span
-        >
+        We sent a verification code to <span class="font-semibold text-gray-900">{data.email}</span>
       </p>
     </div>
 
@@ -48,11 +41,7 @@
         <div class="rounded-lg bg-red-50 border border-red-200 p-4">
           <div class="flex">
             <div class="flex-shrink-0">
-              <svg
-                class="h-5 w-5 text-red-400"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
+              <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fill-rule="evenodd"
                   d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
@@ -71,11 +60,7 @@
         <div class="rounded-lg bg-green-50 border border-green-200 p-4">
           <div class="flex">
             <div class="flex-shrink-0">
-              <svg
-                class="h-5 w-5 text-green-400"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
+              <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fill-rule="evenodd"
                   d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -102,10 +87,7 @@
         }}
       >
         <div>
-          <label
-            for="code"
-            class="block text-sm font-medium text-gray-700 mb-2"
-          >
+          <label for="code" class="block text-sm font-medium text-gray-700 mb-2">
             Verification Code
           </label>
           <input
@@ -119,9 +101,7 @@
             placeholder="Enter 6-digit code"
             class="appearance-none relative block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 text-gray-900 text-center text-2xl font-mono tracking-widest focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-2xl"
           />
-          <p class="mt-2 text-xs text-gray-500">
-            Enter the 6-digit code sent to your email
-          </p>
+          <p class="mt-2 text-xs text-gray-500">Enter the 6-digit code sent to your email</p>
         </div>
 
         <div class="mt-6">
@@ -163,9 +143,7 @@
           <div class="w-full border-t border-gray-300"></div>
         </div>
         <div class="relative flex justify-center text-sm">
-          <span class="px-2 bg-white text-gray-500"
-            >Didn't receive the code?</span
-          >
+          <span class="px-2 bg-white text-gray-500">Didn't receive the code?</span>
         </div>
       </div>
 
@@ -214,9 +192,8 @@
     </div>
 
     <p class="text-center text-sm text-gray-600">
-      Already verified? <a
-        href="/login"
-        class="font-medium text-indigo-600 hover:text-indigo-500">Sign in</a
+      Already verified? <a href="/login" class="font-medium text-indigo-600 hover:text-indigo-500"
+        >Sign in</a
       >
     </p>
   </div>

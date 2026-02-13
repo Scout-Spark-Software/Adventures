@@ -20,12 +20,7 @@
         href="/essentials"
         class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm"
       >
-        <svg
-          class="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -66,9 +61,7 @@
           <div class="mb-4 flex items-center justify-between">
             <p class="text-sm text-gray-600">
               <span class="font-semibold">{data.campingSites.length}</span>
-              {data.campingSites.length === 1
-                ? "camping site"
-                : "camping sites"} found
+              {data.campingSites.length === 1 ? "camping site" : "camping sites"} found
             </p>
           </div>
 
@@ -93,12 +86,8 @@
                 d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
               />
             </svg>
-            <p class="text-gray-500 text-lg font-medium mb-2">
-              No camping sites found
-            </p>
-            <p class="text-gray-400 text-sm">
-              Try adjusting your filters or search criteria
-            </p>
+            <p class="text-gray-500 text-lg font-medium mb-2">No camping sites found</p>
+            <p class="text-gray-400 text-sm">Try adjusting your filters or search criteria</p>
           </div>
         {/if}
       </main>

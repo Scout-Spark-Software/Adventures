@@ -1,4 +1,4 @@
-import { error, redirect } from "@sveltejs/kit";
+import { error } from "@sveltejs/kit";
 import type { PageServerLoad, Actions } from "./$types";
 import { db } from "$lib/db";
 import { hikes, addresses } from "$lib/db/schemas";
@@ -66,7 +66,7 @@ export const actions: Actions = {
 
       if (isAdmin) {
         // Admin updates address directly
-        let addressId = hike.addressId;
+        const addressId = hike.addressId;
 
         if (addressId) {
           // Update existing address

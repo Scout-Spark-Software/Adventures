@@ -52,15 +52,10 @@ export const PUT: RequestHandler = async (event) => {
     }
 
     const entityType = hasHikeId ? "hike" : "campingSite";
-    if (
-      !isAllowedAlterationField(
-        alteration.fieldName,
-        entityType as "hike" | "campingSite",
-      )
-    ) {
+    if (!isAllowedAlterationField(alteration.fieldName, entityType as "hike" | "campingSite")) {
       throw error(
         400,
-        `Cannot apply alteration: field "${alteration.fieldName}" is not allowed for ${entityType}`,
+        `Cannot apply alteration: field "${alteration.fieldName}" is not allowed for ${entityType}`
       );
     }
   }

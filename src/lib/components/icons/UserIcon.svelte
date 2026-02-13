@@ -1,14 +1,14 @@
 <script lang="ts">
-  export let size: 'sm' | 'md' | 'lg' | number = 'md';
-  export let ariaLabel: string = 'User';
+  export let size: "sm" | "md" | "lg" | number = "md";
+  export let ariaLabel: string = "User";
 
   const sizeMap = {
     sm: 4,
     md: 5,
-    lg: 6
+    lg: 6,
   };
 
-  $: sizeValue = typeof size === 'number' ? size : sizeMap[size];
+  $: sizeValue = typeof size === "number" ? size : sizeMap[size];
 </script>
 
 <svg

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
   import { goto } from "$app/navigation";
-  import type { PageData, ActionData } from "./$types";
+  import type { PageData } from "./$types";
   import LocationPicker from "$lib/components/LocationPicker.svelte";
   import FormSection from "$lib/components/FormSection.svelte";
   import Tooltip from "$lib/components/Tooltip.svelte";
@@ -50,15 +50,12 @@
   let amenities: Record<string, boolean> = {};
   $: {
     if (data.amenityTypes) {
-      amenities = data.amenityTypes.reduce(
-        (acc: Record<string, boolean>, type: any) => {
-          if (!acc[type.key]) {
-            acc[type.key] = false;
-          }
-          return acc;
-        },
-        amenities,
-      );
+      amenities = data.amenityTypes.reduce((acc: Record<string, boolean>, type: any) => {
+        if (!acc[type.key]) {
+          acc[type.key] = false;
+        }
+        return acc;
+      }, amenities);
     }
   }
 
@@ -66,15 +63,12 @@
   let facilities: Record<string, boolean> = {};
   $: {
     if (data.facilityTypes) {
-      facilities = data.facilityTypes.reduce(
-        (acc: Record<string, boolean>, type: any) => {
-          if (!acc[type.key]) {
-            acc[type.key] = false;
-          }
-          return acc;
-        },
-        facilities,
-      );
+      facilities = data.facilityTypes.reduce((acc: Record<string, boolean>, type: any) => {
+        if (!acc[type.key]) {
+          acc[type.key] = false;
+        }
+        return acc;
+      }, facilities);
     }
   }
 
@@ -96,18 +90,11 @@
   let reservationInfo = "";
 
   // Real-time validation reactive statements
-  $: permitsError =
-    permitsRequired.length > 500 ? "Must be less than 500 characters" : "";
-  $: parkingError =
-    parkingInfo.length > 1000 ? "Must be less than 1000 characters" : "";
+  $: permitsError = permitsRequired.length > 500 ? "Must be less than 500 characters" : "";
+  $: parkingError = parkingInfo.length > 1000 ? "Must be less than 1000 characters" : "";
 
   // Step titles for hikes
-  const hikeStepTitles = [
-    "Basic Info",
-    "Location",
-    "Trail Details",
-    "Features & Conditions",
-  ];
+  const hikeStepTitles = ["Basic Info", "Location", "Trail Details", "Features & Conditions"];
 
   // Step titles for camping sites
   const campingStepTitles = [
@@ -209,9 +196,8 @@
 
     <div class="bg-white shadow rounded-lg p-5">
       <div class="mb-5">
-        <label
-          for="submission-type"
-          class="block text-sm font-medium text-gray-700 mb-2">Type</label
+        <label for="submission-type" class="block text-sm font-medium text-gray-700 mb-2"
+          >Type</label
         >
         <select
           id="submission-type"
@@ -269,15 +255,10 @@
             {#if currentStep === 0}
               <!-- Basic Information -->
               <div class="space-y-4 animate-fadeIn">
-                <h3 class="text-lg font-medium text-gray-900 border-b pb-2">
-                  Basic Information
-                </h3>
+                <h3 class="text-lg font-medium text-gray-900 border-b pb-2">Basic Information</h3>
 
                 <div>
-                  <label
-                    for="name"
-                    class="block text-sm font-medium text-gray-700 mb-1"
-                  >
+                  <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
                     Name *
                   </label>
                   <input
@@ -294,10 +275,7 @@
                 </div>
 
                 <div>
-                  <label
-                    for="description"
-                    class="block text-sm font-medium text-gray-700 mb-1"
-                  >
+                  <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
                     Description
                   </label>
                   <textarea
@@ -312,9 +290,7 @@
             {:else if currentStep === 1}
               <!-- Location Information -->
               <div class="animate-fadeIn">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">
-                  Location Information
-                </h3>
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Location Information</h3>
                 <LocationPicker
                   bind:address
                   bind:city
@@ -331,15 +307,10 @@
             {:else if currentStep === 2}
               <!-- Trail Details -->
               <div class="space-y-4 animate-fadeIn">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">
-                  Trail Details
-                </h3>
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Trail Details</h3>
 
                 <div>
-                  <label
-                    for="difficulty"
-                    class="block text-sm font-medium text-gray-700 mb-1"
-                  >
+                  <label for="difficulty" class="block text-sm font-medium text-gray-700 mb-1">
                     Difficulty
                   </label>
                   <select
@@ -358,10 +329,7 @@
 
                 <div class="grid grid-cols-2 gap-4">
                   <div>
-                    <label
-                      for="distance"
-                      class="block text-sm font-medium text-gray-700 mb-1"
-                    >
+                    <label for="distance" class="block text-sm font-medium text-gray-700 mb-1">
                       Distance
                     </label>
                     <div class="flex gap-2">
@@ -386,10 +354,7 @@
                   </div>
 
                   <div>
-                    <label
-                      for="duration"
-                      class="block text-sm font-medium text-gray-700 mb-1"
-                    >
+                    <label for="duration" class="block text-sm font-medium text-gray-700 mb-1">
                       Duration
                     </label>
                     <div class="flex gap-2">
@@ -416,10 +381,7 @@
 
                 <div class="grid grid-cols-2 gap-4">
                   <div>
-                    <label
-                      for="elevation"
-                      class="block text-sm font-medium text-gray-700 mb-1"
-                    >
+                    <label for="elevation" class="block text-sm font-medium text-gray-700 mb-1">
                       Elevation Gain
                     </label>
                     <div class="flex gap-2">
@@ -444,10 +406,7 @@
                   </div>
 
                   <div>
-                    <label
-                      for="trail_type"
-                      class="block text-sm font-medium text-gray-700 mb-1"
-                    >
+                    <label for="trail_type" class="block text-sm font-medium text-gray-700 mb-1">
                       Trail Type
                     </label>
                     <select
@@ -480,17 +439,11 @@
                           bind:group={selectedFeatures}
                           class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                         />
-                        <span class="ml-2 text-sm text-gray-700"
-                          >{feature.name}</span
-                        >
+                        <span class="ml-2 text-sm text-gray-700">{feature.name}</span>
                       </label>
                     {/each}
                   </div>
-                  <input
-                    type="hidden"
-                    name="features"
-                    value={JSON.stringify(selectedFeatures)}
-                  />
+                  <input type="hidden" name="features" value={JSON.stringify(selectedFeatures)} />
                 </FormSection>
 
                 <FormSection
@@ -500,14 +453,9 @@
                 >
                   <div class="space-y-4">
                     <div>
-                      <label
-                        for="permits"
-                        class="block text-sm font-medium text-gray-700 mb-1"
-                      >
+                      <label for="permits" class="block text-sm font-medium text-gray-700 mb-1">
                         Permits or Passes Required
-                        <Tooltip
-                          text="Describe any permits, parking passes, or fees needed"
-                        />
+                        <Tooltip text="Describe any permits, parking passes, or fees needed" />
                       </label>
                       <textarea
                         id="permits"
@@ -534,9 +482,7 @@
                         id="best-season-label"
                       >
                         Best Season to Visit
-                        <Tooltip
-                          text="Select all seasons when this trail is enjoyable"
-                        />
+                        <Tooltip text="Select all seasons when this trail is enjoyable" />
                       </div>
                       <div
                         class="grid grid-cols-2 gap-3"
@@ -551,17 +497,11 @@
                               bind:group={bestSeasons}
                               class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                             />
-                            <span class="ml-2 text-sm text-gray-700"
-                              >{season}</span
-                            >
+                            <span class="ml-2 text-sm text-gray-700">{season}</span>
                           </label>
                         {/each}
                       </div>
-                      <input
-                        type="hidden"
-                        name="best_season"
-                        value={JSON.stringify(bestSeasons)}
-                      />
+                      <input type="hidden" name="best_season" value={JSON.stringify(bestSeasons)} />
                     </div>
 
                     <label class="flex items-center">
@@ -574,20 +514,13 @@
                       <span class="ml-2 text-sm text-gray-700"
                         >Water sources available on trail</span
                       >
-                      <Tooltip
-                        text="Natural water sources like streams or lakes along the trail"
-                      />
+                      <Tooltip text="Natural water sources like streams or lakes along the trail" />
                     </label>
 
                     <div>
-                      <label
-                        for="parking"
-                        class="block text-sm font-medium text-gray-700 mb-1"
-                      >
+                      <label for="parking" class="block text-sm font-medium text-gray-700 mb-1">
                         Parking Information
-                        <Tooltip
-                          text="Details about parking availability, capacity, and fees"
-                        />
+                        <Tooltip text="Details about parking availability, capacity, and fees" />
                       </label>
                       <textarea
                         id="parking"
@@ -623,8 +556,7 @@
               loading = false;
               if (result.type === "redirect") {
                 showSuccess = true;
-                successMessage =
-                  "Your camping site has been submitted for review!";
+                successMessage = "Your camping site has been submitted for review!";
                 setTimeout(() => {
                   goto(result.location);
                 }, 3000);
@@ -637,11 +569,7 @@
           <!-- Hidden inputs to preserve data from other steps -->
           {#if currentStep !== 0}
             <input type="hidden" name="name" value={campingName} />
-            <input
-              type="hidden"
-              name="description"
-              value={campingDescription}
-            />
+            <input type="hidden" name="description" value={campingDescription} />
           {/if}
           {#if currentStep !== 1}
             <input type="hidden" name="address" value={address} />
@@ -663,15 +591,10 @@
             {#if currentStep === 0}
               <!-- Basic Information -->
               <div class="space-y-4 animate-fadeIn">
-                <h3 class="text-lg font-medium text-gray-900 border-b pb-2">
-                  Basic Information
-                </h3>
+                <h3 class="text-lg font-medium text-gray-900 border-b pb-2">Basic Information</h3>
 
                 <div>
-                  <label
-                    for="name"
-                    class="block text-sm font-medium text-gray-700 mb-1"
-                  >
+                  <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
                     Name *
                   </label>
                   <input
@@ -688,10 +611,7 @@
                 </div>
 
                 <div>
-                  <label
-                    for="description"
-                    class="block text-sm font-medium text-gray-700 mb-1"
-                  >
+                  <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
                     Description
                   </label>
                   <textarea
@@ -706,9 +626,7 @@
             {:else if currentStep === 1}
               <!-- Location Information -->
               <div class="animate-fadeIn">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">
-                  Location Information
-                </h3>
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Location Information</h3>
                 <LocationPicker
                   bind:address
                   bind:city
@@ -725,15 +643,10 @@
             {:else if currentStep === 2}
               <!-- Site Details -->
               <div class="space-y-4 animate-fadeIn">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">
-                  Site Details
-                </h3>
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Site Details</h3>
 
                 <div>
-                  <label
-                    for="capacity"
-                    class="block text-sm font-medium text-gray-700 mb-1"
-                  >
+                  <label for="capacity" class="block text-sm font-medium text-gray-700 mb-1">
                     Capacity (number of people/tents)
                   </label>
                   <input
@@ -767,9 +680,7 @@
               <!-- Amenities & Facilities -->
               <div class="space-y-6 animate-fadeIn">
                 <div>
-                  <h3 class="text-lg font-medium text-gray-900 mb-4">
-                    Amenities
-                  </h3>
+                  <h3 class="text-lg font-medium text-gray-900 mb-4">Amenities</h3>
                   <div class="grid grid-cols-2 gap-3">
                     {#each data.amenityTypes as amenity}
                       <label class="flex items-center">
@@ -778,17 +689,11 @@
                           bind:checked={amenities[amenity.key]}
                           class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                         />
-                        <span class="ml-2 text-sm text-gray-700"
-                          >{amenity.name}</span
-                        >
+                        <span class="ml-2 text-sm text-gray-700">{amenity.name}</span>
                       </label>
                     {/each}
                   </div>
-                  <input
-                    type="hidden"
-                    name="amenities"
-                    value={JSON.stringify(amenities)}
-                  />
+                  <input type="hidden" name="amenities" value={JSON.stringify(amenities)} />
                 </div>
 
                 <FormSection
@@ -803,17 +708,11 @@
                           bind:checked={facilities[facility.key]}
                           class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                         />
-                        <span class="ml-2 text-sm text-gray-700"
-                          >{facility.name}</span
-                        >
+                        <span class="ml-2 text-sm text-gray-700">{facility.name}</span>
                       </label>
                     {/each}
                   </div>
-                  <input
-                    type="hidden"
-                    name="facilities"
-                    value={JSON.stringify(facilities)}
-                  />
+                  <input type="hidden" name="facilities" value={JSON.stringify(facilities)} />
                 </FormSection>
               </div>
             {:else if currentStep === 4}
@@ -825,10 +724,7 @@
                 >
                   <div class="grid grid-cols-2 gap-4">
                     <div>
-                      <label
-                        for="base_fee"
-                        class="block text-sm font-medium text-gray-700 mb-1"
-                      >
+                      <label for="base_fee" class="block text-sm font-medium text-gray-700 mb-1">
                         Base Fee ($)
                         <Tooltip text="One-time fee for the entire stay" />
                       </label>
@@ -881,14 +777,9 @@
                 >
                   <div class="space-y-4">
                     <div>
-                      <label
-                        for="site_type"
-                        class="block text-sm font-medium text-gray-700 mb-1"
-                      >
+                      <label for="site_type" class="block text-sm font-medium text-gray-700 mb-1">
                         Site Type *
-                        <Tooltip
-                          text="Whether this is a public or private campground"
-                        />
+                        <Tooltip text="Whether this is a public or private campground" />
                       </label>
                       <select
                         id="site_type"
@@ -912,14 +803,9 @@
                     </div>
 
                     <div>
-                      <label
-                        for="pet_policy"
-                        class="block text-sm font-medium text-gray-700 mb-1"
-                      >
+                      <label for="pet_policy" class="block text-sm font-medium text-gray-700 mb-1">
                         Pet Policy *
-                        <Tooltip
-                          text="Policy regarding pets at this campground"
-                        />
+                        <Tooltip text="Policy regarding pets at this campground" />
                       </label>
                       <select
                         id="pet_policy"
@@ -931,9 +817,7 @@
                         <option value="">Select pet policy...</option>
                         <option value="allowed">Pets Allowed</option>
                         <option value="not_allowed">Pets Not Allowed</option>
-                        <option value="restricted"
-                          >Restricted (e.g., leashed only)</option
-                        >
+                        <option value="restricted">Restricted (e.g., leashed only)</option>
                       </select>
                       {#if errors.petPolicy}
                         <p class="mt-1 text-sm text-red-600">
@@ -943,10 +827,7 @@
                     </div>
 
                     <div>
-                      <label
-                        for="fire_policy"
-                        class="block text-sm font-medium text-gray-700 mb-1"
-                      >
+                      <label for="fire_policy" class="block text-sm font-medium text-gray-700 mb-1">
                         Fire Policy *
                         <Tooltip text="Policy regarding campfires" />
                       </label>
@@ -961,9 +842,7 @@
                         <option value="allowed">Fires Allowed</option>
                         <option value="not_allowed">Fires Not Allowed</option>
                         <option value="fire_pits_only">Fire Pits Only</option>
-                        <option value="seasonal"
-                          >Seasonal (varies by time of year)</option
-                        >
+                        <option value="seasonal">Seasonal (varies by time of year)</option>
                       </select>
                       {#if errors.firePolicy}
                         <p class="mt-1 text-sm text-red-600">
@@ -979,12 +858,8 @@
                         bind:checked={reservationRequired}
                         class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                       />
-                      <span class="ml-2 text-sm text-gray-700"
-                        >Reservation Required</span
-                      >
-                      <Tooltip
-                        text="Check if advance reservations are mandatory"
-                      />
+                      <span class="ml-2 text-sm text-gray-700">Reservation Required</span>
+                      <Tooltip text="Check if advance reservations are mandatory" />
                     </label>
 
                     <div>
@@ -1001,9 +876,7 @@
                         aria-labelledby="operating-season-label"
                       >
                         <div>
-                          <label
-                            for="season_start"
-                            class="block text-xs text-gray-600 mb-1"
+                          <label for="season_start" class="block text-xs text-gray-600 mb-1"
                             >Start</label
                           >
                           <input
@@ -1016,9 +889,8 @@
                           />
                         </div>
                         <div>
-                          <label
-                            for="season_end"
-                            class="block text-xs text-gray-600 mb-1">End</label
+                          <label for="season_end" class="block text-xs text-gray-600 mb-1"
+                            >End</label
                           >
                           <input
                             type="text"

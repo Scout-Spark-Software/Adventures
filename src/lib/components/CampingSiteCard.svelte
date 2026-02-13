@@ -8,9 +8,7 @@
   };
 
   $: locationText = campingSite.address
-    ? [campingSite.address.city, campingSite.address.state]
-        .filter(Boolean)
-        .join(", ")
+    ? [campingSite.address.city, campingSite.address.state].filter(Boolean).join(", ")
     : "";
 </script>
 
@@ -24,21 +22,10 @@
   >
     <!-- Decorative tent/tree shapes -->
     <div class="absolute inset-0">
-      <svg
-        class="absolute bottom-0 w-full h-32"
-        viewBox="0 0 1200 120"
-        preserveAspectRatio="none"
-      >
-        <path
-          d="M0,60 Q300,10 600,60 T1200,60 L1200,120 L0,120 Z"
-          fill="rgba(255,255,255,0.1)"
-        />
+      <svg class="absolute bottom-0 w-full h-32" viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="M0,60 Q300,10 600,60 T1200,60 L1200,120 L0,120 Z" fill="rgba(255,255,255,0.1)" />
       </svg>
-      <svg
-        class="absolute bottom-0 w-full h-24"
-        viewBox="0 0 1200 120"
-        preserveAspectRatio="none"
-      >
+      <svg class="absolute bottom-0 w-full h-24" viewBox="0 0 1200 120" preserveAspectRatio="none">
         <path
           d="M0,80 Q200,20 400,80 T800,80 T1200,80 L1200,120 L0,120 Z"
           fill="rgba(255,255,255,0.15)"
@@ -68,12 +55,7 @@
         <span
           class="inline-flex items-center px-2 py-1 bg-white/90 backdrop-blur-sm rounded-md text-xs font-medium text-gray-700"
         >
-          <svg
-            class="w-3 h-3 mr-1"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -88,12 +70,7 @@
         <span
           class="inline-flex items-center px-2 py-1 bg-white/90 backdrop-blur-sm rounded-md text-xs font-medium text-gray-700"
         >
-          <svg
-            class="w-3 h-3 mr-1"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -143,12 +120,8 @@
       </div>
     {/if}
 
-    <div
-      class="flex items-center justify-between pt-2 border-t border-gray-100"
-    >
-      <span
-        class="text-sm font-medium text-indigo-600 group-hover:text-indigo-700"
-      >
+    <div class="flex items-center justify-between pt-2 border-t border-gray-100">
+      <span class="text-sm font-medium text-indigo-600 group-hover:text-indigo-700">
         View Details
       </span>
       <svg
@@ -157,12 +130,7 @@
         stroke="currentColor"
         viewBox="0 0 24 24"
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M9 5l7 7-7 7"
-        />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
       </svg>
     </div>
   </div>

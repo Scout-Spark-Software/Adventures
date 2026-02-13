@@ -12,12 +12,10 @@ export type UserRole = "admin" | "moderator" | "user";
 export async function getUserRole(userId: string): Promise<UserRole> {
   try {
     // Get role from organization membership for the specific organization
-    const memberships = await workos.userManagement.listOrganizationMemberships(
-      {
-        userId: userId,
-        organizationId: workosConfig.organizationId,
-      },
-    );
+    const memberships = await workos.userManagement.listOrganizationMemberships({
+      userId: userId,
+      organizationId: workosConfig.organizationId,
+    });
     console.log("Memberships:", memberships?.data);
     if (memberships.data.length > 0) {
       const role = memberships.data[0].role?.slug || "user";
@@ -60,13 +58,8 @@ export async function isModerator(userId: string): Promise<boolean> {
  * @deprecated Roles should be managed in the WorkOS dashboard.
  * This function is kept for backwards compatibility only.
  */
-export async function setUserRole(
-  userId: string,
-  role: UserRole,
-): Promise<void> {
+export async function setUserRole(userId: string, role: UserRole): Promise<void> {
   // Note: Roles should be managed in WorkOS dashboard
   // This function is deprecated and kept for backwards compatibility
-  console.warn(
-    "setUserRole is deprecated. Please manage user roles in the WorkOS dashboard.",
-  );
+  console.warn("setUserRole is deprecated. Please manage user roles in the WorkOS dashboard.");
 }

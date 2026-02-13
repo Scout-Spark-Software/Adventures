@@ -51,12 +51,7 @@ export const actions: Actions = {
       throw redirect(303, "/login?verified=true");
     } catch (error) {
       // SvelteKit redirects throw a special object
-      if (
-        typeof error === "object" &&
-        error !== null &&
-        "status" in error &&
-        "location" in error
-      ) {
+      if (typeof error === "object" && error !== null && "status" in error && "location" in error) {
         throw error;
       }
 
@@ -64,9 +59,7 @@ export const actions: Actions = {
 
       return fail(400, {
         error:
-          error instanceof Error
-            ? error.message
-            : "Invalid verification code. Please try again.",
+          error instanceof Error ? error.message : "Invalid verification code. Please try again.",
       });
     }
   },
@@ -86,10 +79,7 @@ export const actions: Actions = {
       };
     } catch (error) {
       return fail(500, {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Failed to send verification code",
+        error: error instanceof Error ? error.message : "Failed to send verification code",
       });
     }
   },

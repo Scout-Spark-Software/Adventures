@@ -10,12 +10,7 @@
     <div class="flex items-center justify-between mb-6">
       <div>
         <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
-          <svg
-            class="w-6 h-6 text-sky-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg class="w-6 h-6 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -25,9 +20,7 @@
           </svg>
           Featured Hikes
         </h2>
-        <p class="mt-1 text-sm text-slate-600">
-          Handpicked trails for your next adventure
-        </p>
+        <p class="mt-1 text-sm text-slate-600">Handpicked trails for your next adventure</p>
       </div>
       <a
         href="/hikes"

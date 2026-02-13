@@ -1,19 +1,21 @@
 <script lang="ts">
-  import Card from '../Card.svelte';
-  import CheckIcon from '../icons/CheckIcon.svelte';
+  import Card from "../Card.svelte";
+  import CheckIcon from "../icons/CheckIcon.svelte";
 
-  export let facilities: {
-    rvSites?: boolean;
-    tentSites?: boolean;
-    cabins?: boolean;
-    playground?: boolean;
-    boatLaunch?: boolean;
-    fishing?: boolean;
-    swimming?: boolean;
-    hikingTrails?: boolean;
-  } | undefined;
+  export let facilities:
+    | {
+        rvSites?: boolean;
+        tentSites?: boolean;
+        cabins?: boolean;
+        playground?: boolean;
+        boatLaunch?: boolean;
+        fishing?: boolean;
+        swimming?: boolean;
+        hikingTrails?: boolean;
+      }
+    | undefined;
 
-  $: hasFacilities = facilities && Object.values(facilities).some(v => v === true);
+  $: hasFacilities = facilities && Object.values(facilities).some((v) => v === true);
 </script>
 
 {#if hasFacilities}

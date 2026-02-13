@@ -43,7 +43,12 @@
 </script>
 
 <div class="flex items-center gap-2">
-  <div class="flex items-center gap-1" on:mouseleave={handleMouseLeave}>
+  <div
+    class="flex items-center gap-1"
+    role="group"
+    aria-label="Star rating"
+    on:mouseleave={handleMouseLeave}
+  >
     {#each Array(5) as _, i}
       <div
         class="relative {sizeClasses[size]} {disabled
@@ -75,10 +80,7 @@
         <!-- Star visual -->
         {#if starFills[i] === 100}
           <!-- Full star -->
-          <svg
-            class="{sizeClasses[size]} pointer-events-none"
-            viewBox="0 0 24 24"
-          >
+          <svg class="{sizeClasses[size]} pointer-events-none" viewBox="0 0 24 24">
             <path
               fill="#FBBF24"
               stroke="#F59E0B"
@@ -88,10 +90,7 @@
           </svg>
         {:else if starFills[i] === 50}
           <!-- Half star -->
-          <svg
-            class="{sizeClasses[size]} pointer-events-none"
-            viewBox="0 0 24 24"
-          >
+          <svg class="{sizeClasses[size]} pointer-events-none" viewBox="0 0 24 24">
             <defs>
               <linearGradient id="half-star-{i}">
                 <stop offset="50%" stop-color="#FBBF24" />
@@ -107,10 +106,7 @@
           </svg>
         {:else}
           <!-- Empty star -->
-          <svg
-            class="{sizeClasses[size]} pointer-events-none"
-            viewBox="0 0 24 24"
-          >
+          <svg class="{sizeClasses[size]} pointer-events-none" viewBox="0 0 24 24">
             <path
               fill="#E5E7EB"
               stroke="#F59E0B"

@@ -89,9 +89,7 @@ async function checkSchema() {
       console.log("Inserted ID:", result[0].id);
 
       // Clean up test data
-      await (sql as any).unsafe(
-        `DELETE FROM "hikes" WHERE id = '${result[0].id}'`,
-      );
+      await (sql as any).unsafe(`DELETE FROM "hikes" WHERE id = '${result[0].id}'`);
       console.log("✓ Test data cleaned up");
     } catch (insertError: any) {
       console.error("✗ Test insert failed:");

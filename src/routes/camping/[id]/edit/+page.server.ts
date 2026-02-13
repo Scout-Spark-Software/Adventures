@@ -1,4 +1,4 @@
-import { error, redirect } from "@sveltejs/kit";
+import { error } from "@sveltejs/kit";
 import type { PageServerLoad, Actions } from "./$types";
 import { db } from "$lib/db";
 import { campingSites, addresses } from "$lib/db/schemas";
@@ -66,7 +66,7 @@ export const actions: Actions = {
 
       if (isAdmin) {
         // Admin updates address directly
-        let addressId = campingSite.addressId;
+        const addressId = campingSite.addressId;
 
         if (addressId) {
           // Update existing address
@@ -163,16 +163,13 @@ export const actions: Actions = {
 
     if (isAdmin) {
       // Admin can edit directly
-      const response = await event.fetch(
-        `/api/camping-sites/${event.params.id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            [fieldName]: newValue,
-          }),
-        },
-      );
+      const response = await event.fetch(`/api/camping-sites/${event.params.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          [fieldName]: newValue,
+        }),
+      });
 
       if (!response.ok) {
         return { success: false, error: "Failed to update camping site" };

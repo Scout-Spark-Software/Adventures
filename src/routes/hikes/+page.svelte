@@ -20,12 +20,7 @@
         href="/essentials"
         class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm"
       >
-        <svg
-          class="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -41,10 +36,7 @@
     <div class="lg:grid lg:grid-cols-[280px_1fr] lg:gap-6">
       <!-- Filter Sidebar (desktop) -->
       <aside class="hidden lg:block">
-        <HikeFilters
-          featureTypes={data.featureTypes}
-          currentFilters={data.currentFilters}
-        />
+        <HikeFilters featureTypes={data.featureTypes} currentFilters={data.currentFilters} />
       </aside>
 
       <!-- Main Content -->
@@ -90,9 +82,7 @@
               />
             </svg>
             <p class="text-gray-500 text-lg font-medium mb-2">No hikes found</p>
-            <p class="text-gray-400 text-sm">
-              Try adjusting your filters or search criteria
-            </p>
+            <p class="text-gray-400 text-sm">Try adjusting your filters or search criteria</p>
           </div>
         {/if}
       </main>
@@ -100,10 +90,7 @@
 
     <!-- Mobile Filter Component (rendered in component itself as floating button) -->
     <div class="lg:hidden">
-      <HikeFilters
-        featureTypes={data.featureTypes}
-        currentFilters={data.currentFilters}
-      />
+      <HikeFilters featureTypes={data.featureTypes} currentFilters={data.currentFilters} />
     </div>
   </div>
 </div>

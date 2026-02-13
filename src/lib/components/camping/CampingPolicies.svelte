@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Card from '../Card.svelte';
+  import Card from "../Card.svelte";
 
   export let capacity: string | undefined;
   export let reservationInfo: string | undefined;
@@ -10,9 +10,7 @@
 
 {#if hasAnyPolicies}
   <Card>
-    <h3 slot="header" class="text-lg font-bold text-gray-900">
-      Policies & Information
-    </h3>
+    <h3 slot="header" class="text-lg font-bold text-gray-900">Policies & Information</h3>
     <div class="space-y-4">
       {#if capacity}
         <div>

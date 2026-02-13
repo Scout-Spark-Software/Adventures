@@ -76,9 +76,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   if (amenitiesParam) {
     const amenityIds = amenitiesParam.split(",").filter(Boolean);
     if (amenityIds.length > 0) {
-      conditions.push(
-        sql`${campingSites.amenities} @> ${JSON.stringify(amenityIds)}::jsonb`,
-      );
+      conditions.push(sql`${campingSites.amenities} @> ${JSON.stringify(amenityIds)}::jsonb`);
     }
   }
 
@@ -86,9 +84,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   if (facilitiesParam) {
     const facilityIds = facilitiesParam.split(",").filter(Boolean);
     if (facilityIds.length > 0) {
-      conditions.push(
-        sql`${campingSites.facilities} @> ${JSON.stringify(facilityIds)}::jsonb`,
-      );
+      conditions.push(sql`${campingSites.facilities} @> ${JSON.stringify(facilityIds)}::jsonb`);
     }
   }
 
@@ -132,10 +128,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
   // Add rating join if filtering by rating
   if (minRating) {
-    query = query.leftJoin(
-      ratingAggregates,
-      eq(campingSites.id, ratingAggregates.campingSiteId),
-    );
+    query = query.leftJoin(ratingAggregates, eq(campingSites.id, ratingAggregates.campingSiteId));
   }
 
   // Build where conditions
@@ -147,8 +140,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         ilike(campingSites.name, `%${search}%`),
         ilike(campingSites.description, `%${search}%`),
         ilike(addresses.city, `%${search}%`),
-        ilike(addresses.state, `%${search}%`),
-      ),
+        ilike(addresses.state, `%${search}%`)
+      )
     );
   }
 

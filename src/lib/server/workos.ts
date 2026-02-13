@@ -7,15 +7,10 @@ import {
   WORKOS_COOKIE_PASSWORD,
 } from "$env/static/private";
 
-if (
-  !WORKOS_API_KEY ||
-  !WORKOS_CLIENT_ID ||
-  !WORKOS_ORGANIZATION_ID ||
-  !WORKOS_COOKIE_PASSWORD
-) {
+if (!WORKOS_API_KEY || !WORKOS_CLIENT_ID || !WORKOS_ORGANIZATION_ID || !WORKOS_COOKIE_PASSWORD) {
   throw new Error(
     "WorkOS environment variables are not set. " +
-      "Please ensure WORKOS_API_KEY, WORKOS_CLIENT_ID, WORKOS_ORGANIZATION_ID, and WORKOS_COOKIE_PASSWORD are in your .env file.",
+      "Please ensure WORKOS_API_KEY, WORKOS_CLIENT_ID, WORKOS_ORGANIZATION_ID, and WORKOS_COOKIE_PASSWORD are in your .env file."
   );
 }
 
@@ -30,19 +25,12 @@ export const workosConfig = {
 };
 
 // Create JWKS instance once at module level so jose can cache the keys
-const JWKS = createRemoteJWKSet(
-  new URL(`https://api.workos.com/sso/jwks/${WORKOS_CLIENT_ID}`),
-);
+const JWKS = createRemoteJWKSet(new URL(`https://api.workos.com/sso/jwks/${WORKOS_CLIENT_ID}`));
 
 // WorkOS User Management authentication methods
 export const workosAuth = {
   // Sign up new user in the organization
-  async signUp(
-    email: string,
-    password: string,
-    firstName?: string,
-    lastName?: string,
-  ) {
+  async signUp(email: string, password: string, firstName?: string, lastName?: string) {
     try {
       // Create user (email verification required)
       const user = await workos.userManagement.createUser({
@@ -61,22 +49,18 @@ export const workosAuth = {
 
       return user;
     } catch (error) {
-      throw new Error(
-        error instanceof Error ? error.message : "Failed to create user",
-      );
+      throw new Error(error instanceof Error ? error.message : "Failed to create user");
     }
   },
 
   // Sign in existing user
   async signIn(email: string, password: string) {
     try {
-      const authResponse = await workos.userManagement.authenticateWithPassword(
-        {
-          clientId: workosConfig.clientId,
-          email,
-          password,
-        },
-      );
+      const authResponse = await workos.userManagement.authenticateWithPassword({
+        clientId: workosConfig.clientId,
+        email,
+        password,
+      });
 
       return {
         user: authResponse.user,
@@ -84,9 +68,7 @@ export const workosAuth = {
         refreshToken: authResponse.refreshToken,
       };
     } catch (error) {
-      throw new Error(
-        error instanceof Error ? error.message : "Authentication failed",
-      );
+      throw new Error(error instanceof Error ? error.message : "Authentication failed");
     }
   },
 
@@ -117,11 +99,10 @@ export const workosAuth = {
   // Refresh session
   async refreshSession(refreshToken: string) {
     try {
-      const authResponse =
-        await workos.userManagement.authenticateWithRefreshToken({
-          clientId: workosConfig.clientId,
-          refreshToken,
-        });
+      const authResponse = await workos.userManagement.authenticateWithRefreshToken({
+        clientId: workosConfig.clientId,
+        refreshToken,
+      });
 
       return {
         accessToken: authResponse.accessToken,
@@ -141,9 +122,7 @@ export const workosAuth = {
       });
       return true;
     } catch (error) {
-      throw new Error(
-        error instanceof Error ? error.message : "Failed to update password",
-      );
+      throw new Error(error instanceof Error ? error.message : "Failed to update password");
     }
   },
 
@@ -198,11 +177,7 @@ export const workosAuth = {
       await workos.userManagement.sendVerificationEmail({ userId });
       return true;
     } catch (error) {
-      throw new Error(
-        error instanceof Error
-          ? error.message
-          : "Failed to send verification email",
-      );
+      throw new Error(error instanceof Error ? error.message : "Failed to send verification email");
     }
   },
 
@@ -215,9 +190,7 @@ export const workosAuth = {
       });
       return response.user;
     } catch (error) {
-      throw new Error(
-        error instanceof Error ? error.message : "Failed to verify email",
-      );
+      throw new Error(error instanceof Error ? error.message : "Failed to verify email");
     }
   },
 

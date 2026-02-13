@@ -4,22 +4,11 @@
   export let description: string = "";
 </script>
 
-<div
-  class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden"
->
-  <div
-    class="bg-gradient-to-r from-indigo-50 to-white px-5 py-3 border-b border-gray-200"
-  >
+<div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+  <div class="bg-gradient-to-r from-indigo-50 to-white px-5 py-3 border-b border-gray-200">
     <div class="flex items-center gap-2">
-      <div
-        class="w-7 h-7 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0"
-      >
-        <svg
-          class="w-4 h-4 text-indigo-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+      <div class="w-7 h-7 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
+        <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           {@html icon}
         </svg>
       </div>

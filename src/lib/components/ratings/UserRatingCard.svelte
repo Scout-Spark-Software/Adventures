@@ -37,8 +37,19 @@
       return;
     }
 
+    // Store original values for rollback
+    const previousRating = initialRating;
+    const previousReview = initialReview;
+    const wasEditing = isEditing;
+    const hadExistingRating = hasExistingRating;
+
+    // Optimistic update: immediately update UI
     isSaving = true;
     error = "";
+    isEditing = false;
+    hasExistingRating = true;
+    initialRating = rating;
+    initialReview = reviewText;
 
     try {
       const response = await fetch("/api/ratings", {
@@ -58,13 +69,17 @@
       }
 
       const savedRating = await response.json();
-      isEditing = false;
-      hasExistingRating = true;
-      initialRating = rating;
-      initialReview = reviewText;
+      // Dispatch success event after server confirms
       dispatch("saved", savedRating);
     } catch (e) {
+      // Rollback optimistic update on error
       error = e instanceof Error ? e.message : "Failed to save rating";
+      isEditing = wasEditing;
+      hasExistingRating = hadExistingRating;
+      initialRating = previousRating;
+      initialReview = previousReview;
+      rating = previousRating;
+      reviewText = previousReview;
     } finally {
       isSaving = false;
     }
@@ -75,8 +90,24 @@
   }
 
   async function deleteRating() {
+    // Store original values for rollback
+    const previousRating = rating;
+    const previousReviewText = reviewText;
+    const previousInitialRating = initialRating;
+    const previousInitialReview = initialReview;
+    const previousHasExistingRating = hasExistingRating;
+    const previousIsEditing = isEditing;
+
+    // Optimistic update: immediately reset to initial state
     isDeleting = true;
     error = "";
+    rating = 0;
+    reviewText = "";
+    initialRating = 0;
+    initialReview = "";
+    hasExistingRating = false;
+    isEditing = true;
+    showDeleteConfirm = false;
 
     try {
       const params = new URLSearchParams();
@@ -92,18 +123,18 @@
         throw new Error(data.message || "Failed to delete rating");
       }
 
-      // Reset to initial state
-      rating = 0;
-      reviewText = "";
-      initialRating = 0;
-      initialReview = "";
-      hasExistingRating = false;
-      isEditing = true;
-      showDeleteConfirm = false;
+      // Dispatch success event after server confirms
       dispatch("deleted");
     } catch (e) {
+      // Rollback optimistic update on error
       error = e instanceof Error ? e.message : "Failed to delete rating";
-      showDeleteConfirm = false;
+      rating = previousRating;
+      reviewText = previousReviewText;
+      initialRating = previousInitialRating;
+      initialReview = previousInitialReview;
+      hasExistingRating = previousHasExistingRating;
+      isEditing = previousIsEditing;
+      showDeleteConfirm = true; // Keep modal open to show error
     } finally {
       isDeleting = false;
     }
@@ -135,20 +166,14 @@
     <!-- Edit Mode -->
     <div class="space-y-4">
       <div>
-        <label
-          for="rating-input"
-          class="block text-sm font-medium text-gray-700 mb-2"
-        >
+        <label for="rating-input" class="block text-sm font-medium text-gray-700 mb-2">
           Rating
         </label>
         <RatingInput {rating} on:change={handleRatingChange} size="lg" />
       </div>
 
       <div>
-        <label
-          for="review-text"
-          class="block text-sm font-medium text-gray-700 mb-2"
-        >
+        <label for="review-text" class="block text-sm font-medium text-gray-700 mb-2">
           Review (Optional)
         </label>
         <textarea
@@ -165,9 +190,7 @@
       </div>
 
       {#if error}
-        <div
-          class="p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm"
-        >
+        <div class="p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
           {error}
         </div>
       {/if}
@@ -178,11 +201,7 @@
           disabled={isSaving || rating === 0}
           class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isSaving
-            ? "Saving..."
-            : hasExistingRating
-              ? "Update Rating"
-              : "Submit Rating"}
+          {isSaving ? "Saving..." : hasExistingRating ? "Update Rating" : "Submit Rating"}
         </button>
         {#if hasExistingRating}
           <button
@@ -210,20 +229,15 @@
 
 <!-- Delete Confirmation Modal -->
 {#if showDeleteConfirm}
-  <div
-    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-  >
+  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
     <div class="bg-white rounded-lg max-w-md w-full p-6">
       <h3 class="text-lg font-semibold text-gray-900 mb-2">Delete Rating?</h3>
       <p class="text-gray-600 mb-6">
-        Are you sure you want to delete your rating{reviewText
-          ? " and review"
-          : ""}? This action cannot be undone.
+        Are you sure you want to delete your rating{reviewText ? " and review" : ""}? This action
+        cannot be undone.
       </p>
       {#if error}
-        <div
-          class="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm"
-        >
+        <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
           {error}
         </div>
       {/if}

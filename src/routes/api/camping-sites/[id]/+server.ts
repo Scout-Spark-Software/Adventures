@@ -48,10 +48,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     })
     .from(campingSites)
     .leftJoin(addresses, eq(campingSites.addressId, addresses.id))
-    .leftJoin(
-      ratingAggregates,
-      eq(campingSites.id, ratingAggregates.campingSiteId),
-    )
+    .leftJoin(ratingAggregates, eq(campingSites.id, ratingAggregates.campingSiteId))
     .where(eq(campingSites.id, params.id))
     .limit(1);
 

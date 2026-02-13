@@ -7,23 +7,19 @@
   import Badge from "$lib/components/Badge.svelte";
   import Tabs from "$lib/components/Tabs.svelte";
   import NotesSection from "$lib/components/NotesSection.svelte";
-  import CampingDescription from "$lib/components/camping/CampingDescription.svelte";
+  import DescriptionSection from "$lib/components/detail-pages/DescriptionSection.svelte";
   import CampingAmenities from "$lib/components/camping/CampingAmenities.svelte";
   import CampingFacilities from "$lib/components/camping/CampingFacilities.svelte";
   import CampingPolicies from "$lib/components/camping/CampingPolicies.svelte";
   import CampingCost from "$lib/components/camping/CampingCost.svelte";
   import CampingSitePolicies from "$lib/components/camping/CampingSitePolicies.svelte";
-  import { SITE_TYPE_LABELS } from "$lib/db/schemas/enums";
-  import CampingGallery from "$lib/components/camping/CampingGallery.svelte";
-  import CampingLocationSidebar from "$lib/components/camping/CampingLocationSidebar.svelte";
+  import Gallery from "$lib/components/detail-pages/Gallery.svelte";
+  import LocationSidebar from "$lib/components/detail-pages/LocationSidebar.svelte";
   import DetailPageHero from "$lib/components/DetailPageHero.svelte";
   import EditButton from "$lib/components/EditButton.svelte";
-  import CampingIcon from "$lib/components/icons/CampingIcon.svelte";
-  import UserIcon from "$lib/components/icons/UserIcon.svelte";
-  import MapIcon from "$lib/components/icons/MapIcon.svelte";
-  import CompactRating from "$lib/components/ratings/CompactRating.svelte";
   import ReviewsTab from "$lib/components/ratings/ReviewsTab.svelte";
   import HeroRatingDisplay from "$lib/components/ratings/HeroRatingDisplay.svelte";
+  import { buildCampingBadges, buildCampingStats } from "$lib/utils/detail-page-helpers";
 
   export let data: PageData;
 
@@ -34,7 +30,7 @@
 
   // Handle URL hash navigation
   onMount(() => {
-    const hash = window.location.hash.slice(1); // Remove the #
+    const hash = window.location.hash.slice(1);
     if (hash && ["details", "reviews", "notes"].includes(hash)) {
       activeTab = hash;
     }
@@ -62,52 +58,9 @@
     activeTab = "reviews";
   }
 
-  // Prepare badges for hero
-  $: heroBadges = [
-    ...(data.campingSite.siteType
-      ? [
-          {
-            text:
-              SITE_TYPE_LABELS[data.campingSite.siteType] ??
-              data.campingSite.siteType,
-            variant: "info",
-          },
-        ]
-      : []),
-  ];
-
-  // Prepare stats for hero
-  $: heroStats = [
-    ...(data.campingSite.siteType
-      ? [
-          {
-            label: "Site Type",
-            value:
-              SITE_TYPE_LABELS[data.campingSite.siteType] ??
-              data.campingSite.siteType,
-            icon: CampingIcon,
-          },
-        ]
-      : []),
-    ...(data.campingSite.capacity
-      ? [
-          {
-            label: "Capacity",
-            value: `${data.campingSite.capacity} people`,
-            icon: UserIcon,
-          },
-        ]
-      : []),
-    ...(data.campingSite.location
-      ? [
-          {
-            label: "Location",
-            value: data.campingSite.location,
-            icon: MapIcon,
-          },
-        ]
-      : []),
-  ];
+  // Build badges and stats using utility functions
+  $: heroBadges = buildCampingBadges(data.campingSite);
+  $: heroStats = buildCampingStats(data.campingSite);
 
   function handleNotesCountChanged(event: CustomEvent<number>) {
     notesCount = event.detail;
@@ -122,9 +75,7 @@
   <!-- Hero Section -->
   <DetailPageHero
     title={data.campingSite.name}
-    location={data.address
-      ? { city: data.address.city, state: data.address.state }
-      : undefined}
+    location={data.address ? { city: data.address.city, state: data.address.state } : undefined}
     stats={heroStats}
     backgroundType="gradient"
   >
@@ -135,14 +86,6 @@
           {badge.text}
         </Badge>
       {/each}
-      {#if data.ratingAggregate}
-        <CompactRating
-          averageRating={data.ratingAggregate.averageRating}
-          totalRatings={data.ratingAggregate.totalRatings}
-          clickable={true}
-          onRatingClick={scrollToReviews}
-        />
-      {/if}
     </div>
 
     <FavoriteButton
@@ -170,7 +113,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <!-- Main Column -->
           <div class="lg:col-span-2 space-y-6">
-            <CampingDescription description={data.campingSite.description} />
+            <DescriptionSection description={data.campingSite.description} title="Description" />
             <CampingAmenities amenities={data.campingSite.amenities} />
             <CampingFacilities facilities={data.campingSite.facilities} />
             <CampingCost
@@ -190,12 +133,12 @@
               reservationInfo={data.campingSite.reservationInfo}
               policies={data.campingSite.policies}
             />
-            <CampingGallery files={data.files} />
+            <Gallery files={data.files} />
           </div>
 
           <!-- Sidebar -->
           <div class="lg:col-span-1">
-            <CampingLocationSidebar address={data.address} />
+            <LocationSidebar address={data.address} />
             {#if data.userId}
               <div class="max-w-7xl mx-auto mt-4">
                 <EditButton

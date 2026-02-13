@@ -1,20 +1,20 @@
 <script lang="ts">
-  export let size: 'sm' | 'md' | 'lg' | number = 'md';
-  export let ariaLabel: string = 'Favorite';
+  export let size: "sm" | "md" | "lg" | number = "md";
+  export let ariaLabel: string = "Favorite";
   export let filled: boolean = false;
 
   const sizeMap = {
     sm: 4,
     md: 5,
-    lg: 6
+    lg: 6,
   };
 
-  $: sizeValue = typeof size === 'number' ? size : sizeMap[size];
+  $: sizeValue = typeof size === "number" ? size : sizeMap[size];
 </script>
 
 <svg
   class="w-{sizeValue} h-{sizeValue}"
-  fill={filled ? 'currentColor' : 'none'}
+  fill={filled ? "currentColor" : "none"}
   stroke="currentColor"
   viewBox="0 0 24 24"
   aria-label={ariaLabel}

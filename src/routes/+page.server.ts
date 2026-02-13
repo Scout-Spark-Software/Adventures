@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({ fetch }) => {
             campsites: number;
             scouts: number;
           }>)
-        : null,
+        : null
     ),
   ]);
 

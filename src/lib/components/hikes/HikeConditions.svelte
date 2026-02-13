@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Card from '../Card.svelte';
-  import Badge from '../Badge.svelte';
-  import CheckIcon from '../icons/CheckIcon.svelte';
+  import Card from "../Card.svelte";
+  import Badge from "../Badge.svelte";
+  import CheckIcon from "../icons/CheckIcon.svelte";
 
   export let dogFriendly: boolean | undefined = undefined;
   export let waterSources: boolean | undefined = undefined;
@@ -9,18 +9,18 @@
   export let permitsRequired: string | undefined = undefined;
   export let parkingInfo: string | undefined = undefined;
 
-  $: hasAnyConditions = dogFriendly || waterSources || (bestSeason && bestSeason.length > 0) || permitsRequired || parkingInfo;
+  $: hasAnyConditions =
+    dogFriendly ||
+    waterSources ||
+    (bestSeason && bestSeason.length > 0) ||
+    permitsRequired ||
+    parkingInfo;
 </script>
 
 {#if hasAnyConditions}
   <Card>
     <h2 slot="header" class="text-xl font-bold text-gray-900 flex items-center gap-2">
-      <svg
-        class="w-6 h-6 text-indigo-600"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
+      <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -34,7 +34,9 @@
     <dl class="grid grid-cols-1 md:grid-cols-2 gap-6">
       {#if dogFriendly}
         <div class="flex items-start gap-3">
-          <div class="flex-shrink-0 w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+          <div
+            class="flex-shrink-0 w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"
+          >
             <CheckIcon size="lg" />
           </div>
           <div>
@@ -46,7 +48,9 @@
 
       {#if waterSources}
         <div class="flex items-start gap-3">
-          <div class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+          <div
+            class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center"
+          >
             <CheckIcon size="lg" />
           </div>
           <div>

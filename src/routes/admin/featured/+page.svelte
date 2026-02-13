@@ -7,14 +7,12 @@
   let processingIds = new Set<string>();
 
   $: featuredHikesCount = data.hikes.filter((h) => h.featured).length;
-  $: featuredCampingSitesCount = data.campingSites.filter(
-    (c) => c.featured,
-  ).length;
+  $: featuredCampingSitesCount = data.campingSites.filter((c) => c.featured).length;
 
   async function toggleFeatured(
     type: "hike" | "camping_site",
     id: string,
-    currentlyFeatured: boolean,
+    currentlyFeatured: boolean
   ) {
     if (processingIds.has(id)) return;
 
@@ -40,14 +38,12 @@
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ featured: !currentlyFeatured }),
-        },
+        }
       );
 
       if (!response.ok) {
         const error = await response.json();
-        alert(
-          `Failed to update featured status: ${error.message || "Unknown error"}`,
-        );
+        alert(`Failed to update featured status: ${error.message || "Unknown error"}`);
         return;
       }
 
@@ -107,9 +103,7 @@
           <tbody class="bg-white divide-y divide-gray-200">
             {#each data.hikes as hike}
               <tr>
-                <td
-                  class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-                >
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                   {hike.name}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -120,8 +114,7 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <button
-                    on:click={() =>
-                      toggleFeatured("hike", hike.id, hike.featured)}
+                    on:click={() => toggleFeatured("hike", hike.id, hike.featured)}
                     disabled={processingIds.has(hike.id)}
                     class="text-indigo-600 hover:text-indigo-900 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
@@ -170,9 +163,7 @@
           <tbody class="bg-white divide-y divide-gray-200">
             {#each data.campingSites as campingSite}
               <tr>
-                <td
-                  class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-                >
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                   {campingSite.name}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -184,11 +175,7 @@
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <button
                     on:click={() =>
-                      toggleFeatured(
-                        "camping_site",
-                        campingSite.id,
-                        campingSite.featured,
-                      )}
+                      toggleFeatured("camping_site", campingSite.id, campingSite.featured)}
                     disabled={processingIds.has(campingSite.id)}
                     class="text-indigo-600 hover:text-indigo-900 disabled:opacity-50 disabled:cursor-not-allowed"
                   >

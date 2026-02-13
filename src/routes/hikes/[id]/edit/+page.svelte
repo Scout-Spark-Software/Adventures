@@ -78,12 +78,7 @@
         on:click={handleCancel}
         class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700"
       >
-        <svg
-          class="w-5 h-5 mr-1"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -149,10 +144,7 @@
         class="space-y-6"
       >
         <div>
-          <label
-            for="field"
-            class="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label for="field" class="block text-sm font-medium text-gray-700 mb-1">
             Field to Edit *
           </label>
           <select
@@ -175,9 +167,7 @@
           {#if field}
             <div>
               {#if field.type === "location"}
-                <h3 class="text-sm font-medium text-gray-700 mb-3">
-                  Update Location
-                </h3>
+                <h3 class="text-sm font-medium text-gray-700 mb-3">Update Location</h3>
                 <LocationPicker
                   bind:address
                   bind:city
@@ -196,17 +186,13 @@
                 <input type="hidden" name="longitude" value={longitude} />
                 {#if data.address}
                   <p class="mt-3 text-xs text-gray-500">
-                    Current: {data.address.city || ""}{data.address.city &&
-                    data.address.state
+                    Current: {data.address.city || ""}{data.address.city && data.address.state
                       ? ", "
                       : ""}{data.address.state || ""}
                   </p>
                 {/if}
               {:else}
-                <label
-                  for="value"
-                  class="block text-sm font-medium text-gray-700 mb-1"
-                >
+                <label for="value" class="block text-sm font-medium text-gray-700 mb-1">
                   New Value *
                 </label>
                 {#if field.type === "textarea"}
@@ -263,10 +249,7 @@
 
           {#if !isAdmin}
             <div>
-              <label
-                for="reason"
-                class="block text-sm font-medium text-gray-700 mb-1"
-              >
+              <label for="reason" class="block text-sm font-medium text-gray-700 mb-1">
                 Reason for Change
               </label>
               <textarea
@@ -302,11 +285,7 @@
           >
             {#if loading}
               <span class="flex items-center gap-2">
-                <svg
-                  class="animate-spin h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
+                <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
                   <circle
                     class="opacity-25"
                     cx="12"

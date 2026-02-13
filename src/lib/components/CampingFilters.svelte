@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { AmenityType, FacilityType } from "$lib/db/schemas";
   import { goto } from "$app/navigation";
-  import { page } from "$app/stores";
   import { onDestroy } from "svelte";
 
   export let amenityTypes: AmenityType[] = [];
@@ -86,10 +85,8 @@
     if (minCost) params.set("minCost", minCost);
     if (maxCost) params.set("maxCost", maxCost);
     if (minRating) params.set("minRating", minRating);
-    if (selectedAmenities.length > 0)
-      params.set("amenities", selectedAmenities.join(","));
-    if (selectedFacilities.length > 0)
-      params.set("facilities", selectedFacilities.join(","));
+    if (selectedAmenities.length > 0) params.set("amenities", selectedAmenities.join(","));
+    if (selectedFacilities.length > 0) params.set("facilities", selectedFacilities.join(","));
     if (reservationRequired) params.set("reservationRequired", "true");
 
     const queryString = params.toString();
@@ -136,13 +133,7 @@
   aria-label="Open filters menu"
   aria-expanded={isDrawerOpen}
 >
-  <svg
-    class="w-5 h-5"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-    aria-hidden="true"
-  >
+  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
     <path
       stroke-linecap="round"
       stroke-linejoin="round"
@@ -176,9 +167,7 @@
 <!-- Filter Sidebar/Drawer -->
 <div
   class="bg-white rounded-lg shadow-md p-4 transition-transform duration-300 lg:sticky lg:top-6
-  {isDrawerOpen
-    ? 'fixed inset-y-0 left-0 z-50 w-80 overflow-y-auto'
-    : 'hidden lg:block'}"
+  {isDrawerOpen ? 'fixed inset-y-0 left-0 z-50 w-80 overflow-y-auto' : 'hidden lg:block'}"
 >
   <!-- Mobile Close Button -->
   <div class="lg:hidden flex items-center justify-between mb-3 pb-3 border-b">
@@ -188,13 +177,7 @@
       on:click={() => (isDrawerOpen = false)}
       aria-label="Close filters"
     >
-      <svg
-        class="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-      >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -205,15 +188,11 @@
     </button>
   </div>
 
-  <h2 class="text-base font-bold text-gray-900 mb-3 hidden lg:block">
-    Search & Filter
-  </h2>
+  <h2 class="text-base font-bold text-gray-900 mb-3 hidden lg:block">Search & Filter</h2>
 
   <!-- Search Input -->
   <div class="mb-3">
-    <label for="search" class="block text-sm font-medium text-gray-700 mb-1.5">
-      Search
-    </label>
+    <label for="search" class="block text-sm font-medium text-gray-700 mb-1.5"> Search </label>
     <input
       id="search"
       type="text"
@@ -226,12 +205,7 @@
 
   <!-- Site Type Dropdown -->
   <div class="mb-3">
-    <label
-      for="siteType"
-      class="block text-sm font-medium text-gray-700 mb-1.5"
-    >
-      Site Type
-    </label>
+    <label for="siteType" class="block text-sm font-medium text-gray-700 mb-1.5"> Site Type </label>
     <select
       id="siteType"
       bind:value={siteType}
@@ -241,18 +215,13 @@
       <option value="">All Types</option>
       <option value="public">Public</option>
       <option value="private">Private</option>
-      <option value="public_private_partnership"
-        >Public-Private Partnership</option
-      >
+      <option value="public_private_partnership">Public-Private Partnership</option>
     </select>
   </div>
 
   <!-- Pet Policy Dropdown -->
   <div class="mb-3">
-    <label
-      for="petPolicy"
-      class="block text-sm font-medium text-gray-700 mb-1.5"
-    >
+    <label for="petPolicy" class="block text-sm font-medium text-gray-700 mb-1.5">
       Pet Policy
     </label>
     <select
@@ -270,10 +239,7 @@
 
   <!-- Fire Policy Dropdown -->
   <div class="mb-3">
-    <label
-      for="firePolicy"
-      class="block text-sm font-medium text-gray-700 mb-1.5"
-    >
+    <label for="firePolicy" class="block text-sm font-medium text-gray-700 mb-1.5">
       Fire Policy
     </label>
     <select
@@ -323,10 +289,7 @@
 
   <!-- Minimum Rating -->
   <div class="mb-3">
-    <label
-      for="minRating"
-      class="block text-sm font-medium text-gray-700 mb-1.5"
-    >
+    <label for="minRating" class="block text-sm font-medium text-gray-700 mb-1.5">
       Minimum Rating
     </label>
     <select
@@ -346,17 +309,8 @@
 
   <!-- Amenities Multi-Select -->
   <div class="mb-3">
-    <div
-      class="block text-sm font-medium text-gray-700 mb-1.5"
-      id="amenities-label"
-    >
-      Amenities
-    </div>
-    <div
-      class="flex flex-wrap gap-2"
-      role="group"
-      aria-labelledby="amenities-label"
-    >
+    <div class="block text-sm font-medium text-gray-700 mb-1.5" id="amenities-label">Amenities</div>
+    <div class="flex flex-wrap gap-2" role="group" aria-labelledby="amenities-label">
       {#each amenityTypes as amenity (amenity.id)}
         <button
           type="button"
@@ -376,17 +330,10 @@
 
   <!-- Facilities Multi-Select -->
   <div class="mb-3">
-    <div
-      class="block text-sm font-medium text-gray-700 mb-1.5"
-      id="facilities-label"
-    >
+    <div class="block text-sm font-medium text-gray-700 mb-1.5" id="facilities-label">
       Facilities
     </div>
-    <div
-      class="flex flex-wrap gap-2"
-      role="group"
-      aria-labelledby="facilities-label"
-    >
+    <div class="flex flex-wrap gap-2" role="group" aria-labelledby="facilities-label">
       {#each facilityTypes as facility (facility.id)}
         <button
           type="button"
@@ -413,8 +360,7 @@
         on:change={handleFilterChange}
         class="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
       />
-      <span class="text-sm font-medium text-gray-700">Reservation Required</span
-      >
+      <span class="text-sm font-medium text-gray-700">Reservation Required</span>
     </label>
   </div>
 

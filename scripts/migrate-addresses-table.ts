@@ -8,16 +8,10 @@ dotenv.config();
 const sql = neon(process.env.DATABASE_URL!);
 
 async function migrate() {
-  const migrationPath = path.join(
-    process.cwd(),
-    "drizzle",
-    "0002_create_addresses_table.sql",
-  );
+  const migrationPath = path.join(process.cwd(), "drizzle", "0002_create_addresses_table.sql");
   const migrationSQL = fs.readFileSync(migrationPath, "utf-8");
 
-  console.log(
-    "Running migration: Create addresses table and update references",
-  );
+  console.log("Running migration: Create addresses table and update references");
 
   try {
     // Split on statement breaks, but preserve DO blocks

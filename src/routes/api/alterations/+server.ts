@@ -18,9 +18,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   const conditions = [];
 
   if (status) {
-    conditions.push(
-      eq(alterations.status, status as "pending" | "approved" | "rejected"),
-    );
+    conditions.push(eq(alterations.status, status as "pending" | "approved" | "rejected"));
   }
 
   if (hikeId) {
@@ -63,10 +61,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   // privilege escalation via fields like 'status', 'featured', 'createdBy'
   const entityType = hikeId ? "hike" : "campingSite";
   if (!isAllowedAlterationField(fieldName, entityType)) {
-    throw error(
-      400,
-      `Field "${fieldName}" is not allowed for ${entityType} alterations`,
-    );
+    throw error(400, `Field "${fieldName}" is not allowed for ${entityType} alterations`);
   }
 
   const [newAlteration] = await db

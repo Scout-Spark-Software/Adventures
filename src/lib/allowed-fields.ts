@@ -38,11 +38,8 @@ export const CAMPING_SITE_ALTERABLE_FIELDS = [
 
 export function isAllowedAlterationField(
   fieldName: string,
-  entityType: "hike" | "campingSite",
+  entityType: "hike" | "campingSite"
 ): boolean {
-  const fields =
-    entityType === "hike"
-      ? HIKE_ALTERABLE_FIELDS
-      : CAMPING_SITE_ALTERABLE_FIELDS;
+  const fields = entityType === "hike" ? HIKE_ALTERABLE_FIELDS : CAMPING_SITE_ALTERABLE_FIELDS;
   return (fields as readonly string[]).includes(fieldName);
 }

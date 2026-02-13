@@ -1,6 +1,6 @@
 <script lang="ts">
   import { scale, fly } from "svelte/transition";
-  import { quintOut, elasticOut } from "svelte/easing";
+  import { elasticOut } from "svelte/easing";
   import { onMount } from "svelte";
 
   export let message: string = "Success!";
@@ -107,18 +107,8 @@
         class="flex items-center text-sm text-gray-500"
         in:fly={{ y: 20, duration: 400, delay: 500 }}
       >
-        <svg
-          class="animate-spin h-4 w-4 mr-2 text-indigo-600"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            class="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            stroke-width="4"
+        <svg class="animate-spin h-4 w-4 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
           ></circle>
           <path
             class="opacity-75"

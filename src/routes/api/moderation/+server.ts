@@ -1,13 +1,7 @@
 import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
-import {
-  moderationQueue,
-  hikes,
-  campingSites,
-  alterations,
-  VALID_STATUSES,
-} from "$lib/db/schemas";
+import { moderationQueue, hikes, campingSites, alterations, VALID_STATUSES } from "$lib/db/schemas";
 import { eq, and, desc, inArray } from "drizzle-orm";
 import { requireModerator } from "$lib/auth/middleware";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
@@ -24,9 +18,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   const limit = parseLimit(url.searchParams.get("limit"));
   const offset = parseOffset(url.searchParams.get("offset"));
 
-  const conditions = [
-    eq(moderationQueue.status, status as "pending" | "approved" | "rejected"),
-  ];
+  const conditions = [eq(moderationQueue.status, status as "pending" | "approved" | "rejected")];
 
   if (entityType) {
     conditions.push(eq(moderationQueue.entityType, entityType));
@@ -40,9 +32,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   });
 
   // Batch-fetch entities grouped by type (avoids N+1)
-  const hikeIds = queueItems
-    .filter((i) => i.entityType === "hike")
-    .map((i) => i.entityId);
+  const hikeIds = queueItems.filter((i) => i.entityType === "hike").map((i) => i.entityId);
   const campingIds = queueItems
     .filter((i) => i.entityType === "camping_site")
     .map((i) => i.entityId);
@@ -51,9 +41,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     .map((i) => i.entityId);
 
   const [hikeRows, campingRows, alterationRows] = await Promise.all([
-    hikeIds.length > 0
-      ? db.query.hikes.findMany({ where: inArray(hikes.id, hikeIds) })
-      : [],
+    hikeIds.length > 0 ? db.query.hikes.findMany({ where: inArray(hikes.id, hikeIds) }) : [],
     campingIds.length > 0
       ? db.query.campingSites.findMany({
           where: inArray(campingSites.id, campingIds),
@@ -102,12 +90,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
       reviewedBy: user.id,
       reviewedAt: new Date(),
     })
-    .where(
-      and(
-        eq(moderationQueue.entityType, entityType),
-        eq(moderationQueue.entityId, entityId),
-      ),
-    );
+    .where(and(eq(moderationQueue.entityType, entityType), eq(moderationQueue.entityId, entityId)));
 
   let entityUpdate;
   if (entityType === "hike") {

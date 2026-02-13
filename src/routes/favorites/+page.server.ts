@@ -1,12 +1,7 @@
 import type { PageServerLoad } from "./$types";
 import { requireAuth } from "$lib/auth/middleware";
 import { db } from "$lib/db";
-import {
-  hikes,
-  campingSites,
-  addresses,
-  ratingAggregates,
-} from "$lib/db/schemas";
+import { hikes, campingSites, addresses, ratingAggregates } from "$lib/db/schemas";
 import { eq, and, inArray, desc } from "drizzle-orm";
 
 export const load: PageServerLoad = async ({ locals, fetch }) => {
@@ -14,9 +9,7 @@ export const load: PageServerLoad = async ({ locals, fetch }) => {
 
   const favorites = await fetch("/api/favorites").then((r) => r.json());
 
-  const hikeIds = favorites
-    .filter((f: any) => f.hikeId)
-    .map((f: any) => f.hikeId);
+  const hikeIds = favorites.filter((f: any) => f.hikeId).map((f: any) => f.hikeId);
   const campingSiteIds = favorites
     .filter((f: any) => f.campingSiteId)
     .map((f: any) => f.campingSiteId);
@@ -112,16 +105,8 @@ export const load: PageServerLoad = async ({ locals, fetch }) => {
           })
           .from(campingSites)
           .leftJoin(addresses, eq(campingSites.addressId, addresses.id))
-          .leftJoin(
-            ratingAggregates,
-            eq(campingSites.id, ratingAggregates.campingSiteId),
-          )
-          .where(
-            and(
-              inArray(campingSites.id, campingSiteIds),
-              eq(campingSites.status, "approved"),
-            ),
-          )
+          .leftJoin(ratingAggregates, eq(campingSites.id, ratingAggregates.campingSiteId))
+          .where(and(inArray(campingSites.id, campingSiteIds), eq(campingSites.status, "approved")))
           .orderBy(desc(campingSites.createdAt))
       : Promise.resolve([]),
   ]);
@@ -129,8 +114,7 @@ export const load: PageServerLoad = async ({ locals, fetch }) => {
   const normalizeResult = (item: any) => ({
     ...item,
     address: item.address?.id != null ? item.address : null,
-    ratingAggregate:
-      item.ratingAggregate?.averageRating != null ? item.ratingAggregate : null,
+    ratingAggregate: item.ratingAggregate?.averageRating != null ? item.ratingAggregate : null,
   });
 
   return {

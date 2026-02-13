@@ -108,10 +108,7 @@ async function seedHikes() {
         longitude: row.longitude ? parseFloat(row.longitude) : null,
       };
 
-      const [address] = await db
-        .insert(schema.addresses)
-        .values(addressData)
-        .returning();
+      const [address] = await db.insert(schema.addresses).values(addressData).returning();
 
       // Parse features from comma-separated string
       let features = null;

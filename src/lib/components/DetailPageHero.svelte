@@ -4,8 +4,7 @@
   import LocationIcon from "./icons/LocationIcon.svelte";
 
   export let title: string;
-  export let location: { city?: string; state?: string } | undefined =
-    undefined;
+  export let location: { city?: string; state?: string } | undefined = undefined;
   export let badges: Array<{
     text: string;
     variant?: "success" | "warning" | "error" | "info" | "neutral" | "primary";
@@ -26,31 +25,16 @@
   <!-- Decorative mountain/hill shapes for gradient background -->
   {#if backgroundType === "gradient"}
     <div class="absolute inset-0">
-      <svg
-        class="absolute bottom-0 w-full h-64"
-        viewBox="0 0 1200 120"
-        preserveAspectRatio="none"
-      >
-        <path
-          d="M0,60 Q300,10 600,60 T1200,60 L1200,120 L0,120 Z"
-          fill="rgba(255,255,255,0.1)"
-        />
+      <svg class="absolute bottom-0 w-full h-64" viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="M0,60 Q300,10 600,60 T1200,60 L1200,120 L0,120 Z" fill="rgba(255,255,255,0.1)" />
       </svg>
-      <svg
-        class="absolute bottom-0 w-full h-48"
-        viewBox="0 0 1200 120"
-        preserveAspectRatio="none"
-      >
+      <svg class="absolute bottom-0 w-full h-48" viewBox="0 0 1200 120" preserveAspectRatio="none">
         <path
           d="M0,80 Q200,20 400,80 T800,80 T1200,80 L1200,120 L0,120 Z"
           fill="rgba(255,255,255,0.15)"
         />
       </svg>
-      <svg
-        class="absolute bottom-0 w-full h-32"
-        viewBox="0 0 1200 120"
-        preserveAspectRatio="none"
-      >
+      <svg class="absolute bottom-0 w-full h-32" viewBox="0 0 1200 120" preserveAspectRatio="none">
         <path
           d="M0,90 Q150,50 300,90 T600,90 T900,90 T1200,90 L1200,120 L0,120 Z"
           fill="rgba(255,255,255,0.2)"
@@ -60,9 +44,7 @@
   {/if}
 
   <!-- Overlay Content -->
-  <div
-    class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-end pb-8"
-  >
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-end pb-8">
     <div class="w-full">
       <div class="flex items-start justify-between mb-4">
         <div>
@@ -82,9 +64,7 @@
           {/if}
 
           <!-- Title -->
-          <h1
-            class="text-3xl md:text-4xl font-bold text-white drop-shadow-lg mb-2"
-          >
+          <h1 class="text-3xl md:text-4xl font-bold text-white drop-shadow-lg mb-2">
             {title}
           </h1>
 

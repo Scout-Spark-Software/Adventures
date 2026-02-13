@@ -14,10 +14,7 @@ export const actions: Actions = {
 
     try {
       // Sign in with WorkOS
-      const { user, accessToken, refreshToken } = await workosAuth.signIn(
-        email,
-        password,
-      );
+      const { user, accessToken, refreshToken } = await workosAuth.signIn(email, password);
 
       // Set cookie options
       const cookieOptions = {
@@ -44,20 +41,14 @@ export const actions: Actions = {
     } catch (error) {
       // SvelteKit redirects throw a special Redirect object with a status property
       // We need to re-throw it so SvelteKit can handle the redirect
-      if (
-        typeof error === "object" &&
-        error !== null &&
-        "status" in error &&
-        "location" in error
-      ) {
+      if (typeof error === "object" && error !== null && "status" in error && "location" in error) {
         throw error;
       }
 
       console.error("Login error:", error);
 
       // Check if error is about email verification
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
 
       if (
         errorMessage.includes("Email ownership must be verified") ||
@@ -69,10 +60,7 @@ export const actions: Actions = {
         try {
           // Since we can't sign in, we need to handle this differently
           // Redirect to signup page which will show verification form
-          throw redirect(
-            303,
-            `/signup?email=${encodeURIComponent(email)}&needsVerification=true`,
-          );
+          throw redirect(303, `/signup?email=${encodeURIComponent(email)}&needsVerification=true`);
         } catch (redirectError) {
           // Re-throw redirect
           if (
@@ -86,10 +74,7 @@ export const actions: Actions = {
       }
 
       return fail(500, {
-        error:
-          error instanceof Error
-            ? error.message
-            : "An unexpected error occurred",
+        error: error instanceof Error ? error.message : "An unexpected error occurred",
       });
     }
   },

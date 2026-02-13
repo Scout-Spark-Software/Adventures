@@ -28,14 +28,10 @@ export const load: PageServerLoad = async ({ fetch, url }) => {
   }
 
   // Fetch hikes with filters
-  const hikes = await fetch(`/api/hikes?${params.toString()}`).then((r) =>
-    r.json(),
-  );
+  const hikes = await fetch(`/api/hikes?${params.toString()}`).then((r) => r.json());
 
   // Fetch feature types for filter component
-  const featureTypes = await fetch("/api/feature-types?active=true").then((r) =>
-    r.json(),
-  );
+  const featureTypes = await fetch("/api/feature-types?active=true").then((r) => r.json());
 
   // Build current filters object for component
   const currentFilters: Record<string, string> = {};

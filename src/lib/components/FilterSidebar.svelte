@@ -1,9 +1,8 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-  import Button from './Button.svelte';
-  import LoadingSpinner from './LoadingSpinner.svelte';
+  import { createEventDispatcher } from "svelte";
+  import Button from "./Button.svelte";
 
-  export let title: string = 'Filters';
+  export let title: string = "Filters";
   export let filters: FilterConfig[] = [];
   export let activeFilters: Record<string, any> = {};
   export let isApplying: boolean = false;
@@ -12,7 +11,7 @@
   type FilterConfig = {
     id: string;
     label: string;
-    type: 'search' | 'select' | 'multiselect' | 'range' | 'checkbox';
+    type: "search" | "select" | "multiselect" | "range" | "checkbox";
     options?: Array<{ value: string; label: string }>;
     placeholder?: string;
     min?: number;
@@ -27,18 +26,18 @@
   // Count active filters
   $: activeFilterCount = Object.entries(filterValues).filter(([key, value]) => {
     if (Array.isArray(value)) return value.length > 0;
-    if (typeof value === 'boolean') return value;
-    return value !== '' && value !== null && value !== undefined;
+    if (typeof value === "boolean") return value;
+    return value !== "" && value !== null && value !== undefined;
   }).length;
 
   function handleApply() {
-    dispatch('apply', filterValues);
+    dispatch("apply", filterValues);
     isDrawerOpen = false;
   }
 
   function handleClear() {
     filterValues = {};
-    dispatch('clear');
+    dispatch("clear");
     isDrawerOpen = false;
   }
 
@@ -60,12 +59,7 @@
     aria-label="Open filters menu"
     aria-expanded={isDrawerOpen}
   >
-    <svg
-      class="w-5 h-5"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path
         stroke-linecap="round"
         stroke-linejoin="round"
@@ -109,12 +103,7 @@
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
       <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
-        <svg
-          class="w-6 h-6 text-emerald-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -155,15 +144,14 @@
             {filter.label}
           </label>
 
-          {#if filter.type === 'search'}
+          {#if filter.type === "search"}
             <input
               type="text"
               bind:value={filterValues[filter.id]}
-              placeholder={filter.placeholder || 'Search...'}
+              placeholder={filter.placeholder || "Search..."}
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
             />
-
-          {:else if filter.type === 'select'}
+          {:else if filter.type === "select"}
             <select
               bind:value={filterValues[filter.id]}
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
@@ -173,8 +161,7 @@
                 <option value={option.value}>{option.label}</option>
               {/each}
             </select>
-
-          {:else if filter.type === 'multiselect'}
+          {:else if filter.type === "multiselect"}
             <div class="space-y-2 max-h-48 overflow-y-auto">
               {#each filter.options || [] as option}
                 <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
@@ -188,13 +175,12 @@
                 </label>
               {/each}
             </div>
-
-          {:else if filter.type === 'range'}
+          {:else if filter.type === "range"}
             <div class="grid grid-cols-2 gap-2">
               <input
                 type="number"
                 bind:value={filterValues[`${filter.id}Min`]}
-                placeholder={`Min ${filter.min !== undefined ? filter.min : ''}`}
+                placeholder={`Min ${filter.min !== undefined ? filter.min : ""}`}
                 min={filter.min}
                 max={filter.max}
                 class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
@@ -202,14 +188,13 @@
               <input
                 type="number"
                 bind:value={filterValues[`${filter.id}Max`]}
-                placeholder={`Max ${filter.max !== undefined ? filter.max : ''}`}
+                placeholder={`Max ${filter.max !== undefined ? filter.max : ""}`}
                 min={filter.min}
                 max={filter.max}
                 class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               />
             </div>
-
-          {:else if filter.type === 'checkbox'}
+          {:else if filter.type === "checkbox"}
             <label class="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -225,12 +210,7 @@
 
     <!-- Action Buttons -->
     <div class="mt-6 space-y-3">
-      <Button
-        variant="primary"
-        fullWidth
-        loading={isApplying}
-        on:click={handleApply}
-      >
+      <Button variant="primary" fullWidth loading={isApplying} on:click={handleApply}>
         Apply Filters
       </Button>
       <Button

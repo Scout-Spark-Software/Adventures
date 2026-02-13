@@ -127,17 +127,11 @@
 
     <!-- Additional Stats -->
     <div class="mb-6">
-      <h2 class="text-lg font-semibold text-gray-900 mb-3">
-        Community Engagement
-      </h2>
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">Community Engagement</h2>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div class="bg-white rounded-lg shadow p-5">
           <div class="flex items-center">
-            <svg
-              class="w-10 h-10 text-rose-500"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg class="w-10 h-10 text-rose-500" fill="currentColor" viewBox="0 0 24 24">
               <path
                 d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
               />
@@ -161,12 +155,8 @@
           href="/admin/moderation"
           class="bg-white rounded-lg shadow p-5 hover:shadow-lg transition-shadow border-l-4 border-amber-500"
         >
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">
-            Moderation Queue
-          </h3>
-          <p class="text-sm text-gray-600 mb-2">
-            Review and approve pending submissions
-          </p>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Moderation Queue</h3>
+          <p class="text-sm text-gray-600 mb-2">Review and approve pending submissions</p>
           {#if stats.pendingHikes + stats.pendingCampingSites > 0}
             <span
               class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-100 text-amber-800"
@@ -180,12 +170,8 @@
           href="/admin/featured"
           class="bg-white rounded-lg shadow p-5 hover:shadow-lg transition-shadow border-l-4 border-sky-500"
         >
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">
-            Featured Items
-          </h3>
-          <p class="text-sm text-gray-600 mb-2">
-            Manage featured hikes and camping sites
-          </p>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Featured Items</h3>
+          <p class="text-sm text-gray-600 mb-2">Manage featured hikes and camping sites</p>
           <span
             class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-sky-100 text-sky-800"
           >
@@ -198,9 +184,7 @@
           class="bg-white rounded-lg shadow p-5 hover:shadow-lg transition-shadow border-l-4 border-purple-500"
         >
           <h3 class="text-lg font-semibold text-gray-900 mb-2">Manage Types</h3>
-          <p class="text-sm text-gray-600">
-            Configure features, amenities, and facilities
-          </p>
+          <p class="text-sm text-gray-600">Configure features, amenities, and facilities</p>
         </a>
       </div>
     </div>

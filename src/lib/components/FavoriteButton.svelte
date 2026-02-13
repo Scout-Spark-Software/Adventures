@@ -28,9 +28,7 @@
       const params = new URLSearchParams();
       if (hikeId) params.append("hike_id", hikeId);
       if (campingSiteId) params.append("camping_site_id", campingSiteId);
-      const response = await fetch(
-        `/api/favorites/${hikeId || campingSiteId}?${params}`,
-      );
+      const response = await fetch(`/api/favorites/${hikeId || campingSiteId}?${params}`);
       if (!response.ok) {
         console.error("Failed to check favorite status");
         return;
@@ -75,10 +73,9 @@
         const params = new URLSearchParams();
         if (hikeId) params.append("hike_id", hikeId);
         if (campingSiteId) params.append("camping_site_id", campingSiteId);
-        const response = await fetch(
-          `/api/favorites/${hikeId || campingSiteId}?${params}`,
-          { method: "DELETE" },
-        );
+        const response = await fetch(`/api/favorites/${hikeId || campingSiteId}?${params}`, {
+          method: "DELETE",
+        });
         if (!response.ok) throw new Error("Failed to remove favorite");
       } else {
         const response = await fetch("/api/favorites", {
@@ -174,13 +171,11 @@
   @keyframes burst {
     0% {
       opacity: 1;
-      transform: translate(-50%, -50%) rotate(var(--angle)) translateY(0)
-        scale(1);
+      transform: translate(-50%, -50%) rotate(var(--angle)) translateY(0) scale(1);
     }
     100% {
       opacity: 0;
-      transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-18px)
-        scale(0);
+      transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-18px) scale(0);
     }
   }
 </style>

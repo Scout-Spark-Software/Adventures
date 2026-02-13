@@ -65,9 +65,7 @@ export const actions: Actions = {
     }
 
     // Extract new hike fields
-    const permitsRequired = sanitizeString(
-      formData.get("permits_required") as string,
-    );
+    const permitsRequired = sanitizeString(formData.get("permits_required") as string);
     const bestSeason = formData.get("best_season")
       ? JSON.parse(formData.get("best_season") as string)
       : null;
@@ -80,18 +78,13 @@ export const actions: Actions = {
       addressId,
       difficulty: sanitizeString(formData.get("difficulty") as string),
       distance: formData.get("distance") ? formData.get("distance") : null,
-      distanceUnit:
-        sanitizeString(formData.get("distance_unit") as string) || "miles",
+      distanceUnit: sanitizeString(formData.get("distance_unit") as string) || "miles",
       duration: formData.get("duration") ? formData.get("duration") : null,
-      durationUnit:
-        sanitizeString(formData.get("duration_unit") as string) || "hours",
+      durationUnit: sanitizeString(formData.get("duration_unit") as string) || "hours",
       elevation: formData.get("elevation") ? formData.get("elevation") : null,
-      elevationUnit:
-        sanitizeString(formData.get("elevation_unit") as string) || "feet",
+      elevationUnit: sanitizeString(formData.get("elevation_unit") as string) || "feet",
       trailType: sanitizeString(formData.get("trail_type") as string),
-      features: formData.get("features")
-        ? JSON.parse(formData.get("features") as string)
-        : null,
+      features: formData.get("features") ? JSON.parse(formData.get("features") as string) : null,
       permitsRequired,
       bestSeason,
       waterSources,
@@ -155,37 +148,25 @@ export const actions: Actions = {
     const baseFee = formData.get("base_fee")
       ? parseFloat(formData.get("base_fee") as string)
       : null;
-    const operatingSeasonStart = sanitizeString(
-      formData.get("operating_season_start") as string,
-    );
-    const operatingSeasonEnd = sanitizeString(
-      formData.get("operating_season_end") as string,
-    );
+    const operatingSeasonStart = sanitizeString(formData.get("operating_season_start") as string);
+    const operatingSeasonEnd = sanitizeString(formData.get("operating_season_end") as string);
     const petPolicy = sanitizeString(formData.get("pet_policy") as string);
     const reservationRequired = formData.get("reservation_required") === "on";
     const siteType = sanitizeString(formData.get("site_type") as string);
     const firePolicy = sanitizeString(formData.get("fire_policy") as string);
 
     // Validate required enums
-    if (
-      !petPolicy ||
-      !["allowed", "not_allowed", "restricted"].includes(petPolicy)
-    ) {
+    if (!petPolicy || !["allowed", "not_allowed", "restricted"].includes(petPolicy)) {
       return fail(400, { error: "Valid pet policy is required" });
     }
 
-    if (
-      !siteType ||
-      !["public", "private", "public_private_partnership"].includes(siteType)
-    ) {
+    if (!siteType || !["public", "private", "public_private_partnership"].includes(siteType)) {
       return fail(400, { error: "Valid site type is required" });
     }
 
     if (
       !firePolicy ||
-      !["allowed", "not_allowed", "fire_pits_only", "seasonal"].includes(
-        firePolicy,
-      )
+      !["allowed", "not_allowed", "fire_pits_only", "seasonal"].includes(firePolicy)
     ) {
       return fail(400, { error: "Valid fire policy is required" });
     }
@@ -195,15 +176,11 @@ export const actions: Actions = {
       description: sanitizeString(formData.get("description") as string),
       addressId,
       capacity: sanitizeString(formData.get("capacity") as string),
-      amenities: formData.get("amenities")
-        ? JSON.parse(formData.get("amenities") as string)
-        : null,
+      amenities: formData.get("amenities") ? JSON.parse(formData.get("amenities") as string) : null,
       facilities: formData.get("facilities")
         ? JSON.parse(formData.get("facilities") as string)
         : null,
-      reservationInfo: sanitizeString(
-        formData.get("reservation_info") as string,
-      ),
+      reservationInfo: sanitizeString(formData.get("reservation_info") as string),
       costPerNight,
       baseFee,
       operatingSeasonStart,

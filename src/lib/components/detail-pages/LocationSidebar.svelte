@@ -18,21 +18,14 @@
 
 {#if address}
   <Card>
-    <h2
-      slot="header"
-      class="text-lg font-bold text-gray-900 flex items-center gap-2"
-    >
+    <h2 slot="header" class="text-lg font-bold text-gray-900 flex items-center gap-2">
       <LocationIcon size="md" />
-      Location Details
+      Location
     </h2>
 
     {#if address.latitude && address.longitude}
       <div class="mb-4">
-        <LocationMap
-          latitude={address.latitude}
-          longitude={address.longitude}
-          height="250px"
-        />
+        <LocationMap latitude={address.latitude} longitude={address.longitude} height="250px" />
       </div>
       <div class="flex gap-2 mb-4">
         <a
@@ -41,12 +34,7 @@
           rel="noopener noreferrer"
           class="inline-flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-800"
         >
-          <svg
-            class="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -85,12 +73,7 @@
             rel="noopener noreferrer"
             class="inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800"
           >
-            <svg
-              class="w-3 h-3"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"

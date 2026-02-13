@@ -3,9 +3,7 @@ import { VALID_STATUSES, type Status } from "$lib/db/schemas";
 /**
  * Check if the user has admin or moderator privileges.
  */
-export function isPrivilegedUser(
-  user: App.Locals["user"],
-): boolean {
+export function isPrivilegedUser(user: App.Locals["user"]): boolean {
   return user?.role === "admin" || user?.role === "moderator";
 }
 
@@ -21,10 +19,7 @@ function isValidStatus(value: string): value is Status {
  * coercing to "approved" for non-privileged users requesting restricted
  * statuses, and ignoring unrecognized values.
  */
-export function parseStatusParam(
-  status: string | null,
-  privileged: boolean,
-): Status | null {
+export function parseStatusParam(status: string | null, privileged: boolean): Status | null {
   if (!status) return null;
 
   if (!isValidStatus(status)) {

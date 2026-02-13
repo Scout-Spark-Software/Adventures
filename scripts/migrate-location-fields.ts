@@ -8,15 +8,11 @@ dotenv.config();
 const sql = neon(process.env.DATABASE_URL!);
 
 async function migrate() {
-  const migrationPath = path.join(
-    process.cwd(),
-    "drizzle",
-    "0001_update_location_fields.sql",
-  );
+  const migrationPath = path.join(process.cwd(), "drizzle", "0001_update_location_fields.sql");
   const migrationSQL = fs.readFileSync(migrationPath, "utf-8");
 
   console.log(
-    "Running migration: Update location fields to structured address and numeric coordinates",
+    "Running migration: Update location fields to structured address and numeric coordinates"
   );
 
   try {

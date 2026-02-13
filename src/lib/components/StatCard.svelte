@@ -2,11 +2,11 @@
   export let label: string;
   export let value: string | number;
   export let subtitle: string | undefined = undefined;
-  export let variant: 'default' | 'glass' = 'default';
+  export let variant: "default" | "glass" = "default";
 
   const variantClasses = {
-    default: 'bg-white rounded-lg px-4 py-2 shadow-md',
-    glass: 'bg-white/90 backdrop-blur-sm rounded-lg px-4 py-2 shadow-lg'
+    default: "bg-white rounded-lg px-4 py-2 shadow-md",
+    glass: "bg-white/90 backdrop-blur-sm rounded-lg px-4 py-2 shadow-lg",
   };
 </script>
 

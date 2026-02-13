@@ -1,12 +1,4 @@
-import {
-  pgTable,
-  text,
-  timestamp,
-  boolean,
-  jsonb,
-  uuid,
-  numeric,
-} from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, jsonb, uuid, numeric } from "drizzle-orm/pg-core";
 import {
   statusEnum,
   difficultyEnum,

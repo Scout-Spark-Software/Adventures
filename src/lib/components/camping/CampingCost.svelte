@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Card from '../Card.svelte';
+  import Card from "../Card.svelte";
 
   export let baseFee: string | undefined;
   export let costPerNight: string | undefined;
@@ -10,12 +10,7 @@
 {#if hasCost}
   <Card>
     <h2 slot="header" class="text-xl font-bold text-gray-900 flex items-center gap-2">
-      <svg
-        class="w-5 h-5 text-indigo-600"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
+      <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"

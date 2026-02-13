@@ -1,18 +1,5 @@
-import {
-  pgTable,
-  text,
-  timestamp,
-  boolean,
-  jsonb,
-  uuid,
-  numeric,
-} from "drizzle-orm/pg-core";
-import {
-  statusEnum,
-  petPolicyEnum,
-  firePolicyEnum,
-  siteTypeEnum,
-} from "./enums";
+import { pgTable, text, timestamp, boolean, jsonb, uuid, numeric } from "drizzle-orm/pg-core";
+import { statusEnum, petPolicyEnum, firePolicyEnum, siteTypeEnum } from "./enums";
 import { addresses } from "./addresses";
 
 export const campingSites = pgTable("camping_sites", {

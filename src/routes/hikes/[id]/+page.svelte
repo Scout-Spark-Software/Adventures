@@ -5,24 +5,18 @@
   import FavoriteButton from "$lib/components/FavoriteButton.svelte";
   import ModerationBadge from "$lib/components/ModerationBadge.svelte";
   import Badge from "$lib/components/Badge.svelte";
-  import StatCard from "$lib/components/StatCard.svelte";
   import Tabs from "$lib/components/Tabs.svelte";
   import NotesSection from "$lib/components/NotesSection.svelte";
-  import HikeDescription from "$lib/components/hikes/HikeDescription.svelte";
+  import DescriptionSection from "$lib/components/detail-pages/DescriptionSection.svelte";
   import HikeFeatures from "$lib/components/hikes/HikeFeatures.svelte";
   import HikeConditions from "$lib/components/hikes/HikeConditions.svelte";
-  import HikeGallery from "$lib/components/hikes/HikeGallery.svelte";
-  import HikeLocationSidebar from "$lib/components/hikes/HikeLocationSidebar.svelte";
+  import Gallery from "$lib/components/detail-pages/Gallery.svelte";
+  import LocationSidebar from "$lib/components/detail-pages/LocationSidebar.svelte";
   import DetailPageHero from "$lib/components/DetailPageHero.svelte";
   import EditButton from "$lib/components/EditButton.svelte";
-  import HikeIcon from "$lib/components/icons/HikeIcon.svelte";
-  import ClockIcon from "$lib/components/icons/ClockIcon.svelte";
-  import ArrowIcon from "$lib/components/icons/ArrowIcon.svelte";
-  import MapIcon from "$lib/components/icons/MapIcon.svelte";
-  import { TRAIL_TYPE_LABELS } from "$lib/db/schemas/enums";
-  import CompactRating from "$lib/components/ratings/CompactRating.svelte";
   import ReviewsTab from "$lib/components/ratings/ReviewsTab.svelte";
   import HeroRatingDisplay from "$lib/components/ratings/HeroRatingDisplay.svelte";
+  import { buildHikeBadges, buildHikeStats } from "$lib/utils/detail-page-helpers";
 
   export let data: PageData;
 
@@ -33,7 +27,7 @@
 
   // Handle URL hash navigation
   onMount(() => {
-    const hash = window.location.hash.slice(1); // Remove the #
+    const hash = window.location.hash.slice(1);
     if (hash && ["details", "reviews", "notes"].includes(hash)) {
       activeTab = hash;
     }
@@ -61,52 +55,9 @@
     activeTab = "reviews";
   }
 
-  // Prepare badges for hero
-  $: heroBadges = [
-    ...(data.hike.difficulty
-      ? [
-          {
-            text:
-              data.hike.difficulty.charAt(0).toUpperCase() +
-              data.hike.difficulty.slice(1).replace("_", " "),
-            variant: (data.hike.difficulty === "easy"
-              ? "success"
-              : data.hike.difficulty === "moderate"
-                ? "warning"
-                : "error") as "success" | "warning" | "error",
-          },
-        ]
-      : []),
-  ];
-
-  // Prepare stats for hero
-  $: heroStats = [
-    ...(data.hike.distance
-      ? [{ label: "Distance", value: data.hike.distance, icon: HikeIcon }]
-      : []),
-    ...(data.hike.duration
-      ? [{ label: "Duration", value: data.hike.duration, icon: ClockIcon }]
-      : []),
-    ...(data.hike.elevation
-      ? [
-          {
-            label: "Elevation Gain",
-            value: data.hike.elevation,
-            icon: ArrowIcon,
-          },
-        ]
-      : []),
-    ...(data.hike.trailType
-      ? [
-          {
-            label: "Trail Type",
-            value:
-              TRAIL_TYPE_LABELS[data.hike.trailType] || data.hike.trailType,
-            icon: MapIcon,
-          },
-        ]
-      : []),
-  ];
+  // Build badges and stats using utility functions
+  $: heroBadges = buildHikeBadges(data.hike);
+  $: heroStats = buildHikeStats(data.hike);
 
   function handleNotesCountChanged(event: CustomEvent<number>) {
     notesCount = event.detail;
@@ -139,11 +90,7 @@
       {/each}
     </div>
 
-    <FavoriteButton
-      slot="favorite-button"
-      hikeId={data.hike.id}
-      userId={data.userId}
-    />
+    <FavoriteButton slot="favorite-button" hikeId={data.hike.id} userId={data.userId} />
 
     <div slot="rating-display">
       {#if data.ratingAggregate}
@@ -164,7 +111,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <!-- Main Column -->
           <div class="lg:col-span-2 space-y-6">
-            <HikeDescription description={data.hike.description} />
+            <DescriptionSection description={data.hike.description} title="About This Trail" />
             <HikeFeatures features={data.hike.features} />
             <HikeConditions
               dogFriendly={data.hike.dogFriendly}
@@ -173,12 +120,12 @@
               permitsRequired={data.hike.permitsRequired}
               parkingInfo={data.hike.parkingInfo}
             />
-            <HikeGallery files={data.files} />
+            <Gallery files={data.files} />
           </div>
 
           <!-- Sidebar -->
           <div class="lg:col-span-1">
-            <HikeLocationSidebar address={data.address} />
+            <LocationSidebar address={data.address} />
             {#if data.userId}
               <div class="max-w-7xl mx-auto mt-4">
                 <EditButton

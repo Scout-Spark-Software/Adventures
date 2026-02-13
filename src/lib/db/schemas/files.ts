@@ -1,6 +1,4 @@
 import { pgTable, text, timestamp, uuid, integer } from "drizzle-orm/pg-core";
-import { hikes } from "./hikes";
-import { campingSites } from "./camping-sites";
 import { fileEntityTypeEnum, fileTypeEnum } from "./enums";
 
 export const files = pgTable("files", {

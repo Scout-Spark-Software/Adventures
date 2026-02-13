@@ -60,8 +60,7 @@ export const actions: Actions = {
 
       return { success: true, message: "Password updated successfully" };
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to update password";
+      const errorMessage = error instanceof Error ? error.message : "Failed to update password";
       return fail(400, { error: errorMessage });
     }
   },
