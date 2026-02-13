@@ -33,7 +33,7 @@
 
   onDestroy(() => {
     if (searchTimeout !== null) {
-      clearTimeout(searchTimeout);
+      clearTimeout(searchTimeout as unknown as number | undefined);
       searchTimeout = null;
     }
   });
@@ -64,7 +64,7 @@
   // Handle search input with debounce
   function handleSearchInput() {
     if (!isInitialized) return;
-    clearTimeout(searchTimeout);
+    clearTimeout(searchTimeout as unknown as number | undefined);
     searchTimeout = setTimeout(() => {
       applyFilters();
     }, 500);

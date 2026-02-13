@@ -28,6 +28,13 @@
   export let data: PageData;
 
   $: isAdmin = data.userRole === "admin";
+  // Explicitly type userRole for type safety
+  $: typedUserRole = data.userRole as
+    | "user"
+    | "admin"
+    | "moderator"
+    | null
+    | undefined;
 
   let activeTab = "details";
   let notesCount = data.notesCount;
@@ -72,7 +79,14 @@
             text:
               SITE_TYPE_LABELS[data.campingSite.siteType] ??
               data.campingSite.siteType,
-            variant: "info",
+            variant: "info" as
+              | "primary"
+              | "info"
+              | "success"
+              | "warning"
+              | "error"
+              | "neutral"
+              | undefined,
           },
         ]
       : []),
@@ -112,7 +126,7 @@
   ];
 
   // For top actions
-  $: typedUserRole = data.userRole;
+  // (typedUserRole now set above with explicit type)
 
   function handleNotesCountChanged(event: CustomEvent<number>) {
     notesCount = event.detail;

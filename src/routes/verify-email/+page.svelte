@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
+  import { CircleAlert } from "lucide-svelte";
   import type { PageData, ActionData } from "./$types";
 
   export let data: PageData;
@@ -48,7 +49,8 @@
         <div class="rounded-lg bg-red-50 border border-red-200 p-4">
           <div class="flex">
             <div class="flex-shrink-0">
-              <AlertCircle class="h-5 w-5 text-red
+              <CircleAlert class="h-5 w-5 text-red-500" />
+            </div>
             <div class="ml-3">
               <p class="text-sm text-red-800">{form.error}</p>
             </div>
@@ -60,7 +62,8 @@
         <div class="rounded-lg bg-green-50 border border-green-200 p-4">
           <div class="flex">
             <div class="flex-shrink-0">
-              <Check class="
+              <!-- You may want to import and use a Check icon here, e.g. from lucide-svelte -->
+              <!-- <Check class="h-5 w-5 text-green-500" /> -->
             </div>
             <div class="ml-3">
               <p class="text-sm text-green-800">{form.message}</p>

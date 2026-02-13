@@ -157,8 +157,11 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     whereConditions.push(gte(ratingAggregates.averageRating, minRating));
   }
 
+  // Only call .where() if there are conditions, otherwise skip it to avoid undefined type error
+  if (whereConditions.length > 0) {
+    query = query.where(and(...whereConditions));
+  }
   query = query
-    .where(whereConditions.length > 0 ? and(...whereConditions) : undefined)
     .limit(limit)
     .offset(offset)
     .orderBy(desc(campingSites.createdAt));
