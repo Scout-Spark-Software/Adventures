@@ -35,7 +35,12 @@
     { key: "distance", label: "Distance", type: "number" },
     { key: "duration", label: "Duration", type: "number" },
     { key: "elevation", label: "Elevation Gain", type: "number" },
-    { key: "trailType", label: "Trail Type", type: "text" },
+    {
+      key: "trailType",
+      label: "Trail Type",
+      type: "select",
+      options: ["loop", "out_and_back", "point_to_point"],
+    },
     { key: "permitsRequired", label: "Permits Required", type: "textarea" },
     { key: "parkingInfo", label: "Parking Info", type: "textarea" },
     { key: "location", label: "Location", type: "location" },
@@ -224,8 +229,8 @@
                     <option value="">Select {field.label}...</option>
                     {#each field.options || [] as option}
                       <option value={option}
-                        >{option.replace("_", " ").charAt(0).toUpperCase() +
-                          option.replace("_", " ").slice(1)}</option
+                        >{option.replaceAll("_", " ").charAt(0).toUpperCase() +
+                          option.replaceAll("_", " ").slice(1)}</option
                       >
                     {/each}
                   </select>

@@ -18,6 +18,7 @@
   import ClockIcon from "$lib/components/icons/ClockIcon.svelte";
   import ArrowIcon from "$lib/components/icons/ArrowIcon.svelte";
   import MapIcon from "$lib/components/icons/MapIcon.svelte";
+  import { TRAIL_TYPE_LABELS } from "$lib/db/schemas/enums";
   import CompactRating from "$lib/components/ratings/CompactRating.svelte";
   import ReviewsTab from "$lib/components/ratings/ReviewsTab.svelte";
   import HeroRatingDisplay from "$lib/components/ratings/HeroRatingDisplay.svelte";
@@ -95,7 +96,14 @@
         ]
       : []),
     ...(data.hike.trailType
-      ? [{ label: "Trail Type", value: data.hike.trailType, icon: MapIcon }]
+      ? [
+          {
+            label: "Trail Type",
+            value:
+              TRAIL_TYPE_LABELS[data.hike.trailType] || data.hike.trailType,
+            icon: MapIcon,
+          },
+        ]
       : []),
   ];
 

@@ -43,7 +43,6 @@
       <aside class="hidden lg:block">
         <HikeFilters
           featureTypes={data.featureTypes}
-          trailTypes={data.trailTypes}
           currentFilters={data.currentFilters}
         />
       </aside>
@@ -103,7 +102,6 @@
     <div class="lg:hidden">
       <HikeFilters
         featureTypes={data.featureTypes}
-        trailTypes={data.trailTypes}
         currentFilters={data.currentFilters}
       />
     </div>

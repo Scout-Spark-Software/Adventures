@@ -32,11 +32,8 @@ export const load: PageServerLoad = async ({ fetch, url }) => {
     r.json(),
   );
 
-  // Fetch feature types and trail types for filter component
+  // Fetch feature types for filter component
   const featureTypes = await fetch("/api/feature-types?active=true").then((r) =>
-    r.json(),
-  );
-  const trailTypes = await fetch("/api/trail-types?active=true").then((r) =>
     r.json(),
   );
 
@@ -50,7 +47,6 @@ export const load: PageServerLoad = async ({ fetch, url }) => {
   return {
     hikes: hikes || [],
     featureTypes: featureTypes || [],
-    trailTypes: trailTypes || [],
     currentFilters,
   };
 };

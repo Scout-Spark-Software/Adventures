@@ -13,6 +13,7 @@ import {
   distanceUnitEnum,
   durationUnitEnum,
   elevationUnitEnum,
+  trailTypeEnum,
 } from "./enums";
 import { addresses } from "./addresses";
 
@@ -28,7 +29,7 @@ export const hikes = pgTable("hikes", {
   durationUnit: durationUnitEnum("duration_unit").default("hours"),
   elevation: numeric("elevation"),
   elevationUnit: elevationUnitEnum("elevation_unit").default("feet"),
-  trailType: text("trail_type"),
+  trailType: trailTypeEnum("trail_type"),
   features: jsonb("features"),
   dogFriendly: boolean("dog_friendly").default(false),
   permitsRequired: text("permits_required"),

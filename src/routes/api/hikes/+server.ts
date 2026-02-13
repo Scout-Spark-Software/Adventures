@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
   // Filter by trail type
   if (trailType) {
-    conditions.push(eq(hikes.trailType, trailType));
+    conditions.push(eq(hikes.trailType, trailType as any));
   }
 
   // Filter by distance range

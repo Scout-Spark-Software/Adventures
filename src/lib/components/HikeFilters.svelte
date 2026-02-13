@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { FeatureType, TrailType } from "$lib/db/schemas";
+  import type { FeatureType } from "$lib/db/schemas";
+  import { TRAIL_TYPE_LABELS } from "$lib/db/schemas/enums";
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
 
   export let featureTypes: FeatureType[] = [];
-  export let trailTypes: TrailType[] = [];
   export let currentFilters: Record<string, string> = {};
 
   // Filter state
@@ -204,8 +204,8 @@
       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
     >
       <option value="">All Types</option>
-      {#each trailTypes as type (type.id)}
-        <option value={type.key}>{type.name}</option>
+      {#each Object.entries(TRAIL_TYPE_LABELS) as [value, label]}
+        <option {value}>{label}</option>
       {/each}
     </select>
   </div>

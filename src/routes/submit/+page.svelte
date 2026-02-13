@@ -450,14 +450,17 @@
                     >
                       Trail Type
                     </label>
-                    <input
-                      type="text"
+                    <select
                       id="trail_type"
                       name="trail_type"
                       bind:value={trailType}
-                      placeholder="Loop, Out & Back, Point to Point"
                       class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    />
+                    >
+                      <option value="">Select trail type...</option>
+                      <option value="loop">Loop</option>
+                      <option value="out_and_back">Out and Back</option>
+                      <option value="point_to_point">Point to Point</option>
+                    </select>
                   </div>
                 </div>
               </div>
