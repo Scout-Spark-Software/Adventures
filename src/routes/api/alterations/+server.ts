@@ -6,13 +6,14 @@ import { eq, and, desc } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 import { addToModerationQueue } from "$lib/moderation";
 import { isAllowedAlterationField } from "$lib/allowed-fields";
+import { parseLimit, parseOffset } from "$lib/utils/pagination";
 
 export const GET: RequestHandler = async ({ url, locals }) => {
   const status = url.searchParams.get("status");
   const hikeId = url.searchParams.get("hike_id");
   const campingSiteId = url.searchParams.get("camping_site_id");
-  const limit = parseInt(url.searchParams.get("limit") || "50");
-  const offset = parseInt(url.searchParams.get("offset") || "0");
+  const limit = parseLimit(url.searchParams.get("limit"));
+  const offset = parseOffset(url.searchParams.get("offset"));
 
   const conditions = [];
 

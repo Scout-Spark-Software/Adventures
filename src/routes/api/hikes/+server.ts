@@ -6,12 +6,13 @@ import { eq, and, or, desc, ilike, gte, lte, sql } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 import { isPrivilegedUser, parseStatusParam } from "$lib/auth/helpers";
 import { addToModerationQueue } from "$lib/moderation";
+import { parseLimit, parseOffset } from "$lib/utils/pagination";
 
 export const GET: RequestHandler = async ({ url, locals }) => {
   const status = url.searchParams.get("status");
   const featured = url.searchParams.get("featured");
-  const limit = parseInt(url.searchParams.get("limit") || "50");
-  const offset = parseInt(url.searchParams.get("offset") || "0");
+  const limit = parseLimit(url.searchParams.get("limit"));
+  const offset = parseOffset(url.searchParams.get("offset"));
 
   // New filter parameters
   const search = url.searchParams.get("search");
