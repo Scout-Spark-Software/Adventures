@@ -87,26 +87,18 @@
         "alterations_hike_id_hikes_id_fk": {
           "name": "alterations_hike_id_hikes_id_fk",
           "tableFrom": "alterations",
-          "columnsFrom": [
-            "hike_id"
-          ],
+          "columnsFrom": ["hike_id"],
           "tableTo": "hikes",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "alterations_camping_site_id_camping_sites_id_fk": {
           "name": "alterations_camping_site_id_camping_sites_id_fk",
           "tableFrom": "alterations",
-          "columnsFrom": [
-            "camping_site_id"
-          ],
+          "columnsFrom": ["camping_site_id"],
           "tableTo": "camping_sites",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -267,26 +259,18 @@
         "favorites_hike_id_hikes_id_fk": {
           "name": "favorites_hike_id_hikes_id_fk",
           "tableFrom": "favorites",
-          "columnsFrom": [
-            "hike_id"
-          ],
+          "columnsFrom": ["hike_id"],
           "tableTo": "hikes",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "favorites_camping_site_id_camping_sites_id_fk": {
           "name": "favorites_camping_site_id_camping_sites_id_fk",
           "tableFrom": "favorites",
-          "columnsFrom": [
-            "camping_site_id"
-          ],
+          "columnsFrom": ["camping_site_id"],
           "tableTo": "camping_sites",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -588,9 +572,7 @@
       "uniqueConstraints": {
         "user_roles_user_id_unique": {
           "name": "user_roles_user_id_unique",
-          "columns": [
-            "user_id"
-          ],
+          "columns": ["user_id"],
           "nullsNotDistinct": false
         }
       },
@@ -603,45 +585,27 @@
     "public.entity_type": {
       "name": "entity_type",
       "schema": "public",
-      "values": [
-        "hike",
-        "camping_site",
-        "alteration"
-      ]
+      "values": ["hike", "camping_site", "alteration"]
     },
     "public.file_entity_type": {
       "name": "file_entity_type",
       "schema": "public",
-      "values": [
-        "hike",
-        "camping_site"
-      ]
+      "values": ["hike", "camping_site"]
     },
     "public.file_type": {
       "name": "file_type",
       "schema": "public",
-      "values": [
-        "image",
-        "document"
-      ]
+      "values": ["image", "document"]
     },
     "public.role": {
       "name": "role",
       "schema": "public",
-      "values": [
-        "admin",
-        "moderator",
-        "user"
-      ]
+      "values": ["admin", "moderator", "user"]
     },
     "public.status": {
       "name": "status",
       "schema": "public",
-      "values": [
-        "pending",
-        "approved",
-        "rejected"
-      ]
+      "values": ["pending", "approved", "rejected"]
     }
   },
   "schemas": {},

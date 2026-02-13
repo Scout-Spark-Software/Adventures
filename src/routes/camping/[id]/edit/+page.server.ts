@@ -66,7 +66,7 @@ export const actions: Actions = {
 
       if (isAdmin) {
         // Admin updates address directly
-        let addressId = campingSite.addressId;
+        const addressId = campingSite.addressId;
 
         if (addressId) {
           // Update existing address

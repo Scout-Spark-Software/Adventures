@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-  import Button from './Button.svelte';
-  import LoadingSpinner from './LoadingSpinner.svelte';
+  import { createEventDispatcher } from "svelte";
+  import { SlidersHorizontal, X } from "lucide-svelte";
+  import Button from "./Button.svelte";
+  import LoadingSpinner from "./LoadingSpinner.svelte";
 
-  export let title: string = 'Filters';
+  export let title: string = "Filters";
   export let filters: FilterConfig[] = [];
   export let activeFilters: Record<string, any> = {};
   export let isApplying: boolean = false;
@@ -12,7 +13,7 @@
   type FilterConfig = {
     id: string;
     label: string;
-    type: 'search' | 'select' | 'multiselect' | 'range' | 'checkbox';
+    type: "search" | "select" | "multiselect" | "range" | "checkbox";
     options?: Array<{ value: string; label: string }>;
     placeholder?: string;
     min?: number;
@@ -27,18 +28,18 @@
   // Count active filters
   $: activeFilterCount = Object.entries(filterValues).filter(([key, value]) => {
     if (Array.isArray(value)) return value.length > 0;
-    if (typeof value === 'boolean') return value;
-    return value !== '' && value !== null && value !== undefined;
+    if (typeof value === "boolean") return value;
+    return value !== "" && value !== null && value !== undefined;
   }).length;
 
   function handleApply() {
-    dispatch('apply', filterValues);
+    dispatch("apply", filterValues);
     isDrawerOpen = false;
   }
 
   function handleClear() {
     filterValues = {};
-    dispatch('clear');
+    dispatch("clear");
     isDrawerOpen = false;
   }
 
@@ -60,22 +61,12 @@
     aria-label="Open filters menu"
     aria-expanded={isDrawerOpen}
   >
-    <svg
-      class="w-5 h-5"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
-      />
-    </svg>
+    <SlidersHorizontal size={20} />
     {title}
     {#if activeFilterCount > 0}
-      <span class="bg-white text-emerald-600 px-2 py-0.5 rounded-full text-xs font-semibold">
+      <span
+        class="bg-white text-emerald-600 px-2 py-0.5 rounded-full text-xs font-semibold"
+      >
         {activeFilterCount}
       </span>
     {/if}
@@ -109,19 +100,7 @@
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
       <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
-        <svg
-          class="w-6 h-6 text-emerald-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
-          />
-        </svg>
+        <SlidersHorizontal size={24} class="text-emerald-600" />
         {title}
         {#if activeFilterCount > 0}
           <span
@@ -136,14 +115,7 @@
         on:click={() => (isDrawerOpen = false)}
         aria-label="Close filters menu"
       >
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
+        <X size={24} />
       </button>
     </div>
 
@@ -155,15 +127,14 @@
             {filter.label}
           </label>
 
-          {#if filter.type === 'search'}
+          {#if filter.type === "search"}
             <input
               type="text"
               bind:value={filterValues[filter.id]}
-              placeholder={filter.placeholder || 'Search...'}
+              placeholder={filter.placeholder || "Search..."}
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
             />
-
-          {:else if filter.type === 'select'}
+          {:else if filter.type === "select"}
             <select
               bind:value={filterValues[filter.id]}
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
@@ -173,14 +144,17 @@
                 <option value={option.value}>{option.label}</option>
               {/each}
             </select>
-
-          {:else if filter.type === 'multiselect'}
+          {:else if filter.type === "multiselect"}
             <div class="space-y-2 max-h-48 overflow-y-auto">
               {#each filter.options || [] as option}
-                <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                <label
+                  class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded"
+                >
                   <input
                     type="checkbox"
-                    checked={(filterValues[filter.id] || []).includes(option.value)}
+                    checked={(filterValues[filter.id] || []).includes(
+                      option.value,
+                    )}
                     on:change={() => toggleMultiSelect(filter.id, option.value)}
                     class="rounded text-emerald-600 focus:ring-emerald-500"
                   />
@@ -188,13 +162,12 @@
                 </label>
               {/each}
             </div>
-
-          {:else if filter.type === 'range'}
+          {:else if filter.type === "range"}
             <div class="grid grid-cols-2 gap-2">
               <input
                 type="number"
                 bind:value={filterValues[`${filter.id}Min`]}
-                placeholder={`Min ${filter.min !== undefined ? filter.min : ''}`}
+                placeholder={`Min ${filter.min !== undefined ? filter.min : ""}`}
                 min={filter.min}
                 max={filter.max}
                 class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
@@ -202,21 +175,22 @@
               <input
                 type="number"
                 bind:value={filterValues[`${filter.id}Max`]}
-                placeholder={`Max ${filter.max !== undefined ? filter.max : ''}`}
+                placeholder={`Max ${filter.max !== undefined ? filter.max : ""}`}
                 min={filter.min}
                 max={filter.max}
                 class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               />
             </div>
-
-          {:else if filter.type === 'checkbox'}
+          {:else if filter.type === "checkbox"}
             <label class="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 bind:checked={filterValues[filter.id]}
                 class="rounded text-emerald-600 focus:ring-emerald-500"
               />
-              <span class="text-sm text-gray-700">{filter.placeholder || filter.label}</span>
+              <span class="text-sm text-gray-700"
+                >{filter.placeholder || filter.label}</span
+              >
             </label>
           {/if}
         </div>

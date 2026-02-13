@@ -7,6 +7,13 @@
   import Tooltip from "$lib/components/Tooltip.svelte";
   import SuccessAnimation from "$lib/components/SuccessAnimation.svelte";
   import MultiStepForm from "$lib/components/MultiStepForm.svelte";
+  import {
+    Star,
+    CircleCheck,
+    Building,
+    DollarSign,
+    FileText,
+  } from "lucide-svelte";
 
   export let data: PageData;
 
@@ -467,10 +474,7 @@
             {:else if currentStep === 3}
               <!-- Features & Conditions -->
               <div class="space-y-6 animate-fadeIn">
-                <FormSection
-                  title="Features"
-                  icon="<path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z'/>"
-                >
+                <FormSection title="Features" icon={Star}>
                   <div class="grid grid-cols-2 gap-3">
                     {#each data.featureTypes as feature}
                       <label class="flex items-center">
@@ -495,7 +499,7 @@
 
                 <FormSection
                   title="Trail Conditions & Access"
-                  icon="<path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'/>"
+                  icon={CircleCheck}
                   description="Additional information about trail conditions and access requirements"
                 >
                   <div class="space-y-4">
@@ -791,10 +795,7 @@
                   />
                 </div>
 
-                <FormSection
-                  title="Facilities"
-                  icon="<path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'/>"
-                >
+                <FormSection title="Facilities" icon={Building}>
                   <div class="grid grid-cols-2 gap-3">
                     {#each data.facilityTypes as facility}
                       <label class="flex items-center">
@@ -819,10 +820,7 @@
             {:else if currentStep === 4}
               <!-- Cost & Policies -->
               <div class="space-y-6 animate-fadeIn">
-                <FormSection
-                  title="Cost & Fees"
-                  icon="<path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z'/>"
-                >
+                <FormSection title="Cost & Fees" icon={DollarSign}>
                   <div class="grid grid-cols-2 gap-4">
                     <div>
                       <label
@@ -877,7 +875,7 @@
 
                 <FormSection
                   title="Site Policies & Information"
-                  icon="<path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'/>"
+                  icon={FileText}
                 >
                   <div class="space-y-4">
                     <div>

@@ -10,7 +10,7 @@ const authHandle: Handle = async ({ event, resolve }) => {
   if (accessToken) {
     try {
       // Validate the session with WorkOS
-      let user = await workosAuth.verifySession(accessToken);
+      const user = await workosAuth.verifySession(accessToken);
 
       if (user) {
         // Get role from WorkOS

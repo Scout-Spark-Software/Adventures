@@ -30,6 +30,7 @@ npm run seed:camping         # Seed camping sites from CSV
 ## Architecture
 
 ### Tech Stack
+
 - **Framework**: SvelteKit 2 with TypeScript
 - **Database**: Neon Serverless PostgreSQL with Drizzle ORM
 - **Auth**: WorkOS User Management (password auth with JWT sessions)
@@ -38,6 +39,7 @@ npm run seed:camping         # Seed camping sites from CSV
 - **Deployment**: Vercel (adapter-vercel)
 
 ### Key Directories
+
 - `src/lib/db/schemas/` - Drizzle schema definitions (hikes, camping-sites, addresses, ratings, etc.)
 - `src/lib/server/workos.ts` - WorkOS authentication wrapper
 - `src/lib/auth/middleware.ts` - Auth guards: `requireAuth()`, `requireAdmin()`, `requireModerator()`
@@ -45,24 +47,30 @@ npm run seed:camping         # Seed camping sites from CSV
 - `src/lib/moderation.ts` - Content moderation queue helpers
 
 ### Data Model
+
 Two main content types share common patterns:
+
 - **Hikes**: Trails with difficulty, distance, duration, elevation, features
 - **Camping Sites**: Sites with amenities, facilities, policies, costs
 
 Both use:
+
 - Linked `addresses` table for location data (lat/lng, city, state)
 - `status` field for moderation workflow (pending → approved/rejected)
 - `featured` boolean for homepage display
 - `ratingAggregates` for cached ratings
 
 ### Authentication Flow
+
 - Session tokens stored in httpOnly cookies (`workos_access_token`, `workos_refresh_token`)
 - `hooks.server.ts` validates JWT and populates `event.locals.user`
 - User roles: `admin`, `moderator`, `user`
 - Protected routes use auth middleware from `$lib/auth/middleware.ts`
 
 ### API Pattern
+
 REST endpoints in `src/routes/api/` follow SvelteKit conventions:
+
 - `+server.ts` files export `GET`, `POST`, `PUT`, `DELETE` handlers
 - Always join hikes/camping-sites with addresses table for location data
 - New submissions go through moderation queue (status: "pending")
@@ -70,6 +78,7 @@ REST endpoints in `src/routes/api/` follow SvelteKit conventions:
 ## Environment Variables
 
 Required in `.env` (see `.env.example`):
+
 - `DATABASE_URL` - Neon PostgreSQL connection string
 - `WORKOS_API_KEY`, `WORKOS_CLIENT_ID`, `WORKOS_ORGANIZATION_ID`, `WORKOS_COOKIE_PASSWORD` - Auth
 - `VERCEL_BLOB_TOKEN` - File storage

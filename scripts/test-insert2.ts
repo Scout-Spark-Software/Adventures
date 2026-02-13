@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
-import { drizzle } from 'drizzle-orm/neon-http';
-import { neon } from '@neondatabase/serverless';
+import { drizzle } from "drizzle-orm/neon-http";
+import { neon } from "@neondatabase/serverless";
 import { hikes } from "../src/lib/db/schemas/hikes.js";
 import { eq } from "drizzle-orm";
 

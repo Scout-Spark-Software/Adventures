@@ -3,6 +3,7 @@
 
   export let tabs: { id: string; label: string; count?: number }[];
   export let activeTab: string;
+  export let fullWidth: boolean = false;
 
   let tabElements: HTMLButtonElement[] = [];
 
@@ -41,7 +42,14 @@
 </script>
 
 <div class="border-b border-gray-200">
-  <div class="-mb-px flex space-x-8" role="tablist" aria-label="Tabs">
+  <div
+    class="-mb-px {fullWidth ? 'grid' : 'flex space-x-8'}"
+    style={fullWidth
+      ? `grid-template-columns: repeat(${tabs.length}, minmax(0, 1fr))`
+      : ""}
+    role="tablist"
+    aria-label="Tabs"
+  >
     {#each tabs as tab, i}
       <button
         role="tab"
@@ -56,7 +64,9 @@
           {activeTab === tab.id
           ? 'border-indigo-500 text-indigo-600'
           : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}
-          whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors
+          whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors {fullWidth
+          ? 'text-center'
+          : ''}
         "
       >
         {tab.label}

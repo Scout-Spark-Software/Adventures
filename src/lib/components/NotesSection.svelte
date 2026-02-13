@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount, createEventDispatcher } from "svelte";
+  import { MapPin, Home } from "lucide-svelte";
   import type { Note } from "$lib/db/schemas";
 
   export let hikeId: string | undefined = undefined;
@@ -24,7 +25,7 @@
   let editShowPreview = false;
   let isCreating = false;
   let filterType: "all" | "hikes" | "camping" = "all";
-  let deletingNoteId: string | null = null;
+  let deletingNoteId: string = "";
   let isDeleting = false;
 
   // Markdown rendering (simple implementation)
@@ -387,25 +388,7 @@
                     href="/hikes/{note.hike.id}"
                     class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors text-sm font-medium"
                   >
-                    <svg
-                      class="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                      />
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                    </svg>
+                    <MapPin size={16} />
                     {note.hike.name}
                   </a>
                 {:else if note.campingSite}
@@ -413,19 +396,7 @@
                     href="/camping/{note.campingSite.id}"
                     class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 text-orange-700 rounded-lg hover:bg-orange-100 transition-colors text-sm font-medium"
                   >
-                    <svg
-                      class="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-                      />
-                    </svg>
+                    <Home size={16} />
                     {note.campingSite.name}
                   </a>
                 {/if}
@@ -435,9 +406,9 @@
             <div class="flex justify-between items-start mb-3">
               <div class="text-sm text-gray-500">
                 {#if note.createdAt !== note.updatedAt}
-                  Updated {formatDate(note.updatedAt)}
+                  Updated {formatDate(note.updatedAt?.toString())}
                 {:else}
-                  Created {formatDate(note.createdAt)}
+                  Created {formatDate(note.createdAt?.toString())}
                 {/if}
               </div>
               <div class="flex gap-2">
@@ -485,7 +456,7 @@
       {/if}
       <div class="flex gap-3 justify-end">
         <button
-          on:click={() => (deletingNoteId = null)}
+          on:click={() => (deletingNoteId = "")}
           disabled={isDeleting}
           class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50"
         >

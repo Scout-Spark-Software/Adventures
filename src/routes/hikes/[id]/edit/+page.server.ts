@@ -66,7 +66,7 @@ export const actions: Actions = {
 
       if (isAdmin) {
         // Admin updates address directly
-        let addressId = hike.addressId;
+        const addressId = hike.addressId;
 
         if (addressId) {
           // Update existing address

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { Check, ChevronLeft, ChevronRight } from "lucide-svelte";
+
   export let currentStep: number = 0;
   export let totalSteps: number;
   export let stepTitles: string[];
@@ -39,19 +41,7 @@
                 : 'bg-gray-200 text-gray-600'}"
           >
             {#if currentStep > index}
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="3"
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
+              <Check size={20} strokeWidth={3} />
             {:else}
               <span class="text-sm font-medium">{index + 1}</span>
             {/if}
@@ -98,19 +88,7 @@
       disabled={currentStep === 0}
       class="px-6 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
     >
-      <svg
-        class="w-4 h-4 inline mr-2"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M15 19l-7-7 7-7"
-        />
-      </svg>
+      <ChevronLeft size={16} class="inline mr-2" />
       Back
     </button>
 
@@ -125,19 +103,7 @@
         class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all"
       >
         Next
-        <svg
-          class="w-4 h-4 inline ml-2"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 5l7 7-7 7"
-          />
-        </svg>
+        <ChevronRight size={16} class="inline ml-2" />
       </button>
     {:else}
       <button
@@ -168,19 +134,7 @@
           Submitting...
         {:else}
           Submit
-          <svg
-            class="w-4 h-4 inline ml-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
+          <Check size={16} class="inline ml-2" />
         {/if}
       </button>
     {/if}

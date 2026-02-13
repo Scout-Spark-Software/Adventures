@@ -4,6 +4,7 @@
   import CampingFilters from "$lib/components/CampingFilters.svelte";
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
   import { navigating } from "$app/stores";
+  import { HouseIcon } from "lucide-svelte";
 
   export let data: PageData;
 </script>
@@ -80,19 +81,7 @@
           </div>
         {:else}
           <div class="text-center py-12 bg-white rounded-lg shadow-sm">
-            <svg
-              class="w-16 h-16 mx-auto text-gray-300 mb-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-              />
-            </svg>
+            <HouseIcon size={64} class="mx-auto text-gray-300 mb-4" />
             <p class="text-gray-500 text-lg font-medium mb-2">
               No camping sites found
             </p>

@@ -1,0 +1,42 @@
+# Ignore build output, dependencies, and environment files
+node_modules
+.build
+dist
+.env
+.env.*
+
+# Ignore database and migration folders
+drizzle/
+drizzle.config.ts
+
+# Ignore scripts (unless you want to lint them, then remove this)
+scripts/
+
+# Ignore config files
+*.config.js
+*.config.cjs
+*.config.mjs
+*.config.ts
+postcss.config.js
+tailwind.config.js
+svelte.config.js
+
+# Ignore miscellaneous root files
+.eslintrc.cjs
+.eslintrc.js
+.eslintrc.mjs
+vite.config.ts
+
+# Ignore SvelteKit output
+.svelte-kit
+
+# Ignore Vercel output
+.vercel
+
+# Ignore coverage reports
+coverage
+
+# Ignore lock files
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
