@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { CampingSite, Address } from "$lib/db/schemas";
+  import { SITE_TYPE_LABELS } from "$lib/db/schemas/enums";
   import ModerationBadge from "./ModerationBadge.svelte";
 
   export let campingSite: CampingSite & {
@@ -51,8 +52,7 @@
         <span
           class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm bg-blue-100/90 text-blue-800"
         >
-          {campingSite.siteType.charAt(0).toUpperCase() +
-            campingSite.siteType.slice(1).replace("_", " ")}
+          {SITE_TYPE_LABELS[campingSite.siteType] ?? campingSite.siteType}
         </span>
       </div>
     {/if}

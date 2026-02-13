@@ -13,6 +13,7 @@
   import CampingPolicies from "$lib/components/camping/CampingPolicies.svelte";
   import CampingCost from "$lib/components/camping/CampingCost.svelte";
   import CampingSitePolicies from "$lib/components/camping/CampingSitePolicies.svelte";
+  import { SITE_TYPE_LABELS } from "$lib/db/schemas/enums";
   import CampingGallery from "$lib/components/camping/CampingGallery.svelte";
   import CampingLocationSidebar from "$lib/components/camping/CampingLocationSidebar.svelte";
   import DetailPageHero from "$lib/components/DetailPageHero.svelte";
@@ -66,8 +67,8 @@
       ? [
           {
             text:
-              data.campingSite.siteType.charAt(0).toUpperCase() +
-              data.campingSite.siteType.slice(1).replace("_", " "),
+              SITE_TYPE_LABELS[data.campingSite.siteType] ??
+              data.campingSite.siteType,
             variant: "info",
           },
         ]
@@ -81,8 +82,8 @@
           {
             label: "Site Type",
             value:
-              data.campingSite.siteType.charAt(0).toUpperCase() +
-              data.campingSite.siteType.slice(1).replace("_", " "),
+              SITE_TYPE_LABELS[data.campingSite.siteType] ??
+              data.campingSite.siteType,
             icon: CampingIcon,
           },
         ]

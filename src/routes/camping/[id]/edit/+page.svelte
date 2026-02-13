@@ -3,6 +3,7 @@
   import { goto } from "$app/navigation";
   import { enhance } from "$app/forms";
   import LocationPicker from "$lib/components/LocationPicker.svelte";
+  import { SITE_TYPE_LABELS } from "$lib/db/schemas/enums";
 
   export let data: PageData;
   export let form: ActionData;
@@ -56,6 +57,17 @@
     },
     { key: "location", label: "Location", type: "location" },
   ];
+
+  const OPTION_LABELS: Record<string, Record<string, string>> = {
+    siteType: SITE_TYPE_LABELS,
+  };
+
+  function formatOption(fieldKey: string, option: string): string {
+    return (
+      OPTION_LABELS[fieldKey]?.[option] ??
+      option.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
+    );
+  }
 
   function getCurrentValue(field: string): string {
     const campingSite = data.campingSite as Record<string, any>;
@@ -240,8 +252,7 @@
                     <option value="">Select {field.label}...</option>
                     {#each field.options || [] as option}
                       <option value={option}
-                        >{option.replace("_", " ").charAt(0).toUpperCase() +
-                          option.replace("_", " ").slice(1)}</option
+                        >{formatOption(field.key, option)}</option
                       >
                     {/each}
                   </select>

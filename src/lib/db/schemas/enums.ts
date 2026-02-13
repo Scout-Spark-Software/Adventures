@@ -42,6 +42,11 @@ export const siteTypeEnum = pgEnum("site_type", [
   "private",
   "public_private_partnership",
 ]);
+export const SITE_TYPE_LABELS: Record<string, string> = {
+  public: "Public",
+  private: "Private",
+  public_private_partnership: "Public-Private Partnership",
+};
 export const trailTypeEnum = pgEnum("trail_type", [
   "loop",
   "out_and_back",
