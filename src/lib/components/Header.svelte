@@ -1,5 +1,5 @@
 <script lang="ts">
-  import logo from "$lib/assets/Scout-Spark-Hiking.png";
+  import logo from "$lib/assets/adventures-logo.png";
   import { page } from "$app/stores";
 
   export let user: {
