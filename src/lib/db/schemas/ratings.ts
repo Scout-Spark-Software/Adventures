@@ -1,4 +1,13 @@
-import { pgTable, uuid, text, timestamp, numeric, check } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  uuid,
+  text,
+  timestamp,
+  numeric,
+  check,
+  index,
+  uniqueIndex,
+} from "drizzle-orm/pg-core";
 import { relations, sql } from "drizzle-orm";
 import { hikes } from "./hikes";
 import { campingSites } from "./camping-sites";
@@ -20,13 +29,27 @@ export const ratings = pgTable(
   (table) => ({
     entityCheck: check(
       "ratings_entity_check",
-      sql`(${table.hikeId} IS NOT NULL AND ${table.campingSiteId} IS NULL) OR (${table.hikeId} IS NULL AND ${table.campingSiteId} IS NOT NULL)`
+      sql`(${table.hikeId} IS NOT NULL AND ${table.campingSiteId} IS NULL) OR (${table.hikeId} IS NULL AND ${table.campingSiteId} IS NOT NULL)`,
     ),
     ratingValueCheck: check(
       "ratings_value_check",
-      sql`${table.rating}::numeric >= 1.0 AND ${table.rating}::numeric <= 5.0 AND (${table.rating}::numeric * 2) = FLOOR(${table.rating}::numeric * 2)`
+      sql`${table.rating}::numeric >= 1.0 AND ${table.rating}::numeric <= 5.0 AND (${table.rating}::numeric * 2) = FLOOR(${table.rating}::numeric * 2)`,
     ),
-  })
+    userIdIdx: index("ratings_user_id_idx").on(table.userId),
+    hikeIdIdx: index("ratings_hike_id_idx").on(table.hikeId),
+    campingSiteIdIdx: index("ratings_camping_site_id_idx").on(
+      table.campingSiteId,
+    ),
+    userHikeUnique: uniqueIndex("ratings_user_hike_unique_idx")
+      .on(table.userId, table.hikeId)
+      .where(sql`${table.hikeId} IS NOT NULL`),
+    userCampingUnique: uniqueIndex("ratings_user_camping_unique_idx")
+      .on(table.userId, table.campingSiteId)
+      .where(sql`${table.campingSiteId} IS NOT NULL`),
+    hasReviewIdx: index("ratings_has_review_idx")
+      .on(table.hikeId, table.campingSiteId)
+      .where(sql`${table.reviewText} IS NOT NULL`),
+  }),
 );
 
 export const ratingsRelations = relations(ratings, ({ one }) => ({

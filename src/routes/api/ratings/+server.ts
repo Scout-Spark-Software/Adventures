@@ -5,14 +5,15 @@ import { ratings, ratingAggregates } from "$lib/db/schemas";
 import { eq, and, avg, count, sql, desc } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 import { sanitizeReview } from "$lib/utils/profanity-filter";
+import { parseLimit, parseOffset } from "$lib/utils/pagination";
 
 // GET /api/ratings?hike_id=xxx or ?camping_site_id=xxx
 // Returns all ratings for an entity (paginated)
 export const GET: RequestHandler = async ({ url }) => {
   const hikeId = url.searchParams.get("hike_id");
   const campingSiteId = url.searchParams.get("camping_site_id");
-  const limit = parseInt(url.searchParams.get("limit") || "50");
-  const offset = parseInt(url.searchParams.get("offset") || "0");
+  const limit = parseLimit(url.searchParams.get("limit"));
+  const offset = parseOffset(url.searchParams.get("offset"));
   const withReviewsOnly = url.searchParams.get("reviews_only") === "true";
 
   if (!hikeId && !campingSiteId) {
@@ -99,49 +100,32 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
   }
 
-  // Check if rating already exists
-  const existingConditions = [eq(ratings.userId, user.id)];
-  if (hikeId) existingConditions.push(eq(ratings.hikeId, hikeId));
-  if (campingSiteId)
-    existingConditions.push(eq(ratings.campingSiteId, campingSiteId));
-
-  const existing = await db.query.ratings.findFirst({
-    where: and(...existingConditions),
-  });
-
-  let result;
-
-  if (existing) {
-    // Update existing rating
-    const [updated] = await db
-      .update(ratings)
-      .set({
+  // Upsert: insert or update if user already rated this entity
+  const [result] = await db
+    .insert(ratings)
+    .values({
+      userId: user.id,
+      hikeId: hikeId || null,
+      campingSiteId: campingSiteId || null,
+      rating: rating.toString(),
+      reviewText: sanitizedReview,
+    })
+    .onConflictDoUpdate({
+      target: hikeId
+        ? [ratings.userId, ratings.hikeId]
+        : [ratings.userId, ratings.campingSiteId],
+      set: {
         rating: rating.toString(),
         reviewText: sanitizedReview,
         updatedAt: new Date(),
-      })
-      .where(eq(ratings.id, existing.id))
-      .returning();
-    result = updated;
-  } else {
-    // Create new rating
-    const [newRating] = await db
-      .insert(ratings)
-      .values({
-        userId: user.id,
-        hikeId: hikeId || null,
-        campingSiteId: campingSiteId || null,
-        rating: rating.toString(),
-        reviewText: sanitizedReview,
-      })
-      .returning();
-    result = newRating;
-  }
+      },
+    })
+    .returning();
 
   // Update aggregates
   await updateRatingAggregates(hikeId, campingSiteId);
 
-  return json(result, { status: existing ? 200 : 201 });
+  return json(result);
 };
 
 // DELETE /api/ratings?hike_id=xxx or ?camping_site_id=xxx
@@ -178,7 +162,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
   return json({ success: true });
 };
 
-// Helper function to update aggregates
+// Helper function to update aggregates (2-query upsert)
 async function updateRatingAggregates(
   hikeId: string | null,
   campingSiteId: string | null,
@@ -198,32 +182,23 @@ async function updateRatingAggregates(
 
   const { avgRating, totalCount, reviewCount } = stats[0];
 
-  const aggregateConditions = [];
-  if (hikeId) aggregateConditions.push(eq(ratingAggregates.hikeId, hikeId));
-  if (campingSiteId)
-    aggregateConditions.push(eq(ratingAggregates.campingSiteId, campingSiteId));
-
-  const existingAggregate = await db.query.ratingAggregates.findFirst({
-    where:
-      aggregateConditions.length > 0 ? and(...aggregateConditions) : undefined,
-  });
-
-  if (existingAggregate) {
-    await db
-      .update(ratingAggregates)
-      .set({
-        averageRating: avgRating ? avgRating.toString() : null,
-        totalRatings: totalCount,
-        totalReviews: reviewCount,
-      })
-      .where(eq(ratingAggregates.id, existingAggregate.id));
-  } else {
-    await db.insert(ratingAggregates).values({
+  await db
+    .insert(ratingAggregates)
+    .values({
       hikeId: hikeId || null,
       campingSiteId: campingSiteId || null,
       averageRating: avgRating ? avgRating.toString() : null,
       totalRatings: totalCount,
       totalReviews: reviewCount,
+    })
+    .onConflictDoUpdate({
+      target: hikeId
+        ? [ratingAggregates.hikeId]
+        : [ratingAggregates.campingSiteId],
+      set: {
+        averageRating: avgRating ? avgRating.toString() : null,
+        totalRatings: totalCount,
+        totalReviews: reviewCount,
+      },
     });
-  }
 }
