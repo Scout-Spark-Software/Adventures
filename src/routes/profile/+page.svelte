@@ -47,9 +47,7 @@
       {#if activeTab === "profile"}
         <div class="bg-white shadow-lg rounded-xl overflow-hidden">
           <div class="bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-4">
-            <h2 class="text-xl font-semibold text-white">
-              Account Information
-            </h2>
+            <h2 class="text-xl font-semibold text-white">Account Information</h2>
           </div>
 
           <div class="px-6 py-6">
@@ -87,12 +85,7 @@
                 type="button"
                 class="inline-flex items-center gap-2 px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-md text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all"
               >
-                <svg
-                  class="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -113,9 +106,7 @@
 
           <div class="px-6 py-6">
             {#if form?.success}
-              <div
-                class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg"
-              >
+              <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                 <div class="flex items-center gap-2">
                   <Check size={20} class="text-green-600" />
                   <p class="text-sm text-green-800 font-medium">
@@ -147,19 +138,14 @@
               class="space-y-6"
             >
               <div>
-                <h3 class="text-lg font-medium text-gray-900 mb-4">
-                  Change Password
-                </h3>
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Change Password</h3>
                 <p class="text-sm text-gray-600 mb-4">
                   Update your password to keep your account secure.
                 </p>
               </div>
 
               <div>
-                <label
-                  for="currentPassword"
-                  class="block text-sm font-medium text-gray-700 mb-2"
-                >
+                <label for="currentPassword" class="block text-sm font-medium text-gray-700 mb-2">
                   Current Password
                 </label>
                 <input
@@ -172,10 +158,7 @@
               </div>
 
               <div>
-                <label
-                  for="newPassword"
-                  class="block text-sm font-medium text-gray-700 mb-2"
-                >
+                <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-2">
                   New Password
                 </label>
                 <input
@@ -186,16 +169,11 @@
                   minlength="8"
                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 />
-                <p class="mt-1 text-sm text-gray-500">
-                  Must be at least 8 characters long
-                </p>
+                <p class="mt-1 text-sm text-gray-500">Must be at least 8 characters long</p>
               </div>
 
               <div>
-                <label
-                  for="confirmPassword"
-                  class="block text-sm font-medium text-gray-700 mb-2"
-                >
+                <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-2">
                   Confirm New Password
                 </label>
                 <input
@@ -214,12 +192,7 @@
                   disabled={isChangingPassword}
                   class="inline-flex items-center gap-2 px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-md text-white bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <svg
-                    class="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"

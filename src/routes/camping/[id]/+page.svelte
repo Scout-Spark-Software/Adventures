@@ -7,15 +7,14 @@
   import Badge from "$lib/components/Badge.svelte";
   import Tabs from "$lib/components/Tabs.svelte";
   import NotesSection from "$lib/components/NotesSection.svelte";
-  import CampingDescription from "$lib/components/camping/CampingDescription.svelte";
+  import DescriptionSection from "$lib/components/detail-pages/DescriptionSection.svelte";
   import CampingAmenities from "$lib/components/camping/CampingAmenities.svelte";
   import CampingFacilities from "$lib/components/camping/CampingFacilities.svelte";
   import CampingPolicies from "$lib/components/camping/CampingPolicies.svelte";
   import CampingCost from "$lib/components/camping/CampingCost.svelte";
   import CampingSitePolicies from "$lib/components/camping/CampingSitePolicies.svelte";
-  import { SITE_TYPE_LABELS } from "$lib/db/schemas/enums";
-  import CampingGallery from "$lib/components/camping/CampingGallery.svelte";
-  import CampingLocationSidebar from "$lib/components/camping/CampingLocationSidebar.svelte";
+  import Gallery from "$lib/components/detail-pages/Gallery.svelte";
+  import LocationSidebar from "$lib/components/detail-pages/LocationSidebar.svelte";
   import DetailPageHero from "$lib/components/DetailPageHero.svelte";
   import EditButton from "$lib/components/EditButton.svelte";
   import LocationMap from "$lib/components/LocationMap.svelte";
@@ -41,7 +40,7 @@
 
   // Handle URL hash navigation
   onMount(() => {
-    const hash = window.location.hash.slice(1); // Remove the #
+    const hash = window.location.hash.slice(1);
     if (hash && ["details", "reviews", "notes"].includes(hash)) {
       activeTab = hash;
     }

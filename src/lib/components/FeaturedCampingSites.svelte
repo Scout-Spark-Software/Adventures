@@ -15,9 +15,7 @@
             <Tent size={24} class="text-sky-600" />
             Featured Camping Sites
           </h2>
-          <p class="mt-1 text-sm text-slate-600">
-            Perfect basecamp locations for scouts
-          </p>
+          <p class="mt-1 text-sm text-slate-600">Perfect basecamp locations for scouts</p>
         </div>
         <a
           href="/camping"

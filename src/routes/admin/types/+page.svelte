@@ -115,12 +115,7 @@
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between items-center mb-8">
       <h1 class="text-3xl font-bold text-gray-900">Manage Types</h1>
-      <a
-        href="/admin"
-        class="text-indigo-600 hover:text-indigo-800 font-medium"
-      >
-        Back to Admin
-      </a>
+      <a href="/admin" class="text-indigo-600 hover:text-indigo-800 font-medium"> Back to Admin </a>
     </div>
 
     <!-- Tabs -->
@@ -182,9 +177,7 @@
 
             <div class="space-y-2">
               {#each currentItems as item}
-                <div
-                  class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                >
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div class="flex-1">
                     <div class="flex items-center">
                       <span class="font-medium text-gray-900">{item.name}</span>
@@ -206,9 +199,7 @@
                     {/if}
                   </div>
                   <div class="flex items-center space-x-2 ml-4">
-                    <span class="text-sm text-gray-500"
-                      >Order: {item.displayOrder}</span
-                    >
+                    <span class="text-sm text-gray-500">Order: {item.displayOrder}</span>
                     <button
                       on:click={() => startEdit(item)}
                       class="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
@@ -247,12 +238,7 @@
 
               <div class="space-y-4">
                 <div>
-                  <label
-                    for="name"
-                    class="block text-sm font-medium text-gray-700"
-                  >
-                    Name *
-                  </label>
+                  <label for="name" class="block text-sm font-medium text-gray-700"> Name * </label>
                   <input
                     type="text"
                     id="name"
@@ -263,10 +249,7 @@
 
                 {#if needsKey}
                   <div>
-                    <label
-                      for="key"
-                      class="block text-sm font-medium text-gray-700"
-                    >
+                    <label for="key" class="block text-sm font-medium text-gray-700">
                       Key * (camelCase, e.g., 'firePits')
                     </label>
                     <input
@@ -279,10 +262,7 @@
                 {/if}
 
                 <div>
-                  <label
-                    for="description"
-                    class="block text-sm font-medium text-gray-700"
-                  >
+                  <label for="description" class="block text-sm font-medium text-gray-700">
                     Description
                   </label>
                   <textarea
@@ -294,10 +274,7 @@
                 </div>
 
                 <div>
-                  <label
-                    for="displayOrder"
-                    class="block text-sm font-medium text-gray-700"
-                  >
+                  <label for="displayOrder" class="block text-sm font-medium text-gray-700">
                     Display Order
                   </label>
                   <input
@@ -315,9 +292,7 @@
                     bind:checked={formData.active}
                     class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                   />
-                  <label for="active" class="ml-2 text-sm text-gray-700">
-                    Active
-                  </label>
+                  <label for="active" class="ml-2 text-sm text-gray-700"> Active </label>
                 </div>
 
                 <div class="flex space-x-3">

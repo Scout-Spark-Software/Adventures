@@ -69,9 +69,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   if (featuresParam) {
     const featureIds = featuresParam.split(",").filter(Boolean);
     if (featureIds.length > 0) {
-      conditions.push(
-        sql`${hikes.features} @> ${JSON.stringify(featureIds)}::jsonb`,
-      );
+      conditions.push(sql`${hikes.features} @> ${JSON.stringify(featureIds)}::jsonb`);
     }
   }
 
@@ -117,10 +115,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
   // Add rating join if filtering by rating
   if (minRating) {
-    query = query.leftJoin(
-      ratingAggregates,
-      eq(hikes.id, ratingAggregates.hikeId),
-    );
+    query = query.leftJoin(ratingAggregates, eq(hikes.id, ratingAggregates.hikeId));
   }
 
   // Build where conditions
@@ -132,8 +127,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         ilike(hikes.name, `%${search}%`),
         ilike(hikes.description, `%${search}%`),
         ilike(addresses.city, `%${search}%`),
-        ilike(addresses.state, `%${search}%`),
-      ),
+        ilike(addresses.state, `%${search}%`)
+      )
     );
   }
 

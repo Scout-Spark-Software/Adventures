@@ -83,9 +83,7 @@
 
     <!-- Additional Stats -->
     <div class="mb-6">
-      <h2 class="text-lg font-semibold text-gray-900 mb-3">
-        Community Engagement
-      </h2>
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">Community Engagement</h2>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div class="bg-white rounded-lg shadow p-5">
           <div class="flex items-center">
@@ -109,12 +107,8 @@
           href="/admin/moderation"
           class="bg-white rounded-lg shadow p-5 hover:shadow-lg transition-shadow border-l-4 border-amber-500"
         >
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">
-            Moderation Queue
-          </h3>
-          <p class="text-sm text-gray-600 mb-2">
-            Review and approve pending submissions
-          </p>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Moderation Queue</h3>
+          <p class="text-sm text-gray-600 mb-2">Review and approve pending submissions</p>
           {#if stats.pendingHikes + stats.pendingCampingSites > 0}
             <span
               class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-100 text-amber-800"
@@ -128,12 +122,8 @@
           href="/admin/featured"
           class="bg-white rounded-lg shadow p-5 hover:shadow-lg transition-shadow border-l-4 border-sky-500"
         >
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">
-            Featured Items
-          </h3>
-          <p class="text-sm text-gray-600 mb-2">
-            Manage featured hikes and camping sites
-          </p>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Featured Items</h3>
+          <p class="text-sm text-gray-600 mb-2">Manage featured hikes and camping sites</p>
           <span
             class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-sky-100 text-sky-800"
           >
@@ -146,9 +136,7 @@
           class="bg-white rounded-lg shadow p-5 hover:shadow-lg transition-shadow border-l-4 border-purple-500"
         >
           <h3 class="text-lg font-semibold text-gray-900 mb-2">Manage Types</h3>
-          <p class="text-sm text-gray-600">
-            Configure features, amenities, and facilities
-          </p>
+          <p class="text-sm text-gray-600">Configure features, amenities, and facilities</p>
         </a>
       </div>
     </div>

@@ -156,16 +156,12 @@
       </h3>
 
       {#if error}
-        <div
-          class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700"
-        >
+        <div class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
           {error}
         </div>
       {:else if reviews.length === 0}
         <div class="text-center py-8 bg-gray-50 rounded-lg">
-          <p class="text-gray-600">
-            No reviews yet. Be the first to share your experience!
-          </p>
+          <p class="text-gray-600">No reviews yet. Be the first to share your experience!</p>
         </div>
       {:else}
         <div class="space-y-4">
@@ -173,11 +169,7 @@
             <div class="bg-white rounded-lg shadow p-5">
               <div class="flex items-start justify-between mb-3">
                 <div>
-                  <RatingDisplay
-                    rating={parseFloat(review.rating)}
-                    size="sm"
-                    showCount={false}
-                  />
+                  <RatingDisplay rating={parseFloat(review.rating)} size="sm" showCount={false} />
                   <p class="text-sm text-gray-500 mt-1">
                     {formatDate(String(review.createdAt))}
                     {#if review.createdAt !== review.updatedAt}

@@ -1,11 +1,4 @@
-import {
-  pgTable,
-  uuid,
-  timestamp,
-  text,
-  index,
-  uniqueIndex,
-} from "drizzle-orm/pg-core";
+import { pgTable, uuid, timestamp, text, index, uniqueIndex } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { hikes } from "./hikes";
 import { campingSites } from "./camping-sites";
@@ -28,10 +21,8 @@ export const favorites = pgTable(
       .where(sql`${table.campingSiteId} IS NOT NULL`),
     userIdIdx: index("favorites_user_id_idx").on(table.userId),
     hikeIdIdx: index("favorites_hike_id_idx").on(table.hikeId),
-    campingSiteIdIdx: index("favorites_camping_site_id_idx").on(
-      table.campingSiteId,
-    ),
-  }),
+    campingSiteIdIdx: index("favorites_camping_site_id_idx").on(table.campingSiteId),
+  })
 );
 
 export type Favorite = typeof favorites.$inferSelect;

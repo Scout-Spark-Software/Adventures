@@ -20,9 +20,7 @@ const authHandle: Handle = async ({ event, resolve }) => {
         event.locals.user = {
           id: user.id,
           email: user.email,
-          name: user.firstName
-            ? `${user.firstName} ${user.lastName || ""}`.trim()
-            : user.email,
+          name: user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : user.email,
           role: userRole,
         };
         event.locals.userId = user.id;
@@ -41,8 +39,7 @@ const authHandle: Handle = async ({ event, resolve }) => {
         typeof error === "object" &&
         error !== null &&
         "code" in error &&
-        (error.code === "ERR_JWKS_TIMEOUT" ||
-          error.code === "ERR_JWKS_NO_MATCHING_KEY");
+        (error.code === "ERR_JWKS_TIMEOUT" || error.code === "ERR_JWKS_NO_MATCHING_KEY");
 
       if (isTransientError) {
         console.warn("Transient JWKS error, skipping auth for this request");
@@ -54,8 +51,7 @@ const authHandle: Handle = async ({ event, resolve }) => {
       // If token is expired and we have a refresh token, try to refresh
       const isExpiredToken =
         (error instanceof Error &&
-          (error.message.includes("expired") ||
-            error.message.includes("exp"))) ||
+          (error.message.includes("expired") || error.message.includes("exp"))) ||
         (typeof error === "object" &&
           error !== null &&
           "code" in error &&
@@ -93,9 +89,7 @@ const authHandle: Handle = async ({ event, resolve }) => {
             event.locals.user = {
               id: user.id,
               email: user.email,
-              name: user.firstName
-                ? `${user.firstName} ${user.lastName || ""}`.trim()
-                : user.email,
+              name: user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : user.email,
               role: userRole,
             };
             event.locals.userId = user.id;
@@ -149,9 +143,7 @@ const authHandle: Handle = async ({ event, resolve }) => {
         event.locals.user = {
           id: user.id,
           email: user.email,
-          name: user.firstName
-            ? `${user.firstName} ${user.lastName || ""}`.trim()
-            : user.email,
+          name: user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : user.email,
           role: userRole,
         };
         event.locals.userId = user.id;

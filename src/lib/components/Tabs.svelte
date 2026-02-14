@@ -73,9 +73,7 @@
         {#if tab.count !== undefined}
           <span
             class="
-              {activeTab === tab.id
-              ? 'bg-indigo-100 text-indigo-600'
-              : 'bg-gray-100 text-gray-900'}
+              {activeTab === tab.id ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-900'}
               ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium
             "
           >
@@ -87,11 +85,6 @@
   </div>
 </div>
 
-<div
-  class="mt-6"
-  role="tabpanel"
-  id="panel-{activeTab}"
-  aria-labelledby="tab-{activeTab}"
->
+<div class="mt-6" role="tabpanel" id="panel-{activeTab}" aria-labelledby="tab-{activeTab}">
   <slot />
 </div>

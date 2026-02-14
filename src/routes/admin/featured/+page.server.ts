@@ -10,9 +10,7 @@ export const load: PageServerLoad = async ({ fetch, locals }) => {
   ]);
 
   const hikes = hikesResponse.ok ? await hikesResponse.json() : [];
-  const campingSites = campingSitesResponse.ok
-    ? await campingSitesResponse.json()
-    : [];
+  const campingSites = campingSitesResponse.ok ? await campingSitesResponse.json() : [];
 
   return {
     hikes: Array.isArray(hikes) ? hikes : [],

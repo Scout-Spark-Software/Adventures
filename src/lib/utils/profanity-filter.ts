@@ -1,8 +1,4 @@
-import {
-  RegExpMatcher,
-  englishDataset,
-  englishRecommendedTransformers,
-} from "obscenity";
+import { RegExpMatcher, englishDataset, englishRecommendedTransformers } from "obscenity";
 
 // Initialize the matcher once
 const matcher = new RegExpMatcher({

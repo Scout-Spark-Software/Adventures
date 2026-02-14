@@ -17,27 +17,19 @@
           <img src={logo} alt="Adventure Spark" class="w-8 h-8" />
           <span class="text-white font-bold">Adventure Spark</span>
         </div>
-        <p class="text-sm text-slate-400">
-          Navigate your next outdoor adventure with confidence
-        </p>
+        <p class="text-sm text-slate-400">Navigate your next outdoor adventure with confidence</p>
       </div>
       <div>
         <h3 class="text-white font-semibold mb-3">Explore</h3>
         <ul class="space-y-1.5 text-sm">
           <li>
-            <a href="/hikes" class="hover:text-sky-400 transition-colors"
-              >Hiking Trails</a
-            >
+            <a href="/hikes" class="hover:text-sky-400 transition-colors">Hiking Trails</a>
           </li>
           <li>
-            <a href="/camping" class="hover:text-sky-400 transition-colors"
-              >Camping Sites</a
-            >
+            <a href="/camping" class="hover:text-sky-400 transition-colors">Camping Sites</a>
           </li>
           <li>
-            <a href="/submit" class="hover:text-sky-400 transition-colors"
-              >Submit Adventure</a
-            >
+            <a href="/submit" class="hover:text-sky-400 transition-colors">Submit Adventure</a>
           </li>
         </ul>
       </div>
@@ -46,25 +38,17 @@
         <ul class="space-y-1.5 text-sm">
           {#if user}
             <li>
-              <a href="/profile" class="hover:text-sky-400 transition-colors"
-                >Profile</a
-              >
+              <a href="/profile" class="hover:text-sky-400 transition-colors">Profile</a>
             </li>
             <li>
-              <a href="/favorites" class="hover:text-sky-400 transition-colors"
-                >Favorites</a
-              >
+              <a href="/favorites" class="hover:text-sky-400 transition-colors">Favorites</a>
             </li>
           {:else}
             <li>
-              <a href="/login" class="hover:text-sky-400 transition-colors"
-                >Login</a
-              >
+              <a href="/login" class="hover:text-sky-400 transition-colors">Login</a>
             </li>
             <li>
-              <a href="/signup" class="hover:text-sky-400 transition-colors"
-                >Sign Up</a
-              >
+              <a href="/signup" class="hover:text-sky-400 transition-colors">Sign Up</a>
             </li>
           {/if}
         </ul>

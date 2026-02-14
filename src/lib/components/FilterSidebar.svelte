@@ -199,12 +199,7 @@
 
     <!-- Action Buttons -->
     <div class="mt-6 space-y-3">
-      <Button
-        variant="primary"
-        fullWidth
-        loading={isApplying}
-        on:click={handleApply}
-      >
+      <Button variant="primary" fullWidth loading={isApplying} on:click={handleApply}>
         Apply Filters
       </Button>
       <Button

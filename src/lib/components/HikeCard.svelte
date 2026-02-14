@@ -20,21 +20,10 @@
   >
     <!-- Decorative mountain/hill shapes -->
     <div class="absolute inset-0">
-      <svg
-        class="absolute bottom-0 w-full h-32"
-        viewBox="0 0 1200 120"
-        preserveAspectRatio="none"
-      >
-        <path
-          d="M0,60 Q300,10 600,60 T1200,60 L1200,120 L0,120 Z"
-          fill="rgba(255,255,255,0.1)"
-        />
+      <svg class="absolute bottom-0 w-full h-32" viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="M0,60 Q300,10 600,60 T1200,60 L1200,120 L0,120 Z" fill="rgba(255,255,255,0.1)" />
       </svg>
-      <svg
-        class="absolute bottom-0 w-full h-24"
-        viewBox="0 0 1200 120"
-        preserveAspectRatio="none"
-      >
+      <svg class="absolute bottom-0 w-full h-24" viewBox="0 0 1200 120" preserveAspectRatio="none">
         <path
           d="M0,80 Q200,20 400,80 T800,80 T1200,80 L1200,120 L0,120 Z"
           fill="rgba(255,255,255,0.15)"
@@ -55,8 +44,7 @@
                 ? 'bg-orange-100/90 text-orange-800'
                 : 'bg-red-100/90 text-red-800'}"
         >
-          {hike.difficulty.charAt(0).toUpperCase() +
-            hike.difficulty.slice(1).replace("_", " ")}
+          {hike.difficulty.charAt(0).toUpperCase() + hike.difficulty.slice(1).replace("_", " ")}
         </span>
       </div>
     {/if}
@@ -105,12 +93,8 @@
       </div>
     {/if}
 
-    <div
-      class="flex items-center justify-between pt-2 border-t border-gray-100"
-    >
-      <span
-        class="text-sm font-medium text-indigo-600 group-hover:text-indigo-700"
-      >
+    <div class="flex items-center justify-between pt-2 border-t border-gray-100">
+      <span class="text-sm font-medium text-indigo-600 group-hover:text-indigo-700">
         View Details
       </span>
       <ChevronRight

@@ -8,7 +8,7 @@
   import Card from "$lib/components/Card.svelte";
   import Tabs from "$lib/components/Tabs.svelte";
   import NotesSection from "$lib/components/NotesSection.svelte";
-  import HikeDescription from "$lib/components/hikes/HikeDescription.svelte";
+  import DescriptionSection from "$lib/components/detail-pages/DescriptionSection.svelte";
   import HikeFeatures from "$lib/components/hikes/HikeFeatures.svelte";
   import EditButton from "$lib/components/EditButton.svelte";
   import LocationMap from "$lib/components/LocationMap.svelte";

@@ -7,14 +7,12 @@ import * as schema from "./schemas";
 // For Node.js scripts, only process.env is available
 const databaseUrl =
   process.env.DATABASE_URL ||
-  (typeof import.meta.env !== "undefined"
-    ? import.meta.env.VITE_DATABASE_URL
-    : undefined);
+  (typeof import.meta.env !== "undefined" ? import.meta.env.VITE_DATABASE_URL : undefined);
 
 if (!databaseUrl) {
   throw new Error(
     "DATABASE_URL or VITE_DATABASE_URL environment variable is not set. " +
-      "Please create a .env file in the project root with one of these variables set.",
+      "Please create a .env file in the project root with one of these variables set."
   );
 }
 

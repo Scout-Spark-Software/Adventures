@@ -22,12 +22,7 @@
       <div
         class="mx-auto h-16 w-16 bg-indigo-100 rounded-full flex items-center justify-center mb-4"
       >
-        <svg
-          class="h-8 w-8 text-indigo-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg class="h-8 w-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -38,9 +33,7 @@
       </div>
       <h2 class="text-3xl font-extrabold text-gray-900">Verify Your Email</h2>
       <p class="mt-2 text-sm text-gray-600">
-        We sent a verification code to <span class="font-semibold text-gray-900"
-          >{data.email}</span
-        >
+        We sent a verification code to <span class="font-semibold text-gray-900">{data.email}</span>
       </p>
     </div>
 
@@ -84,10 +77,7 @@
         }}
       >
         <div>
-          <label
-            for="code"
-            class="block text-sm font-medium text-gray-700 mb-2"
-          >
+          <label for="code" class="block text-sm font-medium text-gray-700 mb-2">
             Verification Code
           </label>
           <input
@@ -101,9 +91,7 @@
             placeholder="Enter 6-digit code"
             class="appearance-none relative block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 text-gray-900 text-center text-2xl font-mono tracking-widest focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-2xl"
           />
-          <p class="mt-2 text-xs text-gray-500">
-            Enter the 6-digit code sent to your email
-          </p>
+          <p class="mt-2 text-xs text-gray-500">Enter the 6-digit code sent to your email</p>
         </div>
 
         <div class="mt-6">
@@ -145,9 +133,7 @@
           <div class="w-full border-t border-gray-300"></div>
         </div>
         <div class="relative flex justify-center text-sm">
-          <span class="px-2 bg-white text-gray-500"
-            >Didn't receive the code?</span
-          >
+          <span class="px-2 bg-white text-gray-500">Didn't receive the code?</span>
         </div>
       </div>
 
@@ -196,9 +182,8 @@
     </div>
 
     <p class="text-center text-sm text-gray-600">
-      Already verified? <a
-        href="/login"
-        class="font-medium text-indigo-600 hover:text-indigo-500">Sign in</a
+      Already verified? <a href="/login" class="font-medium text-indigo-600 hover:text-indigo-500"
+        >Sign in</a
       >
     </p>
   </div>

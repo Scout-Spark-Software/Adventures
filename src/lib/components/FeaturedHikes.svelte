@@ -14,9 +14,7 @@
           <TrendingUp size={24} class="text-sky-600" />
           Featured Hikes
         </h2>
-        <p class="mt-1 text-sm text-slate-600">
-          Handpicked trails for your next adventure
-        </p>
+        <p class="mt-1 text-sm text-slate-600">Handpicked trails for your next adventure</p>
       </div>
       <a
         href="/hikes"

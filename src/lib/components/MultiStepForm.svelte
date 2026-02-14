@@ -47,8 +47,7 @@
             {/if}
           </div>
           <span
-            class="text-xs mt-1 text-center hidden sm:block {currentStep ===
-            index
+            class="text-xs mt-1 text-center hidden sm:block {currentStep === index
               ? 'text-indigo-600 font-semibold'
               : currentStep > index
                 ? 'text-green-600'
@@ -58,8 +57,7 @@
         {#if index < stepTitles.length - 1}
           <div class="flex-1 flex items-center px-2 pt-4">
             <div
-              class="h-1 w-full rounded transition-all duration-300 {currentStep >
-              index
+              class="h-1 w-full rounded transition-all duration-300 {currentStep > index
                 ? 'bg-green-500'
                 : 'bg-gray-200'}"
             ></div>
@@ -112,18 +110,8 @@
         class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
       >
         {#if loading}
-          <svg
-            class="animate-spin h-4 w-4 inline mr-2"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              class="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              stroke-width="4"
+          <svg class="animate-spin h-4 w-4 inline mr-2" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
             ></circle>
             <path
               class="opacity-75"

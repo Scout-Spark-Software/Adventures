@@ -15,11 +15,7 @@
 
   let loading = true;
 
-  function applyStats(data: {
-    trails: number;
-    campsites: number;
-    scouts: number;
-  }) {
+  function applyStats(data: { trails: number; campsites: number; scouts: number }) {
     $trailCount = data.trails;
     $campsiteCount = data.campsites;
     $scoutCount = data.scouts;
@@ -45,21 +41,12 @@
 </script>
 
 <!-- Hero Section -->
-<div
-  class="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-hidden"
->
+<div class="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-hidden">
   <!-- Topographic Background Pattern -->
   <div class="absolute inset-0 opacity-5">
     <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <pattern
-          id="topo"
-          x="0"
-          y="0"
-          width="100"
-          height="100"
-          patternUnits="userSpaceOnUse"
-        >
+        <pattern id="topo" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
           <circle
             cx="50"
             cy="50"
@@ -103,20 +90,12 @@
   </div>
 
   <!-- Gradient Overlays -->
-  <div
-    class="absolute inset-0 bg-gradient-to-t from-slate-900/50 to-transparent"
-  ></div>
-  <div
-    class="absolute inset-0 bg-gradient-to-r from-sky-900/20 to-transparent"
-  ></div>
+  <div class="absolute inset-0 bg-gradient-to-t from-slate-900/50 to-transparent"></div>
+  <div class="absolute inset-0 bg-gradient-to-r from-sky-900/20 to-transparent"></div>
 
   <!-- Mountain Range Background - Full Width -->
   <div class="absolute bottom-0 left-0 right-0 h-48 opacity-10">
-    <svg
-      class="w-full h-full"
-      viewBox="0 0 1200 200"
-      preserveAspectRatio="none"
-    >
+    <svg class="w-full h-full" viewBox="0 0 1200 200" preserveAspectRatio="none">
       <!-- Back mountain layer -->
       <path
         d="M0,200 L0,140 L150,80 L300,110 L500,50 L700,90 L900,60 L1050,100 L1200,80 L1200,200 Z"
@@ -156,9 +135,7 @@
           For Scouts & Outdoor Enthusiasts
         </div>
 
-        <h1
-          class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-4"
-        >
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-4">
           Your Compass to
           <span
             class="block text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-blue-500 mt-1"
@@ -168,27 +145,19 @@
         </h1>
 
         <p class="text-lg text-slate-300 mb-3 max-w-2xl lg:max-w-none">
-          Navigate extraordinary hiking trails and discover perfect camping
-          sites
+          Navigate extraordinary hiking trails and discover perfect camping sites
         </p>
         <p class="text-sm text-slate-400 mb-6 max-w-2xl lg:max-w-none">
           Community-curated adventures from scouts who've been there
         </p>
 
         <!-- CTA Buttons -->
-        <div
-          class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start"
-        >
+        <div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
           <a
             href="/hikes"
             class="group inline-flex items-center justify-center gap-2 px-6 py-3 bg-sky-600 hover:bg-sky-700 text-white font-semibold rounded-lg transition-all shadow-lg hover:shadow-xl hover:scale-105"
           >
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -215,12 +184,7 @@
             href="/essentials"
             class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm border-2 border-white/30 text-white font-semibold rounded-lg transition-all"
           >
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -238,12 +202,7 @@
             href="/submit"
             class="inline-flex items-center gap-2 text-sky-300 hover:text-sky-200 text-sm font-medium transition-colors"
           >
-            <svg
-              class="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -262,9 +221,7 @@
               {#if loading}
                 <span class="animate-pulse">--</span>
               {:else}
-                {Math.floor(
-                  $trailCount,
-                ).toLocaleString()}{#if $trailCount > 0}+{/if}
+                {Math.floor($trailCount).toLocaleString()}{#if $trailCount > 0}+{/if}
               {/if}
             </div>
             <div class="text-xs text-slate-400 mt-1">Trails</div>
@@ -274,9 +231,7 @@
               {#if loading}
                 <span class="animate-pulse">--</span>
               {:else}
-                {Math.floor(
-                  $campsiteCount,
-                ).toLocaleString()}{#if $campsiteCount > 0}+{/if}
+                {Math.floor($campsiteCount).toLocaleString()}{#if $campsiteCount > 0}+{/if}
               {/if}
             </div>
             <div class="text-xs text-slate-400 mt-1">Campsites</div>
@@ -286,9 +241,7 @@
               {#if loading}
                 <span class="animate-pulse">--</span>
               {:else}
-                {Math.floor(
-                  $scoutCount,
-                ).toLocaleString()}{#if $scoutCount > 0}+{/if}
+                {Math.floor($scoutCount).toLocaleString()}{#if $scoutCount > 0}+{/if}
               {/if}
             </div>
             <div class="text-xs text-slate-400 mt-1">Scouts</div>
@@ -305,9 +258,7 @@
             class="absolute top-0 right-0 w-72 bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl p-6 shadow-2xl transform rotate-3 hover:rotate-0 transition-transform"
           >
             <div class="flex items-center gap-3 mb-3">
-              <div
-                class="w-12 h-12 bg-sky-600 rounded-lg flex items-center justify-center"
-              >
+              <div class="w-12 h-12 bg-sky-600 rounded-lg flex items-center justify-center">
                 <svg
                   class="w-6 h-6 text-white"
                   fill="none"
@@ -329,11 +280,7 @@
             </div>
             <div class="flex gap-1">
               {#each [1, 2, 3, 4, 5] as _}
-                <svg
-                  class="w-4 h-4 text-yellow-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
+                <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
                   />
@@ -347,9 +294,7 @@
             class="absolute bottom-20 left-0 w-64 bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl p-5 shadow-2xl transform -rotate-2 hover:rotate-0 transition-transform"
           >
             <div class="flex items-center gap-3 mb-2">
-              <div
-                class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center"
-              >
+              <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
                 <svg
                   class="w-5 h-5 text-white"
                   fill="none"
@@ -369,9 +314,7 @@
                 <div class="text-slate-400 text-sm">Featured Site</div>
               </div>
             </div>
-            <div class="text-slate-300 text-sm">
-              Perfect basecamp with lake access
-            </div>
+            <div class="text-slate-300 text-sm">Perfect basecamp with lake access</div>
           </div>
         </div>
       </div>

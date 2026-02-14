@@ -21,12 +21,7 @@
         href="/essentials"
         class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm"
       >
-        <svg
-          class="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -67,9 +62,7 @@
           <div class="mb-4 flex items-center justify-between">
             <p class="text-sm text-gray-600">
               <span class="font-semibold">{data.campingSites.length}</span>
-              {data.campingSites.length === 1
-                ? "camping site"
-                : "camping sites"} found
+              {data.campingSites.length === 1 ? "camping site" : "camping sites"} found
             </p>
           </div>
 

@@ -15,8 +15,7 @@
       }
     | undefined;
 
-  $: hasAmenities =
-    amenities && Object.values(amenities).some((v) => v === true);
+  $: hasAmenities = amenities && Object.values(amenities).some((v) => v === true);
 </script>
 
 {#if hasAmenities}

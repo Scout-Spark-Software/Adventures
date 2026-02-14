@@ -1,13 +1,7 @@
 import type { PageServerLoad } from "./$types";
 import { requireAdmin } from "$lib/auth/middleware";
 import { db } from "$lib/db";
-import {
-  hikes,
-  campingSites,
-  moderationQueue,
-  alterations,
-  favorites,
-} from "$lib/db/schemas";
+import { hikes, campingSites, alterations, favorites } from "$lib/db/schemas";
 import { count, eq, and } from "drizzle-orm";
 
 export const load: PageServerLoad = async (event) => {
@@ -26,14 +20,8 @@ export const load: PageServerLoad = async (event) => {
   ] = await Promise.all([
     db.select({ count: count() }).from(hikes),
     db.select({ count: count() }).from(campingSites),
-    db
-      .select({ count: count() })
-      .from(hikes)
-      .where(eq(hikes.status, "pending")),
-    db
-      .select({ count: count() })
-      .from(campingSites)
-      .where(eq(campingSites.status, "pending")),
+    db.select({ count: count() }).from(hikes).where(eq(hikes.status, "pending")),
+    db.select({ count: count() }).from(campingSites).where(eq(campingSites.status, "pending")),
     db
       .select({ count: count() })
       .from(hikes)
@@ -41,16 +29,8 @@ export const load: PageServerLoad = async (event) => {
     db
       .select({ count: count() })
       .from(campingSites)
-      .where(
-        and(
-          eq(campingSites.status, "approved"),
-          eq(campingSites.featured, true),
-        ),
-      ),
-    db
-      .select({ count: count() })
-      .from(alterations)
-      .where(eq(alterations.status, "pending")),
+      .where(and(eq(campingSites.status, "approved"), eq(campingSites.featured, true))),
+    db.select({ count: count() }).from(alterations).where(eq(alterations.status, "pending")),
     db.select({ count: count() }).from(favorites),
   ]);
 

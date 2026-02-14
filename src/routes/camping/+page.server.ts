@@ -30,17 +30,11 @@ export const load: PageServerLoad = async ({ fetch, url }) => {
   }
 
   // Fetch camping sites with filters
-  const campingSites = await fetch(
-    `/api/camping-sites?${params.toString()}`,
-  ).then((r) => r.json());
+  const campingSites = await fetch(`/api/camping-sites?${params.toString()}`).then((r) => r.json());
 
   // Fetch amenity types and facility types for filter component
-  const amenityTypes = await fetch("/api/amenity-types?active=true").then((r) =>
-    r.json(),
-  );
-  const facilityTypes = await fetch("/api/facility-types?active=true").then(
-    (r) => r.json(),
-  );
+  const amenityTypes = await fetch("/api/amenity-types?active=true").then((r) => r.json());
+  const facilityTypes = await fetch("/api/facility-types?active=true").then((r) => r.json());
 
   // Build current filters object for component
   const currentFilters: Record<string, string> = {};

@@ -19,10 +19,7 @@ function isValidStatus(value: string): value is Status {
  * coercing to "approved" for non-privileged users requesting restricted
  * statuses, and ignoring unrecognized values.
  */
-export function parseStatusParam(
-  status: string | null,
-  privileged: boolean,
-): Status | null {
+export function parseStatusParam(status: string | null, privileged: boolean): Status | null {
   if (!status) return null;
 
   if (!isValidStatus(status)) {

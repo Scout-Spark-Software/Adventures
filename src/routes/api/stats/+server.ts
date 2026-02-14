@@ -21,9 +21,7 @@ export const GET: RequestHandler = async () => {
       .where(sql`${campingSites.status} = 'approved'`);
 
     // Count total users (scouts)
-    const scoutsCount = await db
-      .select({ count: sql<number>`count(*)::int` })
-      .from(userRoles);
+    const scoutsCount = await db.select({ count: sql<number>`count(*)::int` }).from(userRoles);
 
     return json(
       {
@@ -35,7 +33,7 @@ export const GET: RequestHandler = async () => {
         headers: {
           "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
         },
-      },
+      }
     );
   } catch (error) {
     console.error("Error fetching stats:", error);

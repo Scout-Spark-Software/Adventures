@@ -19,25 +19,20 @@ export const ratingAggregates = pgTable(
   },
   (table) => ({
     hikeIdIdx: index("rating_aggregates_hike_id_idx").on(table.hikeId),
-    campingSiteIdIdx: index("rating_aggregates_camping_site_id_idx").on(
-      table.campingSiteId,
-    ),
-  }),
+    campingSiteIdIdx: index("rating_aggregates_camping_site_id_idx").on(table.campingSiteId),
+  })
 );
 
-export const ratingAggregatesRelations = relations(
-  ratingAggregates,
-  ({ one }) => ({
-    hike: one(hikes, {
-      fields: [ratingAggregates.hikeId],
-      references: [hikes.id],
-    }),
-    campingSite: one(campingSites, {
-      fields: [ratingAggregates.campingSiteId],
-      references: [campingSites.id],
-    }),
+export const ratingAggregatesRelations = relations(ratingAggregates, ({ one }) => ({
+  hike: one(hikes, {
+    fields: [ratingAggregates.hikeId],
+    references: [hikes.id],
   }),
-);
+  campingSite: one(campingSites, {
+    fields: [ratingAggregates.campingSiteId],
+    references: [campingSites.id],
+  }),
+}));
 
 export type RatingAggregate = typeof ratingAggregates.$inferSelect;
 export type NewRatingAggregate = typeof ratingAggregates.$inferInsert;

@@ -18,21 +18,17 @@
 
 {#if address}
   <Card>
-    <h2
+    <h3
       slot="header"
       class="text-lg font-bold text-gray-900 flex items-center gap-2"
     >
       <MapPin size={20} />
-      Location Details
+      Location
     </h2>
 
     {#if address.latitude && address.longitude}
       <div class="mb-4">
-        <LocationMap
-          latitude={address.latitude}
-          longitude={address.longitude}
-          height="250px"
-        />
+        <LocationMap latitude={address.latitude} longitude={address.longitude} height="250px" />
       </div>
       <div class="flex gap-2 mb-4">
         <a

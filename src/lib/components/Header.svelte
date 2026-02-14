@@ -59,9 +59,7 @@
               class="w-10 h-10 transition-transform group-hover:rotate-12"
             />
             <div class="hidden sm:block">
-              <div class="text-lg font-bold text-slate-900 leading-tight">
-                Adventure Spark
-              </div>
+              <div class="text-lg font-bold text-slate-900 leading-tight">Adventure Spark</div>
             </div>
           </a>
         </div>

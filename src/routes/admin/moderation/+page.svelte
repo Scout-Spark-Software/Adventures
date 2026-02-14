@@ -13,9 +13,7 @@
 
   function pruneErrors() {
     if (!data.queue) return;
-    const activeKeys = new Set(
-      data.queue.map((item) => itemKey(item.entityType, item.entityId)),
-    );
+    const activeKeys = new Set(data.queue.map((item) => itemKey(item.entityType, item.entityId)));
     for (const key of errors.keys()) {
       if (!activeKeys.has(key)) {
         errors.delete(key);
@@ -27,7 +25,7 @@
   async function moderateItem(
     entityType: string,
     entityId: string,
-    status: "approved" | "rejected",
+    status: "approved" | "rejected"
   ) {
     const action = status === "approved" ? "approve" : "reject";
     if (!confirm(`Are you sure you want to ${action} this item?`)) return;
@@ -49,10 +47,7 @@
 
       if (!response.ok) {
         const error = await response.json();
-        errors.set(
-          key,
-          `Failed to ${action}: ${error.message || "Unknown error"}`,
-        );
+        errors.set(key, `Failed to ${action}: ${error.message || "Unknown error"}`);
         errors = errors;
         return;
       }
@@ -94,23 +89,20 @@
                 </h3>
                 {#if item.entity}
                   <p class="text-gray-600 mt-1">
-                    {item.entity.name ||
-                      `Alteration for ${item.entity.fieldName}`}
+                    {item.entity.name || `Alteration for ${item.entity.fieldName}`}
                   </p>
                 {/if}
               </div>
               <div class="flex space-x-2">
                 <button
-                  on:click={() =>
-                    moderateItem(item.entityType, item.entityId, "approved")}
+                  on:click={() => moderateItem(item.entityType, item.entityId, "approved")}
                   disabled={processingItems.has(key)}
                   class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {processingItems.has(key) ? "Processing..." : "Approve"}
                 </button>
                 <button
-                  on:click={() =>
-                    moderateItem(item.entityType, item.entityId, "rejected")}
+                  on:click={() => moderateItem(item.entityType, item.entityId, "rejected")}
                   disabled={processingItems.has(key)}
                   class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >

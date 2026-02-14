@@ -3,8 +3,7 @@
     {
       name: "Water",
       icon: "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z",
-      description:
-        "At least 1 liter per person. Bring more in hot weather or for longer trips.",
+      description: "At least 1 liter per person. Bring more in hot weather or for longer trips.",
       tips: [
         "Consider water purification tablets or filters for extended trips",
         "Know where water sources are along your route",
@@ -14,8 +13,7 @@
     {
       name: "First Aid Kit",
       icon: "M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z",
-      description:
-        "Essential supplies for treating minor injuries and emergencies.",
+      description: "Essential supplies for treating minor injuries and emergencies.",
       tips: [
         "Include bandages, gauze, medical tape, and antiseptic wipes",
         "Add any personal medications",
@@ -37,8 +35,7 @@
     {
       name: "Trail Food",
       icon: "M18.06 22.99h1.66c.84 0 1.53-.64 1.63-1.46L23 5.05h-5V1h-1.97v4.05h-4.97l.3 2.34c1.71.47 3.31 1.32 4.27 2.26 1.44 1.42 2.43 2.89 2.43 5.29v8.05zM1 21.99V21h15.03v.99c0 .55-.45 1-1.01 1H2.01c-.56 0-1.01-.45-1.01-1zm15.03-7c0-8-15.03-8-15.03 0h15.03zM1.02 17h15v2h-15z",
-      description:
-        "High-energy snacks and meals appropriate for your trip length.",
+      description: "High-energy snacks and meals appropriate for your trip length.",
       tips: [
         "Pack more than you think you'll need",
         "Choose non-perishable, easy-to-eat foods",
@@ -198,8 +195,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <h1 class="text-4xl font-bold mb-4">Scout Essentials</h1>
       <p class="text-xl text-emerald-100 max-w-3xl">
-        Essential gear every scout should carry for safe and prepared outdoor
-        adventures
+        Essential gear every scout should carry for safe and prepared outdoor adventures
       </p>
     </div>
   </div>
@@ -209,17 +205,14 @@
     <div class="mb-12 bg-white rounded-lg shadow-md p-8">
       <h2 class="text-2xl font-bold text-gray-900 mb-4">Be Prepared</h2>
       <p class="text-gray-700 mb-4">
-        The Scout motto "Be Prepared" means being ready for any situation.
-        Carrying the right gear can make the difference between a minor
-        inconvenience and a serious emergency.
+        The Scout motto "Be Prepared" means being ready for any situation. Carrying the right gear
+        can make the difference between a minor inconvenience and a serious emergency.
       </p>
       <p class="text-gray-700">
-        There are two essential gear lists every scout should know: the <strong
-          >6 Essentials</strong
+        There are two essential gear lists every scout should know: the <strong>6 Essentials</strong
         >
-        for day trips and the <strong>10 Essentials</strong> for longer adventures.
-        Start with the 6 Essentials and work your way up to the 10 Essentials as you
-        gain experience.
+        for day trips and the <strong>10 Essentials</strong> for longer adventures. Start with the 6 Essentials
+        and work your way up to the 10 Essentials as you gain experience.
       </p>
     </div>
 
@@ -227,25 +220,17 @@
     <div class="mb-16">
       <div class="mb-8">
         <h2 class="text-3xl font-bold text-gray-900 mb-2">The 6 Essentials</h2>
-        <p class="text-lg text-gray-600">
-          Perfect for day hikes and shorter outdoor activities
-        </p>
+        <p class="text-lg text-gray-600">Perfect for day hikes and shorter outdoor activities</p>
       </div>
 
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {#each sixEssentials as essential}
-          <div
-            class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow p-6"
-          >
+          <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow p-6">
             <div class="flex items-start gap-4 mb-4">
               <div
                 class="flex-shrink-0 w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center"
               >
-                <svg
-                  class="w-6 h-6 text-emerald-600"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg class="w-6 h-6 text-emerald-600" fill="currentColor" viewBox="0 0 24 24">
                   <path d={essential.icon} />
                 </svg>
               </div>
@@ -297,18 +282,12 @@
 
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {#each tenEssentials as essential}
-          <div
-            class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow p-6"
-          >
+          <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow p-6">
             <div class="flex items-start gap-4 mb-4">
               <div
                 class="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center"
               >
-                <svg
-                  class="w-6 h-6 text-blue-600"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
                   <path d={essential.icon} />
                 </svg>
               </div>
@@ -355,20 +334,14 @@
     >
       <h3 class="text-2xl font-bold mb-4">Ready for Your Next Adventure?</h3>
       <p class="text-emerald-100 mb-6 max-w-2xl mx-auto">
-        Now that you know what to pack, explore trails and campsites shared by
-        fellow scouts
+        Now that you know what to pack, explore trails and campsites shared by fellow scouts
       </p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <a
           href="/hikes"
           class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-emerald-600 font-semibold rounded-lg hover:bg-emerald-50 transition-colors"
         >
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -382,12 +355,7 @@
           href="/camping"
           class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white font-semibold rounded-lg hover:bg-white/20 transition-colors"
         >
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"

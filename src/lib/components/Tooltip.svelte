@@ -39,8 +39,8 @@
     >
       {text}
       <div
-        class="absolute w-2 h-2 bg-gray-900 transform rotate-45 {position ===
-          'top' || position === 'bottom'
+        class="absolute w-2 h-2 bg-gray-900 transform rotate-45 {position === 'top' ||
+        position === 'bottom'
           ? 'left-1/2 -translate-x-1/2'
           : ''}"
         class:bottom-0={position === "top"}

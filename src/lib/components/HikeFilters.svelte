@@ -42,8 +42,7 @@
     if (minDistance) params.set("minDistance", minDistance);
     if (maxDistance) params.set("maxDistance", maxDistance);
     if (minRating) params.set("minRating", minRating);
-    if (selectedFeatures.length > 0)
-      params.set("features", selectedFeatures.join(","));
+    if (selectedFeatures.length > 0) params.set("features", selectedFeatures.join(","));
     if (dogFriendly) params.set("dogFriendly", "true");
 
     const queryString = params.toString();
@@ -110,9 +109,7 @@
 <!-- Filter Sidebar/Drawer -->
 <div
   class="bg-white rounded-lg shadow-md p-4 transition-transform duration-300 lg:sticky lg:top-6
-  {isDrawerOpen
-    ? 'fixed inset-y-0 left-0 z-50 w-80 overflow-y-auto'
-    : 'hidden lg:block'}"
+  {isDrawerOpen ? 'fixed inset-y-0 left-0 z-50 w-80 overflow-y-auto' : 'hidden lg:block'}"
 >
   <!-- Mobile Close Button -->
   <div class="lg:hidden flex items-center justify-between mb-3 pb-3 border-b">
@@ -126,15 +123,11 @@
     </button>
   </div>
 
-  <h2 class="text-base font-bold text-gray-900 mb-3 hidden lg:block">
-    Search & Filter
-  </h2>
+  <h2 class="text-base font-bold text-gray-900 mb-3 hidden lg:block">Search & Filter</h2>
 
   <!-- Search Input -->
   <div class="mb-3">
-    <label for="search" class="block text-sm font-medium text-gray-700 mb-2">
-      Search
-    </label>
+    <label for="search" class="block text-sm font-medium text-gray-700 mb-2"> Search </label>
     <input
       id="search"
       type="text"
@@ -146,10 +139,7 @@
 
   <!-- Difficulty Dropdown -->
   <div class="mb-3">
-    <label
-      for="difficulty"
-      class="block text-sm font-medium text-gray-700 mb-1.5"
-    >
+    <label for="difficulty" class="block text-sm font-medium text-gray-700 mb-1.5">
       Difficulty
     </label>
     <select
@@ -167,10 +157,7 @@
 
   <!-- Trail Type Dropdown -->
   <div class="mb-3">
-    <label
-      for="trailType"
-      class="block text-sm font-medium text-gray-700 mb-1.5"
-    >
+    <label for="trailType" class="block text-sm font-medium text-gray-700 mb-1.5">
       Trail Type
     </label>
     <select
@@ -187,10 +174,7 @@
 
   <!-- Distance Range -->
   <div class="mb-3">
-    <label
-      for="minDistance"
-      class="block text-sm font-medium text-gray-700 mb-1.5"
-    >
+    <label for="minDistance" class="block text-sm font-medium text-gray-700 mb-1.5">
       Distance (miles)
     </label>
     <div class="flex gap-2">
@@ -219,10 +203,7 @@
 
   <!-- Minimum Rating -->
   <div class="mb-3">
-    <label
-      for="minRating"
-      class="block text-sm font-medium text-gray-700 mb-1.5"
-    >
+    <label for="minRating" class="block text-sm font-medium text-gray-700 mb-1.5">
       Minimum Rating
     </label>
     <select
@@ -241,17 +222,10 @@
 
   <!-- Trail Features Multi-Select -->
   <div class="mb-4">
-    <div
-      class="block text-sm font-medium text-gray-700 mb-2"
-      id="trail-features-label"
-    >
+    <div class="block text-sm font-medium text-gray-700 mb-2" id="trail-features-label">
       Trail Features
     </div>
-    <div
-      class="flex flex-wrap gap-2"
-      role="group"
-      aria-labelledby="trail-features-label"
-    >
+    <div class="flex flex-wrap gap-2" role="group" aria-labelledby="trail-features-label">
       {#each featureTypes as feature (feature.id)}
         <button
           type="button"
@@ -298,13 +272,7 @@
           viewBox="0 0 24 24"
           aria-hidden="true"
         >
-          <circle
-            class="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            stroke-width="4"
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
           ></circle>
           <path
             class="opacity-75"

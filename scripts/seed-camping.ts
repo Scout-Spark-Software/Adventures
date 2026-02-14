@@ -112,10 +112,7 @@ async function seedCampingSites() {
         longitude: row.longitude ? parseFloat(row.longitude) : null,
       };
 
-      const [address] = await db
-        .insert(schema.addresses)
-        .values(addressData)
-        .returning();
+      const [address] = await db.insert(schema.addresses).values(addressData).returning();
 
       // Parse amenities from comma-separated string
       let amenities = null;
@@ -139,14 +136,8 @@ async function seedCampingSites() {
         | "not_allowed"
         | "fire_pits_only"
         | "seasonal";
-      const siteType = row.site_type as
-        | "public"
-        | "private"
-        | "public_private_partnership";
-      const status = (row.status || "approved") as
-        | "pending"
-        | "approved"
-        | "rejected";
+      const siteType = row.site_type as "public" | "private" | "public_private_partnership";
+      const status = (row.status || "approved") as "pending" | "approved" | "rejected";
 
       // Create camping site
       const campingData = {

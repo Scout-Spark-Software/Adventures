@@ -5,27 +5,15 @@ import { files, hikes, campingSites } from "$lib/db/schemas";
 import { eq, and } from "drizzle-orm";
 
 export const GET: RequestHandler = async ({ url }) => {
-  const entityType = url.searchParams.get("entity_type") as
-    | "hike"
-    | "camping_site"
-    | null;
+  const entityType = url.searchParams.get("entity_type") as "hike" | "camping_site" | null;
   const entityId = url.searchParams.get("entity_id");
-  const fileType = url.searchParams.get("file_type") as
-    | "image"
-    | "document"
-    | null;
+  const fileType = url.searchParams.get("file_type") as "image" | "document" | null;
 
   if (!entityType || !entityId) {
-    return json(
-      { error: "entity_type and entity_id are required" },
-      { status: 400 },
-    );
+    return json({ error: "entity_type and entity_id are required" }, { status: 400 });
   }
 
-  const conditions = [
-    eq(files.entityType, entityType),
-    eq(files.entityId, entityId),
-  ];
+  const conditions = [eq(files.entityType, entityType), eq(files.entityId, entityId)];
 
   if (fileType) {
     conditions.push(eq(files.fileType, fileType));

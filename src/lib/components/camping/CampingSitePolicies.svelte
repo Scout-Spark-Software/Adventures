@@ -77,9 +77,7 @@
       {/if}
       {#if operatingSeasonStart || operatingSeasonEnd}
         <div class="md:col-span-2">
-          <dt class="text-sm font-medium text-gray-500 mb-1">
-            Operating Season
-          </dt>
+          <dt class="text-sm font-medium text-gray-500 mb-1">Operating Season</dt>
           <dd class="text-gray-900">
             {#if operatingSeasonStart && operatingSeasonEnd}
               {operatingSeasonStart} - {operatingSeasonEnd}
