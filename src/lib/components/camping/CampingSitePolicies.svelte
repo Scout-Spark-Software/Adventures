@@ -1,6 +1,14 @@
 <script lang="ts">
   import Card from "../Card.svelte";
-  import CheckIcon from "../icons/CheckIcon.svelte";
+  import {
+    Check,
+    CircleCheck,
+    AlertTriangle,
+    FileText,
+    X,
+    PawPrintIcon,
+    FlameKindlingIcon,
+  } from "lucide-svelte";
   import { SITE_TYPE_LABELS } from "$lib/db/schemas/enums";
 
   export let siteType: string | undefined;
@@ -22,14 +30,7 @@
 {#if hasPolicies}
   <Card>
     <h2 slot="header" class="text-xl font-bold text-gray-900 flex items-center gap-2">
-      <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-        />
-      </svg>
+      <FileText size={20} class="text-indigo-600" />
       Site Policies
     </h2>
     <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -46,15 +47,9 @@
           <dt class="text-sm font-medium text-gray-500">Pet Policy</dt>
           <dd class="text-gray-900 capitalize flex items-center gap-2">
             {#if petPolicy === "allowed"}
-              <CheckIcon size="sm" />
+              <PawPrintIcon size={16} />
             {:else if petPolicy === "not_allowed"}
-              <svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fill-rule="evenodd"
-                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                  clip-rule="evenodd"
-                />
-              </svg>
+              <X size={16} class="text-red-600" />
             {/if}
             {petPolicy.replace(/_/g, " ")}
           </dd>
@@ -63,7 +58,8 @@
       {#if firePolicy}
         <div>
           <dt class="text-sm font-medium text-gray-500">Fire Policy</dt>
-          <dd class="text-gray-900 capitalize">
+          <dd class="text-gray-900 capitalize flex items-center gap-2">
+            <FlameKindlingIcon size={16} />
             {firePolicy.replace(/_/g, " ")}
           </dd>
         </div>

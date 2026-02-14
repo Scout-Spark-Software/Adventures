@@ -2,6 +2,7 @@
   import type { AmenityType, FacilityType } from "$lib/db/schemas";
   import { goto } from "$app/navigation";
   import { onDestroy } from "svelte";
+  import { SlidersHorizontal, X } from "lucide-svelte";
 
   export let amenityTypes: AmenityType[] = [];
   export let facilityTypes: FacilityType[] = [];
@@ -31,7 +32,7 @@
 
   onDestroy(() => {
     if (searchTimeout !== null) {
-      clearTimeout(searchTimeout);
+      clearTimeout(searchTimeout as unknown as number | undefined);
       searchTimeout = null;
     }
   });
@@ -62,7 +63,7 @@
   // Handle search input with debounce
   function handleSearchInput() {
     if (!isInitialized) return;
-    clearTimeout(searchTimeout);
+    clearTimeout(searchTimeout as unknown as number | undefined);
     searchTimeout = setTimeout(() => {
       applyFilters();
     }, 500);
@@ -133,14 +134,7 @@
   aria-label="Open filters menu"
   aria-expanded={isDrawerOpen}
 >
-  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-    <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
-      d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
-    />
-  </svg>
+  <SlidersHorizontal size={20} aria-hidden="true" />
   Filters
   {#if activeFilterCount > 0}
     <span
@@ -177,14 +171,7 @@
       on:click={() => (isDrawerOpen = false)}
       aria-label="Close filters"
     >
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M6 18L18 6M6 6l12 12"
-        />
-      </svg>
+      <X size={20} aria-hidden="true" />
     </button>
   </div>
 

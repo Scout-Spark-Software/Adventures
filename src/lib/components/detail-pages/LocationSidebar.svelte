@@ -1,7 +1,7 @@
 <script lang="ts">
   import Card from "../Card.svelte";
   import LocationMap from "../LocationMap.svelte";
-  import LocationIcon from "../icons/LocationIcon.svelte";
+  import { MapPin, ExternalLink } from "lucide-svelte";
 
   export let address:
     | {
@@ -19,7 +19,7 @@
 {#if address}
   <Card>
     <h2 slot="header" class="text-lg font-bold text-gray-900 flex items-center gap-2">
-      <LocationIcon size="md" />
+      <MapPin size={20} />
       Location
     </h2>
 
@@ -34,14 +34,7 @@
           rel="noopener noreferrer"
           class="inline-flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-800"
         >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-            />
-          </svg>
+          <ExternalLink size={16} />
           OpenStreetMap
         </a>
       </div>
@@ -73,14 +66,7 @@
             rel="noopener noreferrer"
             class="inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800"
           >
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-              />
-            </svg>
+            <ExternalLink size={12} />
             Open in Google Maps
           </a>
         </div>

@@ -1,7 +1,7 @@
 <script lang="ts">
   import Badge from "./Badge.svelte";
   import StatCard from "./StatCard.svelte";
-  import LocationIcon from "./icons/LocationIcon.svelte";
+  import { MapPin } from "lucide-svelte";
 
   export let title: string;
   export let location: { city?: string; state?: string } | undefined = undefined;
@@ -71,7 +71,7 @@
           <!-- Location -->
           {#if location && (location.city || location.state)}
             <div class="flex items-center text-white/90 text-lg drop-shadow">
-              <LocationIcon size="md" />
+              <MapPin size={20} />
               <span class="ml-2">
                 {#if location.city}{location.city}{/if}{#if location.city && location.state},
                 {/if}{#if location.state}{location.state}{/if}
@@ -105,7 +105,7 @@
           {#each stats as stat}
             <StatCard label={stat.label} value={stat.value} variant="glass">
               {#if stat.icon}
-                <svelte:component this={stat.icon} slot="icon" size="md" />
+                <svelte:component this={stat.icon} size={20} slot="icon" />
               {/if}
             </StatCard>
           {/each}

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Check, CircleAlert, Heart, House } from "lucide-svelte";
   import type { PageData } from "./$types";
 
   export let data: PageData;
@@ -25,19 +26,7 @@
                 {stats.totalHikes}
               </p>
             </div>
-            <svg
-              class="w-12 h-12 text-sky-200"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-              />
-            </svg>
+            <Check size={48} class="text-sky-200" />
           </div>
           <p class="text-xs text-gray-500 mt-2">
             {stats.featuredHikes} featured
@@ -52,19 +41,7 @@
                 {stats.totalCampingSites}
               </p>
             </div>
-            <svg
-              class="w-12 h-12 text-emerald-200"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-              />
-            </svg>
+            <House size={48} class="text-emerald-200" />
           </div>
           <p class="text-xs text-gray-500 mt-2">
             {stats.featuredCampingSites} featured
@@ -79,19 +56,7 @@
                 {stats.pendingHikes + stats.pendingCampingSites}
               </p>
             </div>
-            <svg
-              class="w-12 h-12 text-amber-200"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+            <CircleAlert size={48} class="text-amber-200" />
           </div>
           <p class="text-xs text-gray-500 mt-2">
             {stats.pendingHikes} hikes, {stats.pendingCampingSites} sites
@@ -106,19 +71,9 @@
                 {stats.pendingAlterations}
               </p>
             </div>
-            <svg
-              class="w-12 h-12 text-purple-200"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-              />
-            </svg>
+
+            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828
+            2.828L11.828 15H9v-2.828l8.586-8.586z" />
           </div>
           <p class="text-xs text-gray-500 mt-2">User-submitted edits</p>
         </div>
@@ -131,11 +86,7 @@
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div class="bg-white rounded-lg shadow p-5">
           <div class="flex items-center">
-            <svg class="w-10 h-10 text-rose-500" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-              />
-            </svg>
+            <Heart size={40} class="text-rose-500" />
             <div class="ml-4">
               <p class="text-sm font-medium text-gray-600">Total Favorites</p>
               <p class="text-2xl font-bold text-gray-900">

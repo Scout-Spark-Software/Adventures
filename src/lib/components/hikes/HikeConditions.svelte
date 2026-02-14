@@ -1,7 +1,7 @@
 <script lang="ts">
   import Card from "../Card.svelte";
   import Badge from "../Badge.svelte";
-  import CheckIcon from "../icons/CheckIcon.svelte";
+  import { Check, CircleCheck, AlertTriangle } from "lucide-svelte";
 
   export let dogFriendly: boolean | undefined = undefined;
   export let waterSources: boolean | undefined = undefined;
@@ -20,14 +20,7 @@
 {#if hasAnyConditions}
   <Card>
     <h2 slot="header" class="text-xl font-bold text-gray-900 flex items-center gap-2">
-      <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
+      <CircleCheck size={24} class="text-indigo-600" />
       Trail Conditions & Access
     </h2>
 
@@ -37,7 +30,7 @@
           <div
             class="flex-shrink-0 w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"
           >
-            <CheckIcon size="lg" />
+            <Check size={24} />
           </div>
           <div>
             <dt class="text-sm font-medium text-gray-500">Dog-Friendly</dt>
@@ -51,7 +44,7 @@
           <div
             class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center"
           >
-            <CheckIcon size="lg" />
+            <Check size={24} />
           </div>
           <div>
             <dt class="text-sm font-medium text-gray-500">Water Sources</dt>
@@ -78,19 +71,7 @@
           <dt class="text-sm font-medium text-gray-500 mb-2">Permits/Passes Required</dt>
           <dd class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
             <div class="flex items-start gap-2">
-              <svg
-                class="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                />
-              </svg>
+              <AlertTriangle size={20} class="text-yellow-600 flex-shrink-0 mt-0.5" />
               <span class="text-gray-900">{permitsRequired}</span>
             </div>
           </dd>

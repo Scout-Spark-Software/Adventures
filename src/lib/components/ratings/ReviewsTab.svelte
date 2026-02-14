@@ -171,9 +171,9 @@
                 <div>
                   <RatingDisplay rating={parseFloat(review.rating)} size="sm" showCount={false} />
                   <p class="text-sm text-gray-500 mt-1">
-                    {formatDate(review.createdAt)}
+                    {formatDate(String(review.createdAt))}
                     {#if review.createdAt !== review.updatedAt}
-                      • Edited
+                      &nbsp;• Updated {formatDate(String(review.updatedAt))}
                     {/if}
                   </p>
                 </div>

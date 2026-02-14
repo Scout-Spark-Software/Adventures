@@ -29,3 +29,7 @@ scripts/check*.ts
 scripts/fix*.ts
 scripts/test*.ts
 scripts/run*.ts
+
+# Config files that use CommonJS
+tailwind.config.js
+postcss.config.js

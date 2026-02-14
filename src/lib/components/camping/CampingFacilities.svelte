@@ -1,6 +1,6 @@
 <script lang="ts">
   import Card from "../Card.svelte";
-  import CheckIcon from "../icons/CheckIcon.svelte";
+  import { Check } from "lucide-svelte";
 
   export let facilities:
     | {
@@ -24,49 +24,49 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
       {#if facilities?.rvSites}
         <div class="flex items-center text-gray-700">
-          <CheckIcon size="md" />
+          <Check size={20} />
           <span class="ml-2">RV Sites</span>
         </div>
       {/if}
       {#if facilities?.tentSites}
         <div class="flex items-center text-gray-700">
-          <CheckIcon size="md" />
+          <Check size={20} />
           <span class="ml-2">Tent Sites</span>
         </div>
       {/if}
       {#if facilities?.cabins}
         <div class="flex items-center text-gray-700">
-          <CheckIcon size="md" />
+          <Check size={20} />
           <span class="ml-2">Cabins</span>
         </div>
       {/if}
       {#if facilities?.playground}
         <div class="flex items-center text-gray-700">
-          <CheckIcon size="md" />
+          <Check size={20} />
           <span class="ml-2">Playground</span>
         </div>
       {/if}
       {#if facilities?.boatLaunch}
         <div class="flex items-center text-gray-700">
-          <CheckIcon size="md" />
+          <Check size={20} />
           <span class="ml-2">Boat Launch</span>
         </div>
       {/if}
       {#if facilities?.fishing}
         <div class="flex items-center text-gray-700">
-          <CheckIcon size="md" />
+          <Check size={20} />
           <span class="ml-2">Fishing</span>
         </div>
       {/if}
       {#if facilities?.swimming}
         <div class="flex items-center text-gray-700">
-          <CheckIcon size="md" />
+          <Check size={20} />
           <span class="ml-2">Swimming</span>
         </div>
       {/if}
       {#if facilities?.hikingTrails}
         <div class="flex items-center text-gray-700">
-          <CheckIcon size="md" />
+          <Check size={20} />
           <span class="ml-2">Hiking Trails</span>
         </div>
       {/if}

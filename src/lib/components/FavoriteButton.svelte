@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
+  import { Heart } from "lucide-svelte";
 
   export let hikeId: string | null = null;
   export let campingSiteId: string | null = null;
@@ -114,33 +115,23 @@
       : ''}"
   >
     {#if isFavorite}
-      <svg
-        class="w-7 h-7 text-red-500 transition-transform duration-300 {justToggled
+      <Heart
+        size={28}
+        fill="currentColor"
+        class="text-red-500 transition-transform duration-300 {justToggled
           ? 'scale-125'
           : 'scale-100'}"
-        fill="currentColor"
-        viewBox="0 0 20 20"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-          clip-rule="evenodd"
-        />
-      </svg>
+      />
     {:else}
-      <svg
-        class="w-7 h-7 text-white/80 hover:text-white transition-transform duration-300 {justToggled
-          ? 'scale-125'
-          : 'scale-100'}"
-        fill="currentColor"
-        viewBox="0 0 20 20"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-          clip-rule="evenodd"
+      <span class="relative inline-block" style="width: 32px; height: 32px;">
+        <Heart
+          size={28}
+          class="absolute left-1/2 top-1/2 transition-transform duration-300 {justToggled
+            ? 'scale-125'
+            : 'scale-100'}"
+          style="transform: translate(-50%, -50%); z-index: 1;"
         />
-      </svg>
+      </span>
     {/if}
   </button>
 </div>

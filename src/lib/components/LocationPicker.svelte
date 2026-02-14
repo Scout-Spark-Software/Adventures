@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
+  import { MapPin } from "lucide-svelte";
   import type L from "leaflet";
 
   export let address = "";
@@ -164,20 +165,7 @@
       on:click={getCurrentLocation}
       class="text-sm text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1"
     >
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-        />
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-        />
-      </svg>
+      <MapPin size={16} />
       Use Current Location
     </button>
     {#if hasCoordinates}

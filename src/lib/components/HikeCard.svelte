@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Hike, Address } from "$lib/db/schemas";
   import ModerationBadge from "./ModerationBadge.svelte";
+  import { TrendingUp, Clock, MapPin, ChevronRight } from "lucide-svelte";
 
   export let hike: Hike & { address?: Pick<Address, "city" | "state"> | null };
 
@@ -59,14 +60,7 @@
         <span
           class="inline-flex items-center px-2 py-1 bg-white/90 backdrop-blur-sm rounded-md text-xs font-medium text-gray-700"
         >
-          <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-            />
-          </svg>
+          <TrendingUp size={12} class="mr-1" />
           {hike.distance}
         </span>
       {/if}
@@ -74,14 +68,7 @@
         <span
           class="inline-flex items-center px-2 py-1 bg-white/90 backdrop-blur-sm rounded-md text-xs font-medium text-gray-700"
         >
-          <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
+          <Clock size={12} class="mr-1" />
           {hike.duration}
         </span>
       {/if}
@@ -101,25 +88,7 @@
 
     {#if locationText}
       <div class="flex items-center text-sm text-gray-500 mb-2">
-        <svg
-          class="w-4 h-4 mr-1.5 flex-shrink-0"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-          />
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-          />
-        </svg>
+        <MapPin size={16} class="mr-1.5 flex-shrink-0" />
         <span class="line-clamp-1">{locationText}</span>
       </div>
     {/if}
@@ -128,14 +97,10 @@
       <span class="text-sm font-medium text-indigo-600 group-hover:text-indigo-700">
         View Details
       </span>
-      <svg
-        class="w-4 h-4 text-indigo-600 transition-transform group-hover:translate-x-1"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-      </svg>
+      <ChevronRight
+        size={16}
+        class="text-indigo-600 transition-transform group-hover:translate-x-1"
+      />
     </div>
   </div>
 </a>

@@ -1,7 +1,7 @@
 <script lang="ts">
   import Card from "../Card.svelte";
   import Badge from "../Badge.svelte";
-  import CheckIcon from "../icons/CheckIcon.svelte";
+  import { Check } from "lucide-svelte";
 
   export let features: string[] | undefined;
 </script>
@@ -12,7 +12,7 @@
     <div class="flex flex-wrap gap-2">
       {#each features as feature}
         <Badge variant="primary" size="md">
-          <CheckIcon slot="icon" size="sm" />
+          <span slot="icon"><Check size={16} /></span>
           {feature}
         </Badge>
       {/each}

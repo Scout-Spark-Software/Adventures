@@ -4,6 +4,7 @@
   import { enhance } from "$app/forms";
   import Tabs from "$lib/components/Tabs.svelte";
   import NotesSection from "$lib/components/NotesSection.svelte";
+  import { Check, CircleAlertIcon } from "lucide-svelte";
 
   export let data: PageData;
   export let form: ActionData;
@@ -107,19 +108,7 @@
             {#if form?.success}
               <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                 <div class="flex items-center gap-2">
-                  <svg
-                    class="w-5 h-5 text-green-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
+                  <Check size={20} class="text-green-600" />
                   <p class="text-sm text-green-800 font-medium">
                     {form.message}
                   </p>
@@ -130,19 +119,7 @@
             {#if form?.error}
               <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
                 <div class="flex items-center gap-2">
-                  <svg
-                    class="w-5 h-5 text-red-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
+                  <CircleAlertIcon size={20} class="text-red-600" />
                   <p class="text-sm text-red-800 font-medium">{form.error}</p>
                 </div>
               </div>
