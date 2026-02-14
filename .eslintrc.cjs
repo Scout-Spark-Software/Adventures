@@ -30,6 +30,7 @@ module.exports = {
     "no-unused-vars": "off",
     "unused-imports/no-unused-imports": "off",
     "unused-imports/no-unused-vars": "off",
+
     "no-console": "off",
     "svelte/no-at-html-tags": "off",
     "svelte/valid-compile": "off",
