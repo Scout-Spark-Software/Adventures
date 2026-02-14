@@ -62,13 +62,13 @@
   $: tabs = [
     { id: "details", label: "Details" },
     { id: "map", label: "Map" },
+    { id: "media", label: "Media", count: data.files?.length || 0 },
     {
       id: "reviews",
       label: "Reviews",
       count: data.ratingAggregate?.totalReviews || 0,
     },
     { id: "notes", label: "Notes", count: notesCount },
-    { id: "media", label: "Media", count: data.files?.length || 0 },
   ];
 
   function scrollToReviews() {
