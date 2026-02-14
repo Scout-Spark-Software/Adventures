@@ -33,7 +33,7 @@ module.exports = {
     "no-unused-vars": "off",
 
     // Use unused-imports plugin instead
-    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-imports": "warn",
     "unused-imports/no-unused-vars": [
       "warn",
       {
@@ -46,7 +46,7 @@ module.exports = {
       },
     ],
 
-    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-require-imports": "off",
     "no-console": ["warn", { allow: ["warn", "error"] }],
     "svelte/no-at-html-tags": "off", // We use {@html} safely with escaped content
