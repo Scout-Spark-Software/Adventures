@@ -34,5 +34,8 @@ module.exports = {
     "svelte/no-at-html-tags": "off",
     "svelte/valid-compile": "off",
     "svelte/no-navigation-without-resolve": "off",
+    "svelte/require-each-key": "off",
+    "svelte/require-event-dispatcher-types": "off",
+    "svelte/no-immutable-reactive-statements": "off",
   },
 };

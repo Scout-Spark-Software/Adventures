@@ -1,17 +1,16 @@
 import {
-  pgTable,
-  foreignKey,
-  uuid,
-  timestamp,
-  text,
-  integer,
-  jsonb,
-  boolean,
-  unique,
-  doublePrecision,
-  pgEnum,
+    boolean,
+    doublePrecision,
+    foreignKey,
+    integer,
+    jsonb,
+    pgEnum,
+    pgTable,
+    text,
+    timestamp,
+    unique,
+    uuid,
 } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
 
 export const entityType = pgEnum("entity_type", [
   "hike",

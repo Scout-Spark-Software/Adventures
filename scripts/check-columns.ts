@@ -14,7 +14,7 @@ async function checkColumns() {
   `;
 
   console.log("Hikes table columns:\n");
-  result.forEach((col: any) => {
+  result.forEach((col: { column_name: string; data_type: string; udt_name: string }) => {
     console.log(`  ${col.column_name} - ${col.data_type} (${col.udt_name})`);
   });
 

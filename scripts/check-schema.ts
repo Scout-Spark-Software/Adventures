@@ -14,7 +14,7 @@ const sql = neon(databaseUrl);
 async function checkSchema() {
   try {
     // Get column information for hikes table
-    const columns = await (sql as any).unsafe(`
+    const columns = (await (sql as { unsafe: (query: string) => Promise<unknown> }).unsafe(`
       SELECT
         column_name,
         data_type,
@@ -24,26 +24,34 @@ async function checkSchema() {
       FROM information_schema.columns
       WHERE table_name = 'hikes'
       ORDER BY ordinal_position;
-    `);
+    `)) as unknown[];
 
     console.log("Hikes table columns:");
     console.log("===================\n");
     console.log(columns);
 
     if (Array.isArray(columns)) {
-      columns.forEach((col: any) => {
-        console.log(`${col.column_name}:`);
-        console.log(`  Type: ${col.data_type} (${col.udt_name})`);
-        console.log(`  Nullable: ${col.is_nullable}`);
-        console.log(`  Default: ${col.column_default || "none"}`);
-        console.log();
-      });
+      columns.forEach(
+        (col: {
+          column_name: string;
+          data_type: string;
+          udt_name: string;
+          is_nullable: string;
+          column_default: string | null;
+        }) => {
+          console.log(`${col.column_name}:`);
+          console.log(`  Type: ${col.data_type} (${col.udt_name})`);
+          console.log(`  Nullable: ${col.is_nullable}`);
+          console.log(`  Default: ${col.column_default || "none"}`);
+          console.log();
+        }
+      );
     }
 
     // Try a test insert to see the exact error
     console.log("\nAttempting test insert...");
     try {
-      const result = await (sql as any).unsafe(`
+      const result = (await (sql as { unsafe: (query: string) => Promise<unknown> }).unsafe(`
         INSERT INTO "hikes" (
           "name",
           "description",
@@ -84,16 +92,19 @@ async function checkSchema() {
           '26f210a0-9e3b-4025-915d-9ad8c7749f5d'
         )
         RETURNING id;
-      `);
+      `)) as { id: string }[];
       console.log("✓ Test insert successful!");
       console.log("Inserted ID:", result[0].id);
 
       // Clean up test data
-      await (sql as any).unsafe(`DELETE FROM "hikes" WHERE id = '${result[0].id}'`);
+      await (sql as { unsafe: (query: string) => Promise<unknown> }).unsafe(
+        `DELETE FROM "hikes" WHERE id = '${result[0].id}'`
+      );
       console.log("✓ Test data cleaned up");
-    } catch (insertError: any) {
+    } catch (insertError: unknown) {
+      const error = insertError as Error;
       console.error("✗ Test insert failed:");
-      console.error(insertError.message);
+      console.error(error.message);
       console.error("\nFull error:", insertError);
     }
   } catch (error) {
