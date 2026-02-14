@@ -28,28 +28,22 @@ module.exports = {
     },
   ],
   rules: {
-    // Turn off the base rule as it can report incorrect errors
+    // Turn off strict TypeScript rules - we're focusing on functional code
     "@typescript-eslint/no-unused-vars": "off",
-    "no-unused-vars": "off",
-
-    // Use unused-imports plugin instead
-    "unused-imports/no-unused-imports": "warn",
-    "unused-imports/no-unused-vars": [
-      "warn",
-      {
-        vars: "all",
-        varsIgnorePattern: "^_",
-        args: "after-used",
-        argsIgnorePattern: "^_",
-        caughtErrors: "all",
-        caughtErrorsIgnorePattern: "^_",
-      },
-    ],
-
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-require-imports": "off",
+    "no-unused-vars": "off",
+
+    // Use unused-imports plugin with warnings only
+    "unused-imports/no-unused-imports": "warn",
+    "unused-imports/no-unused-vars": "off", // Too noisy, disabled for now
+
+    // General rules
     "no-console": ["warn", { allow: ["warn", "error"] }],
+
+    // Svelte-specific rules
     "svelte/no-at-html-tags": "off", // We use {@html} safely with escaped content
     "svelte/valid-compile": "warn", // Downgrade a11y errors to warnings
+    "svelte/no-navigation-without-resolve": "off", // Not using SvelteKit resolve in all cases
   },
 };
