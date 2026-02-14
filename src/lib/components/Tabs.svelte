@@ -44,9 +44,7 @@
 <div class="border-b border-gray-200">
   <div
     class="-mb-px {fullWidth ? 'grid' : 'flex space-x-8'}"
-    style={fullWidth
-      ? `grid-template-columns: repeat(${tabs.length}, minmax(0, 1fr))`
-      : ""}
+    style={fullWidth ? `grid-template-columns: repeat(${tabs.length}, minmax(0, 1fr))` : ""}
     role="tablist"
     aria-label="Tabs"
   >

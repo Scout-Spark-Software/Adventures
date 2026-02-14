@@ -19,10 +19,7 @@
 
 {#if hasAnyConditions}
   <Card>
-    <h2
-      slot="header"
-      class="text-xl font-bold text-gray-900 flex items-center gap-2"
-    >
+    <h2 slot="header" class="text-xl font-bold text-gray-900 flex items-center gap-2">
       <CircleCheck size={24} class="text-indigo-600" />
       Trail Conditions & Access
     </h2>
@@ -58,9 +55,7 @@
 
       {#if bestSeason && Array.isArray(bestSeason) && bestSeason.length > 0}
         <div class="md:col-span-2">
-          <dt class="text-sm font-medium text-gray-500 mb-2">
-            Best Season to Visit
-          </dt>
+          <dt class="text-sm font-medium text-gray-500 mb-2">Best Season to Visit</dt>
           <dd class="flex flex-wrap gap-2">
             {#each bestSeason as season}
               <Badge variant="primary" size="md">
@@ -73,17 +68,10 @@
 
       {#if permitsRequired}
         <div class="md:col-span-2">
-          <dt class="text-sm font-medium text-gray-500 mb-2">
-            Permits/Passes Required
-          </dt>
-          <dd
-            class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg"
-          >
+          <dt class="text-sm font-medium text-gray-500 mb-2">Permits/Passes Required</dt>
+          <dd class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
             <div class="flex items-start gap-2">
-              <AlertTriangle
-                size={20}
-                class="text-yellow-600 flex-shrink-0 mt-0.5"
-              />
+              <AlertTriangle size={20} class="text-yellow-600 flex-shrink-0 mt-0.5" />
               <span class="text-gray-900">{permitsRequired}</span>
             </div>
           </dd>
@@ -92,9 +80,7 @@
 
       {#if parkingInfo}
         <div class="md:col-span-2">
-          <dt class="text-sm font-medium text-gray-500 mb-2">
-            Parking Information
-          </dt>
+          <dt class="text-sm font-medium text-gray-500 mb-2">Parking Information</dt>
           <dd class="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <p class="text-gray-900 whitespace-pre-wrap">{parkingInfo}</p>
           </dd>

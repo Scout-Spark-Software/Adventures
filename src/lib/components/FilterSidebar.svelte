@@ -64,9 +64,7 @@
     <SlidersHorizontal size={20} />
     {title}
     {#if activeFilterCount > 0}
-      <span
-        class="bg-white text-emerald-600 px-2 py-0.5 rounded-full text-xs font-semibold"
-      >
+      <span class="bg-white text-emerald-600 px-2 py-0.5 rounded-full text-xs font-semibold">
         {activeFilterCount}
       </span>
     {/if}
@@ -147,14 +145,10 @@
           {:else if filter.type === "multiselect"}
             <div class="space-y-2 max-h-48 overflow-y-auto">
               {#each filter.options || [] as option}
-                <label
-                  class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded"
-                >
+                <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
                   <input
                     type="checkbox"
-                    checked={(filterValues[filter.id] || []).includes(
-                      option.value,
-                    )}
+                    checked={(filterValues[filter.id] || []).includes(option.value)}
                     on:change={() => toggleMultiSelect(filter.id, option.value)}
                     class="rounded text-emerald-600 focus:ring-emerald-500"
                   />
@@ -188,9 +182,7 @@
                 bind:checked={filterValues[filter.id]}
                 class="rounded text-emerald-600 focus:ring-emerald-500"
               />
-              <span class="text-sm text-gray-700"
-                >{filter.placeholder || filter.label}</span
-              >
+              <span class="text-sm text-gray-700">{filter.placeholder || filter.label}</span>
             </label>
           {/if}
         </div>

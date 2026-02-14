@@ -5,17 +5,12 @@ import * as path from "path";
 
 async function runMigration() {
   try {
-    console.log(
-      "Running migration 0008: Make camping site policies required...",
-    );
+    console.log("Running migration 0008: Make camping site policies required...");
 
     // Read the SQL file
     const migrationSQL = fs.readFileSync(
-      path.join(
-        process.cwd(),
-        "drizzle/0008_make_camping_policies_required.sql",
-      ),
-      "utf-8",
+      path.join(process.cwd(), "drizzle/0008_make_camping_policies_required.sql"),
+      "utf-8"
     );
 
     // Split by semicolons and execute each statement

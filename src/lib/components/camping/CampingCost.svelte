@@ -10,10 +10,7 @@
 
 {#if hasCost}
   <Card>
-    <h2
-      slot="header"
-      class="text-xl font-bold text-gray-900 flex items-center gap-2"
-    >
+    <h2 slot="header" class="text-xl font-bold text-gray-900 flex items-center gap-2">
       <CircleDollarSignIcon size={20} class="text-indigo-600" />
       Cost & Fees
     </h2>

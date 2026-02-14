@@ -29,10 +29,7 @@
 
 {#if hasPolicies}
   <Card>
-    <h2
-      slot="header"
-      class="text-xl font-bold text-gray-900 flex items-center gap-2"
-    >
+    <h2 slot="header" class="text-xl font-bold text-gray-900 flex items-center gap-2">
       <FileText size={20} class="text-indigo-600" />
       Site Policies
     </h2>

@@ -154,10 +154,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   if (whereConditions.length > 0) {
     query = query.where(and(...whereConditions));
   }
-  query = query
-    .limit(limit)
-    .offset(offset)
-    .orderBy(desc(campingSites.createdAt));
+  query = query.limit(limit).offset(offset).orderBy(desc(campingSites.createdAt));
 
   const results = await query;
 

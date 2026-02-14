@@ -8,7 +8,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "sourceMap": true,
-    "strict": true,
+    "strict": true
   },
-  "include": ["src", "src/**/*.svelte", "scripts", "drizzle"],
+  "include": ["src", "src/**/*.svelte", "scripts", "drizzle"]
 }

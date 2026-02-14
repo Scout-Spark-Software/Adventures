@@ -1,11 +1,4 @@
-import {
-  pgTable,
-  text,
-  timestamp,
-  uuid,
-  integer,
-  boolean,
-} from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, uuid, integer, boolean } from "drizzle-orm/pg-core";
 
 export const trailTypes = pgTable("trail_types", {
   id: uuid("id").defaultRandom().primaryKey(),

@@ -28,12 +28,7 @@
 
   $: isAdmin = data.userRole === "admin";
   // Explicitly type userRole for type safety
-  $: typedUserRole = data.userRole as
-    | "user"
-    | "admin"
-    | "moderator"
-    | null
-    | undefined;
+  $: typedUserRole = data.userRole as "user" | "admin" | "moderator" | null | undefined;
 
   let activeTab = "details";
   let notesCount = data.notesCount;
@@ -75,9 +70,7 @@
     ...(data.campingSite.siteType
       ? [
           {
-            text:
-              SITE_TYPE_LABELS[data.campingSite.siteType] ??
-              data.campingSite.siteType,
+            text: SITE_TYPE_LABELS[data.campingSite.siteType] ?? data.campingSite.siteType,
             variant: "info" as
               | "primary"
               | "info"
@@ -97,9 +90,7 @@
       ? [
           {
             label: "Site Type",
-            value:
-              SITE_TYPE_LABELS[data.campingSite.siteType] ??
-              data.campingSite.siteType,
+            value: SITE_TYPE_LABELS[data.campingSite.siteType] ?? data.campingSite.siteType,
             icon: House,
           },
         ]
@@ -147,14 +138,8 @@
         <ChevronLeft size={24} class="text-indigo-600" />
       </a>
       <div class="flex items-center gap-2">
-        <FavoriteButton
-          campingSiteId={data.campingSite.id}
-          userId={data.userId}
-        />
-        <ModerationBadge
-          status={data.campingSite.status}
-          userRole={typedUserRole}
-        />
+        <FavoriteButton campingSiteId={data.campingSite.id} userId={data.userId} />
+        <ModerationBadge status={data.campingSite.status} userRole={typedUserRole} />
       </div>
     </div>
 
@@ -167,9 +152,7 @@
           class="w-full h-80 object-cover"
         />
       {:else}
-        <div
-          class="w-full h-80 bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600"
-        >
+        <div class="w-full h-80 bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600">
           <!-- Decorative SVGs, skip as per migration plan -->
         </div>
       {/if}
@@ -188,9 +171,7 @@
           {#if data.address && (data.address.city || data.address.state)}
             <span class="flex items-center gap-1">
               <Map size={16} />
-              {[data.address.city, data.address.state]
-                .filter(Boolean)
-                .join(", ")}
+              {[data.address.city, data.address.state].filter(Boolean).join(", ")}
             </span>
           {/if}
           {#if data.campingSite.capacity}
@@ -202,8 +183,7 @@
           {#if data.campingSite.siteType}
             <span class="flex items-center gap-1">
               <House size={16} />
-              {SITE_TYPE_LABELS[data.campingSite.siteType] ??
-                data.campingSite.siteType}
+              {SITE_TYPE_LABELS[data.campingSite.siteType] ?? data.campingSite.siteType}
             </span>
           {/if}
           {#if data.ratingAggregate}
@@ -211,17 +191,12 @@
               on:click={scrollToReviews}
               class="flex items-center gap-1 hover:text-white transition-colors"
             >
-              <svg
-                class="w-4 h-4 text-yellow-400 fill-current"
-                viewBox="0 0 20 20"
-              >
+              <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
                 <path
                   d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
                 />
               </svg>
-              {parseFloat(String(data.ratingAggregate.averageRating)).toFixed(
-                1,
-              )}
+              {parseFloat(String(data.ratingAggregate.averageRating)).toFixed(1)}
               <span class="text-white/70">
                 ({data.ratingAggregate.totalRatings})
               </span>
@@ -290,9 +265,8 @@
               </div>
               <div class="flex gap-3">
                 <a
-                  href="https://www.openstreetmap.org/?mlat={data.address
-                    .latitude}&mlon={data.address.longitude}#map=15/{data
-                    .address.latitude}/{data.address.longitude}"
+                  href="https://www.openstreetmap.org/?mlat={data.address.latitude}&mlon={data
+                    .address.longitude}#map=15/{data.address.latitude}/{data.address.longitude}"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="inline-flex items-center gap-1.5 text-sm text-indigo-600 hover:text-indigo-800 font-medium"
@@ -301,8 +275,8 @@
                   OpenStreetMap
                 </a>
                 <a
-                  href="https://www.google.com/maps/search/?api=1&query={data
-                    .address.latitude},{data.address.longitude}"
+                  href="https://www.google.com/maps/search/?api=1&query={data.address
+                    .latitude},{data.address.longitude}"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="inline-flex items-center gap-1.5 text-sm text-indigo-600 hover:text-indigo-800 font-medium"
@@ -334,14 +308,8 @@
           {#if data.files && data.files.length > 0}
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
               {#each data.files.filter((f) => f.mimeType && f.mimeType.startsWith("image/")) as file}
-                <div
-                  class="aspect-square rounded-2xl overflow-hidden bg-gray-100"
-                >
-                  <img
-                    src={file.fileUrl}
-                    alt={file.fileName}
-                    class="w-full h-full object-cover"
-                  />
+                <div class="aspect-square rounded-2xl overflow-hidden bg-gray-100">
+                  <img src={file.fileUrl} alt={file.fileName} class="w-full h-full object-cover" />
                 </div>
               {/each}
               {#each data.files.filter((f) => !f.mimeType || !f.mimeType.startsWith("image/")) as file}
@@ -364,9 +332,7 @@
                       d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
                     />
                   </svg>
-                  <p
-                    class="text-xs font-medium text-gray-900 truncate max-w-full"
-                  >
+                  <p class="text-xs font-medium text-gray-900 truncate max-w-full">
                     {file.fileName}
                   </p>
                 </a>

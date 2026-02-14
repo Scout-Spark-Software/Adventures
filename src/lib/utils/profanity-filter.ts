@@ -33,16 +33,13 @@ export function checkProfanity(text: string): ProfanityCheckResult {
   let censored = text;
   if (hasProfanity) {
     // Sort matches in reverse order to replace from end to start
-    const sortedMatches = [...matches].sort(
-      (a, b) => b.startIndex - a.startIndex,
-    );
+    const sortedMatches = [...matches].sort((a, b) => b.startIndex - a.startIndex);
 
     for (const match of sortedMatches) {
       const start = match.startIndex;
       const end = match.endIndex;
       const replacement = "*".repeat(end - start);
-      censored =
-        censored.substring(0, start) + replacement + censored.substring(end);
+      censored = censored.substring(0, start) + replacement + censored.substring(end);
     }
   }
 

@@ -3,13 +3,7 @@
 
   export let title: string;
   export let description: string | undefined = undefined;
-  export let iconName:
-    | "hike"
-    | "camping"
-    | "favorite"
-    | "note"
-    | "search"
-    | undefined = undefined;
+  export let iconName: "hike" | "camping" | "favorite" | "note" | "search" | undefined = undefined;
   export let actionText: string | undefined = undefined;
   export let actionHref: string | undefined = undefined;
 
@@ -26,11 +20,7 @@
   {#if $$slots.icon}
     <slot name="icon" />
   {:else if iconName}
-    <svelte:component
-      this={icons[iconName]}
-      size={64}
-      class="mx-auto text-gray-300 mb-4"
-    />
+    <svelte:component this={icons[iconName]} size={64} class="mx-auto text-gray-300 mb-4" />
   {/if}
 
   <p class="text-gray-500 text-lg font-medium mb-2">{title}</p>

@@ -103,9 +103,7 @@
               >
               <ChevronDown
                 size={16}
-                class="text-slate-500 transition-transform {userMenuOpen
-                  ? 'rotate-180'
-                  : ''}"
+                class="text-slate-500 transition-transform {userMenuOpen ? 'rotate-180' : ''}"
               />
             </button>
             {#if userMenuOpen}

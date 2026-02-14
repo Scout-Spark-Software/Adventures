@@ -12,18 +12,13 @@ export const GET: RequestHandler = async ({ params, locals, url }) => {
   const campingSiteId = url.searchParams.get("camping_site_id");
 
   if (!hikeId && !campingSiteId) {
-    throw error(
-      400,
-      "Either hike_id or camping_site_id query parameter is required",
-    );
+    throw error(400, "Either hike_id or camping_site_id query parameter is required");
   }
 
   const favorite = await db.query.favorites.findFirst({
     where: and(
       eq(favorites.userId, user.id),
-      hikeId
-        ? eq(favorites.hikeId, hikeId)
-        : eq(favorites.campingSiteId, campingSiteId),
+      hikeId ? eq(favorites.hikeId, hikeId) : eq(favorites.campingSiteId, campingSiteId)
     ),
   });
 
@@ -37,10 +32,7 @@ export const DELETE: RequestHandler = async ({ params, locals, url }) => {
   const campingSiteId = url.searchParams.get("camping_site_id");
 
   if (!hikeId && !campingSiteId) {
-    throw error(
-      400,
-      "Either hike_id or camping_site_id query parameter is required",
-    );
+    throw error(400, "Either hike_id or camping_site_id query parameter is required");
   }
 
   await db
@@ -48,10 +40,8 @@ export const DELETE: RequestHandler = async ({ params, locals, url }) => {
     .where(
       and(
         eq(favorites.userId, user.id),
-        hikeId
-          ? eq(favorites.hikeId, hikeId)
-          : eq(favorites.campingSiteId, campingSiteId),
-      ),
+        hikeId ? eq(favorites.hikeId, hikeId) : eq(favorites.campingSiteId, campingSiteId)
+      )
     );
 
   return json({ success: true });

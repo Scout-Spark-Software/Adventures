@@ -22,10 +22,7 @@
           class="group inline-flex items-center gap-2 text-sky-700 hover:text-sky-800 font-semibold transition-colors"
         >
           View All
-          <ArrowRight
-            size={20}
-            class="group-hover:translate-x-1 transition-transform"
-          />
+          <ArrowRight size={20} class="group-hover:translate-x-1 transition-transform" />
         </a>
       </div>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

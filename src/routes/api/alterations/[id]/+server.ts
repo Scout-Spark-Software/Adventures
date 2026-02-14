@@ -1,12 +1,7 @@
 import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
-import {
-  alterations,
-  hikes,
-  campingSites,
-  VALID_STATUSES,
-} from "$lib/db/schemas";
+import { alterations, hikes, campingSites, VALID_STATUSES } from "$lib/db/schemas";
 import { eq } from "drizzle-orm";
 import { requireAuth, requireModerator } from "$lib/auth/middleware";
 import { updateModerationStatus } from "$lib/moderation";

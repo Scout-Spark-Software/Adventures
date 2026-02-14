@@ -4,7 +4,7 @@ import { eq, and } from "drizzle-orm";
 
 export async function addToModerationQueue(
   entityType: "hike" | "camping_site" | "alteration",
-  entityId: string,
+  entityId: string
 ): Promise<void> {
   await db.insert(moderationQueue).values({
     entityType,
@@ -17,7 +17,7 @@ export async function updateModerationStatus(
   entityType: "hike" | "camping_site" | "alteration",
   entityId: string,
   status: "approved" | "rejected",
-  reviewedBy: string,
+  reviewedBy: string
 ): Promise<void> {
   await db
     .update(moderationQueue)
@@ -26,10 +26,5 @@ export async function updateModerationStatus(
       reviewedBy,
       reviewedAt: new Date(),
     })
-    .where(
-      and(
-        eq(moderationQueue.entityType, entityType),
-        eq(moderationQueue.entityId, entityId),
-      ),
-    );
+    .where(and(eq(moderationQueue.entityType, entityType), eq(moderationQueue.entityId, entityId)));
 }

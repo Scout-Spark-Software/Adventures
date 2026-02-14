@@ -8,11 +8,7 @@ dotenv.config();
 const sql = neon(process.env.DATABASE_URL!);
 
 async function migrate() {
-  const migrationPath = path.join(
-    process.cwd(),
-    "drizzle",
-    "0003_add_address_indexes.sql",
-  );
+  const migrationPath = path.join(process.cwd(), "drizzle", "0003_add_address_indexes.sql");
   const migrationSQL = fs.readFileSync(migrationPath, "utf-8");
 
   console.log("Running migration: Add indexes to addresses table");
@@ -28,9 +24,7 @@ async function migrate() {
     }
 
     console.log("✓ Migration completed successfully");
-    console.log(
-      "✓ Added indexes for: city, state, postal_code, country, coordinates",
-    );
+    console.log("✓ Added indexes for: city, state, postal_code, country, coordinates");
   } catch (error) {
     console.error("✗ Migration failed:", error);
     process.exit(1);

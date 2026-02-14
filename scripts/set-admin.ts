@@ -7,9 +7,7 @@ const userId = process.argv[2];
 
 if (!userId) {
   console.error("Usage: npm run set-admin <user-id>");
-  console.error(
-    "Example: npm run set-admin 123e4567-e89b-12d3-a456-426614174000",
-  );
+  console.error("Example: npm run set-admin 123e4567-e89b-12d3-a456-426614174000");
   process.exit(1);
 }
 

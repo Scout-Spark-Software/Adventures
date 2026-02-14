@@ -15,8 +15,7 @@
       }
     | undefined;
 
-  $: hasFacilities =
-    facilities && Object.values(facilities).some((v) => v === true);
+  $: hasFacilities = facilities && Object.values(facilities).some((v) => v === true);
 </script>
 
 {#if hasFacilities}

@@ -127,10 +127,7 @@ async function seedCampingSites() {
       }
 
       // Validate enum values
-      const petPolicy = row.pet_policy as
-        | "allowed"
-        | "not_allowed"
-        | "restricted";
+      const petPolicy = row.pet_policy as "allowed" | "not_allowed" | "restricted";
       const firePolicy = row.fire_policy as
         | "allowed"
         | "not_allowed"

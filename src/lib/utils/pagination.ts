@@ -1,8 +1,4 @@
-export function parseLimit(
-  raw: string | null,
-  defaultVal = 50,
-  max = 100,
-): number {
+export function parseLimit(raw: string | null, defaultVal = 50, max = 100): number {
   const parsed = parseInt(raw || String(defaultVal));
   return Math.max(1, Math.min(isNaN(parsed) ? defaultVal : parsed, max));
 }

@@ -75,12 +75,8 @@
         {:else}
           <div class="text-center py-12 bg-white rounded-lg shadow-sm">
             <HouseIcon size={64} class="mx-auto text-gray-300 mb-4" />
-            <p class="text-gray-500 text-lg font-medium mb-2">
-              No camping sites found
-            </p>
-            <p class="text-gray-400 text-sm">
-              Try adjusting your filters or search criteria
-            </p>
+            <p class="text-gray-500 text-lg font-medium mb-2">No camping sites found</p>
+            <p class="text-gray-400 text-sm">Try adjusting your filters or search criteria</p>
           </div>
         {/if}
       </main>

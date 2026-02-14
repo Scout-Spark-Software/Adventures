@@ -7,13 +7,7 @@
   import Tooltip from "$lib/components/Tooltip.svelte";
   import SuccessAnimation from "$lib/components/SuccessAnimation.svelte";
   import MultiStepForm from "$lib/components/MultiStepForm.svelte";
-  import {
-    Star,
-    CircleCheck,
-    Building,
-    DollarSign,
-    FileText,
-  } from "lucide-svelte";
+  import { Star, CircleCheck, Building, DollarSign, FileText } from "lucide-svelte";
 
   export let data: PageData;
 
@@ -769,10 +763,7 @@
                   </div>
                 </FormSection>
 
-                <FormSection
-                  title="Site Policies & Information"
-                  icon={FileText}
-                >
+                <FormSection title="Site Policies & Information" icon={FileText}>
                   <div class="space-y-4">
                     <div>
                       <label for="site_type" class="block text-sm font-medium text-gray-700 mb-1">
