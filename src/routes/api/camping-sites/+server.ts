@@ -1,12 +1,12 @@
-import { json, error } from "@sveltejs/kit";
-import type { RequestHandler } from "./$types";
-import { db } from "$lib/db";
-import { campingSites, addresses, ratingAggregates } from "$lib/db/schemas";
-import { eq, and, or, desc, ilike, gte, lte, sql } from "drizzle-orm";
-import { requireAuth } from "$lib/auth/middleware";
 import { isPrivilegedUser, parseStatusParam } from "$lib/auth/helpers";
+import { requireAuth } from "$lib/auth/middleware";
+import { db } from "$lib/db";
+import { addresses, campingSites, ratingAggregates } from "$lib/db/schemas";
 import { addToModerationQueue } from "$lib/moderation";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
+import { error, json } from "@sveltejs/kit";
+import { and, desc, eq, gte, lte, or, sql } from "drizzle-orm";
+import type { RequestHandler } from "./$types";
 
 export const GET: RequestHandler = async ({ url, locals }) => {
   const status = url.searchParams.get("status");
@@ -135,12 +135,13 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   const whereConditions = [...conditions];
 
   if (search) {
+    // Use full-text search with plainto_tsquery for better performance
+    // Search both camping sites content and address location
+    const searchQuery = search.trim();
     whereConditions.push(
       or(
-        ilike(campingSites.name, `%${search}%`),
-        ilike(campingSites.description, `%${search}%`),
-        ilike(addresses.city, `%${search}%`),
-        ilike(addresses.state, `%${search}%`)
+        sql`${campingSites}.search_vector @@ plainto_tsquery('english', ${searchQuery})`,
+        sql`${addresses}.search_vector @@ plainto_tsquery('english', ${searchQuery})`
       )
     );
   }
