@@ -18,15 +18,26 @@
   <div
     class="relative h-40 bg-gradient-to-br from-green-400 via-emerald-500 to-teal-600 overflow-hidden"
   >
-    <!-- Decorative mountain/hill shapes -->
+    <!-- Decorative mountain shapes -->
     <div class="absolute inset-0">
-      <svg class="absolute bottom-0 w-full h-32" viewBox="0 0 1200 120" preserveAspectRatio="none">
-        <path d="M0,60 Q300,10 600,60 T1200,60 L1200,120 L0,120 Z" fill="rgba(255,255,255,0.1)" />
-      </svg>
-      <svg class="absolute bottom-0 w-full h-24" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <svg
+        class="absolute bottom-0 w-full h-28 text-green-600/30"
+        viewBox="0 0 1200 200"
+        preserveAspectRatio="none"
+      >
         <path
-          d="M0,80 Q200,20 400,80 T800,80 T1200,80 L1200,120 L0,120 Z"
-          fill="rgba(255,255,255,0.15)"
+          d="M0 200 L0 120 L150 60 L300 100 L450 30 L600 80 L750 20 L900 70 L1050 40 L1200 90 L1200 200 Z"
+          fill="currentColor"
+        />
+      </svg>
+      <svg
+        class="absolute bottom-0 w-full h-24 text-green-700/25"
+        viewBox="0 0 1200 160"
+        preserveAspectRatio="none"
+      >
+        <path
+          d="M0 160 L0 100 L200 50 L400 90 L600 30 L800 70 L1000 45 L1200 80 L1200 160 Z"
+          fill="currentColor"
         />
       </svg>
     </div>

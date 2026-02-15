@@ -155,12 +155,36 @@
 
     <!-- Hero Image -->
     <div class="relative rounded-2xl overflow-hidden shadow-lg">
+      <div class="absolute inset-0 bg-gradient-to-br from-green-400 via-emerald-500 to-teal-600">
+        <svg
+          class="absolute bottom-0 w-full h-48 text-green-600/30"
+          viewBox="0 0 1200 200"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M0 200 L0 120 L150 60 L300 100 L450 30 L600 80 L750 20 L900 70 L1050 40 L1200 90 L1200 200 Z"
+            fill="currentColor"
+          />
+        </svg>
+        <svg
+          class="absolute bottom-0 w-full h-40 text-green-700/25"
+          viewBox="0 0 1200 160"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M0 160 L0 100 L200 50 L400 90 L600 30 L800 70 L1000 45 L1200 80 L1200 160 Z"
+            fill="currentColor"
+          />
+        </svg>
+      </div>
       {#if heroImage}
-        <img src={heroImage.fileUrl} alt={data.hike.name} class="w-full h-80 object-cover" />
+        <img
+          src={heroImage.fileUrl}
+          alt={data.hike.name}
+          class="relative w-full h-80 object-cover"
+        />
       {:else}
-        <div class="w-full h-80 bg-gradient-to-br from-green-400 via-emerald-500 to-teal-600">
-          <!-- Decorative SVGs, skip as per migration plan -->
-        </div>
+        <div class="w-full h-80"></div>
       {/if}
       <div
         class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent flex flex-col justify-end p-6 text-white"
