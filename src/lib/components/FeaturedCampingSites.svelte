@@ -26,7 +26,7 @@
         </a>
       </div>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {#each campingSites as campingSite}
+        {#each campingSites as campingSite (campingSite.id)}
           <CampingSiteCard {campingSite} />
         {/each}
       </div>

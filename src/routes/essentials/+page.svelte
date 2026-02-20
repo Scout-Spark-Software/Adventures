@@ -224,7 +224,7 @@
       </div>
 
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {#each sixEssentials as essential}
+        {#each sixEssentials as essential (essential.name)}
           <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow p-6">
             <div class="flex items-start gap-4 mb-4">
               <div
@@ -246,7 +246,7 @@
             <div class="border-t border-gray-200 pt-4">
               <p class="text-sm font-medium text-gray-900 mb-2">Tips:</p>
               <ul class="space-y-2">
-                {#each essential.tips as tip}
+                {#each essential.tips as tip (tip)}
                   <li class="text-sm text-gray-600 flex items-start gap-2">
                     <svg
                       class="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0"
@@ -281,7 +281,7 @@
       </div>
 
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {#each tenEssentials as essential}
+        {#each tenEssentials as essential (essential.name)}
           <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow p-6">
             <div class="flex items-start gap-4 mb-4">
               <div
@@ -303,7 +303,7 @@
             <div class="border-t border-gray-200 pt-4">
               <p class="text-sm font-medium text-gray-900 mb-2">Tips:</p>
               <ul class="space-y-2">
-                {#each essential.tips as tip}
+                {#each essential.tips as tip (tip)}
                   <li class="text-sm text-gray-600 flex items-start gap-2">
                     <svg
                       class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0"

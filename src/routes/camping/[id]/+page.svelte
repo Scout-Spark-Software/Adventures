@@ -183,7 +183,7 @@
         <div class="flex items-center gap-3 mb-2">
           <h1 class="text-3xl font-bold">{data.campingSite.name}</h1>
           {#if heroBadges.length > 0}
-            {#each heroBadges as badge}
+            {#each heroBadges as badge (badge.text)}
               <Badge variant={badge.variant} size="md">{badge.text}</Badge>
             {/each}
           {/if}

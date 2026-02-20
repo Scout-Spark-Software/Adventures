@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   const path = `${entityType}/${entityId}/${fileType}/${timestamp}-${file.name}`;
 
   // Upload to Vercel Blob
-  const { url, pathname } = await uploadFile(file, fileType, path);
+  const { url } = await uploadFile(file, fileType, path);
 
   // Save file record to database
   const [fileRecord] = await db

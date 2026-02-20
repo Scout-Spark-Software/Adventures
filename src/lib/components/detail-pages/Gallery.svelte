@@ -9,7 +9,7 @@
   <Card>
     <h2 slot="header" class="text-xl font-bold text-gray-900">Images & Documents</h2>
     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-      {#each files as file}
+      {#each files as file (file.fileUrl)}
         {#if file.fileType === "image"}
           <img
             src={file.fileUrl}

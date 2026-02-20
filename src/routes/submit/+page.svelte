@@ -429,7 +429,7 @@
               <div class="space-y-6 animate-fadeIn">
                 <FormSection title="Features" icon={Star}>
                   <div class="grid grid-cols-2 gap-3">
-                    {#each data.featureTypes as feature}
+                    {#each data.featureTypes as feature (feature.name)}
                       <label class="flex items-center">
                         <input
                           type="checkbox"
@@ -487,7 +487,7 @@
                         role="group"
                         aria-labelledby="best-season-label"
                       >
-                        {#each ["Spring", "Summer", "Fall", "Winter"] as season}
+                        {#each ["Spring", "Summer", "Fall", "Winter"] as season (season)}
                           <label class="flex items-center">
                             <input
                               type="checkbox"
@@ -680,7 +680,7 @@
                 <div>
                   <h3 class="text-lg font-medium text-gray-900 mb-4">Amenities</h3>
                   <div class="grid grid-cols-2 gap-3">
-                    {#each data.amenityTypes as amenity}
+                    {#each data.amenityTypes as amenity (amenity.key)}
                       <label class="flex items-center">
                         <input
                           type="checkbox"
@@ -696,7 +696,7 @@
 
                 <FormSection title="Facilities" icon={Building}>
                   <div class="grid grid-cols-2 gap-3">
-                    {#each data.facilityTypes as facility}
+                    {#each data.facilityTypes as facility (facility.key)}
                       <label class="flex items-center">
                         <input
                           type="checkbox"

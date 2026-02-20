@@ -8,7 +8,7 @@ import { addToModerationQueue } from "$lib/moderation";
 import { isAllowedAlterationField } from "$lib/allowed-fields";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
 
-export const GET: RequestHandler = async ({ url, locals }) => {
+export const GET: RequestHandler = async ({ url }) => {
   const status = url.searchParams.get("status");
   const hikeId = url.searchParams.get("hike_id");
   const campingSiteId = url.searchParams.get("camping_site_id");

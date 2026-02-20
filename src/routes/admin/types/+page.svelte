@@ -176,7 +176,7 @@
             </div>
 
             <div class="space-y-2">
-              {#each currentItems as item}
+              {#each currentItems as item (item.id)}
                 <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div class="flex-1">
                     <div class="flex items-center">

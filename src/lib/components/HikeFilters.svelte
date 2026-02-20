@@ -209,7 +209,7 @@
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
         >
             <option value="">All Types</option>
-            {#each Object.entries(TRAIL_TYPE_LABELS) as [value, label]}
+            {#each Object.entries(TRAIL_TYPE_LABELS) as [value, label] (value)}
                 <option {value}>{label}</option>
             {/each}
         </select>

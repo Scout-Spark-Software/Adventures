@@ -62,7 +62,7 @@
 
           <!-- Hikes Grid -->
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {#each data.hikes as hike}
+            {#each data.hikes as hike (hike.id)}
               <HikeCard {hike} />
             {/each}
           </div>

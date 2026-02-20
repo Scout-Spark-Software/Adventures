@@ -29,7 +29,7 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
   submitHike: async ({ request, locals, fetch }) => {
-    const user = requireAuth({ locals } as any);
+    requireAuth({ locals } as any);
     const formData = await request.formData();
 
     // Validate required fields
@@ -106,7 +106,7 @@ export const actions: Actions = {
   },
 
   submitCampingSite: async ({ request, locals, fetch }) => {
-    const user = requireAuth({ locals } as any);
+    requireAuth({ locals } as any);
     const formData = await request.formData();
 
     // Validate required fields

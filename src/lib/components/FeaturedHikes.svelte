@@ -25,7 +25,7 @@
       </a>
     </div>
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {#each hikes as hike}
+      {#each hikes as hike (hike.id)}
         <HikeCard {hike} />
       {/each}
     </div>

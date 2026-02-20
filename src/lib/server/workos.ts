@@ -108,7 +108,7 @@ export const workosAuth = {
         accessToken: authResponse.accessToken,
         refreshToken: authResponse.refreshToken,
       };
-    } catch (error) {
+    } catch (_error) {
       throw new Error("Failed to refresh session");
     }
   },
@@ -131,7 +131,7 @@ export const workosAuth = {
     try {
       const user = await workos.userManagement.getUser(userId);
       return user;
-    } catch (error) {
+    } catch (_error) {
       throw new Error("Failed to get user");
     }
   },

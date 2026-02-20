@@ -179,7 +179,7 @@
             class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
             <option value="">Select a field...</option>
-            {#each editableFields as field}
+            {#each editableFields as field (field.key)}
               <option value={field.key}>{field.label}</option>
             {/each}
           </select>
@@ -236,7 +236,7 @@
                     class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   >
                     <option value="">Select {field.label}...</option>
-                    {#each field.options || [] as option}
+                    {#each field.options || [] as option (option)}
                       <option value={option}>{formatOption(field.key, option)}</option>
                     {/each}
                   </select>

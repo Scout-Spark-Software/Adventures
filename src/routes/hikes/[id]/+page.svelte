@@ -253,7 +253,7 @@
           <!-- Quick Stats -->
           {#if quickStats.length > 0}
             <div class="grid md:grid-cols-3 gap-4">
-              {#each quickStats as stat}
+              {#each quickStats as stat (stat.label)}
                 <Card variant="elevated" padding="lg">
                   <p class="text-sm text-gray-500">
                     {stat.label}
@@ -358,7 +358,7 @@
                 <div class="md:col-span-2">
                   <p class="font-medium text-gray-900 mb-2">Best Season</p>
                   <div class="flex flex-wrap gap-2">
-                    {#each data.hike.bestSeason as season}
+                    {#each data.hike.bestSeason as season (season)}
                       <Badge variant="primary" size="sm">
                         {season}
                       </Badge>
@@ -479,12 +479,12 @@
         <Card variant="elevated" padding="lg">
           {#if data.files && data.files.length > 0}
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {#each imageFiles as file}
+              {#each imageFiles as file (file.fileUrl)}
                 <div class="aspect-square rounded-2xl overflow-hidden bg-gray-100">
                   <img src={file.fileUrl} alt={file.fileName} class="w-full h-full object-cover" />
                 </div>
               {/each}
-              {#each nonImageFiles as file}
+              {#each nonImageFiles as file (file.fileUrl)}
                 <a
                   href={file.fileUrl}
                   target="_blank"
@@ -512,7 +512,7 @@
             </div>
           {:else}
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {#each [1, 2, 3, 4] as i}
+              {#each [1, 2, 3, 4] as i (i)}
                 <div
                   class="aspect-square rounded-2xl bg-gray-100 flex items-center justify-center text-gray-300"
                 >

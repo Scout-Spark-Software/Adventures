@@ -3,7 +3,7 @@ import type { PageServerLoad, Actions } from "./$types";
 import { workosAuth } from "$lib/server/workos";
 import { setUserRole } from "$lib/auth";
 
-export const load: PageServerLoad = async ({ url, cookies }) => {
+export const load: PageServerLoad = async ({ url }) => {
   const email = url.searchParams.get("email");
   const userId = url.searchParams.get("userId");
 
@@ -18,7 +18,7 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
 };
 
 export const actions: Actions = {
-  verify: async ({ request, url, cookies }) => {
+  verify: async ({ request, url }) => {
     const formData = await request.formData();
     const code = formData.get("code")?.toString();
     const userId = url.searchParams.get("userId");

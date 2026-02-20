@@ -14,7 +14,7 @@ export const actions: Actions = {
 
     try {
       // Sign in with WorkOS
-      const { user, accessToken, refreshToken } = await workosAuth.signIn(email, password);
+      const { user: _user, accessToken, refreshToken } = await workosAuth.signIn(email, password);
 
       // Set cookie options
       const cookieOptions = {

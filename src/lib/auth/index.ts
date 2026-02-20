@@ -58,7 +58,7 @@ export async function isModerator(userId: string): Promise<boolean> {
  * @deprecated Roles should be managed in the WorkOS dashboard.
  * This function is kept for backwards compatibility only.
  */
-export async function setUserRole(userId: string, role: UserRole): Promise<void> {
+export async function setUserRole(_userId: string, _role: UserRole): Promise<void> {
   // Note: Roles should be managed in WorkOS dashboard
   // This function is deprecated and kept for backwards compatibility
   console.warn("setUserRole is deprecated. Please manage user roles in the WorkOS dashboard.");

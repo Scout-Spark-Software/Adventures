@@ -122,7 +122,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   // Normalize results to handle nullable joins
   const normalizeResult = (item: any) => {
-    const { favoriteId, favoriteCreatedAt, ...rest } = item;
+    const { favoriteId: _favoriteId, favoriteCreatedAt: _favoriteCreatedAt, ...rest } = item;
     return {
       ...rest,
       address: item.address?.id != null ? item.address : null,
