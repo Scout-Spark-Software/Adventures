@@ -330,12 +330,12 @@
         <Card variant="elevated" padding="lg">
           {#if data.files && data.files.length > 0}
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {#each data.files.filter((f) => f.mimeType && f.mimeType.startsWith("image/")) as file}
+              {#each data.files.filter((f) => f.mimeType && f.mimeType.startsWith("image/")) as file (file.fileUrl)}
                 <div class="aspect-square rounded-2xl overflow-hidden bg-gray-100">
                   <img src={file.fileUrl} alt={file.fileName} class="w-full h-full object-cover" />
                 </div>
               {/each}
-              {#each data.files.filter((f) => !f.mimeType || !f.mimeType.startsWith("image/")) as file}
+              {#each data.files.filter((f) => !f.mimeType || !f.mimeType.startsWith("image/")) as file (file.fileUrl)}
                 <a
                   href={file.fileUrl}
                   target="_blank"
