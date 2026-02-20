@@ -18,7 +18,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
   const favorite = await db.query.favorites.findFirst({
     where: and(
       eq(favorites.userId, user.id),
-      hikeId ? eq(favorites.hikeId, hikeId) : eq(favorites.campingSiteId, campingSiteId)
+      hikeId ? eq(favorites.hikeId, hikeId) : eq(favorites.campingSiteId, campingSiteId!)
     ),
   });
 
@@ -40,7 +40,7 @@ export const DELETE: RequestHandler = async ({ locals, url }) => {
     .where(
       and(
         eq(favorites.userId, user.id),
-        hikeId ? eq(favorites.hikeId, hikeId) : eq(favorites.campingSiteId, campingSiteId)
+        hikeId ? eq(favorites.hikeId, hikeId) : eq(favorites.campingSiteId, campingSiteId!)
       )
     );
 

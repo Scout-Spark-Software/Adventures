@@ -369,9 +369,7 @@
         </Card>
       {:else if activeTab === "reviews"}
         <ReviewsTab
-          entityId={data.campingSite.id}
-          entityType="camping"
-          ratingAggregate={data.ratingAggregate}
+          campingSiteId={data.campingSite.id}
           userId={data.userId}
         />
       {:else if activeTab === "notes"}

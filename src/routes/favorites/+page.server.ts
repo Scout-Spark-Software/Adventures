@@ -5,7 +5,7 @@ import { and, desc, eq, isNotNull } from "drizzle-orm";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ locals }) => {
-  requireAuth({ locals } as { locals: { user: { id: string } } });
+  requireAuth({ locals } as any);
 
   const userId = locals.user!.id;
 

@@ -10,5 +10,12 @@
     "sourceMap": true,
     "strict": true
   },
-  "include": ["src", "src/**/*.svelte", "scripts", "drizzle"]
+  "include": [".svelte-kit/ambient.d.ts", ".svelte-kit/non-ambient.d.ts", "src", "src/**/*.svelte", "scripts", "drizzle"],
+  "exclude": [
+    "scripts/check-columns.ts",
+    "scripts/check-schema.ts",
+    "scripts/test-insert.ts",
+    "scripts/test-insert2.ts",
+    "scripts/seed-hikes.ts"
+  ]
 }

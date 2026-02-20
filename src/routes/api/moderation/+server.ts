@@ -70,6 +70,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 export const PUT: RequestHandler = async ({ request, locals }) => {
   await requireModerator({ locals } as any);
 
+  const user = locals.user!;
+
   const body = await request.json();
   const { entityType, entityId, status } = body;
 

@@ -129,7 +129,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       or(
         sql`${hikes}.search_vector @@ plainto_tsquery('english', ${searchQuery})`,
         sql`${addresses}.search_vector @@ plainto_tsquery('english', ${searchQuery})`
-      )
+      )!
     );
   }
 
@@ -138,13 +138,13 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     whereConditions.push(gte(ratingAggregates.averageRating, minRating));
   }
 
-  query = query
+  const finalQuery = query
     .where(whereConditions.length > 0 ? and(...whereConditions) : undefined)
     .limit(limit)
     .offset(offset)
     .orderBy(desc(hikes.createdAt));
 
-  const results = await query;
+  const results = await finalQuery;
 
   if (featured === "true" && !privileged) {
     return json(results, {

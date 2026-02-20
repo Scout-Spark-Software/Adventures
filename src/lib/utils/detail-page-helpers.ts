@@ -1,9 +1,4 @@
-import ArrowIcon from "$lib/components/icons/ArrowIcon.svelte";
-import CampingIcon from "$lib/components/icons/CampingIcon.svelte";
-import ClockIcon from "$lib/components/icons/ClockIcon.svelte";
-import HikeIcon from "$lib/components/icons/HikeIcon.svelte";
-import MapIcon from "$lib/components/icons/MapIcon.svelte";
-import UserIcon from "$lib/components/icons/UserIcon.svelte";
+import { ArrowUp as ArrowIcon, Tent as CampingIcon, Clock as ClockIcon, Footprints as HikeIcon, Map as MapIcon, User as UserIcon } from "lucide-svelte";
 import { SITE_TYPE_LABELS, TRAIL_TYPE_LABELS } from "$lib/db/schemas/enums";
 import type { ComponentType } from "svelte";
 

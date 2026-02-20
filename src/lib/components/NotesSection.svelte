@@ -104,8 +104,8 @@
       hikeId: hikeId || null,
       campingSiteId: campingSiteId || null,
       content: newNoteContent,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
       hike: null,
       campingSite: null,
     };
@@ -171,7 +171,7 @@
         ? {
             ...n,
             content: newContent,
-            updatedAt: new Date().toISOString(),
+            updatedAt: new Date(),
           }
         : n
     );
@@ -229,7 +229,7 @@
     notes = notes.filter((n) => n.id !== noteId);
     applyFilter();
     dispatch("notesCountChanged", notes.length);
-    deletingNoteId = null;
+    deletingNoteId = "";
 
     try {
       const response = await fetch(`/api/notes/${noteId}`, {

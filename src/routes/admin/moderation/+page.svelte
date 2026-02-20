@@ -13,7 +13,7 @@
 
   function pruneErrors() {
     if (!data.queue) return;
-    const activeKeys = new Set(data.queue.map((item) => itemKey(item.entityType, item.entityId)));
+    const activeKeys = new Set(data.queue.map((item: { entityType: string; entityId: string }) => itemKey(item.entityType, item.entityId)));
     for (const key of errors.keys()) {
       if (!activeKeys.has(key)) {
         errors.delete(key);
