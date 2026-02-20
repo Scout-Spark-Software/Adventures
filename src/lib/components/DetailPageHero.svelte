@@ -55,7 +55,7 @@
             </div>
           {:else if badges.length > 0}
             <div class="flex items-center gap-3 mb-3">
-              {#each badges as badge}
+              {#each badges as badge (badge.text)}
                 <Badge variant={badge.variant || "neutral"} size="md">
                   {badge.text}
                 </Badge>
@@ -102,7 +102,7 @@
         </div>
       {:else if stats.length > 0}
         <div class="flex flex-wrap gap-3 mt-6">
-          {#each stats as stat}
+          {#each stats as stat (stat.label)}
             <StatCard label={stat.label} value={stat.value} variant="glass">
               {#if stat.icon}
                 <svelte:component this={stat.icon} size={20} slot="icon" />

@@ -30,7 +30,7 @@
   <!-- Progress Bar -->
   <div class="mb-8">
     <div class="flex justify-between mb-2">
-      {#each stepTitles as title, index}
+      {#each stepTitles as title, index (index)}
         <div class="flex flex-col items-center flex-1">
           <div
             class="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 {currentStep ===

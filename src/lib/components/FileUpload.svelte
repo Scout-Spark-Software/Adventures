@@ -78,7 +78,7 @@
 
   {#if files.length > 0}
     <div class="space-y-2">
-      {#each files as file}
+      {#each files as file (file.name)}
         <p class="text-sm text-gray-600">{file.name}</p>
       {/each}
       <button

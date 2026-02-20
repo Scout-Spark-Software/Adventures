@@ -5,7 +5,7 @@ import { and, desc, eq, isNotNull } from "drizzle-orm";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ locals }) => {
-  requireAuth({ locals } as { locals: { user: { id: string } } });
+  requireAuth({ locals } as any);
 
   const userId = locals.user!.id;
 
@@ -122,7 +122,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   // Normalize results to handle nullable joins
   const normalizeResult = (item: any) => {
-    const { favoriteId, favoriteCreatedAt, ...rest } = item;
+    const { favoriteId: _favoriteId, favoriteCreatedAt: _favoriteCreatedAt, ...rest } = item;
     return {
       ...rest,
       address: item.address?.id != null ? item.address : null,

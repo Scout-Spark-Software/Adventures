@@ -62,7 +62,7 @@
         class="flex-shrink-0 text-gray-400 hover:text-gray-600"
         on:click={handleDismiss}
       >
-        <X size={20} />
+        <svelte:component this={_X} size={20} />
       </button>
     {/if}
   </div>

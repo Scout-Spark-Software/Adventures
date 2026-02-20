@@ -104,8 +104,8 @@
       hikeId: hikeId || null,
       campingSiteId: campingSiteId || null,
       content: newNoteContent,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
       hike: null,
       campingSite: null,
     };
@@ -171,7 +171,7 @@
         ? {
             ...n,
             content: newContent,
-            updatedAt: new Date().toISOString(),
+            updatedAt: new Date(),
           }
         : n
     );
@@ -229,7 +229,7 @@
     notes = notes.filter((n) => n.id !== noteId);
     applyFilter();
     dispatch("notesCountChanged", notes.length);
-    deletingNoteId = null;
+    deletingNoteId = "";
 
     try {
       const response = await fetch(`/api/notes/${noteId}`, {
@@ -320,6 +320,7 @@
 
         {#if showPreview}
           <div class="prose max-w-none p-4 bg-gray-50 rounded border min-h-[150px]">
+            <!-- eslint-disable-next-line svelte/no-at-html-tags -->
             {@html renderMarkdown(newNoteContent || "_Nothing to preview_")}
           </div>
         {:else}
@@ -422,6 +423,7 @@
 
               {#if editShowPreview}
                 <div class="prose max-w-none p-4 bg-gray-50 rounded border min-h-[150px] mb-3">
+                  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
                   {@html renderMarkdown(editNoteContent)}
                 </div>
               {:else}
@@ -502,6 +504,7 @@
             </div>
 
             <div class="prose max-w-none">
+              <!-- eslint-disable-next-line svelte/no-at-html-tags -->
               {@html renderMarkdown(note.content)}
             </div>
           {/if}

@@ -72,7 +72,7 @@ export const actions: Actions = {
     }
   },
 
-  verify: async ({ request, cookies }) => {
+  verify: async ({ request }) => {
     const formData = await request.formData();
     const code = formData.get("code")?.toString();
     const userId = formData.get("userId")?.toString();

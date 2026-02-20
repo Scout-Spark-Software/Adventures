@@ -48,7 +48,7 @@
     role="tablist"
     aria-label="Tabs"
   >
-    {#each tabs as tab, i}
+    {#each tabs as tab, i (tab.id)}
       <button
         role="tab"
         id="tab-{tab.id}"

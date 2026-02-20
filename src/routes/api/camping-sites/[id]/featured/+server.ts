@@ -6,7 +6,7 @@ import { eq } from "drizzle-orm";
 import { requireAdmin } from "$lib/auth/middleware";
 
 export const PUT: RequestHandler = async ({ params, request, locals }) => {
-  const user = await requireAdmin({ locals } as any);
+  await requireAdmin({ locals } as any);
 
   const body = await request.json();
   const { featured } = body;

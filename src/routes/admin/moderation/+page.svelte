@@ -13,7 +13,7 @@
 
   function pruneErrors() {
     if (!data.queue) return;
-    const activeKeys = new Set(data.queue.map((item) => itemKey(item.entityType, item.entityId)));
+    const activeKeys = new Set(data.queue.map((item: { entityType: string; entityId: string }) => itemKey(item.entityType, item.entityId)));
     for (const key of errors.keys()) {
       if (!activeKeys.has(key)) {
         errors.delete(key);
@@ -75,7 +75,7 @@
 
     {#if data.queue && data.queue.length > 0}
       <div class="space-y-4">
-        {#each data.queue as item}
+        {#each data.queue as item (item.entityId)}
           {@const key = itemKey(item.entityType, item.entityId)}
           <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-start justify-between mb-4">

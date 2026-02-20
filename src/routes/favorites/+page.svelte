@@ -41,7 +41,7 @@
         <h2 class="text-2xl font-semibold text-gray-900 mb-4">Favorite Hikes</h2>
         {#if data.hikes && data.hikes.length > 0}
           <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {#each data.hikes as hike}
+            {#each data.hikes as hike (hike.id)}
               <HikeCard {hike} />
             {/each}
           </div>
@@ -65,7 +65,7 @@
         <h2 class="text-2xl font-semibold text-gray-900 mb-4">Favorite Camping Sites</h2>
         {#if data.campingSites && data.campingSites.length > 0}
           <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {#each data.campingSites as campingSite}
+            {#each data.campingSites as campingSite (campingSite.id)}
               <CampingSiteCard {campingSite} />
             {/each}
           </div>

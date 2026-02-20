@@ -98,7 +98,7 @@
 <div class="relative inline-flex items-center justify-center">
   {#if showBurst}
     <div class="burst">
-      {#each Array(6) as _, i}
+      {#each Array(6) as _, i (i)}
         <span class="particle" style="--i: {i};" />
       {/each}
     </div>

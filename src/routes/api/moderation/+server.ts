@@ -7,7 +7,7 @@ import { requireModerator } from "$lib/auth/middleware";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
 
 export const GET: RequestHandler = async ({ url, locals }) => {
-  const user = await requireModerator({ locals } as any);
+  await requireModerator({ locals } as any);
 
   const status = url.searchParams.get("status") || "pending";
   const entityType = url.searchParams.get("entity_type") as
@@ -68,7 +68,9 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 };
 
 export const PUT: RequestHandler = async ({ request, locals }) => {
-  const user = await requireModerator({ locals } as any);
+  await requireModerator({ locals } as any);
+
+  const user = locals.user!;
 
   const body = await request.json();
   const { entityType, entityId, status } = body;

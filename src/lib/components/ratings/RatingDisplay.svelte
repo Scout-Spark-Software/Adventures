@@ -4,13 +4,13 @@
   export let size: "sm" | "md" | "lg" = "md";
   export let showCount: boolean = true;
 
-  $: sizeClasses = {
+  const sizeClasses = {
     sm: "w-4 h-4",
     md: "w-5 h-5",
     lg: "w-6 h-6",
   };
 
-  $: textSize = {
+  const textSize = {
     sm: "text-sm",
     md: "text-base",
     lg: "text-lg",
@@ -26,7 +26,7 @@
 
 <div class="flex items-center gap-2">
   <div class="flex items-center gap-1">
-    {#each Array(5) as _, i}
+    {#each Array(5) as _, i (i)}
       <svg class={sizeClasses[size]} viewBox="0 0 24 24">
         <defs>
           <linearGradient id="star-display-{i}-{rating}">

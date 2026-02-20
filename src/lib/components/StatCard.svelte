@@ -1,8 +1,11 @@
 <script lang="ts">
+  import type { Snippet } from "svelte";
   export let label: string;
   export let value: string | number;
   export let subtitle: string | undefined = undefined;
   export let variant: "default" | "glass" = "default";
+  // Svelte 5: declare children snippet type to avoid type errors when slot content is passed
+  export const children: Snippet | undefined = undefined;
 
   const variantClasses = {
     default: "bg-white rounded-lg px-4 py-2 shadow-md",

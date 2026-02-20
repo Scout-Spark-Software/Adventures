@@ -10,7 +10,7 @@
   export let form: ActionData;
 
   let activeTab = "profile";
-  $: tabs = [
+  const tabs = [
     { id: "profile", label: "Profile" },
     { id: "security", label: "Security" },
     { id: "notes", label: "Notes" },

@@ -5,7 +5,7 @@ import { favorites } from "$lib/db/schemas";
 import { eq, and } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 
-export const GET: RequestHandler = async ({ params, locals, url }) => {
+export const GET: RequestHandler = async ({ locals, url }) => {
   const user = requireAuth({ locals } as any);
 
   const hikeId = url.searchParams.get("hike_id");
@@ -18,14 +18,14 @@ export const GET: RequestHandler = async ({ params, locals, url }) => {
   const favorite = await db.query.favorites.findFirst({
     where: and(
       eq(favorites.userId, user.id),
-      hikeId ? eq(favorites.hikeId, hikeId) : eq(favorites.campingSiteId, campingSiteId)
+      hikeId ? eq(favorites.hikeId, hikeId) : eq(favorites.campingSiteId, campingSiteId!)
     ),
   });
 
   return json({ isFavorite: !!favorite });
 };
 
-export const DELETE: RequestHandler = async ({ params, locals, url }) => {
+export const DELETE: RequestHandler = async ({ locals, url }) => {
   const user = requireAuth({ locals } as any);
 
   const hikeId = url.searchParams.get("hike_id");
@@ -40,7 +40,7 @@ export const DELETE: RequestHandler = async ({ params, locals, url }) => {
     .where(
       and(
         eq(favorites.userId, user.id),
-        hikeId ? eq(favorites.hikeId, hikeId) : eq(favorites.campingSiteId, campingSiteId)
+        hikeId ? eq(favorites.hikeId, hikeId) : eq(favorites.campingSiteId, campingSiteId!)
       )
     );
 

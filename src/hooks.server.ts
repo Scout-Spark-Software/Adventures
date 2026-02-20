@@ -21,7 +21,7 @@ const authHandle: Handle = async ({ event, resolve }) => {
           id: user.id,
           email: user.email,
           name: user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : user.email,
-          role: userRole,
+          role: userRole as "user" | "admin" | "moderator",
         };
         event.locals.userId = user.id;
       } else {
@@ -90,7 +90,7 @@ const authHandle: Handle = async ({ event, resolve }) => {
               id: user.id,
               email: user.email,
               name: user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : user.email,
-              role: userRole,
+              role: userRole as "user" | "admin" | "moderator",
             };
             event.locals.userId = user.id;
           } else {
@@ -144,7 +144,7 @@ const authHandle: Handle = async ({ event, resolve }) => {
           id: user.id,
           email: user.email,
           name: user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : user.email,
-          role: userRole,
+          role: userRole as "user" | "admin" | "moderator",
         };
         event.locals.userId = user.id;
       } else {

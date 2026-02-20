@@ -165,7 +165,7 @@
         </div>
       {:else}
         <div class="space-y-4">
-          {#each reviews as review}
+          {#each reviews as review (review.id)}
             <div class="bg-white rounded-lg shadow p-5">
               <div class="flex items-start justify-between mb-3">
                 <div>

@@ -101,7 +101,7 @@
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            {#each data.hikes as hike}
+            {#each data.hikes as hike (hike.id)}
               <tr>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                   {hike.name}
@@ -161,7 +161,7 @@
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            {#each data.campingSites as campingSite}
+            {#each data.campingSites as campingSite (campingSite.id)}
               <tr>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                   {campingSite.name}

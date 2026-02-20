@@ -57,7 +57,7 @@
         <div class="md:col-span-2">
           <dt class="text-sm font-medium text-gray-500 mb-2">Best Season to Visit</dt>
           <dd class="flex flex-wrap gap-2">
-            {#each bestSeason as season}
+            {#each bestSeason as season (season)}
               <Badge variant="primary" size="md">
                 {season}
               </Badge>

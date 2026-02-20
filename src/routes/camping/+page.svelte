@@ -68,7 +68,7 @@
 
           <!-- Camping Sites Grid -->
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {#each data.campingSites as campingSite}
+            {#each data.campingSites as campingSite (campingSite.id)}
               <CampingSiteCard {campingSite} />
             {/each}
           </div>
