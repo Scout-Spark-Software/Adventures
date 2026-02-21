@@ -2,17 +2,17 @@ import type { PageServerLoad } from "./$types";
 import { requireAdmin } from "$lib/auth/middleware";
 
 export const load: PageServerLoad = async (event) => {
-  await requireAdmin(event);
+  requireAdmin(event);
 
-  const [featureTypes, amenityTypes, facilityTypes] = await Promise.all([
-    event.fetch("/api/feature-types").then((r) => r.json()),
-    event.fetch("/api/amenity-types").then((r) => r.json()),
-    event.fetch("/api/facility-types").then((r) => r.json()),
+  const [featureRes, amenityRes, facilityRes] = await Promise.all([
+    event.fetch("/api/feature-types"),
+    event.fetch("/api/amenity-types"),
+    event.fetch("/api/facility-types"),
   ]);
 
   return {
-    featureTypes,
-    amenityTypes,
-    facilityTypes,
+    featureTypes: featureRes.ok ? await featureRes.json() : [],
+    amenityTypes: amenityRes.ok ? await amenityRes.json() : [],
+    facilityTypes: facilityRes.ok ? await facilityRes.json() : [],
   };
 };

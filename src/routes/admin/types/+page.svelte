@@ -1,5 +1,7 @@
 <script lang="ts">
+  import { ChevronRight } from "lucide-svelte";
   import type { PageData } from "./$types";
+  import { invalidateAll } from "$app/navigation";
 
   export let data: PageData;
 
@@ -72,7 +74,8 @@
     });
 
     if (response.ok) {
-      window.location.reload();
+      cancelEdit();
+      await invalidateAll();
     } else {
       alert("Failed to save item");
     }
@@ -91,7 +94,7 @@
     const response = await fetch(endpoint, { method: "DELETE" });
 
     if (response.ok) {
-      window.location.reload();
+      await invalidateAll();
     } else {
       alert("Failed to delete item");
     }
@@ -113,10 +116,12 @@
 
 <div class="min-h-screen bg-gray-50 py-12">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center mb-8">
-      <h1 class="text-3xl font-bold text-gray-900">Manage Types</h1>
-      <a href="/admin" class="text-indigo-600 hover:text-indigo-800 font-medium"> Back to Admin </a>
-    </div>
+    <nav class="flex items-center gap-1.5 text-sm mb-6">
+      <a href="/admin" class="text-gray-500 hover:text-gray-700 transition-colors">Admin</a>
+      <ChevronRight size={14} class="text-gray-300" />
+      <span class="text-gray-900 font-medium">Manage Types</span>
+    </nav>
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">Manage Types</h1>
 
     <!-- Tabs -->
     <div class="border-b border-gray-200 mb-6">

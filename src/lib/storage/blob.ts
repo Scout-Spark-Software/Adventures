@@ -1,5 +1,6 @@
 import { put, list, del } from "@vercel/blob";
 import { error } from "@sveltejs/kit";
+import { VERCEL_BLOB_TOKEN } from "$env/static/private";
 
 const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 const ALLOWED_DOCUMENT_TYPES = [
@@ -34,13 +35,13 @@ export async function uploadFile(
 ): Promise<{ url: string; pathname: string }> {
   validateFile(file, fileType);
 
-  if (!process.env.VERCEL_BLOB_TOKEN) {
+  if (!VERCEL_BLOB_TOKEN) {
     throw error(500, "Vercel Blob storage not configured");
   }
 
   const blob = await put(path, file, {
     access: "public",
-    token: process.env.VERCEL_BLOB_TOKEN,
+    token: VERCEL_BLOB_TOKEN,
   });
 
   return {
@@ -50,23 +51,23 @@ export async function uploadFile(
 }
 
 export async function deleteFile(pathname: string): Promise<void> {
-  if (!process.env.VERCEL_BLOB_TOKEN) {
+  if (!VERCEL_BLOB_TOKEN) {
     throw error(500, "Vercel Blob storage not configured");
   }
 
   await del(pathname, {
-    token: process.env.VERCEL_BLOB_TOKEN,
+    token: VERCEL_BLOB_TOKEN,
   });
 }
 
 export async function listFiles(prefix: string): Promise<any[]> {
-  if (!process.env.VERCEL_BLOB_TOKEN) {
+  if (!VERCEL_BLOB_TOKEN) {
     throw error(500, "Vercel Blob storage not configured");
   }
 
   const { blobs } = await list({
     prefix,
-    token: process.env.VERCEL_BLOB_TOKEN,
+    token: VERCEL_BLOB_TOKEN,
   });
 
   return blobs;
