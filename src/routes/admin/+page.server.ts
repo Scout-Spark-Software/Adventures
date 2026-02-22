@@ -1,7 +1,7 @@
 import type { PageServerLoad } from "./$types";
 import { requireAdmin } from "$lib/auth/middleware";
 import { db } from "$lib/db";
-import { hikes, campingSites, moderationQueue, favorites } from "$lib/db/schemas";
+import { hikes, campingSites, moderationQueue, favorites, imageFlags } from "$lib/db/schemas";
 import { count, eq, and } from "drizzle-orm";
 
 export const load: PageServerLoad = async (event) => {
@@ -17,6 +17,7 @@ export const load: PageServerLoad = async (event) => {
     featuredCampingSites,
     pendingAlterations,
     totalFavorites,
+    pendingImageFlags,
   ] = await Promise.all([
     db.select({ count: count() }).from(hikes).where(eq(hikes.status, "approved")),
     db.select({ count: count() }).from(campingSites).where(eq(campingSites.status, "approved")),
@@ -45,6 +46,7 @@ export const load: PageServerLoad = async (event) => {
         and(eq(moderationQueue.status, "pending"), eq(moderationQueue.entityType, "alteration"))
       ),
     db.select({ count: count() }).from(favorites),
+    db.select({ count: count() }).from(imageFlags).where(eq(imageFlags.status, "pending")),
   ]);
 
   return {
@@ -58,6 +60,7 @@ export const load: PageServerLoad = async (event) => {
       featuredCampingSites: featuredCampingSites[0].count,
       pendingAlterations: pendingAlterations[0].count,
       totalFavorites: totalFavorites[0].count,
+      pendingImageFlags: pendingImageFlags[0].count,
     },
   };
 };

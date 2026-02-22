@@ -1,7 +1,19 @@
 <script lang="ts">
-  import { ChevronRight } from "lucide-svelte";
+  import { ChevronRight, ExternalLink } from "lucide-svelte";
   import type { PageData } from "./$types";
   import { invalidateAll } from "$app/navigation";
+
+  function entityUrl(item: { entityType: string; entityId: string }) {
+    if (item.entityType === "hike") return `/hikes/${item.entityId}`;
+    if (item.entityType === "camping_site") return `/camping/${item.entityId}`;
+    return null;
+  }
+
+  function apiUrl(item: { entityType: string; entityId: string }) {
+    if (item.entityType === "hike") return `/api/hikes/${item.entityId}`;
+    if (item.entityType === "camping_site") return `/api/camping-sites/${item.entityId}`;
+    return null;
+  }
 
   export let data: PageData;
 
@@ -21,6 +33,42 @@
       }
     }
     errors = errors;
+  }
+
+  async function deleteItem(entityType: string, entityId: string, name: string) {
+    if (!confirm(`Permanently delete "${name}" and all its images? This cannot be undone.`)) return;
+
+    const key = itemKey(entityType, entityId);
+    if (processingItems.has(key)) return;
+
+    const endpoint = apiUrl({ entityType, entityId });
+    if (!endpoint) return;
+
+    processingItems.add(key);
+    processingItems = processingItems;
+    errors.delete(key);
+    errors = errors;
+
+    try {
+      const response = await fetch(endpoint, { method: "DELETE" });
+
+      if (!response.ok) {
+        const err = await response.json();
+        errors.set(key, `Failed to delete: ${err.message || "Unknown error"}`);
+        errors = errors;
+        return;
+      }
+
+      await invalidateAll();
+      pruneErrors();
+    } catch (err) {
+      console.error("Failed to delete item:", err);
+      errors.set(key, "Failed to delete item. Please try again.");
+      errors = errors;
+    } finally {
+      processingItems.delete(key);
+      processingItems = processingItems;
+    }
   }
 
   async function moderateItem(
@@ -83,23 +131,34 @@
       <div class="space-y-4">
         {#each data.queue as item (item.entityId)}
           {@const key = itemKey(item.entityType, item.entityId)}
+          {@const url = entityUrl(item)}
           <div class="bg-white rounded-lg shadow p-6">
-            <div class="flex items-start justify-between mb-4">
-              <div>
-                <h3 class="text-lg font-semibold text-gray-900">
-                  {item.entityType === "hike"
-                    ? "Hike"
-                    : item.entityType === "camping_site"
-                      ? "Camping Site"
-                      : "Alteration"}
-                </h3>
+            <div class="flex items-start justify-between gap-4 mb-3">
+              <div class="min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-600 uppercase tracking-wide">
+                    {item.entityType === "hike" ? "Hike" : item.entityType === "camping_site" ? "Camping Site" : "Alteration"}
+                  </span>
+                  <span class="text-xs text-gray-400">
+                    {new Date(item.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                  </span>
+                </div>
                 {#if item.entity}
-                  <p class="text-gray-600 mt-1">
-                    {item.entity.name || `Alteration for ${item.entity.fieldName}`}
-                  </p>
+                  <div class="flex items-center gap-2 mt-1.5">
+                    {#if url}
+                      <a href={url} target="_blank" rel="noopener noreferrer" class="text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors truncate">
+                        {item.entity.name || `Alteration for ${item.entity.fieldName}`}
+                      </a>
+                      <ExternalLink size={15} class="shrink-0 text-gray-400" />
+                    {:else}
+                      <h3 class="text-lg font-semibold text-gray-900 truncate">
+                        {item.entity.name || `Alteration for ${item.entity.fieldName}`}
+                      </h3>
+                    {/if}
+                  </div>
                 {/if}
               </div>
-              <div class="flex space-x-2">
+              <div class="flex shrink-0 items-center gap-2">
                 <button
                   on:click={() => moderateItem(item.entityType, item.entityId, "approved")}
                   disabled={processingItems.has(key)}
@@ -114,11 +173,67 @@
                 >
                   {processingItems.has(key) ? "Processing..." : "Reject"}
                 </button>
+                {#if data.userRole === "admin" && apiUrl(item)}
+                  <button
+                    on:click={() => deleteItem(item.entityType, item.entityId, item.entity?.name ?? item.entityId)}
+                    disabled={processingItems.has(key)}
+                    class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-600 bg-white hover:bg-gray-50 hover:text-red-600 hover:border-red-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    title="Delete permanently"
+                  >
+                    Delete
+                  </button>
+                {/if}
               </div>
             </div>
-            {#if item.entity && item.entity.description}
-              <p class="text-gray-700 text-sm">{item.entity.description}</p>
+
+            {#if item.entity}
+              <!-- Key metadata pills -->
+              <div class="flex flex-wrap gap-2 mb-3">
+                {#if item.entityType === "hike"}
+                  {#if item.entity.difficulty}
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 capitalize">
+                      {item.entity.difficulty.replace("_", " ")}
+                    </span>
+                  {/if}
+                  {#if item.entity.distance}
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600">
+                      {item.entity.distance} {item.entity.distanceUnit ?? "miles"}
+                    </span>
+                  {/if}
+                  {#if item.entity.duration}
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600">
+                      {item.entity.duration} {item.entity.durationUnit ?? "hours"}
+                    </span>
+                  {/if}
+                  {#if item.entity.trailType}
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600 capitalize">
+                      {item.entity.trailType.replace("_", " ")}
+                    </span>
+                  {/if}
+                {:else if item.entityType === "camping_site"}
+                  {#if item.entity.siteType}
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 capitalize">
+                      {item.entity.siteType.replace("_", " ")}
+                    </span>
+                  {/if}
+                  {#if item.entity.costPerNight}
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600">
+                      ${item.entity.costPerNight}/night
+                    </span>
+                  {/if}
+                  {#if item.entity.petPolicy}
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600 capitalize">
+                      Pets: {item.entity.petPolicy.replace("_", " ")}
+                    </span>
+                  {/if}
+                {/if}
+              </div>
+
+              {#if item.entity.description}
+                <p class="text-gray-600 text-sm line-clamp-3">{item.entity.description}</p>
+              {/if}
             {/if}
+
             {#if errors.has(key)}
               <div class="mt-3 rounded-md bg-red-50 p-3">
                 <div class="text-sm text-red-800">{errors.get(key)}</div>

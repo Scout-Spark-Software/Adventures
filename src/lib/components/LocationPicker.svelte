@@ -174,7 +174,7 @@
   </div>
 
   <!-- Interactive Map -->
-  <div class="border rounded-lg overflow-hidden bg-gray-100 mb-4">
+  <div class="border rounded-lg overflow-hidden bg-gray-100 mb-4" style="isolation: isolate;">
     <div bind:this={mapContainer} class="h-64 w-full"></div>
     <div class="bg-gray-50 px-3 py-2 text-xs text-gray-600 border-t">
       💡 Click on the map to set location, or drag the marker to adjust

@@ -1,6 +1,7 @@
 import type { PageServerLoad } from "./$types";
+import { getUserRole } from "$lib/auth";
 
-export const load: PageServerLoad = async ({ fetch, url }) => {
+export const load: PageServerLoad = async ({ fetch, url, locals }) => {
   // Build params from all URL search params
   const params = new URLSearchParams();
 
@@ -40,9 +41,12 @@ export const load: PageServerLoad = async ({ fetch, url }) => {
     if (value) currentFilters[param] = value;
   });
 
+  const userRole = locals.userId ? await getUserRole(locals.userId) : null;
+
   return {
     hikes: hikes || [],
     featureTypes: featureTypes || [],
     currentFilters,
+    userRole,
   };
 };
