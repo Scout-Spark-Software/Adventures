@@ -18,7 +18,7 @@
   import DetailPageHero from "$lib/components/DetailPageHero.svelte";
   import EditButton from "$lib/components/EditButton.svelte";
   import LocationMap from "$lib/components/LocationMap.svelte";
-  import { House, User, Map, MountainIcon, ChevronLeft, Flag, X } from "lucide-svelte";
+  import { House, User, Map, MountainIcon, ChevronLeft, Flag, X, Trash2 } from "lucide-svelte";
   import CompactRating from "$lib/components/ratings/CompactRating.svelte";
   import ReviewsTab from "$lib/components/ratings/ReviewsTab.svelte";
   import HeroRatingDisplay from "$lib/components/ratings/HeroRatingDisplay.svelte";
@@ -26,7 +26,7 @@
   import { SITE_TYPE_LABELS } from "$lib/db/schemas/enums";
   import FileUpload from "$lib/components/FileUpload.svelte";
   import ImageLightbox from "$lib/components/ImageLightbox.svelte";
-  import { invalidateAll } from "$app/navigation";
+  import { invalidateAll, goto } from "$app/navigation";
 
   export let data: PageData;
 
@@ -188,6 +188,28 @@
     showUploadModal = false;
     await invalidateAll();
   }
+
+  let isDeleting = false;
+  let deleteError: string | null = null;
+
+  async function deleteCampingSite() {
+    if (!confirm(`Permanently delete "${data.campingSite.name}" and all its images? This cannot be undone.`)) return;
+    isDeleting = true;
+    deleteError = null;
+    try {
+      const res = await fetch(`/api/camping-sites/${data.campingSite.id}`, { method: "DELETE" });
+      if (!res.ok) {
+        const err = await res.json();
+        deleteError = err.message || "Failed to delete.";
+        return;
+      }
+      goto("/camping");
+    } catch {
+      deleteError = "Failed to delete. Please try again.";
+    } finally {
+      isDeleting = false;
+    }
+  }
 </script>
 
 <svelte:head>
@@ -197,7 +219,7 @@
 <div class="min-h-screen bg-gray-100/60">
   <div class="max-w-6xl mx-auto px-4 py-6 space-y-8">
     <!-- Top Bar -->
-    <div class="flex items-center justify-between">
+    <div class="relative flex items-center justify-between">
       <a
         href="/camping"
         class="inline-flex items-center justify-center w-10 h-10 rounded-2xl text-gray-600 hover:bg-gray-200/80 transition-colors"
@@ -207,7 +229,20 @@
       <div class="flex items-center gap-2">
         <FavoriteButton campingSiteId={data.campingSite.id} userId={data.userId} />
         <ModerationBadge status={data.campingSite.status} userRole={typedUserRole} />
+        {#if isAdmin && data.campingSite.status === "rejected"}
+          <button
+            on:click={deleteCampingSite}
+            disabled={isDeleting}
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg border border-red-300 text-red-600 bg-white hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <Trash2 size={15} />
+            {isDeleting ? "Deleting..." : "Delete"}
+          </button>
+        {/if}
       </div>
+      {#if deleteError}
+        <div class="absolute top-full right-0 mt-1 text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-1.5">{deleteError}</div>
+      {/if}
     </div>
 
     <!-- Hero Image/Gradient -->

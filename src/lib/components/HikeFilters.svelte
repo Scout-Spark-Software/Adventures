@@ -8,6 +8,9 @@
 
     export let featureTypes: FeatureType[] = [];
     export let currentFilters: Record<string, string> = {};
+    export let userRole: string | null = null;
+
+    $: isAdmin = userRole === "admin";
 
     // Filter state
     let search = currentFilters.search || "";
@@ -20,6 +23,7 @@
         ? currentFilters.features.split(",")
         : [];
     let dogFriendly = currentFilters.dogFriendly === "true";
+    let statusFilter = currentFilters.status || "";
 
     // Mobile drawer state
     let isDrawerOpen = false;
@@ -71,6 +75,7 @@
         if (selectedFeatures.length > 0)
             params.set("features", selectedFeatures.join(","));
         if (dogFriendly) params.set("dogFriendly", "true");
+        if (isAdmin && statusFilter) params.set("status", statusFilter);
 
         const queryString = params.toString();
         await goto(`/hikes${queryString ? "?" + queryString : ""}`);
@@ -87,6 +92,7 @@
         minRating = "";
         selectedFeatures = [];
         dogFriendly = false;
+        statusFilter = "";
         goto("/hikes");
         isDrawerOpen = false;
     }
@@ -99,7 +105,8 @@
         (minDistance || maxDistance ? 1 : 0) +
         (minRating ? 1 : 0) +
         selectedFeatures.length +
-        (dogFriendly ? 1 : 0);
+        (dogFriendly ? 1 : 0) +
+        (statusFilter ? 1 : 0);
 </script>
 
 <!-- Mobile Filter Toggle Button -->
@@ -155,6 +162,26 @@
     <h2 class="text-base font-bold text-gray-900 mb-3 hidden lg:block">
         Search & Filter
     </h2>
+
+    <!-- Admin: Status Filter -->
+    {#if isAdmin}
+        <div class="mb-3">
+            <label for="statusFilter" class="block text-sm font-medium text-gray-700 mb-1.5">
+                Status
+            </label>
+            <select
+                id="statusFilter"
+                bind:value={statusFilter}
+                on:change={applyFilters}
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+            >
+                <option value="">Approved only</option>
+                <option value="pending">Pending</option>
+                <option value="rejected">Rejected</option>
+                <option value="all">All statuses</option>
+            </select>
+        </div>
+    {/if}
 
     <!-- Search Input -->
     <div class="mb-3">

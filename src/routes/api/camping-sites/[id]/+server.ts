@@ -1,10 +1,11 @@
 import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
-import { campingSites, addresses, ratingAggregates } from "$lib/db/schemas";
+import { campingSites, addresses, ratingAggregates, files } from "$lib/db/schemas";
 import { eq } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 import { isPrivilegedUser } from "$lib/auth/helpers";
+import { deleteFile } from "$lib/storage/blob";
 
 export const GET: RequestHandler = async ({ params, locals }) => {
   const rows = await db
@@ -157,6 +158,22 @@ export const DELETE: RequestHandler = async (event) => {
   // Only creator or admin can delete
   if (campingSite.createdBy !== user.id && user.role !== "admin") {
     throw error(403, "Not authorized to delete this camping site");
+  }
+
+  // Delete associated files from Vercel Blob and DB
+  const entityFiles = await db.query.files.findMany({
+    where: eq(files.entityId, event.params.id),
+  });
+
+  await Promise.allSettled(
+    entityFiles.map((f) => {
+      const pathname = new URL(f.fileUrl).pathname;
+      return deleteFile(pathname);
+    })
+  );
+
+  if (entityFiles.length > 0) {
+    await db.delete(files).where(eq(files.entityId, event.params.id));
   }
 
   await db.delete(campingSites).where(eq(campingSites.id, event.params.id));

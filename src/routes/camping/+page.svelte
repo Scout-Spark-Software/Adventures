@@ -41,6 +41,7 @@
           amenityTypes={data.amenityTypes}
           facilityTypes={data.facilityTypes}
           currentFilters={data.currentFilters}
+          userRole={data.userRole}
         />
       </aside>
 
@@ -88,6 +89,7 @@
         amenityTypes={data.amenityTypes}
         facilityTypes={data.facilityTypes}
         currentFilters={data.currentFilters}
+        userRole={data.userRole}
       />
     </div>
   </div>

@@ -9,6 +9,12 @@
     return null;
   }
 
+  function apiUrl(item: { entityType: string; entityId: string }) {
+    if (item.entityType === "hike") return `/api/hikes/${item.entityId}`;
+    if (item.entityType === "camping_site") return `/api/camping-sites/${item.entityId}`;
+    return null;
+  }
+
   export let data: PageData;
 
   let processingItems = new Set<string>();
@@ -27,6 +33,42 @@
       }
     }
     errors = errors;
+  }
+
+  async function deleteItem(entityType: string, entityId: string, name: string) {
+    if (!confirm(`Permanently delete "${name}" and all its images? This cannot be undone.`)) return;
+
+    const key = itemKey(entityType, entityId);
+    if (processingItems.has(key)) return;
+
+    const endpoint = apiUrl({ entityType, entityId });
+    if (!endpoint) return;
+
+    processingItems.add(key);
+    processingItems = processingItems;
+    errors.delete(key);
+    errors = errors;
+
+    try {
+      const response = await fetch(endpoint, { method: "DELETE" });
+
+      if (!response.ok) {
+        const err = await response.json();
+        errors.set(key, `Failed to delete: ${err.message || "Unknown error"}`);
+        errors = errors;
+        return;
+      }
+
+      await invalidateAll();
+      pruneErrors();
+    } catch (err) {
+      console.error("Failed to delete item:", err);
+      errors.set(key, "Failed to delete item. Please try again.");
+      errors = errors;
+    } finally {
+      processingItems.delete(key);
+      processingItems = processingItems;
+    }
   }
 
   async function moderateItem(
@@ -116,7 +158,7 @@
                   </div>
                 {/if}
               </div>
-              <div class="flex shrink-0 space-x-2">
+              <div class="flex shrink-0 items-center gap-2">
                 <button
                   on:click={() => moderateItem(item.entityType, item.entityId, "approved")}
                   disabled={processingItems.has(key)}
@@ -131,6 +173,16 @@
                 >
                   {processingItems.has(key) ? "Processing..." : "Reject"}
                 </button>
+                {#if data.userRole === "admin" && apiUrl(item)}
+                  <button
+                    on:click={() => deleteItem(item.entityType, item.entityId, item.entity?.name ?? item.entityId)}
+                    disabled={processingItems.has(key)}
+                    class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-600 bg-white hover:bg-gray-50 hover:text-red-600 hover:border-red-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    title="Delete permanently"
+                  >
+                    Delete
+                  </button>
+                {/if}
               </div>
             </div>
 
