@@ -31,6 +31,10 @@
   } from "lucide-svelte";
   import { TRAIL_TYPE_LABELS } from "$lib/db/schemas/enums";
   import ReviewsTab from "$lib/components/ratings/ReviewsTab.svelte";
+  import FileUpload from "$lib/components/FileUpload.svelte";
+  import ImageLightbox from "$lib/components/ImageLightbox.svelte";
+  import { Flag, X } from "lucide-svelte";
+  import { invalidateAll } from "$app/navigation";
 
   export let data: PageData;
 
@@ -131,6 +135,62 @@
   // Image files for media tab
   $: imageFiles = data.files?.filter((f: { fileType: string }) => f.fileType === "image") || [];
   $: nonImageFiles = data.files?.filter((f: { fileType: string }) => f.fileType !== "image") || [];
+
+  // Image flagging state
+  let flaggedImageIds = new Set<string>();
+  let flagMessage: string | null = null;
+
+  // Lightbox state
+  let lightboxIndex: number | null = null;
+
+  // Upload modal state
+  let showUploadModal = false;
+
+  function openLightbox(index: number) {
+    lightboxIndex = index;
+  }
+
+  function closeLightbox() {
+    lightboxIndex = null;
+  }
+
+  function handleLightboxDeleted(e: CustomEvent<{ id: string }>) {
+    // Trigger a reload so the deleted image disappears
+    invalidateAll();
+    closeLightbox();
+  }
+
+  function handleLightboxFlagged(e: CustomEvent<{ id: string }>) {
+    flaggedImageIds.add(e.detail.id);
+    flaggedImageIds = flaggedImageIds;
+    flagMessage = "Image reported. Thank you.";
+    setTimeout(() => (flagMessage = null), 4000);
+  }
+
+  async function flagImage(fileId: string) {
+    if (flaggedImageIds.has(fileId)) return;
+    try {
+      const response = await fetch(`/api/files/${fileId}/flag`, { method: "POST" });
+      if (response.ok) {
+        flaggedImageIds.add(fileId);
+        flaggedImageIds = flaggedImageIds;
+        flagMessage = "Image reported. Thank you.";
+      } else if (response.status === 409) {
+        flagMessage = "You've already flagged this image.";
+      } else {
+        flagMessage = "Failed to report image. Please try again.";
+      }
+    } catch {
+      flagMessage = "Failed to report image. Please try again.";
+    } finally {
+      setTimeout(() => (flagMessage = null), 4000);
+    }
+  }
+
+  async function handleImageUploaded() {
+    showUploadModal = false;
+    await invalidateAll();
+  }
 </script>
 
 <svelte:head>
@@ -477,11 +537,54 @@
         <!-- MEDIA TAB -->
       {:else if activeTab === "media"}
         <Card variant="elevated" padding="lg">
+          <!-- Header row -->
+          <div slot="header" class="flex items-center justify-between">
+            <h2 class="text-xl font-semibold text-gray-900">Photos</h2>
+            {#if data.userId}
+              <button
+                on:click={() => (showUploadModal = true)}
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white transition-colors"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Add Photos
+              </button>
+            {:else}
+              <a href="/login" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">Sign in to add photos</a>
+            {/if}
+          </div>
+
+          {#if flagMessage}
+            <div class="mb-4 rounded-md bg-blue-50 px-4 py-3 text-sm text-blue-800">
+              {flagMessage}
+            </div>
+          {/if}
+
           {#if data.files && data.files.length > 0}
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {#each imageFiles as file (file.fileUrl)}
-                <div class="aspect-square rounded-2xl overflow-hidden bg-gray-100">
-                  <img src={file.fileUrl} alt={file.fileName} class="w-full h-full object-cover" />
+              {#each imageFiles as file, i (file.fileUrl)}
+                <div class="aspect-square rounded-2xl overflow-hidden bg-gray-100 relative group">
+                  <button
+                    on:click={() => openLightbox(i)}
+                    class="w-full h-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+                    title="View full size"
+                  >
+                    <img src={file.fileUrl} alt={file.fileName} class="w-full h-full object-cover hover:brightness-90 transition-[filter]" />
+                  </button>
+                  {#if data.userId && file.uploadedBy !== data.userId && !isAdmin}
+                    <button
+                      on:click={() => flagImage(file.id)}
+                      disabled={flaggedImageIds.has(file.id)}
+                      title={flaggedImageIds.has(file.id) ? "Image reported" : "Flag as inappropriate"}
+                      class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white/80 hover:bg-red-50 rounded-full p-1.5 disabled:cursor-not-allowed"
+                    >
+                      <Flag
+                        size={14}
+                        class={flaggedImageIds.has(file.id) ? "text-red-500" : "text-gray-500 hover:text-red-500"}
+                      />
+                    </button>
+                  {/if}
                 </div>
               {/each}
               {#each nonImageFiles as file (file.fileUrl)}
@@ -529,7 +632,48 @@
             </div>
           {/if}
         </Card>
+
+        <!-- Upload modal -->
+        {#if showUploadModal}
+          <!-- svelte-ignore a11y-no-static-element-interactions -->
+          <!-- svelte-ignore a11y-click-events-have-key-events -->
+          <div
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+            on:click|self={() => (showUploadModal = false)}
+          >
+            <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Add Photos</h3>
+                <button
+                  on:click={() => (showUploadModal = false)}
+                  class="flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+              <FileUpload
+                entityType="hike"
+                entityId={data.hike.id}
+                fileType="image"
+                on:uploaded={handleImageUploaded}
+              />
+            </div>
+          </div>
+        {/if}
       {/if}
     </Tabs>
   </div>
 </div>
+
+{#if lightboxIndex !== null}
+  <ImageLightbox
+    images={imageFiles}
+    initialIndex={lightboxIndex}
+    {isAdmin}
+    userId={data.userId}
+    {flaggedImageIds}
+    on:close={closeLightbox}
+    on:deleted={handleLightboxDeleted}
+    on:flagged={handleLightboxFlagged}
+  />
+{/if}

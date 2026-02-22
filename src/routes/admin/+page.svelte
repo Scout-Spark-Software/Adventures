@@ -3,6 +3,7 @@
     ArrowRight,
     ChevronRight,
     CircleAlert,
+    Flag,
     Heart,
     Mountain,
     Pencil,
@@ -182,6 +183,34 @@
           size={16}
           class="text-gray-300 group-hover:text-gray-500 transition-colors"
         />
+      </a>
+
+      <a
+        href="/admin/image-flags"
+        class="group flex items-center justify-between bg-white border border-gray-200 rounded-xl px-5 py-4 hover:border-gray-300 hover:bg-gray-50/50 transition-all"
+      >
+        <div class="flex items-center gap-3">
+          <div class="p-1.5 bg-red-50 rounded-lg">
+            <Flag size={16} class="text-red-600" />
+          </div>
+          <div>
+            <h3 class="text-sm font-medium text-gray-900">Flagged Images</h3>
+            <p class="text-xs text-gray-500 mt-0.5">Review reported photos</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          {#if stats.pendingImageFlags > 0}
+            <span
+              class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700"
+            >
+              {stats.pendingImageFlags}
+            </span>
+          {/if}
+          <ChevronRight
+            size={16}
+            class="text-gray-300 group-hover:text-gray-500 transition-colors"
+          />
+        </div>
       </a>
     </div>
   </div>

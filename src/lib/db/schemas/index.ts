@@ -13,3 +13,4 @@ export * from "./feature-types";
 export * from "./trail-types";
 export * from "./ratings";
 export * from "./rating-aggregates";
+export * from "./image-flags";
