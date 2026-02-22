@@ -44,8 +44,10 @@
   let activeTab = "details";
   let notesCount = data.notesCount;
 
-  // Get the first image from files for the hero background
-  $: heroImage = data.files?.find((f: { fileType: string }) => f.fileType === "image");
+  // Get the banner image for the hero, falling back to the first image
+  $: heroImage =
+    data.files?.find((f: { fileType: string; isBanner: boolean }) => f.isBanner) ??
+    data.files?.find((f: { fileType: string }) => f.fileType === "image");
 
   // Handle URL hash navigation
   onMount(() => {

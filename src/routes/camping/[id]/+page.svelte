@@ -140,6 +140,10 @@
     (f: { mimeType?: string }) => f.mimeType && f.mimeType.startsWith("image/")
   );
 
+  // Get the banner image for the hero, falling back to the first image
+  $: heroImage =
+    campingImageFiles.find((f: { isBanner: boolean }) => f.isBanner) ?? campingImageFiles[0];
+
   function openLightbox(index: number) {
     lightboxIndex = index;
   }
@@ -230,9 +234,9 @@
           />
         </svg>
       </div>
-      {#if data.files && data.files.length > 0}
+      {#if heroImage}
         <img
-          src={data.files[0].fileUrl}
+          src={heroImage.fileUrl}
           alt={data.campingSite.name}
           class="relative w-full h-80 object-cover"
         />

@@ -1,4 +1,4 @@
-import { redirect, fail } from "@sveltejs/kit";
+import { fail } from "@sveltejs/kit";
 import type { PageServerLoad, Actions } from "./$types";
 import { requireAuth } from "$lib/auth/middleware";
 import { db } from "$lib/db";
@@ -102,7 +102,7 @@ export const actions: Actions = {
     }
 
     const hike = await response.json();
-    throw redirect(302, `/hikes/${hike.id}`);
+    return { created: true, id: hike.id, entityType: "hike" };
   },
 
   submitCampingSite: async ({ request, locals, fetch }) => {
@@ -202,6 +202,6 @@ export const actions: Actions = {
     }
 
     const campingSite = await response.json();
-    throw redirect(302, `/camping/${campingSite.id}`);
+    return { created: true, id: campingSite.id, entityType: "camping_site" };
   },
 };

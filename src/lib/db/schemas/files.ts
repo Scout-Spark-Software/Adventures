@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uuid, integer } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, uuid, integer, boolean } from "drizzle-orm/pg-core";
 import { fileEntityTypeEnum, fileTypeEnum } from "./enums";
 
 export const files = pgTable("files", {
@@ -11,6 +11,7 @@ export const files = pgTable("files", {
   fileSize: integer("file_size"),
   mimeType: text("mime_type"),
   uploadedBy: text("uploaded_by").notNull(),
+  isBanner: boolean("is_banner").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

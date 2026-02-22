@@ -4,6 +4,7 @@ import { requireAuth } from "$lib/auth/middleware";
 import { uploadFile } from "$lib/storage/blob";
 import { db } from "$lib/db";
 import { files } from "$lib/db/schemas";
+import { eq, and } from "drizzle-orm";
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   const user = requireAuth({ locals } as any);
@@ -13,6 +14,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   const entityType = formData.get("entity_type") as "hike" | "camping_site";
   const entityId = formData.get("entity_id") as string;
   const fileType = formData.get("file_type") as "image" | "document";
+  const isBanner = formData.get("is_banner") === "true";
 
   if (!file) {
     throw error(400, "File is required");
@@ -37,6 +39,20 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   // Upload to Vercel Blob
   const { url } = await uploadFile(file, fileType, path);
 
+  // If this is flagged as banner, clear existing banner first
+  if (isBanner && fileType === "image") {
+    await db
+      .update(files)
+      .set({ isBanner: false })
+      .where(
+        and(
+          eq(files.entityType, entityType),
+          eq(files.entityId, entityId),
+          eq(files.fileType, "image")
+        )
+      );
+  }
+
   // Save file record to database
   const [fileRecord] = await db
     .insert(files)
@@ -49,6 +65,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       fileSize: file.size,
       mimeType: file.type,
       uploadedBy: user.id,
+      isBanner: isBanner && fileType === "image",
     })
     .returning();
 
