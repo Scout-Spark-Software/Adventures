@@ -1,27 +1,36 @@
 import "dotenv/config";
-import { db } from "../src/lib/db/index.js";
-import { userRoles } from "../src/lib/db/schemas/index.js";
+import { WorkOS } from "@workos-inc/node";
 
-// Get the user ID from command line arguments
 const userId = process.argv[2];
 
 if (!userId) {
   console.error("Usage: npm run set-admin <user-id>");
-  console.error("Example: npm run set-admin 123e4567-e89b-12d3-a456-426614174000");
+  console.error("Example: npm run set-admin user_01ABC123...");
   process.exit(1);
 }
 
+const workos = new WorkOS(process.env.WORKOS_API_KEY);
+const organizationId = process.env.WORKOS_ORGANIZATION_ID!;
+
 async function setAdmin() {
   try {
-    await db
-      .insert(userRoles)
-      .values({ userId, role: "admin" })
-      .onConflictDoUpdate({
-        target: userRoles.userId,
-        set: { role: "admin" },
-      });
+    const memberships = await workos.userManagement.listOrganizationMemberships({
+      userId,
+      organizationId,
+    });
 
-    console.log(`✅ Successfully set user ${userId} as admin`);
+    if (memberships.data.length === 0) {
+      console.error(`User ${userId} is not a member of this organization`);
+      process.exit(1);
+    }
+
+    const membershipId = memberships.data[0].id;
+
+    await workos.userManagement.updateOrganizationMembership(membershipId, {
+      roleSlug: "admin",
+    });
+
+    console.log(`Successfully set user ${userId} as admin`);
     process.exit(0);
   } catch (error) {
     console.error("Error setting admin role:", error);

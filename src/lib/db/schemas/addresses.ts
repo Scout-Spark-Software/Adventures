@@ -1,4 +1,10 @@
-import { pgTable, text, timestamp, uuid, doublePrecision } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, uuid, doublePrecision, customType } from "drizzle-orm/pg-core";
+
+const tsvector = customType<{ data: string }>({
+  dataType() {
+    return "tsvector";
+  },
+});
 
 export const addresses = pgTable("addresses", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -9,6 +15,7 @@ export const addresses = pgTable("addresses", {
   postalCode: text("postal_code"),
   latitude: doublePrecision("latitude"),
   longitude: doublePrecision("longitude"),
+  searchVector: tsvector("search_vector"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

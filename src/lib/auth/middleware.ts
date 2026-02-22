@@ -28,14 +28,14 @@ export function requireAdmin(event: RequestEvent) {
 }
 
 /**
- * Ensures the user is authenticated and has moderator or admin role.
+ * Ensures the user is authenticated and has admin role.
  * Use this for moderation routes and API endpoints.
- * Redirects to /login if not authenticated, or to / if not a moderator/admin.
- * @returns The authenticated moderator/admin user object
+ * Redirects to /login if not authenticated, or to / if not an admin.
+ * @returns The authenticated admin user object
  */
 export function requireModerator(event: RequestEvent) {
   const user = requireAuth(event);
-  if (user.role !== "admin" && user.role !== "moderator") {
+  if (user.role !== "admin") {
     throw redirect(302, "/");
   }
   return user;

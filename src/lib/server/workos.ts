@@ -92,7 +92,7 @@ export const workosAuth = {
     // Return user with role from JWT payload
     return {
       ...user,
-      role: (payload.role as string) || "user",
+      role: (payload.role as string) || "member",
     };
   },
 

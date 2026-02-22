@@ -11,6 +11,7 @@
     Star,
     Tags,
     Tent,
+    Users,
   } from "lucide-svelte";
   import type { PageData } from "./$types";
 
@@ -90,7 +91,7 @@
 
     <!-- Quick Actions -->
     <h2 class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">Quick Actions</h2>
-    <div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
+    <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
       <a
         href="/admin/moderation"
         class="group flex items-center justify-between bg-white border border-gray-200 rounded-xl px-5 py-4 hover:border-gray-300 hover:bg-gray-50/50 transition-all"
@@ -156,6 +157,25 @@
           <div>
             <h3 class="text-sm font-medium text-gray-900">Manage Types</h3>
             <p class="text-xs text-gray-500 mt-0.5">Features, amenities, facilities</p>
+          </div>
+        </div>
+        <ChevronRight
+          size={16}
+          class="text-gray-300 group-hover:text-gray-500 transition-colors"
+        />
+      </a>
+
+      <a
+        href="/admin/users"
+        class="group flex items-center justify-between bg-white border border-gray-200 rounded-xl px-5 py-4 hover:border-gray-300 hover:bg-gray-50/50 transition-all"
+      >
+        <div class="flex items-center gap-3">
+          <div class="p-1.5 bg-emerald-50 rounded-lg">
+            <Users size={16} class="text-emerald-600" />
+          </div>
+          <div>
+            <h3 class="text-sm font-medium text-gray-900">Users</h3>
+            <p class="text-xs text-gray-500 mt-0.5">Manage users and roles</p>
           </div>
         </div>
         <ChevronRight

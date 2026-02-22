@@ -8,7 +8,6 @@ import {
     pgTable,
     text,
     timestamp,
-    unique,
     uuid,
 } from "drizzle-orm/pg-core";
 
@@ -22,7 +21,6 @@ export const fileEntityType = pgEnum("file_entity_type", [
   "camping_site",
 ]);
 export const fileType = pgEnum("file_type", ["image", "document"]);
-export const role = pgEnum("role", ["admin", "moderator", "user"]);
 export const status = pgEnum("status", ["pending", "approved", "rejected"]);
 
 export const favorites = pgTable(
@@ -135,19 +133,6 @@ export const moderationQueue = pgTable("moderation_queue", {
   reviewedAt: timestamp("reviewed_at", { mode: "string" }),
   createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
 });
-
-export const userRoles = pgTable(
-  "user_roles",
-  {
-    id: uuid().defaultRandom().primaryKey().notNull(),
-    userId: uuid("user_id").notNull(),
-    role: role().default("user").notNull(),
-    createdAt: timestamp("created_at", { mode: "string" })
-      .defaultNow()
-      .notNull(),
-  },
-  (table) => [unique("user_roles_user_id_unique").on(table.userId)],
-);
 
 export const hikes = pgTable(
   "hikes",

@@ -14,14 +14,14 @@ const authHandle: Handle = async ({ event, resolve }) => {
 
       if (user) {
         // Get role from WorkOS
-        const userRole = user.role || "user";
+        const userRole = user.role || "member";
 
         // Set user info in locals for use throughout the app
         event.locals.user = {
           id: user.id,
           email: user.email,
           name: user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : user.email,
-          role: userRole as "user" | "admin" | "moderator",
+          role: userRole as "member" | "admin",
         };
         event.locals.userId = user.id;
       } else {
@@ -84,13 +84,13 @@ const authHandle: Handle = async ({ event, resolve }) => {
           const user = await workosAuth.verifySession(newAccessToken);
           if (user) {
             // Get role from WorkOS
-            const userRole = user.role || "user";
+            const userRole = user.role || "member";
 
             event.locals.user = {
               id: user.id,
               email: user.email,
               name: user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : user.email,
-              role: userRole as "user" | "admin" | "moderator",
+              role: userRole as "member" | "admin",
             };
             event.locals.userId = user.id;
           } else {
@@ -138,13 +138,13 @@ const authHandle: Handle = async ({ event, resolve }) => {
       const user = await workosAuth.verifySession(newAccessToken);
       if (user) {
         // Get role from WorkOS
-        const userRole = user.role || "user";
+        const userRole = user.role || "member";
 
         event.locals.user = {
           id: user.id,
           email: user.email,
           name: user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : user.email,
-          role: userRole as "user" | "admin" | "moderator",
+          role: userRole as "member" | "admin",
         };
         event.locals.userId = user.id;
       } else {

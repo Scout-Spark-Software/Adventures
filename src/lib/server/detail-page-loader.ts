@@ -57,7 +57,7 @@ export async function loadDetailPage(params: {
       : null;
 
   // Get user role if logged in
-  let userRole = "user";
+  let userRole = "member";
   if (locals.userId) {
     userRole = await getUserRole(locals.userId);
   }

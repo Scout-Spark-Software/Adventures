@@ -8,7 +8,7 @@ declare global {
         id: string;
         email: string;
         name?: string;
-        role: "admin" | "moderator" | "user";
+        role: "admin" | "member";
       } | null;
       userId: string | null;
     }
@@ -17,7 +17,7 @@ declare global {
         id: string;
         email: string;
         name?: string;
-        role: "admin" | "moderator" | "user";
+        role: "admin" | "member";
       } | null;
     }
     // interface Error {}
