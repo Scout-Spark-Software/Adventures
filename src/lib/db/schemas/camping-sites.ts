@@ -1,4 +1,19 @@
-import { pgTable, text, timestamp, boolean, jsonb, uuid, numeric } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  timestamp,
+  boolean,
+  jsonb,
+  uuid,
+  numeric,
+  customType,
+} from "drizzle-orm/pg-core";
+
+const tsvector = customType<{ data: string }>({
+  dataType() {
+    return "tsvector";
+  },
+});
 import { statusEnum, petPolicyEnum, firePolicyEnum, siteTypeEnum } from "./enums";
 import { addresses } from "./addresses";
 
@@ -19,6 +34,7 @@ export const campingSites = pgTable("camping_sites", {
   reservationRequired: boolean("reservation_required").default(false),
   siteType: siteTypeEnum("site_type").notNull(),
   firePolicy: firePolicyEnum("fire_policy").notNull(),
+  searchVector: tsvector("search_vector"),
   status: statusEnum("status").default("pending").notNull(),
   featured: boolean("featured").default(false).notNull(),
   createdBy: text("created_by").notNull(),

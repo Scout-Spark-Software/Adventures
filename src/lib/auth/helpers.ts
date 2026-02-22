@@ -1,10 +1,10 @@
 import { VALID_STATUSES, type Status } from "$lib/db/schemas";
 
 /**
- * Check if the user has admin or moderator privileges.
+ * Check if the user has admin privileges.
  */
 export function isPrivilegedUser(user: App.Locals["user"]): boolean {
-  return user?.role === "admin" || user?.role === "moderator";
+  return user?.role === "admin";
 }
 
 /**

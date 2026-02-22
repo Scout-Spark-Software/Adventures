@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { ChevronRight } from "lucide-svelte";
   import type { PageData } from "./$types";
   import { invalidateAll } from "$app/navigation";
 
@@ -71,6 +72,11 @@
 
 <div class="min-h-screen bg-gray-50 py-12">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav class="flex items-center gap-1.5 text-sm mb-6">
+      <a href="/admin" class="text-gray-500 hover:text-gray-700 transition-colors">Admin</a>
+      <ChevronRight size={14} class="text-gray-300" />
+      <span class="text-gray-900 font-medium">Moderation Queue</span>
+    </nav>
     <h1 class="text-3xl font-bold text-gray-900 mb-8">Moderation Queue</h1>
 
     {#if data.queue && data.queue.length > 0}

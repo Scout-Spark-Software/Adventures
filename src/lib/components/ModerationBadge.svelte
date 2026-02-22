@@ -2,9 +2,9 @@
   import type { Status } from "$lib/db/schemas";
 
   export let status: Status;
-  export let userRole: "admin" | "moderator" | "user" | null = null;
+  export let userRole: "admin" | "member" | null = null;
 
-  $: canViewBadge = userRole === "admin" || userRole === "moderator";
+  $: canViewBadge = userRole === "admin";
 </script>
 
 {#if canViewBadge}

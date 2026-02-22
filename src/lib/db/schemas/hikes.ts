@@ -1,4 +1,19 @@
-import { pgTable, text, timestamp, boolean, jsonb, uuid, numeric } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  timestamp,
+  boolean,
+  jsonb,
+  uuid,
+  numeric,
+  customType,
+} from "drizzle-orm/pg-core";
+
+const tsvector = customType<{ data: string }>({
+  dataType() {
+    return "tsvector";
+  },
+});
 import {
   statusEnum,
   difficultyEnum,
@@ -28,6 +43,7 @@ export const hikes = pgTable("hikes", {
   bestSeason: jsonb("best_season"),
   waterSources: boolean("water_sources").default(false),
   parkingInfo: text("parking_info"),
+  searchVector: tsvector("search_vector"),
   status: statusEnum("status").default("pending").notNull(),
   featured: boolean("featured").default(false).notNull(),
   createdBy: text("created_by").notNull(),

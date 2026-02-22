@@ -1,12 +1,12 @@
 import type { PageServerLoad } from "./$types";
 import { requireAdmin } from "$lib/auth/middleware";
 
-export const load: PageServerLoad = async ({ fetch, locals }) => {
-  requireAdmin({ locals } as any);
+export const load: PageServerLoad = async (event) => {
+  requireAdmin(event);
 
   const [hikesResponse, campingSitesResponse] = await Promise.all([
-    fetch("/api/hikes?status=approved"),
-    fetch("/api/camping-sites?status=approved"),
+    event.fetch("/api/hikes?status=approved"),
+    event.fetch("/api/camping-sites?status=approved"),
   ]);
 
   const hikes = hikesResponse.ok ? await hikesResponse.json() : [];

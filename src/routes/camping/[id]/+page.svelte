@@ -29,7 +29,7 @@
 
   $: isAdmin = data.userRole === "admin";
   // Explicitly type userRole for type safety
-  $: typedUserRole = data.userRole as "user" | "admin" | "moderator" | null | undefined;
+  $: typedUserRole = data.userRole as "member" | "admin" | null | undefined;
 
   let activeTab = "details";
   let notesCount = data.notesCount;

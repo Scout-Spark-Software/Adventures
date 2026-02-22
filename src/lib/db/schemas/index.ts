@@ -6,7 +6,6 @@ export * from "./favorites";
 export * from "./notes";
 export * from "./alterations";
 export * from "./moderation-queue";
-export * from "./user-roles";
 export * from "./files";
 export * from "./amenity-types";
 export * from "./facility-types";

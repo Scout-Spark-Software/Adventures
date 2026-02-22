@@ -17,7 +17,7 @@
     id: string;
     email: string;
     name?: string;
-    role: "admin" | "moderator" | "user";
+    role: "admin" | "member";
   } | null;
   $: currentPath = $page.url.pathname;
 

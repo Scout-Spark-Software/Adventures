@@ -1,6 +1,6 @@
 import { workos, workosConfig } from "../server/workos";
 
-export type UserRole = "admin" | "moderator" | "user";
+export type UserRole = "admin" | "member";
 
 /**
  * Gets the user role from WorkOS organization membership.
@@ -18,14 +18,14 @@ export async function getUserRole(userId: string): Promise<UserRole> {
     });
     console.log("Memberships:", memberships?.data);
     if (memberships.data.length > 0) {
-      const role = memberships.data[0].role?.slug || "user";
+      const role = memberships.data[0].role?.slug || "member";
       return role as UserRole;
     }
 
-    return "user";
+    return "member";
   } catch (error) {
     console.error("Error getting user role from WorkOS:", error);
-    return "user";
+    return "member";
   }
 }
 
@@ -43,23 +43,11 @@ export async function isAdmin(userId: string): Promise<boolean> {
 }
 
 /**
- * @deprecated Use `event.locals.user.role === 'moderator' || event.locals.user.role === 'admin'`
- * in route handlers instead. For route-level checks, use `requireModerator()` from `$lib/auth/middleware`.
- *
- * This function makes an async call to WorkOS which is unnecessary since the role
- * is already available in `event.locals.user.role`.
+ * @deprecated Use `event.locals.user.role === 'admin'`
+ * in route handlers instead. For route-level checks, use `requireAdmin()` from `$lib/auth/middleware`.
  */
 export async function isModerator(userId: string): Promise<boolean> {
   const role = await getUserRole(userId);
-  return role === "admin" || role === "moderator";
+  return role === "admin";
 }
 
-/**
- * @deprecated Roles should be managed in the WorkOS dashboard.
- * This function is kept for backwards compatibility only.
- */
-export async function setUserRole(_userId: string, _role: UserRole): Promise<void> {
-  // Note: Roles should be managed in WorkOS dashboard
-  // This function is deprecated and kept for backwards compatibility
-  console.warn("setUserRole is deprecated. Please manage user roles in the WorkOS dashboard.");
-}

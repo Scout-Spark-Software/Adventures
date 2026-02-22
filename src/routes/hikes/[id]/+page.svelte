@@ -35,7 +35,7 @@
   export let data: PageData;
 
   $: isAdmin = data.userRole === "admin";
-  $: typedUserRole = data.userRole as "admin" | "moderator" | "user" | null;
+  $: typedUserRole = data.userRole as "admin" | "member" | null;
 
   let activeTab = "details";
   let notesCount = data.notesCount;
