@@ -1,4 +1,4 @@
-import { error } from "@sveltejs/kit";
+import { error, redirect } from "@sveltejs/kit";
 import type { PageServerLoad, Actions } from "./$types";
 import { db } from "$lib/db";
 import { hikes, addresses } from "$lib/db/schemas";
@@ -32,6 +32,24 @@ export const load: PageServerLoad = async (event) => {
 };
 
 export const actions: Actions = {
+  delete: async (event) => {
+    const user = requireAuth(event);
+
+    if (user.role !== "admin") {
+      return { success: false, error: "Not authorized" };
+    }
+
+    const response = await event.fetch(`/api/hikes/${event.params.id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      return { success: false, error: "Failed to delete hike" };
+    }
+
+    throw redirect(303, "/hikes");
+  },
+
   updateField: async (event) => {
     const user = requireAuth(event);
     const formData = await event.request.formData();
