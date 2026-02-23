@@ -26,7 +26,7 @@
   import { SITE_TYPE_LABELS } from "$lib/db/schemas/enums";
   import FileUpload from "$lib/components/FileUpload.svelte";
   import ImageLightbox from "$lib/components/ImageLightbox.svelte";
-  import { invalidateAll, goto } from "$app/navigation";
+  import { goto } from "$app/navigation";
 
   export let data: PageData;
 
@@ -36,6 +36,25 @@
 
   let activeTab = "details";
   let notesCount = data.notesCount;
+
+  // Lazy-loaded files — only fetched when the media tab is first opened
+  let files: { id: string; fileUrl: string; fileName: string; fileType: string; mimeType?: string; isBanner?: boolean; uploadedBy: string }[] = [];
+  let filesLoaded = false;
+
+  async function loadFiles() {
+    if (filesLoaded) return;
+    filesLoaded = true;
+    const res = await fetch(`/api/files?entity_type=camping_site&entity_id=${data.campingSite.id}`);
+    if (res.ok) files = await res.json();
+  }
+
+  $: if (activeTab === "media") loadFiles();
+
+  $: campingImageFiles = files.filter((f) => f.mimeType && f.mimeType.startsWith("image/"));
+  $: nonImageFiles = files.filter((f) => !f.mimeType || !f.mimeType.startsWith("image/"));
+
+  // Get the banner image for the hero, falling back to the first image
+  $: heroImage = campingImageFiles.find((f) => f.isBanner) ?? campingImageFiles[0];
 
   // Handle URL hash navigation
   onMount(() => {
@@ -119,9 +138,6 @@
       : []),
   ];
 
-  // For top actions
-  // (typedUserRole now set above with explicit type)
-
   function handleNotesCountChanged(event: CustomEvent<number>) {
     notesCount = event.detail;
   }
@@ -136,14 +152,6 @@
   // Upload modal state
   let showUploadModal = false;
 
-  $: campingImageFiles = (data.files || []).filter(
-    (f: { mimeType?: string }) => f.mimeType && f.mimeType.startsWith("image/")
-  );
-
-  // Get the banner image for the hero, falling back to the first image
-  $: heroImage =
-    campingImageFiles.find((f: { isBanner: boolean }) => f.isBanner) ?? campingImageFiles[0];
-
   function openLightbox(index: number) {
     lightboxIndex = index;
   }
@@ -153,7 +161,7 @@
   }
 
   function handleLightboxDeleted(e: CustomEvent<{ id: string }>) {
-    invalidateAll();
+    files = files.filter((f) => f.id !== e.detail.id);
     closeLightbox();
   }
 
@@ -186,7 +194,9 @@
 
   async function handleImageUploaded() {
     showUploadModal = false;
-    await invalidateAll();
+    // Re-fetch files so the newly uploaded image appears
+    filesLoaded = false;
+    await loadFiles();
   }
 
   let isDeleting = false;
@@ -453,7 +463,13 @@
             </div>
           {/if}
 
-          {#if campingImageFiles.length > 0 || (data.files && data.files.filter((f) => !f.mimeType || !f.mimeType.startsWith("image/")).length > 0)}
+          {#if !filesLoaded}
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {#each [1, 2, 3, 4] as i (i)}
+                <div class="aspect-square rounded-2xl bg-gray-100 animate-pulse"></div>
+              {/each}
+            </div>
+          {:else if files.length > 0}
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
               {#each campingImageFiles as file, i (file.fileUrl)}
                 <div class="aspect-square rounded-2xl overflow-hidden bg-gray-100 relative group">
@@ -479,7 +495,7 @@
                   {/if}
                 </div>
               {/each}
-              {#each data.files.filter((f) => !f.mimeType || !f.mimeType.startsWith("image/")) as file (file.fileUrl)}
+              {#each nonImageFiles as file (file.fileUrl)}
                 <a
                   href={file.fileUrl}
                   target="_blank"

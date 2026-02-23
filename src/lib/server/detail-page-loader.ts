@@ -7,7 +7,6 @@ import { and, count, eq } from "drizzle-orm";
 export interface DetailPageData {
   entity: any;
   address: any;
-  files: any[];
   userId: string | null;
   userRole: string;
   notesCount: number;
@@ -38,11 +37,6 @@ export async function loadDetailPage(params: {
     }
     return r.json();
   });
-
-  // Fetch files
-  const files = await fetch(`/api/files?entity_type=${entityType}&entity_id=${entityId}`).then(
-    (r) => r.json()
-  );
 
   // Extract address and rating aggregate from entity response
   const address = entity.address?.id != null ? entity.address : null;
@@ -76,7 +70,6 @@ export async function loadDetailPage(params: {
   return {
     [entityType === "hike" ? "hike" : "campingSite"]: entity,
     address,
-    files: files || [],
     userId: locals.userId || null,
     userRole,
     notesCount,

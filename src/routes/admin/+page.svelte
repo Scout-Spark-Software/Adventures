@@ -1,6 +1,5 @@
 <script lang="ts">
   import {
-    ArrowRight,
     ChevronRight,
     CircleAlert,
     Flag,
@@ -160,10 +159,7 @@
             <p class="text-xs text-gray-500 mt-0.5">Features, amenities, facilities</p>
           </div>
         </div>
-        <ChevronRight
-          size={16}
-          class="text-gray-300 group-hover:text-gray-500 transition-colors"
-        />
+        <ChevronRight size={16} class="text-gray-300 group-hover:text-gray-500 transition-colors" />
       </a>
 
       <a
@@ -179,10 +175,7 @@
             <p class="text-xs text-gray-500 mt-0.5">Manage users and roles</p>
           </div>
         </div>
-        <ChevronRight
-          size={16}
-          class="text-gray-300 group-hover:text-gray-500 transition-colors"
-        />
+        <ChevronRight size={16} class="text-gray-300 group-hover:text-gray-500 transition-colors" />
       </a>
 
       <a

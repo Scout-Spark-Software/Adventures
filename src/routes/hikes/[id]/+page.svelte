@@ -44,10 +44,23 @@
   let activeTab = "details";
   let notesCount = data.notesCount;
 
+  // Lazy-loaded files — only fetched when the media tab is first opened
+  let files: { id: string; fileUrl: string; fileName: string; fileType: string; isBanner?: boolean; uploadedBy: string }[] = [];
+  let filesLoaded = false;
+
+  async function loadFiles() {
+    if (filesLoaded) return;
+    filesLoaded = true;
+    const res = await fetch(`/api/files?entity_type=hike&entity_id=${data.hike.id}`);
+    if (res.ok) files = await res.json();
+  }
+
+  $: if (activeTab === "media") loadFiles();
+
   // Get the banner image for the hero, falling back to the first image
-  $: heroImage =
-    data.files?.find((f: { fileType: string; isBanner: boolean }) => f.isBanner) ??
-    data.files?.find((f: { fileType: string }) => f.fileType === "image");
+  $: heroImage = files.find((f) => f.isBanner) ?? files.find((f) => f.fileType === "image");
+  $: imageFiles = files.filter((f) => f.fileType === "image");
+  $: nonImageFiles = files.filter((f) => f.fileType !== "image");
 
   // Handle URL hash navigation
   onMount(() => {
@@ -68,7 +81,7 @@
   $: tabs = [
     { id: "details", label: "Details" },
     { id: "map", label: "Map" },
-    { id: "media", label: "Media", count: data.files?.length || 0 },
+    { id: "media", label: "Media" },
     {
       id: "reviews",
       label: "Reviews",
@@ -134,10 +147,6 @@
     ? data.hike.difficulty.charAt(0).toUpperCase() + data.hike.difficulty.slice(1).replace("_", " ")
     : null;
 
-  // Image files for media tab
-  $: imageFiles = data.files?.filter((f: { fileType: string }) => f.fileType === "image") || [];
-  $: nonImageFiles = data.files?.filter((f: { fileType: string }) => f.fileType !== "image") || [];
-
   // Image flagging state
   let flaggedImageIds = new Set<string>();
   let flagMessage: string | null = null;
@@ -157,8 +166,7 @@
   }
 
   function handleLightboxDeleted(e: CustomEvent<{ id: string }>) {
-    // Trigger a reload so the deleted image disappears
-    invalidateAll();
+    files = files.filter((f) => f.id !== e.detail.id);
     closeLightbox();
   }
 
@@ -191,7 +199,9 @@
 
   async function handleImageUploaded() {
     showUploadModal = false;
-    await invalidateAll();
+    // Re-fetch files so the newly uploaded image appears
+    filesLoaded = false;
+    await loadFiles();
   }
 
   let isDeleting = false;
@@ -598,7 +608,13 @@
             </div>
           {/if}
 
-          {#if data.files && data.files.length > 0}
+          {#if !filesLoaded}
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {#each [1, 2, 3, 4] as i (i)}
+                <div class="aspect-square rounded-2xl bg-gray-100 animate-pulse"></div>
+              {/each}
+            </div>
+          {:else if files.length > 0}
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
               {#each imageFiles as file, i (file.fileUrl)}
                 <div class="aspect-square rounded-2xl overflow-hidden bg-gray-100 relative group">
