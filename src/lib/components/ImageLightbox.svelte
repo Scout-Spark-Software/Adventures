@@ -1,12 +1,13 @@
 <script lang="ts">
   import { createEventDispatcher, onMount, onDestroy } from "svelte";
-  import { ChevronLeft, ChevronRight, X, Trash2, Flag } from "lucide-svelte";
+  import { ChevronLeft, ChevronRight, X, Trash2, Flag, Star } from "lucide-svelte";
 
   export let images: Array<{
     id: string;
     fileUrl: string;
     fileName: string;
     uploadedBy: string;
+    isBanner?: boolean;
   }>;
   export let initialIndex: number = 0;
   export let isAdmin: boolean = false;
@@ -17,16 +18,19 @@
     close: void;
     deleted: { id: string };
     flagged: { id: string };
+    bannerChanged: { id: string };
   }>();
 
   let currentIndex = initialIndex;
   let deleting = false;
   let confirmDelete = false;
   let flagging = false;
+  let settingBanner = false;
 
   $: image = images[currentIndex];
   $: hasPrev = currentIndex > 0;
   $: hasNext = currentIndex < images.length - 1;
+  $: isBannerImage = image?.isBanner ?? false;
 
   function close() {
     dispatch("close");
@@ -79,6 +83,23 @@
     }
   }
 
+  async function setBanner() {
+    if (settingBanner || isBannerImage) return;
+    settingBanner = true;
+    try {
+      const response = await fetch(`/api/files/${image.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isBanner: true }),
+      });
+      if (response.ok) {
+        dispatch("bannerChanged", { id: image.id });
+      }
+    } finally {
+      settingBanner = false;
+    }
+  }
+
   function handleKeydown(e: KeyboardEvent) {
     if (e.key === "Escape") close();
     if (e.key === "ArrowLeft") prev();
@@ -125,8 +146,20 @@
         </button>
       {/if}
 
-      <!-- Admin delete button -->
+      <!-- Admin controls -->
       {#if isAdmin}
+        <!-- Set banner button -->
+        <button
+          on:click={setBanner}
+          disabled={settingBanner || isBannerImage}
+          title={isBannerImage ? "Current banner image" : "Set as banner image"}
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors {isBannerImage ? 'bg-yellow-500/80 text-white cursor-default' : 'bg-white/10 hover:bg-yellow-500/70 text-white/80 hover:text-white'} disabled:opacity-60"
+        >
+          <Star size={13} class={isBannerImage ? "fill-current" : ""} />
+          {isBannerImage ? "Banner" : settingBanner ? "Saving..." : "Set banner"}
+        </button>
+
+        <!-- Delete button -->
         {#if confirmDelete}
           <div class="flex items-center gap-2">
             <span class="text-sm text-white/80">Remove this image?</span>

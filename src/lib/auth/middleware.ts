@@ -1,13 +1,17 @@
-import { redirect } from "@sveltejs/kit";
+import { redirect, error } from "@sveltejs/kit";
 import type { RequestEvent } from "@sveltejs/kit";
 
 /**
  * Ensures the user is authenticated. Use this for routes that require any logged-in user.
- * Redirects to /login if not authenticated.
+ * For API routes (fetch calls), returns 401. For page routes, redirects to /login.
  * @returns The authenticated user object
  */
 export function requireAuth(event: RequestEvent) {
   if (!event.locals.user || !event.locals.userId) {
+    const isApiRoute = event.url?.pathname.startsWith("/api/");
+    if (isApiRoute) {
+      throw error(401, "Unauthorized");
+    }
     throw redirect(302, "/login");
   }
   return event.locals.user;

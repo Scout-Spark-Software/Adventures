@@ -2,7 +2,7 @@ import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
 import { campingSites, addresses, ratingAggregates, files } from "$lib/db/schemas";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 import { isPrivilegedUser } from "$lib/auth/helpers";
 import { deleteFile } from "$lib/storage/blob";
@@ -46,6 +46,14 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         totalRatings: ratingAggregates.totalRatings,
         totalReviews: ratingAggregates.totalReviews,
       },
+      bannerImageUrl: sql<string | null>`(
+        SELECT file_url FROM files
+        WHERE entity_id = ${campingSites.id}
+          AND entity_type = 'camping_site'
+          AND file_type = 'image'
+        ORDER BY is_banner DESC, created_at ASC
+        LIMIT 1
+      )`.as("banner_image_url"),
     })
     .from(campingSites)
     .leftJoin(addresses, eq(campingSites.addressId, addresses.id))

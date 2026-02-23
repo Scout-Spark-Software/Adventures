@@ -6,6 +6,7 @@
 
   export let campingSite: CampingSite & {
     address?: Pick<Address, "city" | "state"> | null;
+    bannerImageUrl?: string | null;
   };
 
   $: locationText = campingSite.address
@@ -17,33 +18,41 @@
   href="/camping/{campingSite.id}"
   class="group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 block"
 >
-  <!-- Image Placeholder -->
+  <!-- Image -->
   <div
     class="relative h-40 bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600 overflow-hidden"
   >
-    <!-- Decorative mountain shapes -->
-    <div class="absolute inset-0">
-      <svg
-        class="absolute bottom-0 w-full h-28 text-indigo-600/30"
-        viewBox="0 0 1200 200"
-        preserveAspectRatio="none"
-      >
-        <path
-          d="M0 200 L0 120 L150 60 L300 100 L450 30 L600 80 L750 20 L900 70 L1050 40 L1200 90 L1200 200 Z"
-          fill="currentColor"
-        />
-      </svg>
-      <svg
-        class="absolute bottom-0 w-full h-24 text-indigo-700/25"
-        viewBox="0 0 1200 160"
-        preserveAspectRatio="none"
-      >
-        <path
-          d="M0 160 L0 100 L200 50 L400 90 L600 30 L800 70 L1000 45 L1200 80 L1200 160 Z"
-          fill="currentColor"
-        />
-      </svg>
-    </div>
+    {#if campingSite.bannerImageUrl}
+      <img
+        src={campingSite.bannerImageUrl}
+        alt={campingSite.name}
+        class="absolute inset-0 w-full h-full object-cover"
+      />
+    {:else}
+      <!-- Decorative mountain shapes -->
+      <div class="absolute inset-0">
+        <svg
+          class="absolute bottom-0 w-full h-28 text-indigo-600/30"
+          viewBox="0 0 1200 200"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M0 200 L0 120 L150 60 L300 100 L450 30 L600 80 L750 20 L900 70 L1050 40 L1200 90 L1200 200 Z"
+            fill="currentColor"
+          />
+        </svg>
+        <svg
+          class="absolute bottom-0 w-full h-24 text-indigo-700/25"
+          viewBox="0 0 1200 160"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M0 160 L0 100 L200 50 L400 90 L600 30 L800 70 L1000 45 L1200 80 L1200 160 Z"
+            fill="currentColor"
+          />
+        </svg>
+      </div>
+    {/if}
 
     <!-- Site Type Badge -->
     {#if campingSite.siteType}

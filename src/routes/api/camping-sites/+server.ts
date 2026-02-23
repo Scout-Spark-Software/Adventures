@@ -1,7 +1,7 @@
 import { isPrivilegedUser, parseStatusParam } from "$lib/auth/helpers";
 import { requireAuth } from "$lib/auth/middleware";
 import { db } from "$lib/db";
-import { addresses, campingSites, ratingAggregates } from "$lib/db/schemas";
+import { addresses, campingSites, files, ratingAggregates } from "$lib/db/schemas";
 import { addToModerationQueue } from "$lib/moderation";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
 import { error, json } from "@sveltejs/kit";
@@ -122,6 +122,14 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         latitude: addresses.latitude,
         longitude: addresses.longitude,
       },
+      bannerImageUrl: sql<string | null>`(
+        SELECT file_url FROM files
+        WHERE entity_id = ${campingSites.id}
+          AND entity_type = 'camping_site'
+          AND file_type = 'image'
+        ORDER BY is_banner DESC, created_at ASC
+        LIMIT 1
+      )`.as("banner_image_url"),
     })
     .from(campingSites)
     .leftJoin(addresses, eq(campingSites.addressId, addresses.id));

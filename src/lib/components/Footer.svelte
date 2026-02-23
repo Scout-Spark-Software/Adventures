@@ -54,7 +54,16 @@
         </ul>
       </div>
     </div>
-    <div class="border-t border-slate-800 pt-6">
+    <div class="border-t border-slate-800 pt-6 flex flex-col items-center gap-3">
+      <a
+        href="https://buymeacoffee.com/landersmikm"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-semibold text-sm transition-colors"
+      >
+        <span>☕</span>
+        Buy me a coffee
+      </a>
       <p class="text-center text-slate-400 text-sm">
         &copy; {new Date().getFullYear()} Adventure Spark. All rights reserved.
       </p>

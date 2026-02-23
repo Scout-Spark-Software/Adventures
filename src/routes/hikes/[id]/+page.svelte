@@ -57,8 +57,13 @@
 
   $: if (activeTab === "media") loadFiles();
 
-  // Get the banner image for the hero, falling back to the first image
-  $: heroImage = files.find((f) => f.isBanner) ?? files.find((f) => f.fileType === "image");
+  // Hero image: use the SSR-provided bannerImageUrl until the media tab loads files,
+  // then prefer the live banner from loaded files. Never blank it out mid-fetch.
+  $: liveHeroUrl = files.length > 0
+    ? (files.find((f) => f.isBanner) ?? files.find((f) => f.fileType === "image"))?.fileUrl ?? null
+    : null;
+  $: heroImageUrl = liveHeroUrl ?? data.hike.bannerImageUrl ?? null;
+
   $: imageFiles = files.filter((f) => f.fileType === "image");
   $: nonImageFiles = files.filter((f) => f.fileType !== "image");
 
@@ -168,6 +173,10 @@
   function handleLightboxDeleted(e: CustomEvent<{ id: string }>) {
     files = files.filter((f) => f.id !== e.detail.id);
     closeLightbox();
+  }
+
+  function handleLightboxBannerChanged(e: CustomEvent<{ id: string }>) {
+    files = files.map((f) => ({ ...f, isBanner: f.id === e.detail.id }));
   }
 
   function handleLightboxFlagged(e: CustomEvent<{ id: string }>) {
@@ -284,9 +293,9 @@
           />
         </svg>
       </div>
-      {#if heroImage}
+      {#if heroImageUrl}
         <img
-          src={heroImage.fileUrl}
+          src={heroImageUrl}
           alt={data.hike.name}
           class="relative w-full h-80 object-cover"
         />
@@ -727,6 +736,7 @@
     {flaggedImageIds}
     on:close={closeLightbox}
     on:deleted={handleLightboxDeleted}
+    on:bannerChanged={handleLightboxBannerChanged}
     on:flagged={handleLightboxFlagged}
   />
 {/if}

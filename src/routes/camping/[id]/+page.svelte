@@ -53,8 +53,12 @@
   $: campingImageFiles = files.filter((f) => f.mimeType && f.mimeType.startsWith("image/"));
   $: nonImageFiles = files.filter((f) => !f.mimeType || !f.mimeType.startsWith("image/"));
 
-  // Get the banner image for the hero, falling back to the first image
-  $: heroImage = campingImageFiles.find((f) => f.isBanner) ?? campingImageFiles[0];
+  // Hero image: use the SSR-provided bannerImageUrl until the media tab loads files,
+  // then prefer the live banner from loaded files. Never blank it out mid-fetch.
+  $: liveHeroUrl = campingImageFiles.length > 0
+    ? (campingImageFiles.find((f) => f.isBanner) ?? campingImageFiles[0])?.fileUrl ?? null
+    : null;
+  $: heroImageUrl = liveHeroUrl ?? data.campingSite.bannerImageUrl ?? null;
 
   // Handle URL hash navigation
   onMount(() => {
@@ -163,6 +167,10 @@
   function handleLightboxDeleted(e: CustomEvent<{ id: string }>) {
     files = files.filter((f) => f.id !== e.detail.id);
     closeLightbox();
+  }
+
+  function handleLightboxBannerChanged(e: CustomEvent<{ id: string }>) {
+    files = files.map((f) => ({ ...f, isBanner: f.id === e.detail.id }));
   }
 
   function handleLightboxFlagged(e: CustomEvent<{ id: string }>) {
@@ -279,9 +287,9 @@
           />
         </svg>
       </div>
-      {#if heroImage}
+      {#if heroImageUrl}
         <img
-          src={heroImage.fileUrl}
+          src={heroImageUrl}
           alt={data.campingSite.name}
           class="relative w-full h-80 object-cover"
         />
@@ -580,6 +588,7 @@
     {flaggedImageIds}
     on:close={closeLightbox}
     on:deleted={handleLightboxDeleted}
+    on:bannerChanged={handleLightboxBannerChanged}
     on:flagged={handleLightboxFlagged}
   />
 {/if}
