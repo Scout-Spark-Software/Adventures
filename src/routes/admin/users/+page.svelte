@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ChevronRight } from "lucide-svelte";
+  import { ChevronRight, Users } from "lucide-svelte";
   import type { PageData } from "./$types";
   import { invalidateAll } from "$app/navigation";
 
@@ -56,100 +56,160 @@
 
   const roles = ["admin", "member"] as const;
 
-  const roleBadgeClasses: Record<string, string> = {
-    admin: "bg-red-50 text-red-700",
-    member: "bg-gray-100 text-gray-600",
-  };
+  function roleBadgeClass(role: string) {
+    if (role === "admin") return "bg-red-500/20 text-red-300 border-red-500/30";
+    return "bg-stone-500/20 text-stone-400 border-stone-500/30";
+  }
+
+  function avatarLetter(user: { firstName: string | null; email: string }) {
+    return (user.firstName?.[0] ?? user.email[0]).toUpperCase();
+  }
 </script>
 
 <svelte:head>
   <title>Users - Admin - Adventure Spark</title>
 </svelte:head>
 
-<div class="min-h-screen bg-gray-50 py-12">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+<style>
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+  :global(body) {
+    background-color: #0c0f0a;
+  }
+</style>
+
+<div class="grain"></div>
+
+<div class="relative z-10 min-h-screen pt-10 pb-16">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Breadcrumb -->
     <nav class="flex items-center gap-1.5 text-sm mb-6">
-      <a href="/admin" class="text-gray-500 hover:text-gray-700 transition-colors">Admin</a>
-      <ChevronRight size={14} class="text-gray-300" />
-      <span class="text-gray-900 font-medium">Users</span>
+      <a href="/admin" class="text-stone-400 hover:text-stone-200 transition-colors">Admin</a>
+      <ChevronRight size={14} class="text-stone-600" />
+      <span class="text-stone-200 font-medium">Users</span>
     </nav>
 
     <div class="flex items-center justify-between mb-8">
-      <h1 class="text-3xl font-bold text-gray-900">Users</h1>
-      <span class="text-sm text-gray-500">{data.users.length} total</span>
+      <div class="flex items-center gap-3">
+        <div class="p-2.5 bg-emerald-500/15 border border-emerald-500/25 rounded-xl">
+          <Users size={20} class="text-emerald-400" />
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold text-stone-100">Users</h1>
+          <p class="text-sm text-stone-400">{data.users.length} registered user{data.users.length !== 1 ? "s" : ""}</p>
+        </div>
+      </div>
     </div>
 
-    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead>
-          <tr class="bg-gray-50/50">
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide"
-            >
-              Name
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide"
-            >
-              Email
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide"
-            >
-              Role
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide"
-            >
-              Joined
-            </th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-100">
-          {#each data.users as user (user.id)}
-            <tr class="hover:bg-gray-50/50 transition-colors">
-              <td class="px-6 py-4 text-sm font-medium text-gray-900">
-                {formatName(user)}
-              </td>
-              <td class="px-6 py-4 text-sm text-gray-500">
-                {user.email}
-              </td>
-              <td class="px-6 py-4">
-                {#if user.id === data.currentUserId}
-                  <span
-                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {roleBadgeClasses[
-                      user.role
-                    ] || roleBadgeClasses.member}"
-                  >
-                    {user.role}
-                  </span>
-                {:else}
-                  <select
-                    value={user.role}
-                    on:change={(e) => updateRole(user.id, e.currentTarget.value)}
-                    disabled={processingIds.has(user.id)}
-                    class="text-sm border border-gray-200 rounded-lg px-2.5 py-1 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {#each roles as role}
-                      <option value={role}>{role}</option>
-                    {/each}
-                  </select>
-                {/if}
-                {#if errors.has(user.id)}
-                  <p class="text-xs text-red-600 mt-1">{errors.get(user.id)}</p>
-                {/if}
-              </td>
-              <td class="px-6 py-4 text-sm text-gray-500">
-                {formatDate(user.createdAt)}
-              </td>
+    <div class="bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl overflow-hidden">
+      <!-- Desktop table -->
+      <div class="hidden sm:block">
+        <table class="min-w-full">
+          <thead>
+            <tr class="border-b border-white/10">
+              <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider">User</th>
+              <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider">Email</th>
+              <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider">Role</th>
+              <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider">Joined</th>
             </tr>
-          {:else}
-            <tr>
-              <td colspan="4" class="px-6 py-12 text-center text-gray-500"> No users found. </td>
-            </tr>
-          {/each}
-        </tbody>
-      </table>
+          </thead>
+          <tbody class="divide-y divide-white/5">
+            {#each data.users as user (user.id)}
+              <tr class="hover:bg-white/3 transition-colors">
+                <td class="px-5 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-emerald-600/30 border border-emerald-500/30 text-emerald-300 flex items-center justify-center text-xs font-bold flex-shrink-0">
+                      {avatarLetter(user)}
+                    </div>
+                    <span class="text-sm font-medium text-stone-200">{formatName(user)}</span>
+                  </div>
+                </td>
+                <td class="px-5 py-4 text-sm text-stone-500">
+                  {user.email}
+                </td>
+                <td class="px-5 py-4">
+                  {#if user.id === data.currentUserId}
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border {roleBadgeClass(user.role)}">
+                      {user.role}
+                    </span>
+                  {:else}
+                    <div>
+                      <select
+                        value={user.role}
+                        on:change={(e) => updateRole(user.id, e.currentTarget.value)}
+                        disabled={processingIds.has(user.id)}
+                        class="bg-white/5 border border-white/10 rounded-lg px-2.5 py-1 text-xs text-stone-300 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      >
+                        {#each roles as role}
+                          <option value={role} class="bg-stone-900">{role}</option>
+                        {/each}
+                      </select>
+                      {#if errors.has(user.id)}
+                        <p class="text-xs text-red-400 mt-1">{errors.get(user.id)}</p>
+                      {/if}
+                    </div>
+                  {/if}
+                </td>
+                <td class="px-5 py-4 text-sm text-stone-500">
+                  {formatDate(user.createdAt)}
+                </td>
+              </tr>
+            {:else}
+              <tr>
+                <td colspan="4" class="px-5 py-12 text-center text-stone-600 text-sm">No users found.</td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Mobile card list -->
+      <div class="sm:hidden divide-y divide-white/5">
+        {#each data.users as user (user.id)}
+          <div class="px-4 py-4">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-9 h-9 rounded-full bg-emerald-600/30 border border-emerald-500/30 text-emerald-300 flex items-center justify-center text-sm font-bold flex-shrink-0">
+                {avatarLetter(user)}
+              </div>
+              <div class="min-w-0">
+                <p class="text-sm font-semibold text-stone-200 truncate">{formatName(user)}</p>
+                <p class="text-xs text-stone-500 truncate">{user.email}</p>
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-stone-600">{formatDate(user.createdAt)}</span>
+              {#if user.id === data.currentUserId}
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border {roleBadgeClass(user.role)}">
+                  {user.role}
+                </span>
+              {:else}
+                <select
+                  value={user.role}
+                  on:change={(e) => updateRole(user.id, e.currentTarget.value)}
+                  disabled={processingIds.has(user.id)}
+                  class="bg-white/5 border border-white/10 rounded-lg px-2.5 py-1 text-xs text-stone-300 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {#each roles as role}
+                    <option value={role} class="bg-stone-900">{role}</option>
+                  {/each}
+                </select>
+              {/if}
+            </div>
+            {#if errors.has(user.id)}
+              <p class="text-xs text-red-400 mt-2">{errors.get(user.id)}</p>
+            {/if}
+          </div>
+        {:else}
+          <div class="px-4 py-12 text-center text-stone-600 text-sm">No users found.</div>
+        {/each}
+      </div>
     </div>
   </div>
 </div>

@@ -29,7 +29,8 @@
     currentPath === "/profile" ||
     currentPath === "/essentials" ||
     currentPath === "/login" ||
-    currentPath === "/signup";
+    currentPath === "/signup" ||
+    currentPath.startsWith("/admin");
 
   let scrolled = false;
   function onScroll() {

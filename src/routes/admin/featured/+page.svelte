@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ChevronRight } from "lucide-svelte";
+  import { ChevronRight, Star, Mountain, Tent, Backpack } from "lucide-svelte";
   import type { PageData } from "./$types";
   import { invalidateAll } from "$app/navigation";
 
@@ -20,7 +20,6 @@
   ) {
     if (processingIds.has(id)) return;
 
-    // Check limits when adding to featured
     if (!currentlyFeatured) {
       if (type === "hike" && featuredHikesCount >= 3) {
         alert("Maximum of 3 featured hikes reached. Remove one first.");
@@ -37,7 +36,7 @@
     }
 
     processingIds.add(id);
-    processingIds = processingIds; // Trigger reactivity
+    processingIds = processingIds;
 
     const apiPath =
       type === "hike" ? "hikes" : type === "camping_site" ? "camping-sites" : "backpacking";
@@ -61,14 +60,14 @@
       alert("Failed to update featured status. Please try again.");
     } finally {
       processingIds.delete(id);
-      processingIds = processingIds; // Trigger reactivity
+      processingIds = processingIds;
     }
   }
 
   function formatLocation(address: any): string {
-    if (!address) return "N/A";
+    if (!address) return "—";
     const parts = [address.city, address.state].filter(Boolean);
-    return parts.length > 0 ? parts.join(", ") : "N/A";
+    return parts.length > 0 ? parts.join(", ") : "—";
   }
 </script>
 
@@ -76,66 +75,91 @@
   <title>Featured Items - Adventure Spark</title>
 </svelte:head>
 
-<div class="min-h-screen bg-gray-50 py-12">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <nav class="flex items-center gap-1.5 text-sm mb-6">
-      <a href="/admin" class="text-gray-500 hover:text-gray-700 transition-colors">Admin</a>
-      <ChevronRight size={14} class="text-gray-300" />
-      <span class="text-gray-900 font-medium">Featured Items</span>
-    </nav>
-    <h1 class="text-3xl font-bold text-gray-900 mb-8">Manage Featured Items</h1>
+<style>
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+  :global(body) {
+    background-color: #0c0f0a;
+  }
+</style>
 
-    <div class="mb-12">
-      <h2 class="text-2xl font-semibold text-gray-900 mb-4">Hikes</h2>
-      <div class="bg-white shadow rounded-lg overflow-hidden">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
-            <tr>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                Name
-              </th>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                Location
-              </th>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                Featured
-              </th>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                Action
-              </th>
+<div class="grain"></div>
+
+<div class="relative z-10 min-h-screen pt-10 pb-16">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Breadcrumb -->
+    <nav class="flex items-center gap-1.5 text-sm mb-6">
+      <a href="/admin" class="text-stone-400 hover:text-stone-200 transition-colors">Admin</a>
+      <ChevronRight size={14} class="text-stone-600" />
+      <span class="text-stone-200 font-medium">Featured Items</span>
+    </nav>
+
+    <div class="flex items-center gap-3 mb-10">
+      <div class="p-2.5 bg-sky-500/15 border border-sky-500/25 rounded-xl">
+        <Star size={20} class="text-sky-400" />
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-stone-100">Manage Featured Items</h1>
+        <p class="text-sm text-stone-400">Up to 3 featured items per category</p>
+      </div>
+    </div>
+
+    <!-- Hikes Section -->
+    <div class="mb-8">
+      <div class="flex items-center gap-2 mb-4">
+        <Mountain size={16} class="text-emerald-400" />
+        <h2 class="text-base font-bold text-stone-200">Hikes</h2>
+        <span class="text-xs text-stone-500 ml-1">{featuredHikesCount}/3 featured</span>
+      </div>
+      <div class="bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl overflow-hidden">
+        <table class="min-w-full">
+          <thead>
+            <tr class="border-b border-white/10">
+              <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider">Name</th>
+              <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider hidden sm:table-cell">Location</th>
+              <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider">Status</th>
+              <th class="px-5 py-3 text-right text-xs font-semibold text-stone-400 uppercase tracking-wider">Action</th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody class="divide-y divide-white/5">
             {#each data.hikes as hike (hike.id)}
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+              <tr class="hover:bg-white/3 transition-colors">
+                <td class="px-5 py-3.5 text-sm font-medium text-stone-200">
                   {hike.name}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td class="px-5 py-3.5 text-sm text-stone-500 hidden sm:table-cell">
                   {formatLocation(hike.address)}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {hike.featured ? "Yes" : "No"}
+                <td class="px-5 py-3.5">
+                  {#if hike.featured}
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                      <Star size={10} />
+                      Featured
+                    </span>
+                  {:else}
+                    <span class="text-xs text-stone-600">—</span>
+                  {/if}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <td class="px-5 py-3.5 text-right">
                   <button
                     on:click={() => toggleFeatured("hike", hike.id, hike.featured)}
                     disabled={processingIds.has(hike.id)}
-                    class="text-indigo-600 hover:text-indigo-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="{hike.featured
+                      ? 'text-stone-400 hover:text-red-300 border-white/10 hover:border-red-500/30'
+                      : 'text-emerald-400 hover:text-emerald-300 border-emerald-500/30 hover:border-emerald-400/50'} text-xs font-semibold border rounded-lg px-3 py-1.5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     {processingIds.has(hike.id)
-                      ? "Processing..."
+                      ? "..."
                       : hike.featured
-                        ? "Remove from Featured"
-                        : "Add to Featured"}
+                        ? "Remove"
+                        : "Feature"}
                   </button>
                 </td>
               </tr>
@@ -145,58 +169,55 @@
       </div>
     </div>
 
-    <div class="mb-12">
-      <h2 class="text-2xl font-semibold text-gray-900 mb-4">Camping Sites</h2>
-      <div class="bg-white shadow rounded-lg overflow-hidden">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
-            <tr>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                Name
-              </th>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                Location
-              </th>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                Featured
-              </th>
-              <th
-                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
-                Action
-              </th>
+    <!-- Camping Sites Section -->
+    <div class="mb-8">
+      <div class="flex items-center gap-2 mb-4">
+        <Tent size={16} class="text-sky-400" />
+        <h2 class="text-base font-bold text-stone-200">Camping Sites</h2>
+        <span class="text-xs text-stone-500 ml-1">{featuredCampingSitesCount}/3 featured</span>
+      </div>
+      <div class="bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl overflow-hidden">
+        <table class="min-w-full">
+          <thead>
+            <tr class="border-b border-white/10">
+              <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider">Name</th>
+              <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider hidden sm:table-cell">Location</th>
+              <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider">Status</th>
+              <th class="px-5 py-3 text-right text-xs font-semibold text-stone-400 uppercase tracking-wider">Action</th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody class="divide-y divide-white/5">
             {#each data.campingSites as campingSite (campingSite.id)}
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+              <tr class="hover:bg-white/3 transition-colors">
+                <td class="px-5 py-3.5 text-sm font-medium text-stone-200">
                   {campingSite.name}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td class="px-5 py-3.5 text-sm text-stone-500 hidden sm:table-cell">
                   {formatLocation(campingSite.address)}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {campingSite.featured ? "Yes" : "No"}
+                <td class="px-5 py-3.5">
+                  {#if campingSite.featured}
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                      <Star size={10} />
+                      Featured
+                    </span>
+                  {:else}
+                    <span class="text-xs text-stone-600">—</span>
+                  {/if}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <td class="px-5 py-3.5 text-right">
                   <button
-                    on:click={() =>
-                      toggleFeatured("camping_site", campingSite.id, campingSite.featured)}
+                    on:click={() => toggleFeatured("camping_site", campingSite.id, campingSite.featured)}
                     disabled={processingIds.has(campingSite.id)}
-                    class="text-indigo-600 hover:text-indigo-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="{campingSite.featured
+                      ? 'text-stone-400 hover:text-red-300 border-white/10 hover:border-red-500/30'
+                      : 'text-emerald-400 hover:text-emerald-300 border-emerald-500/30 hover:border-emerald-400/50'} text-xs font-semibold border rounded-lg px-3 py-1.5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     {processingIds.has(campingSite.id)
-                      ? "Processing..."
+                      ? "..."
                       : campingSite.featured
-                        ? "Remove from Featured"
-                        : "Add to Featured"}
+                        ? "Remove"
+                        : "Feature"}
                   </button>
                 </td>
               </tr>
@@ -206,54 +227,52 @@
       </div>
     </div>
 
+    <!-- Backpacking Section -->
     {#if data.backpackingRoutes && data.backpackingRoutes.length > 0}
       <div>
-        <h2 class="text-2xl font-semibold text-gray-900 mb-4">Backpacking Routes</h2>
-        <div class="bg-white shadow rounded-lg overflow-hidden">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >Name</th
-                >
-                <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >Location</th
-                >
-                <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >Featured</th
-                >
-                <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >Action</th
-                >
+        <div class="flex items-center gap-2 mb-4">
+          <Backpack size={16} class="text-amber-400" />
+          <h2 class="text-base font-bold text-stone-200">Backpacking Routes</h2>
+          <span class="text-xs text-stone-500 ml-1">{featuredBackpackingCount}/3 featured</span>
+        </div>
+        <div class="bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl overflow-hidden">
+          <table class="min-w-full">
+            <thead>
+              <tr class="border-b border-white/10">
+                <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider">Name</th>
+                <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider hidden sm:table-cell">Location</th>
+                <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider">Status</th>
+                <th class="px-5 py-3 text-right text-xs font-semibold text-stone-400 uppercase tracking-wider">Action</th>
               </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
+            <tbody class="divide-y divide-white/5">
               {#each data.backpackingRoutes as route (route.id)}
-                <tr>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-                    >{route.name}</td
-                  >
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
-                    >{formatLocation(route.address)}</td
-                  >
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
-                    >{route.featured ? "Yes" : "No"}</td
-                  >
-                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <tr class="hover:bg-white/3 transition-colors">
+                  <td class="px-5 py-3.5 text-sm font-medium text-stone-200">{route.name}</td>
+                  <td class="px-5 py-3.5 text-sm text-stone-500 hidden sm:table-cell">{formatLocation(route.address)}</td>
+                  <td class="px-5 py-3.5">
+                    {#if route.featured}
+                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                        <Star size={10} />
+                        Featured
+                      </span>
+                    {:else}
+                      <span class="text-xs text-stone-600">—</span>
+                    {/if}
+                  </td>
+                  <td class="px-5 py-3.5 text-right">
                     <button
                       on:click={() => toggleFeatured("backpacking", route.id, route.featured)}
                       disabled={processingIds.has(route.id)}
-                      class="text-indigo-600 hover:text-indigo-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                      class="{route.featured
+                        ? 'text-stone-400 hover:text-red-300 border-white/10 hover:border-red-500/30'
+                        : 'text-emerald-400 hover:text-emerald-300 border-emerald-500/30 hover:border-emerald-400/50'} text-xs font-semibold border rounded-lg px-3 py-1.5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       {processingIds.has(route.id)
-                        ? "Processing..."
+                        ? "..."
                         : route.featured
-                          ? "Remove from Featured"
-                          : "Add to Featured"}
+                          ? "Remove"
+                          : "Feature"}
                     </button>
                   </td>
                 </tr>

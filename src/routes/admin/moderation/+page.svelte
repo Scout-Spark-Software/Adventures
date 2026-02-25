@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ChevronRight, ExternalLink } from "lucide-svelte";
+  import { ChevronRight, ExternalLink, CircleAlert } from "lucide-svelte";
   import type { PageData } from "./$types";
   import { invalidateAll } from "$app/navigation";
 
@@ -118,42 +118,77 @@
       processingItems = processingItems;
     }
   }
+
+  function entityTypeLabel(entityType: string) {
+    if (entityType === "hike") return "Hike";
+    if (entityType === "camping_site") return "Camping Site";
+    if (entityType === "backpacking") return "Backpacking";
+    return "Alteration";
+  }
+
+  function entityTypeColor(entityType: string) {
+    if (entityType === "hike") return "bg-emerald-500/20 text-emerald-300 border-emerald-500/30";
+    if (entityType === "camping_site") return "bg-sky-500/20 text-sky-300 border-sky-500/30";
+    if (entityType === "backpacking") return "bg-amber-500/20 text-amber-300 border-amber-500/30";
+    return "bg-stone-500/20 text-stone-300 border-stone-500/30";
+  }
 </script>
 
 <svelte:head>
   <title>Moderation Queue - Adventure Spark</title>
 </svelte:head>
 
-<div class="min-h-screen bg-gray-50 py-12">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<style>
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+  :global(body) {
+    background-color: #0c0f0a;
+  }
+</style>
+
+<div class="grain"></div>
+
+<div class="relative z-10 min-h-screen pt-10 pb-16">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Breadcrumb -->
     <nav class="flex items-center gap-1.5 text-sm mb-6">
-      <a href="/admin" class="text-gray-500 hover:text-gray-700 transition-colors">Admin</a>
-      <ChevronRight size={14} class="text-gray-300" />
-      <span class="text-gray-900 font-medium">Moderation Queue</span>
+      <a href="/admin" class="text-stone-400 hover:text-stone-200 transition-colors">Admin</a>
+      <ChevronRight size={14} class="text-stone-600" />
+      <span class="text-stone-200 font-medium">Moderation Queue</span>
     </nav>
-    <h1 class="text-3xl font-bold text-gray-900 mb-8">Moderation Queue</h1>
+
+    <div class="flex items-center gap-3 mb-8">
+      <div class="p-2.5 bg-amber-500/15 border border-amber-500/25 rounded-xl">
+        <CircleAlert size={20} class="text-amber-400" />
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-stone-100">Moderation Queue</h1>
+        <p class="text-sm text-stone-400">
+          {data.queue?.length ?? 0} item{data.queue?.length !== 1 ? "s" : ""} pending review
+        </p>
+      </div>
+    </div>
 
     {#if data.queue && data.queue.length > 0}
       <div class="space-y-4">
         {#each data.queue as item (item.entityId)}
           {@const key = itemKey(item.entityType, item.entityId)}
           {@const url = entityUrl(item)}
-          <div class="bg-white rounded-lg shadow p-6">
-            <div class="flex items-start justify-between gap-4 mb-3">
+          <div class="bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl p-5">
+            <div class="flex items-start justify-between gap-4 mb-4">
               <div class="min-w-0">
-                <div class="flex items-center gap-2 flex-wrap">
-                  <span
-                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-600 uppercase tracking-wide"
-                  >
-                    {item.entityType === "hike"
-                      ? "Hike"
-                      : item.entityType === "camping_site"
-                        ? "Camping Site"
-                        : item.entityType === "backpacking"
-                          ? "Backpacking"
-                          : "Alteration"}
+                <div class="flex items-center gap-2 flex-wrap mb-2">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border {entityTypeColor(item.entityType)}">
+                    {entityTypeLabel(item.entityType)}
                   </span>
-                  <span class="text-xs text-gray-400">
+                  <span class="text-xs text-stone-500">
                     {new Date(item.createdAt).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
@@ -162,39 +197,41 @@
                   </span>
                 </div>
                 {#if item.entity}
-                  <div class="flex items-center gap-2 mt-1.5">
+                  <div class="flex items-center gap-2">
                     {#if url}
                       <a
                         href={url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors truncate"
+                        class="text-lg font-bold text-stone-100 hover:text-emerald-300 transition-colors truncate"
                       >
                         {item.entity.name || `Alteration for ${item.entity.fieldName}`}
                       </a>
-                      <ExternalLink size={15} class="shrink-0 text-gray-400" />
+                      <ExternalLink size={14} class="shrink-0 text-stone-500" />
                     {:else}
-                      <h3 class="text-lg font-semibold text-gray-900 truncate">
+                      <h3 class="text-lg font-bold text-stone-100 truncate">
                         {item.entity.name || `Alteration for ${item.entity.fieldName}`}
                       </h3>
                     {/if}
                   </div>
                 {/if}
               </div>
+
+              <!-- Action buttons -->
               <div class="flex shrink-0 items-center gap-2">
                 <button
                   on:click={() => moderateItem(item.entityType, item.entityId, "approved")}
                   disabled={processingItems.has(key)}
-                  class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="inline-flex items-center px-4 py-1.5 text-sm font-semibold rounded-lg text-emerald-950 bg-emerald-400 hover:bg-emerald-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  {processingItems.has(key) ? "Processing..." : "Approve"}
+                  {processingItems.has(key) ? "..." : "Approve"}
                 </button>
                 <button
                   on:click={() => moderateItem(item.entityType, item.entityId, "rejected")}
                   disabled={processingItems.has(key)}
-                  class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="inline-flex items-center px-4 py-1.5 text-sm font-semibold rounded-lg text-red-950 bg-red-400 hover:bg-red-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  {processingItems.has(key) ? "Processing..." : "Reject"}
+                  {processingItems.has(key) ? "..." : "Reject"}
                 </button>
                 {#if data.userRole === "admin" && apiUrl(item)}
                   <button
@@ -205,7 +242,7 @@
                         item.entity?.name ?? item.entityId
                       )}
                     disabled={processingItems.has(key)}
-                    class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-600 bg-white hover:bg-gray-50 hover:text-red-600 hover:border-red-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-lg border border-white/10 text-stone-400 hover:text-red-300 hover:border-red-500/40 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     title="Delete permanently"
                   >
                     Delete
@@ -215,81 +252,58 @@
             </div>
 
             {#if item.entity}
-              <!-- Key metadata pills -->
+              <!-- Metadata pills -->
               <div class="flex flex-wrap gap-2 mb-3">
                 {#if item.entityType === "hike"}
                   {#if item.entity.difficulty}
-                    <span
-                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 capitalize"
-                    >
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-300 capitalize">
                       {item.entity.difficulty.replace("_", " ")}
                     </span>
                   {/if}
                   {#if item.entity.distance}
-                    <span
-                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600"
-                    >
-                      {item.entity.distance}
-                      {item.entity.distanceUnit ?? "miles"}
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-stone-400">
+                      {item.entity.distance} {item.entity.distanceUnit ?? "miles"}
                     </span>
                   {/if}
                   {#if item.entity.duration}
-                    <span
-                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600"
-                    >
-                      {item.entity.duration}
-                      {item.entity.durationUnit ?? "hours"}
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-stone-400">
+                      {item.entity.duration} {item.entity.durationUnit ?? "hours"}
                     </span>
                   {/if}
                   {#if item.entity.trailType}
-                    <span
-                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600 capitalize"
-                    >
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-stone-400 capitalize">
                       {item.entity.trailType.replace("_", " ")}
                     </span>
                   {/if}
                 {:else if item.entityType === "camping_site"}
                   {#if item.entity.siteType}
-                    <span
-                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 capitalize"
-                    >
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-sky-500/15 text-sky-300 capitalize">
                       {item.entity.siteType.replace("_", " ")}
                     </span>
                   {/if}
                   {#if item.entity.costPerNight}
-                    <span
-                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600"
-                    >
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-stone-400">
                       ${item.entity.costPerNight}/night
                     </span>
                   {/if}
                   {#if item.entity.petPolicy}
-                    <span
-                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600 capitalize"
-                    >
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-stone-400 capitalize">
                       Pets: {item.entity.petPolicy.replace("_", " ")}
                     </span>
                   {/if}
                 {:else if item.entityType === "backpacking"}
                   {#if item.entity.difficulty}
-                    <span
-                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 capitalize"
-                    >
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500/15 text-amber-300 capitalize">
                       {item.entity.difficulty.replace("_", " ")}
                     </span>
                   {/if}
                   {#if item.entity.distance}
-                    <span
-                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600"
-                    >
-                      {item.entity.distance}
-                      {item.entity.distanceUnit ?? "miles"}
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-stone-400">
+                      {item.entity.distance} {item.entity.distanceUnit ?? "miles"}
                     </span>
                   {/if}
                   {#if item.entity.numberOfDays}
-                    <span
-                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600"
-                    >
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-stone-400">
                       {item.entity.numberOfDays} day{item.entity.numberOfDays !== 1 ? "s" : ""}
                     </span>
                   {/if}
@@ -297,21 +311,25 @@
               </div>
 
               {#if item.entity.description}
-                <p class="text-gray-600 text-sm line-clamp-3">{item.entity.description}</p>
+                <p class="text-stone-400 text-sm line-clamp-3">{item.entity.description}</p>
               {/if}
             {/if}
 
             {#if errors.has(key)}
-              <div class="mt-3 rounded-md bg-red-50 p-3">
-                <div class="text-sm text-red-800">{errors.get(key)}</div>
+              <div class="mt-3 rounded-lg bg-red-500/10 border border-red-500/25 p-3">
+                <p class="text-sm text-red-300">{errors.get(key)}</p>
               </div>
             {/if}
           </div>
         {/each}
       </div>
     {:else}
-      <div class="text-center py-12">
-        <p class="text-gray-500 text-lg">No items pending moderation.</p>
+      <div class="text-center py-20">
+        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+          <CircleAlert size={28} class="text-emerald-500/50" />
+        </div>
+        <p class="text-stone-400 text-lg font-medium">Queue is empty</p>
+        <p class="text-stone-600 text-sm mt-1">No items pending moderation.</p>
       </div>
     {/if}
   </div>
