@@ -15,6 +15,7 @@ export const load: PageServerLoad = async ({ fetch, url, locals }) => {
     "minDays",
     "maxDays",
     "minRating",
+    "features",
     "dogFriendly",
   ];
 
@@ -27,9 +28,10 @@ export const load: PageServerLoad = async ({ fetch, url, locals }) => {
     params.append("limit", "50");
   }
 
-  const backpackingEntries = await fetch(`/api/backpacking?${params.toString()}`).then((r) =>
-    r.json()
-  );
+  const [backpackingEntries, featureTypes] = await Promise.all([
+    fetch(`/api/backpacking?${params.toString()}`).then((r) => r.json()),
+    fetch("/api/feature-types?active=true").then((r) => r.json()),
+  ]);
 
   const currentFilters: Record<string, string> = {};
   filterParams.forEach((param) => {
@@ -41,6 +43,7 @@ export const load: PageServerLoad = async ({ fetch, url, locals }) => {
 
   return {
     backpackingEntries: backpackingEntries || [],
+    featureTypes: featureTypes || [],
     currentFilters,
     userRole,
   };

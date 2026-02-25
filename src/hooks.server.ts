@@ -174,6 +174,10 @@ const securityHandle: Handle = async ({ event, resolve }) => {
   for (const [header, value] of Object.entries(SECURITY_HEADERS)) {
     response.headers.set(header, value);
   }
+  // Prevent caching of responses to state-changing requests
+  if (!["GET", "HEAD", "OPTIONS"].includes(event.request.method)) {
+    response.headers.set("Cache-Control", "no-store");
+  }
   return response;
 };
 

@@ -2,9 +2,23 @@
   import type { AmenityType, FacilityType } from "$lib/db/schemas";
   import { goto } from "$app/navigation";
   import { onDestroy } from "svelte";
-  import { SlidersHorizontal, X } from "lucide-svelte";
+  import { SlidersHorizontal, X, ChevronDown, Check } from "lucide-svelte";
   import FilterInput from "$lib/components/FilterInput.svelte";
   import FilterSelect from "$lib/components/FilterSelect.svelte";
+
+  let amenitiesOpen = false;
+  let facilitiesOpen = false;
+  let amenitiesDropdownEl: HTMLDivElement;
+  let facilitiesDropdownEl: HTMLDivElement;
+
+  function handleClickOutside(event: MouseEvent) {
+    if (amenitiesDropdownEl && !amenitiesDropdownEl.contains(event.target as Node)) {
+      amenitiesOpen = false;
+    }
+    if (facilitiesDropdownEl && !facilitiesDropdownEl.contains(event.target as Node)) {
+      facilitiesOpen = false;
+    }
+  }
 
   export let amenityTypes: AmenityType[] = [];
   export let facilityTypes: FacilityType[] = [];
@@ -167,6 +181,8 @@
   ></div>
 {/if}
 
+<svelte:window on:click={handleClickOutside} />
+
 <!-- Filter Sidebar/Drawer -->
 <div
   class="bg-white rounded-lg shadow-md p-4 transition-transform duration-300 lg:sticky lg:top-6
@@ -297,48 +313,100 @@
     </FilterSelect>
   </div>
 
-  <!-- Amenities Multi-Select -->
-  <div class="mb-3">
-    <div class="block text-sm font-medium text-gray-700 mb-1.5" id="amenities-label">Amenities</div>
-    <div class="flex flex-wrap gap-2" role="group" aria-labelledby="amenities-label">
-      {#each amenityTypes as amenity (amenity.id)}
-        <button
-          type="button"
-          on:click={() => toggleAmenity(amenity.id)}
-          class="px-3 py-1.5 rounded-full text-sm font-medium transition-all
-            {selectedAmenities.includes(amenity.id)
-            ? 'bg-emerald-600 text-white'
-            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
-          aria-pressed={selectedAmenities.includes(amenity.id)}
-          aria-label="Toggle {amenity.name} filter"
-        >
-          {amenity.name}
-        </button>
-      {/each}
-    </div>
+  <!-- Amenities Multi-Select Dropdown -->
+  <div class="mb-3" bind:this={amenitiesDropdownEl}>
+    <label class="block text-sm font-medium text-gray-700 mb-1.5">Amenities</label>
+    <button
+      type="button"
+      on:click|stopPropagation={() => (amenitiesOpen = !amenitiesOpen)}
+      class="w-full flex items-center justify-between px-3 py-1.5 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-left"
+    >
+      <span class="truncate {selectedAmenities.length === 0 ? 'text-gray-400' : 'text-gray-900 font-medium'}">
+        {selectedAmenities.length === 0
+          ? "Any amenities"
+          : selectedAmenities.length === 1
+            ? (amenityTypes.find(a => a.id === selectedAmenities[0])?.name ?? "1 selected")
+            : `${selectedAmenities.length} selected`}
+      </span>
+      <ChevronDown size={16} class="text-gray-400 flex-shrink-0 ml-2 transition-transform {amenitiesOpen ? 'rotate-180' : ''}" />
+    </button>
+    {#if amenitiesOpen}
+      <div class="relative z-20">
+        <div class="absolute top-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+          {#each amenityTypes as amenity (amenity.id)}
+            <button
+              type="button"
+              on:click|stopPropagation={() => toggleAmenity(amenity.id)}
+              class="w-full flex items-center justify-between px-4 py-2.5 text-sm hover:bg-stone-50 transition-colors text-left"
+            >
+              <span class="{selectedAmenities.includes(amenity.id) ? 'text-emerald-700 font-semibold' : 'text-gray-700'}">{amenity.name}</span>
+              {#if selectedAmenities.includes(amenity.id)}
+                <Check size={14} class="text-emerald-600 flex-shrink-0" />
+              {/if}
+            </button>
+          {/each}
+          {#if selectedAmenities.length > 0}
+            <div class="border-t border-gray-100 px-4 py-2">
+              <button
+                type="button"
+                on:click|stopPropagation={() => { selectedAmenities = []; amenitiesOpen = false; applyFilters(); }}
+                class="text-xs text-red-500 hover:text-red-700 font-medium"
+              >
+                Clear amenities
+              </button>
+            </div>
+          {/if}
+        </div>
+      </div>
+    {/if}
   </div>
 
-  <!-- Facilities Multi-Select -->
-  <div class="mb-3">
-    <div class="block text-sm font-medium text-gray-700 mb-1.5" id="facilities-label">
-      Facilities
-    </div>
-    <div class="flex flex-wrap gap-2" role="group" aria-labelledby="facilities-label">
-      {#each facilityTypes as facility (facility.id)}
-        <button
-          type="button"
-          on:click={() => toggleFacility(facility.id)}
-          class="px-3 py-1.5 rounded-full text-sm font-medium transition-all
-            {selectedFacilities.includes(facility.id)
-            ? 'bg-emerald-600 text-white'
-            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
-          aria-pressed={selectedFacilities.includes(facility.id)}
-          aria-label="Toggle {facility.name} filter"
-        >
-          {facility.name}
-        </button>
-      {/each}
-    </div>
+  <!-- Facilities Multi-Select Dropdown -->
+  <div class="mb-3" bind:this={facilitiesDropdownEl}>
+    <label class="block text-sm font-medium text-gray-700 mb-1.5">Facilities</label>
+    <button
+      type="button"
+      on:click|stopPropagation={() => (facilitiesOpen = !facilitiesOpen)}
+      class="w-full flex items-center justify-between px-3 py-1.5 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-left"
+    >
+      <span class="truncate {selectedFacilities.length === 0 ? 'text-gray-400' : 'text-gray-900 font-medium'}">
+        {selectedFacilities.length === 0
+          ? "Any facilities"
+          : selectedFacilities.length === 1
+            ? (facilityTypes.find(f => f.id === selectedFacilities[0])?.name ?? "1 selected")
+            : `${selectedFacilities.length} selected`}
+      </span>
+      <ChevronDown size={16} class="text-gray-400 flex-shrink-0 ml-2 transition-transform {facilitiesOpen ? 'rotate-180' : ''}" />
+    </button>
+    {#if facilitiesOpen}
+      <div class="relative z-20">
+        <div class="absolute top-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+          {#each facilityTypes as facility (facility.id)}
+            <button
+              type="button"
+              on:click|stopPropagation={() => toggleFacility(facility.id)}
+              class="w-full flex items-center justify-between px-4 py-2.5 text-sm hover:bg-stone-50 transition-colors text-left"
+            >
+              <span class="{selectedFacilities.includes(facility.id) ? 'text-emerald-700 font-semibold' : 'text-gray-700'}">{facility.name}</span>
+              {#if selectedFacilities.includes(facility.id)}
+                <Check size={14} class="text-emerald-600 flex-shrink-0" />
+              {/if}
+            </button>
+          {/each}
+          {#if selectedFacilities.length > 0}
+            <div class="border-t border-gray-100 px-4 py-2">
+              <button
+                type="button"
+                on:click|stopPropagation={() => { selectedFacilities = []; facilitiesOpen = false; applyFilters(); }}
+                class="text-xs text-red-500 hover:text-red-700 font-medium"
+              >
+                Clear facilities
+              </button>
+            </div>
+          {/if}
+        </div>
+      </div>
+    {/if}
   </div>
 
   <!-- Reservation Required Checkbox -->

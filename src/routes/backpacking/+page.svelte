@@ -73,6 +73,7 @@
       <!-- Filter Sidebar (desktop) -->
       <aside class="hidden lg:block">
         <BackpackingFilters
+          featureTypes={data.featureTypes}
           currentFilters={data.currentFilters}
           userRole={data.userRole}
         />

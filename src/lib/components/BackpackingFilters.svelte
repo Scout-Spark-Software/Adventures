@@ -1,11 +1,22 @@
 <script lang="ts">
   import { TRAIL_TYPE_LABELS, CAMPING_STYLE_LABELS } from "$lib/db/schemas/enums";
+  import type { FeatureType } from "$lib/db/schemas";
   import { goto } from "$app/navigation";
   import { onDestroy } from "svelte";
-  import { SlidersHorizontal, X } from "lucide-svelte";
+  import { SlidersHorizontal, X, ChevronDown, Check } from "lucide-svelte";
   import FilterInput from "$lib/components/FilterInput.svelte";
   import FilterSelect from "$lib/components/FilterSelect.svelte";
 
+  let featuresOpen = false;
+  let featuresDropdownEl: HTMLDivElement;
+
+  function handleFeaturesClickOutside(event: MouseEvent) {
+    if (featuresDropdownEl && !featuresDropdownEl.contains(event.target as Node)) {
+      featuresOpen = false;
+    }
+  }
+
+  export let featureTypes: FeatureType[] = [];
   export let currentFilters: Record<string, string> = {};
   export let userRole: string | null = null;
 
@@ -21,6 +32,9 @@
   let minDays = currentFilters.minDays || "";
   let maxDays = currentFilters.maxDays || "";
   let minRating = currentFilters.minRating || "";
+  let selectedFeatures: string[] = currentFilters.features
+    ? currentFilters.features.split(",")
+    : [];
   let dogFriendly = currentFilters.dogFriendly === "true";
   let statusFilter = currentFilters.status || "";
 
@@ -39,6 +53,15 @@
 
   $: if (typeof window !== "undefined" && !isInitialized) {
     isInitialized = true;
+  }
+
+  function toggleFeature(featureId: string) {
+    if (selectedFeatures.includes(featureId)) {
+      selectedFeatures = selectedFeatures.filter((id) => id !== featureId);
+    } else {
+      selectedFeatures = [...selectedFeatures, featureId];
+    }
+    if (isInitialized) applyFilters();
   }
 
   function handleSearchInput() {
@@ -62,6 +85,7 @@
     if (minDays) params.set("minDays", minDays);
     if (maxDays) params.set("maxDays", maxDays);
     if (minRating) params.set("minRating", minRating);
+    if (selectedFeatures.length > 0) params.set("features", selectedFeatures.join(","));
     if (dogFriendly) params.set("dogFriendly", "true");
     if (isAdmin && statusFilter) params.set("status", statusFilter);
 
@@ -81,6 +105,7 @@
     minDays = "";
     maxDays = "";
     minRating = "";
+    selectedFeatures = [];
     dogFriendly = false;
     statusFilter = "";
     goto("/backpacking");
@@ -95,6 +120,7 @@
     (minDistance || maxDistance ? 1 : 0) +
     (minDays || maxDays ? 1 : 0) +
     (minRating ? 1 : 0) +
+    selectedFeatures.length +
     (dogFriendly ? 1 : 0) +
     (statusFilter ? 1 : 0);
 </script>
@@ -129,6 +155,8 @@
     on:keydown={(e) => e.key === "Escape" && (isDrawerOpen = false)}
   ></div>
 {/if}
+
+<svelte:window on:click={handleFeaturesClickOutside} />
 
 <!-- Filter Sidebar/Drawer -->
 <div
@@ -287,6 +315,54 @@
       <option value="4">⭐⭐⭐⭐ 4+ Stars</option>
       <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
     </FilterSelect>
+  </div>
+
+  <!-- Trail Features Multi-Select Dropdown -->
+  <div class="mb-3" bind:this={featuresDropdownEl}>
+    <label class="block text-sm font-medium text-gray-700 mb-1.5">Trail Features</label>
+    <button
+      type="button"
+      on:click|stopPropagation={() => (featuresOpen = !featuresOpen)}
+      class="w-full flex items-center justify-between px-3 py-1.5 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-left"
+    >
+      <span class="truncate {selectedFeatures.length === 0 ? 'text-gray-400' : 'text-gray-900 font-medium'}">
+        {selectedFeatures.length === 0
+          ? "Any features"
+          : selectedFeatures.length === 1
+            ? (featureTypes.find(f => f.id === selectedFeatures[0])?.name ?? "1 selected")
+            : `${selectedFeatures.length} selected`}
+      </span>
+      <ChevronDown size={16} class="text-gray-400 flex-shrink-0 ml-2 transition-transform {featuresOpen ? 'rotate-180' : ''}" />
+    </button>
+    {#if featuresOpen}
+      <div class="relative z-20">
+        <div class="absolute top-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+          {#each featureTypes as feature (feature.id)}
+            <button
+              type="button"
+              on:click|stopPropagation={() => toggleFeature(feature.id)}
+              class="w-full flex items-center justify-between px-4 py-2.5 text-sm hover:bg-stone-50 transition-colors text-left"
+            >
+              <span class="{selectedFeatures.includes(feature.id) ? 'text-emerald-700 font-semibold' : 'text-gray-700'}">{feature.name}</span>
+              {#if selectedFeatures.includes(feature.id)}
+                <Check size={14} class="text-emerald-600 flex-shrink-0" />
+              {/if}
+            </button>
+          {/each}
+          {#if selectedFeatures.length > 0}
+            <div class="border-t border-gray-100 px-4 py-2">
+              <button
+                type="button"
+                on:click|stopPropagation={() => { selectedFeatures = []; featuresOpen = false; applyFilters(); }}
+                class="text-xs text-red-500 hover:text-red-700 font-medium"
+              >
+                Clear features
+              </button>
+            </div>
+          {/if}
+        </div>
+      </div>
+    {/if}
   </div>
 
   <!-- Dog Friendly Checkbox -->

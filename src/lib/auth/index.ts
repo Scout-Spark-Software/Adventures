@@ -16,7 +16,6 @@ export async function getUserRole(userId: string): Promise<UserRole> {
       userId: userId,
       organizationId: workosConfig.organizationId,
     });
-    console.log("Memberships:", memberships?.data);
     if (memberships.data.length > 0) {
       const role = memberships.data[0].role?.slug || "member";
       return role as UserRole;
@@ -38,7 +37,6 @@ export async function getUserRole(userId: string): Promise<UserRole> {
  */
 export async function isAdmin(userId: string): Promise<boolean> {
   const role = await getUserRole(userId);
-  console.log("Is Admin: ", role);
   return role === "admin";
 }
 
