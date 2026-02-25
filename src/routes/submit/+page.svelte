@@ -1,6 +1,7 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
   import { goto } from "$app/navigation";
+  import { page } from "$app/stores";
   import type { PageData } from "./$types";
   import LocationPicker from "$lib/components/LocationPicker.svelte";
   import WaypointMap from "$lib/components/WaypointMap.svelte";
@@ -11,7 +12,9 @@
 
   export let data: PageData;
 
-  let type: "hike" | "camping_site" | "backpacking" = "hike";
+  const typeParam = $page.url.searchParams.get("type");
+  let type: "hike" | "camping_site" | "backpacking" =
+    typeParam === "camping_site" || typeParam === "backpacking" ? typeParam : "hike";
   let loading = false;
   let uploadingPhotos = false;
   let errors: Record<string, string> = {};

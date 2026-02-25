@@ -16,6 +16,26 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between mb-6">
       <h1 class="text-2xl font-bold text-gray-900">All Backpacking</h1>
+      <div class="flex items-center gap-2">
+        <a
+          href="/submit?type=backpacking"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition-colors shadow-sm"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          Submit
+        </a>
+        <a
+          href="/essentials"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg transition-colors shadow-sm"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+          </svg>
+          Scout Essentials
+        </a>
+      </div>
     </div>
 
     <!-- Two-column layout: filters sidebar + content -->
@@ -36,7 +56,7 @@
             class="absolute inset-0 bg-white/75 backdrop-blur-sm z-10 flex items-start justify-center pt-12"
           >
             <div class="bg-white rounded-lg shadow-lg p-6">
-              <LoadingSpinner size="lg" text="Loading backpacking..." />
+              <LoadingSpinner size="lg" destination={$navigating?.to?.url?.pathname} />
             </div>
           </div>
         {/if}
