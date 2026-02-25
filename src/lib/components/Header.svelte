@@ -1,5 +1,5 @@
 <script lang="ts">
-  import logo from "$lib/assets/Adventure_Spark_Logo.png";
+  import navLogo from "$lib/assets/Adventure_Spark_Nav_Image.png";
   import { page } from "$app/stores";
   import {
     Compass,
@@ -75,7 +75,7 @@
       <div class="flex">
         <div class="flex-shrink-0 flex items-center">
           <a href="/" class="flex items-center gap-2 group">
-            <img src={logo} alt="Adventure Spark Logo" class="w-14 h-14" />
+            <img src={navLogo} alt="Adventure Spark Logo" class="w-18 h-16" />
             <div class="hidden sm:block">
               <div
                 class="text-lg font-bold leading-tight {isDark
