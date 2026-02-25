@@ -6,18 +6,21 @@
   export let stats: {
     trails: number;
     campsites: number;
+    backpacking: number;
     scouts: number;
   } | null = null;
 
   const trailCount = tweened(0, { duration: 2000, easing: cubicOut });
   const campsiteCount = tweened(0, { duration: 2000, easing: cubicOut });
+  const backpackingCount = tweened(0, { duration: 2000, easing: cubicOut });
   const scoutCount = tweened(0, { duration: 2000, easing: cubicOut });
 
   let loading = true;
 
-  function applyStats(data: { trails: number; campsites: number; scouts: number }) {
+  function applyStats(data: { trails: number; campsites: number; backpacking: number; scouts: number }) {
     $trailCount = data.trails;
     $campsiteCount = data.campsites;
+    $backpackingCount = data.backpacking;
     $scoutCount = data.scouts;
     loading = false;
   }
@@ -215,7 +218,7 @@
         </div>
 
         <!-- Stats -->
-        <div class="grid grid-cols-3 gap-4 mt-8 pt-6 border-t border-slate-700">
+        <div class="grid grid-cols-4 gap-4 mt-8 pt-6 border-t border-slate-700">
           <div>
             <div class="text-2xl font-bold text-sky-400">
               {#if loading}
@@ -235,6 +238,16 @@
               {/if}
             </div>
             <div class="text-xs text-slate-400 mt-1">Campsites</div>
+          </div>
+          <div>
+            <div class="text-2xl font-bold text-sky-400">
+              {#if loading}
+                <span class="animate-pulse">--</span>
+              {:else}
+                {Math.floor($backpackingCount).toLocaleString()}{#if $backpackingCount > 0}+{/if}
+              {/if}
+            </div>
+            <div class="text-xs text-slate-400 mt-1">Routes</div>
           </div>
           <div>
             <div class="text-2xl font-bold text-sky-400">

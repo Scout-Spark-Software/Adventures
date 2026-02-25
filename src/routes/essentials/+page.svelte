@@ -13,10 +13,15 @@
     Map,
     FlameKindling,
     Backpack,
-  } from 'lucide-svelte';
-  import type { ComponentType } from 'svelte';
+  } from "lucide-svelte";
+  import type { ComponentType } from "svelte";
 
-  const sixEssentials: { name: string; icon: ComponentType; description: string; tips: string[] }[] = [
+  const sixEssentials: {
+    name: string;
+    icon: ComponentType;
+    description: string;
+    tips: string[];
+  }[] = [
     {
       name: "Filled Water Bottle",
       icon: Droplets,
@@ -84,7 +89,12 @@
     },
   ];
 
-  const tenEssentials: { name: string; icon: ComponentType; description: string; tips: string[] }[] = [
+  const tenEssentials: {
+    name: string;
+    icon: ComponentType;
+    description: string;
+    tips: string[];
+  }[] = [
     {
       name: "Pocketknife",
       icon: PocketKnife,

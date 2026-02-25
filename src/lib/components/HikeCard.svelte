@@ -3,7 +3,10 @@
   import ModerationBadge from "./ModerationBadge.svelte";
   import { TrendingUp, Clock, MapPin, ChevronRight } from "lucide-svelte";
 
-  export let hike: Hike & { address?: Pick<Address, "city" | "state"> | null; bannerImageUrl?: string | null };
+  export let hike: Hike & {
+    address?: Pick<Address, "city" | "state"> | null;
+    bannerImageUrl?: string | null;
+  };
 
   $: locationText = hike.address
     ? [hike.address.city, hike.address.state].filter(Boolean).join(", ")

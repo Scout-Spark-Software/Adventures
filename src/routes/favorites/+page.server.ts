@@ -1,6 +1,13 @@
 import { requireAuth } from "$lib/auth/middleware";
 import { db } from "$lib/db";
-import { addresses, campingSites, favorites, hikes, ratingAggregates } from "$lib/db/schemas";
+import {
+  addresses,
+  backpacking,
+  campingSites,
+  favorites,
+  hikes,
+  ratingAggregates,
+} from "$lib/db/schemas";
 import { and, desc, eq, isNotNull } from "drizzle-orm";
 import type { PageServerLoad } from "./$types";
 
@@ -9,8 +16,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   const userId = locals.user!.id;
 
-  // Single optimized query: Get all favorites with full hike and camping site data in one go
-  const [favoriteHikes, favoriteCampingSites] = await Promise.all([
+  // Single optimized query: Get all favorites with full hike, camping site, and backpacking data
+  const [favoriteHikes, favoriteCampingSites, favoriteBackpacking] = await Promise.all([
     // Get favorited hikes with all related data
     db
       .select({
@@ -118,6 +125,55 @@ export const load: PageServerLoad = async ({ locals }) => {
         )
       )
       .orderBy(desc(favorites.createdAt)),
+
+    // Get favorited backpacking routes with all related data
+    db
+      .select({
+        favoriteId: favorites.id,
+        favoriteCreatedAt: favorites.createdAt,
+        id: backpacking.id,
+        name: backpacking.name,
+        description: backpacking.description,
+        addressId: backpacking.addressId,
+        difficulty: backpacking.difficulty,
+        distance: backpacking.distance,
+        distanceUnit: backpacking.distanceUnit,
+        numberOfDays: backpacking.numberOfDays,
+        numberOfNights: backpacking.numberOfNights,
+        campingStyle: backpacking.campingStyle,
+        status: backpacking.status,
+        featured: backpacking.featured,
+        createdBy: backpacking.createdBy,
+        createdAt: backpacking.createdAt,
+        updatedAt: backpacking.updatedAt,
+        address: {
+          id: addresses.id,
+          address: addresses.address,
+          city: addresses.city,
+          state: addresses.state,
+          country: addresses.country,
+          postalCode: addresses.postalCode,
+          latitude: addresses.latitude,
+          longitude: addresses.longitude,
+        },
+        ratingAggregate: {
+          averageRating: ratingAggregates.averageRating,
+          totalRatings: ratingAggregates.totalRatings,
+          totalReviews: ratingAggregates.totalReviews,
+        },
+      })
+      .from(favorites)
+      .innerJoin(backpacking, eq(favorites.backpackingId, backpacking.id))
+      .leftJoin(addresses, eq(backpacking.addressId, addresses.id))
+      .leftJoin(ratingAggregates, eq(backpacking.id, ratingAggregates.backpackingId))
+      .where(
+        and(
+          eq(favorites.userId, userId),
+          isNotNull(favorites.backpackingId),
+          eq(backpacking.status, "approved")
+        )
+      )
+      .orderBy(desc(favorites.createdAt)),
   ]);
 
   // Normalize results to handle nullable joins
@@ -130,27 +186,9 @@ export const load: PageServerLoad = async ({ locals }) => {
     };
   };
 
-  // Build favorites array for compatibility with existing components
-  const favoritesArray = [
-    ...favoriteHikes.map((h) => ({
-      id: h.favoriteId,
-      userId,
-      hikeId: h.id,
-      campingSiteId: null,
-      createdAt: h.favoriteCreatedAt,
-    })),
-    ...favoriteCampingSites.map((c) => ({
-      id: c.favoriteId,
-      userId,
-      hikeId: null,
-      campingSiteId: c.id,
-      createdAt: c.favoriteCreatedAt,
-    })),
-  ];
-
   return {
-    favorites: favoritesArray,
     hikes: favoriteHikes.map(normalizeResult),
     campingSites: favoriteCampingSites.map(normalizeResult),
+    backpackingRoutes: favoriteBackpacking.map(normalizeResult),
   };
 };

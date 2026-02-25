@@ -2,6 +2,7 @@ export * from "./enums";
 export * from "./addresses";
 export * from "./hikes";
 export * from "./camping-sites";
+export * from "./backpacking";
 export * from "./favorites";
 export * from "./notes";
 export * from "./alterations";

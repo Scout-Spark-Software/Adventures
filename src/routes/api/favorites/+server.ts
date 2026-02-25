@@ -10,6 +10,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 
   const hikeId = url.searchParams.get("hike_id");
   const campingSiteId = url.searchParams.get("camping_site_id");
+  const backpackingId = url.searchParams.get("backpacking_id");
 
   const conditions = [eq(favorites.userId, user.id)];
 
@@ -19,6 +20,10 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 
   if (campingSiteId) {
     conditions.push(eq(favorites.campingSiteId, campingSiteId));
+  }
+
+  if (backpackingId) {
+    conditions.push(eq(favorites.backpackingId, backpackingId));
   }
 
   const results = await db.query.favorites.findMany({
@@ -32,14 +37,15 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   const user = requireAuth({ locals } as any);
 
   const body = await request.json();
-  const { hikeId, campingSiteId } = body;
+  const { hikeId, campingSiteId, backpackingId } = body;
 
-  if (!hikeId && !campingSiteId) {
-    throw error(400, "Either hikeId or campingSiteId is required");
+  if (!hikeId && !campingSiteId && !backpackingId) {
+    throw error(400, "Either hikeId, campingSiteId, or backpackingId is required");
   }
 
-  if (hikeId && campingSiteId) {
-    throw error(400, "Cannot favorite both hike and camping site at once");
+  const entityCount = [hikeId, campingSiteId, backpackingId].filter(Boolean).length;
+  if (entityCount > 1) {
+    throw error(400, "Cannot favorite more than one entity at once");
   }
 
   const [newFavorite] = await db
@@ -48,6 +54,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       userId: user.id,
       hikeId: hikeId || null,
       campingSiteId: campingSiteId || null,
+      backpackingId: backpackingId || null,
     })
     .onConflictDoNothing()
     .returning();

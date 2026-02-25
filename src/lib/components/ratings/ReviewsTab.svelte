@@ -6,6 +6,7 @@
 
   export let hikeId: string | null = null;
   export let campingSiteId: string | null = null;
+  export let backpackingId: string | null = null;
   export let userId: string | null = null;
 
   type RatingWithUser = Rating & { userName?: string };
@@ -29,6 +30,7 @@
       const params = new URLSearchParams({ reviews_only: "true" });
       if (hikeId) params.set("hike_id", hikeId);
       if (campingSiteId) params.set("camping_site_id", campingSiteId);
+      if (backpackingId) params.set("backpacking_id", backpackingId);
 
       const response = await fetch(`/api/ratings?${params}`);
       if (!response.ok) throw new Error("Failed to load reviews");
@@ -56,6 +58,7 @@
       const params = new URLSearchParams();
       if (hikeId) params.set("hike_id", hikeId);
       if (campingSiteId) params.set("camping_site_id", campingSiteId);
+      if (backpackingId) params.set("backpacking_id", backpackingId);
 
       const response = await fetch(`/api/ratings/my-rating?${params}`);
       if (!response.ok) return;
@@ -131,6 +134,7 @@
       <UserRatingCard
         {hikeId}
         {campingSiteId}
+        {backpackingId}
         hasExistingRating={hasUserRated}
         initialRating={userRating?.rating ? parseFloat(userRating.rating) : 0}
         initialReview={userRating?.reviewText || ""}

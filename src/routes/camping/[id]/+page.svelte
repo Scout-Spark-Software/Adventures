@@ -38,7 +38,15 @@
   let notesCount = data.notesCount;
 
   // Lazy-loaded files — only fetched when the media tab is first opened
-  let files: { id: string; fileUrl: string; fileName: string; fileType: string; mimeType?: string; isBanner?: boolean; uploadedBy: string }[] = [];
+  let files: {
+    id: string;
+    fileUrl: string;
+    fileName: string;
+    fileType: string;
+    mimeType?: string;
+    isBanner?: boolean;
+    uploadedBy: string;
+  }[] = [];
   let filesLoaded = false;
 
   async function loadFiles() {
@@ -55,9 +63,10 @@
 
   // Hero image: use the SSR-provided bannerImageUrl until the media tab loads files,
   // then prefer the live banner from loaded files. Never blank it out mid-fetch.
-  $: liveHeroUrl = campingImageFiles.length > 0
-    ? (campingImageFiles.find((f) => f.isBanner) ?? campingImageFiles[0])?.fileUrl ?? null
-    : null;
+  $: liveHeroUrl =
+    campingImageFiles.length > 0
+      ? ((campingImageFiles.find((f) => f.isBanner) ?? campingImageFiles[0])?.fileUrl ?? null)
+      : null;
   $: heroImageUrl = liveHeroUrl ?? data.campingSite.bannerImageUrl ?? null;
 
   // Handle URL hash navigation
@@ -211,7 +220,12 @@
   let deleteError: string | null = null;
 
   async function deleteCampingSite() {
-    if (!confirm(`Permanently delete "${data.campingSite.name}" and all its images? This cannot be undone.`)) return;
+    if (
+      !confirm(
+        `Permanently delete "${data.campingSite.name}" and all its images? This cannot be undone.`
+      )
+    )
+      return;
     isDeleting = true;
     deleteError = null;
     try {
@@ -259,7 +273,11 @@
         {/if}
       </div>
       {#if deleteError}
-        <div class="absolute top-full right-0 mt-1 text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-1.5">{deleteError}</div>
+        <div
+          class="absolute top-full right-0 mt-1 text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-1.5"
+        >
+          {deleteError}
+        </div>
       {/if}
     </div>
 
@@ -456,12 +474,19 @@
                 class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white transition-colors"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 4v16m8-8H4"
+                  />
                 </svg>
                 Add Photos
               </button>
             {:else}
-              <a href="/login" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">Sign in to add photos</a>
+              <a href="/login" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
+                >Sign in to add photos</a
+              >
             {/if}
           </div>
 
@@ -486,18 +511,26 @@
                     class="w-full h-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
                     title="View full size"
                   >
-                    <img src={file.fileUrl} alt={file.fileName} class="w-full h-full object-cover hover:brightness-90 transition-[filter]" />
+                    <img
+                      src={file.fileUrl}
+                      alt={file.fileName}
+                      class="w-full h-full object-cover hover:brightness-90 transition-[filter]"
+                    />
                   </button>
                   {#if data.userId && file.uploadedBy !== data.userId && !isAdmin}
                     <button
                       on:click={() => flagImage(file.id)}
                       disabled={flaggedImageIds.has(file.id)}
-                      title={flaggedImageIds.has(file.id) ? "Image reported" : "Flag as inappropriate"}
+                      title={flaggedImageIds.has(file.id)
+                        ? "Image reported"
+                        : "Flag as inappropriate"}
                       class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white/80 hover:bg-red-50 rounded-full p-1.5 disabled:cursor-not-allowed"
                     >
                       <Flag
                         size={14}
-                        class={flaggedImageIds.has(file.id) ? "text-red-500" : "text-gray-500 hover:text-red-500"}
+                        class={flaggedImageIds.has(file.id)
+                          ? "text-red-500"
+                          : "text-gray-500 hover:text-red-500"}
                       />
                     </button>
                   {/if}
@@ -564,10 +597,7 @@
           </div>
         {/if}
       {:else if activeTab === "reviews"}
-        <ReviewsTab
-          campingSiteId={data.campingSite.id}
-          userId={data.userId}
-        />
+        <ReviewsTab campingSiteId={data.campingSite.id} userId={data.userId} />
       {:else if activeTab === "notes"}
         <NotesSection
           campingSiteId={data.campingSite.id}

@@ -11,6 +11,7 @@
     User,
     LogOut,
     MountainIcon,
+    Backpack,
   } from "lucide-svelte";
 
   export let user: {
@@ -81,6 +82,15 @@
           >
             <Tent size={16} class="mr-1.5" />
             Camping Sites
+          </a>
+          <a
+            href="/backpacking"
+            class="{currentPath.startsWith('/backpacking')
+              ? 'border-sky-600 text-slate-900'
+              : 'border-transparent text-slate-600 hover:border-slate-300 hover:text-slate-900'} inline-flex items-center px-4 pt-1 border-b-2 text-sm font-semibold transition-colors"
+          >
+            <Backpack size={16} class="mr-1.5" />
+            Backpacking
           </a>
         </div>
       </div>

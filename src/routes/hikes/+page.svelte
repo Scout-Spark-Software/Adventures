@@ -36,7 +36,11 @@
     <div class="lg:grid lg:grid-cols-[280px_1fr] lg:gap-6">
       <!-- Filter Sidebar (desktop) -->
       <aside class="hidden lg:block">
-        <HikeFilters featureTypes={data.featureTypes} currentFilters={data.currentFilters} userRole={data.userRole} />
+        <HikeFilters
+          featureTypes={data.featureTypes}
+          currentFilters={data.currentFilters}
+          userRole={data.userRole}
+        />
       </aside>
 
       <!-- Main Content -->
@@ -90,7 +94,11 @@
 
     <!-- Mobile Filter Component (rendered in component itself as floating button) -->
     <div class="lg:hidden">
-      <HikeFilters featureTypes={data.featureTypes} currentFilters={data.currentFilters} userRole={data.userRole} />
+      <HikeFilters
+        featureTypes={data.featureTypes}
+        currentFilters={data.currentFilters}
+        userRole={data.userRole}
+      />
     </div>
   </div>
 </div>

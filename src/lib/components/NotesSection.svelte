@@ -5,6 +5,7 @@
 
   export let hikeId: string | undefined = undefined;
   export let campingSiteId: string | undefined = undefined;
+  export let backpackingId: string | undefined = undefined;
   export let userId: string | undefined = undefined;
 
   const dispatch = createEventDispatcher();
@@ -77,6 +78,7 @@
       const params = new URLSearchParams();
       if (hikeId) params.set("hike_id", hikeId);
       if (campingSiteId) params.set("camping_site_id", campingSiteId);
+      if (backpackingId) params.set("backpacking_id", backpackingId);
 
       const response = await fetch(`/api/notes?${params}`);
       if (!response.ok) throw new Error("Failed to load notes");
@@ -103,6 +105,7 @@
       userId,
       hikeId: hikeId || null,
       campingSiteId: campingSiteId || null,
+      backpackingId: backpackingId || null,
       content: newNoteContent,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -126,6 +129,7 @@
         body: JSON.stringify({
           hikeId,
           campingSiteId,
+          backpackingId,
           content: contentToSubmit,
         }),
       });
@@ -289,7 +293,7 @@
   {/if}
 
   <!-- Create New Note (only show when on specific hike/camping page) -->
-  {#if hikeId || campingSiteId}
+  {#if hikeId || campingSiteId || backpackingId}
     <div class="mb-6 bg-white shadow rounded-lg p-5">
       <h3 class="text-lg font-semibold text-gray-900 mb-3">New Note</h3>
 
@@ -355,7 +359,7 @@
     </div>
   {:else}
     <!-- Filter Tabs (only show when on profile page with all notes) -->
-    {#if !hikeId && !campingSiteId}
+    {#if !hikeId && !campingSiteId && !backpackingId}
       <div class="mb-4 flex gap-2 border-b border-gray-200">
         <button
           on:click={() => (filterType = "all")}

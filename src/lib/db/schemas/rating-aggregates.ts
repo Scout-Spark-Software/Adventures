@@ -2,6 +2,7 @@ import { pgTable, uuid, numeric, integer, index } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { hikes } from "./hikes";
 import { campingSites } from "./camping-sites";
+import { backpacking } from "./backpacking";
 
 export const ratingAggregates = pgTable(
   "rating_aggregates",
@@ -13,6 +14,9 @@ export const ratingAggregates = pgTable(
     campingSiteId: uuid("camping_site_id")
       .references(() => campingSites.id, { onDelete: "cascade" })
       .unique(),
+    backpackingId: uuid("backpacking_id")
+      .references(() => backpacking.id, { onDelete: "cascade" })
+      .unique(),
     averageRating: numeric("average_rating", { precision: 3, scale: 2 }),
     totalRatings: integer("total_ratings").default(0).notNull(),
     totalReviews: integer("total_reviews").default(0).notNull(),
@@ -20,6 +24,7 @@ export const ratingAggregates = pgTable(
   (table) => ({
     hikeIdIdx: index("rating_aggregates_hike_id_idx").on(table.hikeId),
     campingSiteIdIdx: index("rating_aggregates_camping_site_id_idx").on(table.campingSiteId),
+    backpackingIdIdx: index("rating_aggregates_backpacking_id_idx").on(table.backpackingId),
   })
 );
 
@@ -31,6 +36,10 @@ export const ratingAggregatesRelations = relations(ratingAggregates, ({ one }) =
   campingSite: one(campingSites, {
     fields: [ratingAggregates.campingSiteId],
     references: [campingSites.id],
+  }),
+  backpacking: one(backpacking, {
+    fields: [ratingAggregates.backpackingId],
+    references: [backpacking.id],
   }),
 }));
 

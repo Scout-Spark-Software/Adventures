@@ -9,9 +9,12 @@
 
   $: featuredHikesCount = data.hikes.filter((h) => h.featured).length;
   $: featuredCampingSitesCount = data.campingSites.filter((c) => c.featured).length;
+  $: featuredBackpackingCount = (data.backpackingRoutes || []).filter(
+    (b: any) => b.featured
+  ).length;
 
   async function toggleFeatured(
-    type: "hike" | "camping_site",
+    type: "hike" | "camping_site" | "backpacking",
     id: string,
     currentlyFeatured: boolean
   ) {
@@ -27,20 +30,24 @@
         alert("Maximum of 3 featured camping sites reached. Remove one first.");
         return;
       }
+      if (type === "backpacking" && featuredBackpackingCount >= 3) {
+        alert("Maximum of 3 featured backpacking routes reached. Remove one first.");
+        return;
+      }
     }
 
     processingIds.add(id);
     processingIds = processingIds; // Trigger reactivity
 
+    const apiPath =
+      type === "hike" ? "hikes" : type === "camping_site" ? "camping-sites" : "backpacking";
+
     try {
-      const response = await fetch(
-        `/api/${type === "hike" ? "hikes" : "camping-sites"}/${id}/featured`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ featured: !currentlyFeatured }),
-        }
-      );
+      const response = await fetch(`/api/${apiPath}/${id}/featured`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ featured: !currentlyFeatured }),
+      });
 
       if (!response.ok) {
         const error = await response.json();
@@ -138,7 +145,7 @@
       </div>
     </div>
 
-    <div>
+    <div class="mb-12">
       <h2 class="text-2xl font-semibold text-gray-900 mb-4">Camping Sites</h2>
       <div class="bg-white shadow rounded-lg overflow-hidden">
         <table class="min-w-full divide-y divide-gray-200">
@@ -198,5 +205,63 @@
         </table>
       </div>
     </div>
+
+    {#if data.backpackingRoutes && data.backpackingRoutes.length > 0}
+      <div>
+        <h2 class="text-2xl font-semibold text-gray-900 mb-4">Backpacking Routes</h2>
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >Name</th
+                >
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >Location</th
+                >
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >Featured</th
+                >
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >Action</th
+                >
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              {#each data.backpackingRoutes as route (route.id)}
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                    >{route.name}</td
+                  >
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >{formatLocation(route.address)}</td
+                  >
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                    >{route.featured ? "Yes" : "No"}</td
+                  >
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <button
+                      on:click={() => toggleFeatured("backpacking", route.id, route.featured)}
+                      disabled={processingIds.has(route.id)}
+                      class="text-indigo-600 hover:text-indigo-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {processingIds.has(route.id)
+                        ? "Processing..."
+                        : route.featured
+                          ? "Remove from Featured"
+                          : "Add to Featured"}
+                    </button>
+                  </td>
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {/if}
   </div>
 </div>

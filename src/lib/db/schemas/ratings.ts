@@ -11,6 +11,7 @@ import {
 import { relations, sql } from "drizzle-orm";
 import { hikes } from "./hikes";
 import { campingSites } from "./camping-sites";
+import { backpacking } from "./backpacking";
 
 export const ratings = pgTable(
   "ratings",
@@ -21,6 +22,9 @@ export const ratings = pgTable(
     campingSiteId: uuid("camping_site_id").references(() => campingSites.id, {
       onDelete: "cascade",
     }),
+    backpackingId: uuid("backpacking_id").references(() => backpacking.id, {
+      onDelete: "cascade",
+    }),
     rating: numeric("rating", { precision: 2, scale: 1 }).notNull(),
     reviewText: text("review_text"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -29,7 +33,7 @@ export const ratings = pgTable(
   (table) => ({
     entityCheck: check(
       "ratings_entity_check",
-      sql`(${table.hikeId} IS NOT NULL AND ${table.campingSiteId} IS NULL) OR (${table.hikeId} IS NULL AND ${table.campingSiteId} IS NOT NULL)`
+      sql`(${table.hikeId} IS NOT NULL AND ${table.campingSiteId} IS NULL AND ${table.backpackingId} IS NULL) OR (${table.hikeId} IS NULL AND ${table.campingSiteId} IS NOT NULL AND ${table.backpackingId} IS NULL) OR (${table.hikeId} IS NULL AND ${table.campingSiteId} IS NULL AND ${table.backpackingId} IS NOT NULL)`
     ),
     ratingValueCheck: check(
       "ratings_value_check",
@@ -38,12 +42,16 @@ export const ratings = pgTable(
     userIdIdx: index("ratings_user_id_idx").on(table.userId),
     hikeIdIdx: index("ratings_hike_id_idx").on(table.hikeId),
     campingSiteIdIdx: index("ratings_camping_site_id_idx").on(table.campingSiteId),
+    backpackingIdIdx: index("ratings_backpacking_id_idx").on(table.backpackingId),
     userHikeUnique: uniqueIndex("ratings_user_hike_unique_idx")
       .on(table.userId, table.hikeId)
       .where(sql`${table.hikeId} IS NOT NULL`),
     userCampingUnique: uniqueIndex("ratings_user_camping_unique_idx")
       .on(table.userId, table.campingSiteId)
       .where(sql`${table.campingSiteId} IS NOT NULL`),
+    userBackpackingUnique: uniqueIndex("ratings_user_backpacking_unique_idx")
+      .on(table.userId, table.backpackingId)
+      .where(sql`${table.backpackingId} IS NOT NULL`),
     hasReviewIdx: index("ratings_has_review_idx")
       .on(table.hikeId, table.campingSiteId)
       .where(sql`${table.reviewText} IS NOT NULL`),
@@ -58,6 +66,10 @@ export const ratingsRelations = relations(ratings, ({ one }) => ({
   campingSite: one(campingSites, {
     fields: [ratings.campingSiteId],
     references: [campingSites.id],
+  }),
+  backpacking: one(backpacking, {
+    fields: [ratings.backpackingId],
+    references: [backpacking.id],
   }),
 }));
 

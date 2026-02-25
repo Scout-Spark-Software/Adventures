@@ -2,6 +2,7 @@
   import type { PageData } from "./$types";
   import HikeCard from "$lib/components/HikeCard.svelte";
   import CampingSiteCard from "$lib/components/CampingSiteCard.svelte";
+  import BackpackingCard from "$lib/components/BackpackingCard.svelte";
   import { HeartIcon } from "lucide-svelte";
   export let data: PageData;
 </script>
@@ -14,7 +15,7 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <h1 class="text-3xl font-bold text-gray-900 mb-8">My Favorites</h1>
 
-    {#if (!data.hikes || data.hikes.length === 0) && (!data.campingSites || data.campingSites.length === 0)}
+    {#if (!data.hikes || data.hikes.length === 0) && (!data.campingSites || data.campingSites.length === 0) && (!data.backpackingRoutes || data.backpackingRoutes.length === 0)}
       <div class="text-center py-12 bg-white rounded-lg shadow-sm">
         <HeartIcon size={64} class="mx-auto text-gray-300 mb-4" />
         <p class="text-gray-500 text-lg font-medium mb-2">No favorites yet</p>
@@ -61,7 +62,7 @@
         {/if}
       </div>
 
-      <div>
+      <div class="mb-12">
         <h2 class="text-2xl font-semibold text-gray-900 mb-4">Favorite Camping Sites</h2>
         {#if data.campingSites && data.campingSites.length > 0}
           <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -84,6 +85,17 @@
           </div>
         {/if}
       </div>
+
+      {#if data.backpackingRoutes && data.backpackingRoutes.length > 0}
+        <div>
+          <h2 class="text-2xl font-semibold text-gray-900 mb-4">Favorite Backpacking Routes</h2>
+          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {#each data.backpackingRoutes as route (route.id)}
+              <BackpackingCard backpacking={route} />
+            {/each}
+          </div>
+        </div>
+      {/if}
     {/if}
   </div>
 </div>

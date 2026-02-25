@@ -1,7 +1,14 @@
 import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
-import { moderationQueue, hikes, campingSites, alterations, VALID_STATUSES } from "$lib/db/schemas";
+import {
+  moderationQueue,
+  hikes,
+  campingSites,
+  backpacking,
+  alterations,
+  VALID_STATUSES,
+} from "$lib/db/schemas";
 import { eq, and, desc, inArray } from "drizzle-orm";
 import { requireModerator } from "$lib/auth/middleware";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
@@ -13,6 +20,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   const entityType = url.searchParams.get("entity_type") as
     | "hike"
     | "camping_site"
+    | "backpacking"
     | "alteration"
     | null;
   const limit = parseLimit(url.searchParams.get("limit"));
@@ -36,15 +44,23 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   const campingIds = queueItems
     .filter((i) => i.entityType === "camping_site")
     .map((i) => i.entityId);
+  const backpackingIds = queueItems
+    .filter((i) => i.entityType === "backpacking")
+    .map((i) => i.entityId);
   const alterationIds = queueItems
     .filter((i) => i.entityType === "alteration")
     .map((i) => i.entityId);
 
-  const [hikeRows, campingRows, alterationRows] = await Promise.all([
+  const [hikeRows, campingRows, backpackingRows, alterationRows] = await Promise.all([
     hikeIds.length > 0 ? db.query.hikes.findMany({ where: inArray(hikes.id, hikeIds) }) : [],
     campingIds.length > 0
       ? db.query.campingSites.findMany({
           where: inArray(campingSites.id, campingIds),
+        })
+      : [],
+    backpackingIds.length > 0
+      ? db.query.backpacking.findMany({
+          where: inArray(backpacking.id, backpackingIds),
         })
       : [],
     alterationIds.length > 0
@@ -57,6 +73,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   const entityMap = new Map<string, unknown>();
   for (const h of hikeRows) entityMap.set(h.id, h);
   for (const c of campingRows) entityMap.set(c.id, c);
+  for (const b of backpackingRows) entityMap.set(b.id, b);
   for (const a of alterationRows) entityMap.set(a.id, a);
 
   const enrichedItems = queueItems.map((item) => ({
@@ -105,6 +122,11 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
       .update(campingSites)
       .set({ status, updatedAt: new Date() })
       .where(eq(campingSites.id, entityId));
+  } else if (entityType === "backpacking") {
+    entityUpdate = db
+      .update(backpacking)
+      .set({ status, updatedAt: new Date() })
+      .where(eq(backpacking.id, entityId));
   } else {
     entityUpdate = db
       .update(alterations)

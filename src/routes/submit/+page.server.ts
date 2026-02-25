@@ -3,7 +3,6 @@ import type { PageServerLoad, Actions } from "./$types";
 import { requireAuth } from "$lib/auth/middleware";
 import { db } from "$lib/db";
 import { addresses } from "$lib/db/schemas";
-
 // Input sanitization helper
 function sanitizeString(value: string | null | undefined): string | null {
   if (!value || value.trim() === "") return null;
@@ -203,5 +202,77 @@ export const actions: Actions = {
 
     const campingSite = await response.json();
     return { created: true, id: campingSite.id, entityType: "camping_site" };
+  },
+
+  submitBackpacking: async ({ request, locals, fetch }) => {
+    requireAuth({ locals } as any);
+    const formData = await request.formData();
+
+    const name = sanitizeString(formData.get("name") as string);
+    if (!name) {
+      return fail(400, { error: "Name is required" });
+    }
+
+    let addressId = null;
+    const address = sanitizeString(formData.get("address") as string);
+    const city = sanitizeString(formData.get("city") as string);
+    const state = sanitizeString(formData.get("state") as string);
+    const country = sanitizeString(formData.get("country") as string);
+    const postalCode = sanitizeString(formData.get("postal_code") as string);
+    const latitudeStr = formData.get("latitude") as string;
+    const longitudeStr = formData.get("longitude") as string;
+
+    if (address || city || state || country || postalCode) {
+      const [newAddress] = await db
+        .insert(addresses)
+        .values({
+          address,
+          city,
+          state,
+          country,
+          postalCode,
+          latitude: latitudeStr ? parseFloat(latitudeStr) : null,
+          longitude: longitudeStr ? parseFloat(longitudeStr) : null,
+        })
+        .returning();
+      addressId = newAddress.id;
+    }
+
+    const backpackingData = {
+      name,
+      description: sanitizeString(formData.get("description") as string),
+      addressId,
+      difficulty: sanitizeString(formData.get("difficulty") as string),
+      distance: formData.get("distance") ? formData.get("distance") : null,
+      distanceUnit: sanitizeString(formData.get("distance_unit") as string) || "miles",
+      elevation: formData.get("elevation") ? formData.get("elevation") : null,
+      elevationUnit: sanitizeString(formData.get("elevation_unit") as string) || "feet",
+      trailType: sanitizeString(formData.get("trail_type") as string),
+      numberOfDays: formData.get("number_of_days")
+        ? parseInt(formData.get("number_of_days") as string)
+        : null,
+      numberOfNights: formData.get("number_of_nights")
+        ? parseInt(formData.get("number_of_nights") as string)
+        : null,
+      campingStyle: sanitizeString(formData.get("camping_style") as string),
+      waterAvailability: sanitizeString(formData.get("water_availability") as string),
+      permitsRequired: sanitizeString(formData.get("permits_required") as string),
+      parkingInfo: sanitizeString(formData.get("parking_info") as string),
+      dogFriendly: formData.get("dog_friendly") === "on",
+      waypoints: formData.get("waypoints") ? JSON.parse(formData.get("waypoints") as string) : null,
+    };
+
+    const response = await fetch("/api/backpacking", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(backpackingData),
+    });
+
+    if (!response.ok) {
+      return fail(400, { error: "Failed to submit backpacking route" });
+    }
+
+    const entry = await response.json();
+    return { created: true, id: entry.id, entityType: "backpacking" };
   },
 };

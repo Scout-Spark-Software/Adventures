@@ -1,12 +1,14 @@
 import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { hikes } from "./hikes";
 import { campingSites } from "./camping-sites";
+import { backpacking } from "./backpacking";
 import { statusEnum } from "./enums";
 
 export const alterations = pgTable("alterations", {
   id: uuid("id").defaultRandom().primaryKey(),
   hikeId: uuid("hike_id").references(() => hikes.id),
   campingSiteId: uuid("camping_site_id").references(() => campingSites.id),
+  backpackingId: uuid("backpacking_id").references(() => backpacking.id),
   fieldName: text("field_name").notNull(),
   oldValue: text("old_value"),
   newValue: text("new_value").notNull(),

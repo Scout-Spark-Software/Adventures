@@ -3,12 +3,13 @@ import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
 import { hikes } from "$lib/db/schemas/hikes";
 import { campingSites } from "$lib/db/schemas/camping-sites";
+import { backpacking } from "$lib/db/schemas/backpacking";
 import { sql } from "drizzle-orm";
 import { workos, workosConfig } from "$lib/server/workos";
 
 export const GET: RequestHandler = async () => {
   try {
-    const [hikesCount, campingSitesCount, memberships] = await Promise.all([
+    const [hikesCount, campingSitesCount, backpackingCount, memberships] = await Promise.all([
       db
         .select({ count: sql<number>`count(*)::int` })
         .from(hikes)
@@ -17,6 +18,10 @@ export const GET: RequestHandler = async () => {
         .select({ count: sql<number>`count(*)::int` })
         .from(campingSites)
         .where(sql`${campingSites.status} = 'approved'`),
+      db
+        .select({ count: sql<number>`count(*)::int` })
+        .from(backpacking)
+        .where(sql`${backpacking.status} = 'approved'`),
       workos.userManagement.listOrganizationMemberships({
         organizationId: workosConfig.organizationId,
       }),
@@ -26,6 +31,7 @@ export const GET: RequestHandler = async () => {
       {
         trails: hikesCount[0]?.count || 0,
         campsites: campingSitesCount[0]?.count || 0,
+        backpacking: backpackingCount[0]?.count || 0,
         scouts: memberships.data.length,
       },
       {

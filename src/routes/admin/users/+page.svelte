@@ -145,9 +145,7 @@
             </tr>
           {:else}
             <tr>
-              <td colspan="4" class="px-6 py-12 text-center text-gray-500">
-                No users found.
-              </td>
+              <td colspan="4" class="px-6 py-12 text-center text-gray-500"> No users found. </td>
             </tr>
           {/each}
         </tbody>

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
 
-  export let entityType: "hike" | "camping_site";
+  export let entityType: "hike" | "camping_site" | "backpacking";
   export let entityId: string;
   export let fileType: "image" | "document" = "image";
 

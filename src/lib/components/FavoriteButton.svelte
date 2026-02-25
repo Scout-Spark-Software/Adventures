@@ -4,6 +4,7 @@
 
   export let hikeId: string | null = null;
   export let campingSiteId: string | null = null;
+  export let backpackingId: string | null = null;
   export let userId: string | null = null;
 
   let isFavorite = false;
@@ -29,7 +30,10 @@
       const params = new URLSearchParams();
       if (hikeId) params.append("hike_id", hikeId);
       if (campingSiteId) params.append("camping_site_id", campingSiteId);
-      const response = await fetch(`/api/favorites/${hikeId || campingSiteId}?${params}`);
+      if (backpackingId) params.append("backpacking_id", backpackingId);
+      const response = await fetch(
+        `/api/favorites/${hikeId || campingSiteId || backpackingId}?${params}`
+      );
       if (!response.ok) {
         console.error("Failed to check favorite status");
         return;
@@ -74,15 +78,19 @@
         const params = new URLSearchParams();
         if (hikeId) params.append("hike_id", hikeId);
         if (campingSiteId) params.append("camping_site_id", campingSiteId);
-        const response = await fetch(`/api/favorites/${hikeId || campingSiteId}?${params}`, {
-          method: "DELETE",
-        });
+        if (backpackingId) params.append("backpacking_id", backpackingId);
+        const response = await fetch(
+          `/api/favorites/${hikeId || campingSiteId || backpackingId}?${params}`,
+          {
+            method: "DELETE",
+          }
+        );
         if (!response.ok) throw new Error("Failed to remove favorite");
       } else {
         const response = await fetch("/api/favorites", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ hikeId, campingSiteId }),
+          body: JSON.stringify({ hikeId, campingSiteId, backpackingId }),
         });
         if (!response.ok) throw new Error("Failed to add favorite");
       }

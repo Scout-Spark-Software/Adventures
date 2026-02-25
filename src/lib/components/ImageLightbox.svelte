@@ -128,7 +128,9 @@
   aria-label="Image viewer"
 >
   <!-- Top bar -->
-  <div class="absolute top-0 left-0 right-0 flex items-center justify-between px-4 py-3 bg-gradient-to-b from-black/60 to-transparent z-10">
+  <div
+    class="absolute top-0 left-0 right-0 flex items-center justify-between px-4 py-3 bg-gradient-to-b from-black/60 to-transparent z-10"
+  >
     <span class="text-sm text-white/70">
       {currentIndex + 1} / {images.length}
     </span>
@@ -139,7 +141,11 @@
           on:click={flagImage}
           disabled={flagging || flaggedImageIds.has(image.id)}
           title={flaggedImageIds.has(image.id) ? "Image reported" : "Flag as inappropriate"}
-          class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors {flaggedImageIds.has(image.id) ? 'bg-red-500/80 text-white' : 'bg-white/10 hover:bg-red-500/70 text-white/80 hover:text-white'} disabled:opacity-50"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors {flaggedImageIds.has(
+            image.id
+          )
+            ? 'bg-red-500/80 text-white'
+            : 'bg-white/10 hover:bg-red-500/70 text-white/80 hover:text-white'} disabled:opacity-50"
         >
           <Flag size={13} />
           {flaggedImageIds.has(image.id) ? "Reported" : "Report"}
@@ -153,7 +159,9 @@
           on:click={setBanner}
           disabled={settingBanner || isBannerImage}
           title={isBannerImage ? "Current banner image" : "Set as banner image"}
-          class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors {isBannerImage ? 'bg-yellow-500/80 text-white cursor-default' : 'bg-white/10 hover:bg-yellow-500/70 text-white/80 hover:text-white'} disabled:opacity-60"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors {isBannerImage
+            ? 'bg-yellow-500/80 text-white cursor-default'
+            : 'bg-white/10 hover:bg-yellow-500/70 text-white/80 hover:text-white'} disabled:opacity-60"
         >
           <Star size={13} class={isBannerImage ? "fill-current" : ""} />
           {isBannerImage ? "Banner" : settingBanner ? "Saving..." : "Set banner"}
@@ -233,7 +241,9 @@
   {/if}
 
   <!-- Bottom: filename -->
-  <div class="absolute bottom-0 left-0 right-0 px-4 py-3 bg-gradient-to-t from-black/60 to-transparent text-center">
+  <div
+    class="absolute bottom-0 left-0 right-0 px-4 py-3 bg-gradient-to-t from-black/60 to-transparent text-center"
+  >
     <p class="text-sm text-white/60 truncate">{image.fileName}</p>
   </div>
 </div>
