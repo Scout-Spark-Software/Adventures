@@ -16,6 +16,9 @@
 </svelte:head>
 
 <style>
+  :global(body) {
+    background-color: #0c0f0a;
+  }
   .dark-input {
     background: rgba(245, 240, 232, 0.07);
     border: 1px solid rgba(245, 240, 232, 0.12);

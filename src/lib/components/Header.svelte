@@ -1,5 +1,5 @@
 <script lang="ts">
-  import logo from "$lib/assets/adventures-logo.png";
+  import logo from "$lib/assets/Adventure_Spark_Logo.png";
   import { page } from "$app/stores";
   import {
     Compass,
@@ -23,7 +23,13 @@
   $: currentPath = $page.url.pathname;
   $: isHome = currentPath === "/";
   // Pages with a dark full-bleed banner — nav should be glass on these
-  $: isDark = isHome || currentPath === "/favorites" || currentPath === "/profile" || currentPath === "/essentials";
+  $: isDark =
+    isHome ||
+    currentPath === "/favorites" ||
+    currentPath === "/profile" ||
+    currentPath === "/essentials" ||
+    currentPath === "/login" ||
+    currentPath === "/signup";
 
   let scrolled = false;
   function onScroll() {
@@ -56,22 +62,28 @@
 
 <svelte:window on:click={handleClickOutside} on:keydown={handleKeydown} on:scroll={onScroll} />
 
-<nav class="sticky top-0 z-50 border-b transition-all duration-300
+<nav
+  class="sticky top-0 z-50 border-b transition-all duration-300
   {isDark
-    ? (scrolled ? 'bg-stone-950/90 border-white/10 backdrop-blur-md shadow-lg' : 'bg-white/5 border-white/10 backdrop-blur-md')
-    : 'bg-white/95 border-slate-200/80 backdrop-blur-md shadow-sm'}">
+    ? scrolled
+      ? 'bg-stone-950/90 border-white/10 backdrop-blur-md shadow-lg'
+      : 'bg-transparent border-transparent'
+    : 'bg-white/95 border-slate-200/80 backdrop-blur-md shadow-sm'}"
+>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between h-16">
       <div class="flex">
         <div class="flex-shrink-0 flex items-center">
           <a href="/" class="flex items-center gap-2 group">
-            <img
-              src={logo}
-              alt="Adventure Spark Logo"
-              class="w-10 h-10 transition-transform group-hover:rotate-12"
-            />
+            <img src={logo} alt="Adventure Spark Logo" class="w-14 h-14" />
             <div class="hidden sm:block">
-              <div class="text-lg font-bold leading-tight {isDark ? 'text-stone-100' : 'text-slate-900'}">Adventure Spark</div>
+              <div
+                class="text-lg font-bold leading-tight {isDark
+                  ? 'text-stone-100'
+                  : 'text-slate-900'}"
+              >
+                Adventure Spark
+              </div>
             </div>
           </a>
         </div>
@@ -79,8 +91,12 @@
           <a
             href="/hikes"
             class="{currentPath.startsWith('/hikes')
-              ? (isDark ? 'border-emerald-400 text-emerald-300' : 'border-sky-500 text-sky-600')
-              : (isDark ? 'border-transparent text-stone-200 hover:border-stone-400 hover:text-white' : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-800')} inline-flex items-center px-4 pt-1 border-b-2 text-sm font-semibold transition-colors"
+              ? isDark
+                ? 'border-emerald-400 text-emerald-300'
+                : 'border-sky-500 text-sky-600'
+              : isDark
+                ? 'border-transparent text-stone-200 hover:border-stone-400 hover:text-white'
+                : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-800'} inline-flex items-center px-4 pt-1 border-b-2 text-sm font-semibold transition-colors"
           >
             <MountainIcon size={16} class="mr-1.5" />
             Hikes
@@ -88,8 +104,12 @@
           <a
             href="/camping"
             class="{currentPath.startsWith('/camping')
-              ? (isDark ? 'border-emerald-400 text-emerald-300' : 'border-emerald-500 text-emerald-600')
-              : (isDark ? 'border-transparent text-stone-200 hover:border-stone-400 hover:text-white' : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-800')} inline-flex items-center px-4 pt-1 border-b-2 text-sm font-semibold transition-colors"
+              ? isDark
+                ? 'border-emerald-400 text-emerald-300'
+                : 'border-emerald-500 text-emerald-600'
+              : isDark
+                ? 'border-transparent text-stone-200 hover:border-stone-400 hover:text-white'
+                : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-800'} inline-flex items-center px-4 pt-1 border-b-2 text-sm font-semibold transition-colors"
           >
             <Tent size={16} class="mr-1.5" />
             Camping Sites
@@ -97,8 +117,12 @@
           <a
             href="/backpacking"
             class="{currentPath.startsWith('/backpacking')
-              ? (isDark ? 'border-amber-400 text-amber-300' : 'border-amber-500 text-amber-600')
-              : (isDark ? 'border-transparent text-stone-200 hover:border-stone-400 hover:text-white' : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-800')} inline-flex items-center px-4 pt-1 border-b-2 text-sm font-semibold transition-colors"
+              ? isDark
+                ? 'border-amber-400 text-amber-300'
+                : 'border-amber-500 text-amber-600'
+              : isDark
+                ? 'border-transparent text-stone-200 hover:border-stone-400 hover:text-white'
+                : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-800'} inline-flex items-center px-4 pt-1 border-b-2 text-sm font-semibold transition-colors"
           >
             <Backpack size={16} class="mr-1.5" />
             Backpacking
@@ -110,7 +134,9 @@
           <div class="relative" bind:this={userMenuEl}>
             <button
               on:click={toggleUserMenu}
-              class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors {isDark ? 'bg-white/10 hover:bg-white/20 text-stone-100' : 'bg-slate-100 hover:bg-slate-200 text-slate-900'}"
+              class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors {isDark
+                ? 'bg-white/10 hover:bg-white/20 text-stone-100'
+                : 'bg-slate-100 hover:bg-slate-200 text-slate-900'}"
               aria-expanded={userMenuOpen}
               aria-haspopup="true"
             >
@@ -119,12 +145,12 @@
               >
                 {(user.name?.[0] ?? user.email[0]).toUpperCase()}
               </div>
-              <span class="hidden sm:inline"
-                >{user.name ?? user.email.split("@")[0]}</span
-              >
+              <span class="hidden sm:inline">{user.name ?? user.email.split("@")[0]}</span>
               <ChevronDown
                 size={16}
-                class="{isDark ? 'text-stone-400' : 'text-slate-500'} transition-transform {userMenuOpen ? 'rotate-180' : ''}"
+                class="{isDark
+                  ? 'text-stone-400'
+                  : 'text-slate-500'} transition-transform {userMenuOpen ? 'rotate-180' : ''}"
               />
             </button>
             {#if userMenuOpen}
@@ -182,13 +208,17 @@
         {:else}
           <a
             href="/login"
-            class="{isDark ? 'text-stone-300 hover:text-stone-100' : 'text-slate-600 hover:text-slate-900'} px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            class="{isDark
+              ? 'text-stone-300 hover:text-stone-100'
+              : 'text-slate-600 hover:text-slate-900'} px-3 py-2 rounded-md text-sm font-medium transition-colors"
           >
             Login
           </a>
           <a
             href="/signup"
-            class="{isDark ? 'bg-emerald-500 hover:bg-emerald-400 text-stone-950' : 'bg-emerald-600 hover:bg-emerald-700 text-white'} px-4 py-2 rounded-full text-sm font-bold transition-colors shadow-sm"
+            class="{isDark
+              ? 'bg-emerald-500 hover:bg-emerald-400 text-stone-950'
+              : 'bg-emerald-600 hover:bg-emerald-700 text-white'} px-4 py-2 rounded-full text-sm font-bold transition-colors shadow-sm"
           >
             Sign Up
           </a>
