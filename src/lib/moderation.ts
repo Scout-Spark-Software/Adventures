@@ -3,7 +3,7 @@ import { moderationQueue } from "./db/schemas";
 import { eq, and } from "drizzle-orm";
 
 export async function addToModerationQueue(
-  entityType: "hike" | "camping_site" | "alteration",
+  entityType: "hike" | "camping_site" | "backpacking" | "alteration",
   entityId: string
 ): Promise<void> {
   await db.insert(moderationQueue).values({
@@ -14,7 +14,7 @@ export async function addToModerationQueue(
 }
 
 export async function updateModerationStatus(
-  entityType: "hike" | "camping_site" | "alteration",
+  entityType: "hike" | "camping_site" | "backpacking" | "alteration",
   entityId: string,
   status: "approved" | "rejected",
   reviewedBy: string

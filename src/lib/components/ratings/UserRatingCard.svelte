@@ -6,6 +6,7 @@
   export let initialReview: string = "";
   export let hikeId: string | null = null;
   export let campingSiteId: string | null = null;
+  export let backpackingId: string | null = null;
   export let hasExistingRating: boolean = false;
 
   const dispatch = createEventDispatcher();
@@ -58,6 +59,7 @@
         body: JSON.stringify({
           hikeId,
           campingSiteId,
+          backpackingId,
           rating,
           reviewText: reviewText.trim() || null,
         }),
@@ -113,6 +115,7 @@
       const params = new URLSearchParams();
       if (hikeId) params.append("hike_id", hikeId);
       if (campingSiteId) params.append("camping_site_id", campingSiteId);
+      if (backpackingId) params.append("backpacking_id", backpackingId);
 
       const response = await fetch(`/api/ratings?${params}`, {
         method: "DELETE",

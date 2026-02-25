@@ -2,7 +2,6 @@ import { fail, redirect } from "@sveltejs/kit";
 import type { PageServerLoad, Actions } from "./$types";
 import { workosAuth } from "$lib/server/workos";
 
-
 export const load: PageServerLoad = async ({ url }) => {
   const email = url.searchParams.get("email");
   const userId = url.searchParams.get("userId");

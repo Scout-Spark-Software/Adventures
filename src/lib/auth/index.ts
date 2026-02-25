@@ -50,4 +50,3 @@ export async function isModerator(userId: string): Promise<boolean> {
   const role = await getUserRole(userId);
   return role === "admin";
 }
-

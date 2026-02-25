@@ -22,7 +22,7 @@ export interface DetailPageData {
  */
 export async function loadDetailPage(params: {
   entityId: string;
-  entityType: "hike" | "camping_site";
+  entityType: "hike" | "camping_site" | "backpacking";
   apiEndpoint: string;
   locals: App.Locals;
   fetch: typeof fetch;
@@ -32,7 +32,12 @@ export async function loadDetailPage(params: {
   // Fetch entity data from API
   const entity = await fetch(apiEndpoint).then((r) => {
     if (!r.ok) {
-      const entityName = entityType === "hike" ? "Hike" : "Camping site";
+      const entityName =
+        entityType === "hike"
+          ? "Hike"
+          : entityType === "camping_site"
+            ? "Camping site"
+            : "Backpacking";
       throw error(r.status, `${entityName} not found`);
     }
     return r.json();
@@ -59,7 +64,12 @@ export async function loadDetailPage(params: {
   // Get notes count for this user and entity
   let notesCount = 0;
   if (locals.userId) {
-    const noteIdField = entityType === "hike" ? notes.hikeId : notes.campingSiteId;
+    const noteIdField =
+      entityType === "hike"
+        ? notes.hikeId
+        : entityType === "camping_site"
+          ? notes.campingSiteId
+          : notes.backpackingId;
     const result = await db
       .select({ count: count() })
       .from(notes)
@@ -67,8 +77,11 @@ export async function loadDetailPage(params: {
     notesCount = result[0]?.count || 0;
   }
 
+  const returnKey =
+    entityType === "hike" ? "hike" : entityType === "camping_site" ? "campingSite" : "backpacking";
+
   return {
-    [entityType === "hike" ? "hike" : "campingSite"]: entity,
+    [returnKey]: entity,
     address,
     userId: locals.userId || null,
     userRole,

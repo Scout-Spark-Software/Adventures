@@ -3,13 +3,15 @@
   import Hero from "$lib/components/Hero.svelte";
   import FeaturedHikes from "$lib/components/FeaturedHikes.svelte";
   import FeaturedCampingSites from "$lib/components/FeaturedCampingSites.svelte";
+  import FeaturedBackpacking from "$lib/components/FeaturedBackpacking.svelte";
   import EmptyAdventures from "$lib/components/EmptyAdventures.svelte";
 
   export let data: PageData;
 
   $: hasNoContent =
     (!data.featuredHikes || data.featuredHikes.length === 0) &&
-    (!data.featuredCampingSites || data.featuredCampingSites.length === 0);
+    (!data.featuredCampingSites || data.featuredCampingSites.length === 0) &&
+    (!data.featuredBackpacking || data.featuredBackpacking.length === 0);
 </script>
 
 <svelte:head>
@@ -22,6 +24,8 @@
   <FeaturedHikes hikes={data.featuredHikes} />
 
   <FeaturedCampingSites campingSites={data.featuredCampingSites} />
+
+  <FeaturedBackpacking routes={data.featuredBackpacking} />
 
   {#if hasNoContent}
     <EmptyAdventures />

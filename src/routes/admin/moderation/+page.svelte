@@ -6,12 +6,14 @@
   function entityUrl(item: { entityType: string; entityId: string }) {
     if (item.entityType === "hike") return `/hikes/${item.entityId}`;
     if (item.entityType === "camping_site") return `/camping/${item.entityId}`;
+    if (item.entityType === "backpacking") return `/backpacking/${item.entityId}`;
     return null;
   }
 
   function apiUrl(item: { entityType: string; entityId: string }) {
     if (item.entityType === "hike") return `/api/hikes/${item.entityId}`;
     if (item.entityType === "camping_site") return `/api/camping-sites/${item.entityId}`;
+    if (item.entityType === "backpacking") return `/api/backpacking/${item.entityId}`;
     return null;
   }
 
@@ -26,7 +28,11 @@
 
   function pruneErrors() {
     if (!data.queue) return;
-    const activeKeys = new Set(data.queue.map((item: { entityType: string; entityId: string }) => itemKey(item.entityType, item.entityId)));
+    const activeKeys = new Set(
+      data.queue.map((item: { entityType: string; entityId: string }) =>
+        itemKey(item.entityType, item.entityId)
+      )
+    );
     for (const key of errors.keys()) {
       if (!activeKeys.has(key)) {
         errors.delete(key);
@@ -136,17 +142,34 @@
             <div class="flex items-start justify-between gap-4 mb-3">
               <div class="min-w-0">
                 <div class="flex items-center gap-2 flex-wrap">
-                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-600 uppercase tracking-wide">
-                    {item.entityType === "hike" ? "Hike" : item.entityType === "camping_site" ? "Camping Site" : "Alteration"}
+                  <span
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-600 uppercase tracking-wide"
+                  >
+                    {item.entityType === "hike"
+                      ? "Hike"
+                      : item.entityType === "camping_site"
+                        ? "Camping Site"
+                        : item.entityType === "backpacking"
+                          ? "Backpacking"
+                          : "Alteration"}
                   </span>
                   <span class="text-xs text-gray-400">
-                    {new Date(item.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                    {new Date(item.createdAt).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
                   </span>
                 </div>
                 {#if item.entity}
                   <div class="flex items-center gap-2 mt-1.5">
                     {#if url}
-                      <a href={url} target="_blank" rel="noopener noreferrer" class="text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors truncate">
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors truncate"
+                      >
                         {item.entity.name || `Alteration for ${item.entity.fieldName}`}
                       </a>
                       <ExternalLink size={15} class="shrink-0 text-gray-400" />
@@ -175,7 +198,12 @@
                 </button>
                 {#if data.userRole === "admin" && apiUrl(item)}
                   <button
-                    on:click={() => deleteItem(item.entityType, item.entityId, item.entity?.name ?? item.entityId)}
+                    on:click={() =>
+                      deleteItem(
+                        item.entityType,
+                        item.entityId,
+                        item.entity?.name ?? item.entityId
+                      )}
                     disabled={processingItems.has(key)}
                     class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-600 bg-white hover:bg-gray-50 hover:text-red-600 hover:border-red-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     title="Delete permanently"
@@ -191,39 +219,78 @@
               <div class="flex flex-wrap gap-2 mb-3">
                 {#if item.entityType === "hike"}
                   {#if item.entity.difficulty}
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 capitalize">
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 capitalize"
+                    >
                       {item.entity.difficulty.replace("_", " ")}
                     </span>
                   {/if}
                   {#if item.entity.distance}
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600">
-                      {item.entity.distance} {item.entity.distanceUnit ?? "miles"}
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600"
+                    >
+                      {item.entity.distance}
+                      {item.entity.distanceUnit ?? "miles"}
                     </span>
                   {/if}
                   {#if item.entity.duration}
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600">
-                      {item.entity.duration} {item.entity.durationUnit ?? "hours"}
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600"
+                    >
+                      {item.entity.duration}
+                      {item.entity.durationUnit ?? "hours"}
                     </span>
                   {/if}
                   {#if item.entity.trailType}
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600 capitalize">
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600 capitalize"
+                    >
                       {item.entity.trailType.replace("_", " ")}
                     </span>
                   {/if}
                 {:else if item.entityType === "camping_site"}
                   {#if item.entity.siteType}
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 capitalize">
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 capitalize"
+                    >
                       {item.entity.siteType.replace("_", " ")}
                     </span>
                   {/if}
                   {#if item.entity.costPerNight}
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600">
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600"
+                    >
                       ${item.entity.costPerNight}/night
                     </span>
                   {/if}
                   {#if item.entity.petPolicy}
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600 capitalize">
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600 capitalize"
+                    >
                       Pets: {item.entity.petPolicy.replace("_", " ")}
+                    </span>
+                  {/if}
+                {:else if item.entityType === "backpacking"}
+                  {#if item.entity.difficulty}
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 capitalize"
+                    >
+                      {item.entity.difficulty.replace("_", " ")}
+                    </span>
+                  {/if}
+                  {#if item.entity.distance}
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600"
+                    >
+                      {item.entity.distance}
+                      {item.entity.distanceUnit ?? "miles"}
+                    </span>
+                  {/if}
+                  {#if item.entity.numberOfDays}
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600"
+                    >
+                      {item.entity.numberOfDays} day{item.entity.numberOfDays !== 1 ? "s" : ""}
                     </span>
                   {/if}
                 {/if}

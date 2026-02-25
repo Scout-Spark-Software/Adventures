@@ -11,7 +11,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
   const formData = await request.formData();
   const file = formData.get("file") as File;
-  const entityType = formData.get("entity_type") as "hike" | "camping_site";
+  const entityType = formData.get("entity_type") as "hike" | "camping_site" | "backpacking";
   const entityId = formData.get("entity_id") as string;
   const fileType = formData.get("file_type") as "image" | "document";
   const isBanner = formData.get("is_banner") === "true";
@@ -20,8 +20,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     throw error(400, "File is required");
   }
 
-  if (!entityType || !["hike", "camping_site"].includes(entityType)) {
-    throw error(400, 'entity_type must be "hike" or "camping_site"');
+  if (!entityType || !["hike", "camping_site", "backpacking"].includes(entityType)) {
+    throw error(400, 'entity_type must be "hike", "camping_site", or "backpacking"');
   }
 
   if (!entityId) {

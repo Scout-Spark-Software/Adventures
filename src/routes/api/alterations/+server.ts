@@ -12,6 +12,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const status = url.searchParams.get("status");
   const hikeId = url.searchParams.get("hike_id");
   const campingSiteId = url.searchParams.get("camping_site_id");
+  const backpackingId = url.searchParams.get("backpacking_id");
   const limit = parseLimit(url.searchParams.get("limit"));
   const offset = parseOffset(url.searchParams.get("offset"));
 
@@ -29,6 +30,10 @@ export const GET: RequestHandler = async ({ url }) => {
     conditions.push(eq(alterations.campingSiteId, campingSiteId));
   }
 
+  if (backpackingId) {
+    conditions.push(eq(alterations.backpackingId, backpackingId));
+  }
+
   const results = await db.query.alterations.findMany({
     where: conditions.length > 0 ? and(...conditions) : undefined,
     limit,
@@ -43,23 +48,24 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   const user = requireAuth({ locals } as any);
 
   const body = await request.json();
-  const { hikeId, campingSiteId, fieldName, oldValue, newValue, reason } = body;
+  const { hikeId, campingSiteId, backpackingId, fieldName, oldValue, newValue, reason } = body;
 
   if (!fieldName || newValue === undefined || newValue === null) {
     throw error(400, "fieldName and newValue are required");
   }
 
-  if (!hikeId && !campingSiteId) {
-    throw error(400, "Either hikeId or campingSiteId is required");
+  if (!hikeId && !campingSiteId && !backpackingId) {
+    throw error(400, "Either hikeId, campingSiteId, or backpackingId is required");
   }
 
-  if (hikeId && campingSiteId) {
-    throw error(400, "Cannot alter both hike and camping site at once");
+  const entityCount = [hikeId, campingSiteId, backpackingId].filter(Boolean).length;
+  if (entityCount > 1) {
+    throw error(400, "Cannot alter more than one entity at once");
   }
 
   // Validate fieldName against entity-specific allowlist to prevent
   // privilege escalation via fields like 'status', 'featured', 'createdBy'
-  const entityType = hikeId ? "hike" : "campingSite";
+  const entityType = hikeId ? "hike" : backpackingId ? "backpacking" : "campingSite";
   if (!isAllowedAlterationField(fieldName, entityType)) {
     throw error(400, `Field "${fieldName}" is not allowed for ${entityType} alterations`);
   }
@@ -69,6 +75,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     .values({
       hikeId: hikeId || null,
       campingSiteId: campingSiteId || null,
+      backpackingId: backpackingId || null,
       fieldName,
       oldValue,
       newValue,

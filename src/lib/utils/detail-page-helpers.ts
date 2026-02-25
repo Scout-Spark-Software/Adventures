@@ -1,4 +1,11 @@
-import { ArrowUp as ArrowIcon, Tent as CampingIcon, Clock as ClockIcon, Footprints as HikeIcon, Map as MapIcon, User as UserIcon } from "lucide-svelte";
+import {
+  ArrowUp as ArrowIcon,
+  Tent as CampingIcon,
+  Clock as ClockIcon,
+  Footprints as HikeIcon,
+  Map as MapIcon,
+  User as UserIcon,
+} from "lucide-svelte";
 import { SITE_TYPE_LABELS, TRAIL_TYPE_LABELS } from "$lib/db/schemas/enums";
 import type { ComponentType } from "svelte";
 

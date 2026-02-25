@@ -3,6 +3,7 @@
   import { goto } from "$app/navigation";
   import type { PageData } from "./$types";
   import LocationPicker from "$lib/components/LocationPicker.svelte";
+  import WaypointMap from "$lib/components/WaypointMap.svelte";
   import FormSection from "$lib/components/FormSection.svelte";
   import Tooltip from "$lib/components/Tooltip.svelte";
   import SuccessAnimation from "$lib/components/SuccessAnimation.svelte";
@@ -10,7 +11,7 @@
 
   export let data: PageData;
 
-  let type: "hike" | "camping_site" = "hike";
+  let type: "hike" | "camping_site" | "backpacking" = "hike";
   let loading = false;
   let uploadingPhotos = false;
   let errors: Record<string, string> = {};
@@ -72,6 +73,24 @@
   let waterSources = false;
   let parkingInfo = "";
 
+  // Backpacking-specific fields
+  let backpackingName = "";
+  let backpackingDescription = "";
+  let numberOfDays: number | null = null;
+  let numberOfNights: number | null = null;
+  let campingStyle = "";
+  let waterAvailability = "";
+  let backpackingDifficulty = "";
+  let backpackingDistance: number | null = null;
+  let backpackingDistanceUnit: "miles" | "kilometers" = "miles";
+  let backpackingElevation: number | null = null;
+  let backpackingElevationUnit: "feet" | "meters" = "feet";
+  let backpackingTrailType = "";
+  let backpackingPermitsRequired = "";
+  let backpackingParkingInfo = "";
+  let backpackingDogFriendly = false;
+  let backpackingWaypoints: Array<{ lat: number; lng: number; label?: string }> = [];
+
   // Camping-specific fields
   let campingName = "";
   let campingDescription = "";
@@ -115,10 +134,28 @@
     errors = {};
     submitError = null;
 
+    if (type === "backpacking") {
+      if (!backpackingName.trim()) {
+        errors.name = "Name is required";
+        document
+          .getElementById("backpacking-name")
+          ?.scrollIntoView({ behavior: "smooth", block: "center" });
+        return false;
+      }
+      if (!city || !state) {
+        errors.address = "City and State are required";
+        document.getElementById("city")?.scrollIntoView({ behavior: "smooth", block: "center" });
+        return false;
+      }
+      return true;
+    }
+
     if (type === "hike") {
       if (!hikeName.trim()) {
         errors.name = "Name is required";
-        document.getElementById("hike-name")?.scrollIntoView({ behavior: "smooth", block: "center" });
+        document
+          .getElementById("hike-name")
+          ?.scrollIntoView({ behavior: "smooth", block: "center" });
         return false;
       }
       if (!city || !state) {
@@ -137,7 +174,9 @@
     } else {
       if (!campingName.trim()) {
         errors.name = "Name is required";
-        document.getElementById("camping-name")?.scrollIntoView({ behavior: "smooth", block: "center" });
+        document
+          .getElementById("camping-name")
+          ?.scrollIntoView({ behavior: "smooth", block: "center" });
         return false;
       }
       if (!city || !state) {
@@ -147,17 +186,23 @@
       }
       if (!petPolicy) {
         errors.petPolicy = "Pet policy is required";
-        document.getElementById("pet_policy")?.scrollIntoView({ behavior: "smooth", block: "center" });
+        document
+          .getElementById("pet_policy")
+          ?.scrollIntoView({ behavior: "smooth", block: "center" });
         return false;
       }
       if (!siteType) {
         errors.siteType = "Site type is required";
-        document.getElementById("site_type")?.scrollIntoView({ behavior: "smooth", block: "center" });
+        document
+          .getElementById("site_type")
+          ?.scrollIntoView({ behavior: "smooth", block: "center" });
         return false;
       }
       if (!firePolicy) {
         errors.firePolicy = "Fire policy is required";
-        document.getElementById("fire_policy")?.scrollIntoView({ behavior: "smooth", block: "center" });
+        document
+          .getElementById("fire_policy")
+          ?.scrollIntoView({ behavior: "smooth", block: "center" });
         return false;
       }
     }
@@ -165,7 +210,7 @@
     return true;
   }
 
-  function makeEnhanceHandler(entityType: "hike" | "camping_site") {
+  function makeEnhanceHandler(entityType: "hike" | "camping_site" | "backpacking") {
     return () => {
       if (!validateForm()) {
         // Return a no-op so SvelteKit doesn't run the default update
@@ -203,8 +248,15 @@
           successMessage =
             entityType === "hike"
               ? "Your hike has been submitted for review!"
-              : "Your camping site has been submitted for review!";
-          const path = entityType === "hike" ? `/hikes/${entityId}` : `/camping/${entityId}`;
+              : entityType === "backpacking"
+                ? "Your backpacking route has been submitted for review!"
+                : "Your camping site has been submitted for review!";
+          const path =
+            entityType === "hike"
+              ? `/hikes/${entityId}`
+              : entityType === "backpacking"
+                ? `/backpacking/${entityId}`
+                : `/camping/${entityId}`;
           setTimeout(() => goto(path), 2500);
         } else if (result.type === "failure") {
           loading = false;
@@ -239,13 +291,13 @@
       >
         <option value="hike">Hike</option>
         <option value="camping_site">Camping Site</option>
+        <option value="backpacking">Backpacking Route</option>
       </select>
     </div>
 
     {#if type === "hike"}
       <form method="POST" action="?/submitHike" use:enhance={makeEnhanceHandler("hike")}>
         <div class="bg-white shadow rounded-lg divide-y divide-gray-200">
-
           <!-- Basic Info -->
           <div class="p-6 space-y-4">
             <h2 class="text-base font-semibold text-gray-900">Basic Information</h2>
@@ -454,7 +506,9 @@
                   {#if permitsError}
                     <p class="mt-1 text-sm text-red-600">{permitsError}</p>
                   {:else}
-                    <p class="mt-1 text-xs text-gray-500">{permitsRequired.length}/500 characters</p>
+                    <p class="mt-1 text-xs text-gray-500">
+                      {permitsRequired.length}/500 characters
+                    </p>
                   {/if}
                 </div>
                 <div>
@@ -462,7 +516,11 @@
                     Best Season to Visit
                     <Tooltip text="Select all seasons when this trail is enjoyable" />
                   </div>
-                  <div class="grid grid-cols-2 gap-3" role="group" aria-labelledby="best-season-label">
+                  <div
+                    class="grid grid-cols-2 gap-3"
+                    role="group"
+                    aria-labelledby="best-season-label"
+                  >
                     {#each ["Spring", "Summer", "Fall", "Winter"] as season (season)}
                       <label class="flex items-center">
                         <input
@@ -545,7 +603,11 @@
                 {#each stagedPhotos as photo, i (photo.previewUrl)}
                   <div class="relative group">
                     <div class="aspect-square rounded-lg overflow-hidden bg-gray-100">
-                      <img src={photo.previewUrl} alt="Photo {i + 1}" class="w-full h-full object-cover" />
+                      <img
+                        src={photo.previewUrl}
+                        alt="Photo {i + 1}"
+                        class="w-full h-full object-cover"
+                      />
                     </div>
                     <button
                       type="button"
@@ -566,7 +628,9 @@
                       <X size={14} />
                     </button>
                     {#if photo.isBanner}
-                      <span class="absolute bottom-1 left-1 text-xs bg-amber-400 text-white px-1.5 py-0.5 rounded font-medium">
+                      <span
+                        class="absolute bottom-1 left-1 text-xs bg-amber-400 text-white px-1.5 py-0.5 rounded font-medium"
+                      >
                         Banner
                       </span>
                     {/if}
@@ -588,14 +652,36 @@
             >
               {#if uploadingPhotos}
                 <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
                 Uploading photos...
               {:else if loading}
                 <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
                 Submitting...
               {:else}
@@ -603,14 +689,432 @@
               {/if}
             </button>
           </div>
-
         </div>
       </form>
-
-    {:else}
-      <form method="POST" action="?/submitCampingSite" use:enhance={makeEnhanceHandler("camping_site")}>
+    {:else if type === "backpacking"}
+      <form
+        method="POST"
+        action="?/submitBackpacking"
+        use:enhance={makeEnhanceHandler("backpacking")}
+      >
         <div class="bg-white shadow rounded-lg divide-y divide-gray-200">
+          <!-- Basic Info -->
+          <div class="p-6 space-y-4">
+            <h2 class="text-base font-semibold text-gray-900">Basic Information</h2>
+            <div>
+              <label for="backpacking-name" class="block text-sm font-medium text-gray-700 mb-1">
+                Route Name *
+              </label>
+              <input
+                type="text"
+                id="backpacking-name"
+                name="name"
+                bind:value={backpackingName}
+                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                class:border-red-500={errors.name}
+              />
+              {#if errors.name}
+                <p class="mt-1 text-sm text-red-600">{errors.name}</p>
+              {/if}
+            </div>
+            <div>
+              <label
+                for="backpacking-description"
+                class="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Description
+              </label>
+              <textarea
+                id="backpacking-description"
+                name="description"
+                bind:value={backpackingDescription}
+                rows="3"
+                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              ></textarea>
+            </div>
+          </div>
 
+          <!-- Location -->
+          <div class="p-6">
+            <h2 class="text-base font-semibold text-gray-900 mb-4">Location</h2>
+            <LocationPicker
+              bind:address
+              bind:city
+              bind:state
+              bind:country
+              bind:postalCode
+              bind:latitude
+              bind:longitude
+            />
+            {#if errors.address}
+              <p class="mt-2 text-sm text-red-600">{errors.address}</p>
+            {/if}
+          </div>
+
+          <!-- Waypoints -->
+          <div class="p-6 space-y-3">
+            <h2 class="text-base font-semibold text-gray-900">Route Waypoints</h2>
+            <p class="text-sm text-gray-500">
+              Optionally plot the route by clicking on the map to add waypoints in order. You can
+              drag markers to adjust positions or right-click to remove them.
+            </p>
+            <WaypointMap
+              bind:waypoints={backpackingWaypoints}
+              editable
+              height="320px"
+              referenceLat={latitude}
+              referenceLng={longitude}
+              referenceLabel={city ? `${city}${state ? ", " + state : ""}` : "Entered location"}
+            />
+            {#if backpackingWaypoints.length > 0}
+              <ul class="mt-2 space-y-1">
+                {#each backpackingWaypoints as wp, i (i)}
+                  <li class="flex items-center gap-2 text-xs text-gray-600">
+                    <span
+                      class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-600 text-white font-bold text-[10px]"
+                    >{i + 1}</span>
+                    <input
+                      type="text"
+                      bind:value={wp.label}
+                      placeholder="Label (optional)"
+                      class="flex-1 px-2 py-1 border border-gray-300 rounded text-xs focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+                    />
+                    <span class="text-gray-400 font-mono"
+                      >{wp.lat.toFixed(5)}, {wp.lng.toFixed(5)}</span
+                    >
+                  </li>
+                {/each}
+              </ul>
+            {/if}
+            <input type="hidden" name="waypoints" value={JSON.stringify(backpackingWaypoints)} />
+          </div>
+
+          <!-- Trail Details -->
+          <div class="p-6 space-y-4">
+            <h2 class="text-base font-semibold text-gray-900">Route Details</h2>
+            <div>
+              <label
+                for="backpacking-difficulty"
+                class="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Difficulty
+              </label>
+              <select
+                id="backpacking-difficulty"
+                name="difficulty"
+                bind:value={backpackingDifficulty}
+                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              >
+                <option value="">Select difficulty...</option>
+                <option value="easy">Easy</option>
+                <option value="moderate">Moderate</option>
+                <option value="hard">Hard</option>
+                <option value="very_hard">Very Hard</option>
+              </select>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label
+                  for="backpacking-distance"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Total Distance
+                </label>
+                <div class="flex gap-2">
+                  <input
+                    type="number"
+                    step="0.1"
+                    id="backpacking-distance"
+                    name="distance"
+                    bind:value={backpackingDistance}
+                    placeholder="25"
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  />
+                  <select
+                    name="distance_unit"
+                    bind:value={backpackingDistanceUnit}
+                    class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  >
+                    <option value="miles">mi</option>
+                    <option value="kilometers">km</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label
+                  for="backpacking-elevation"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Elevation Gain
+                </label>
+                <div class="flex gap-2">
+                  <input
+                    type="number"
+                    step="1"
+                    id="backpacking-elevation"
+                    name="elevation"
+                    bind:value={backpackingElevation}
+                    placeholder="3000"
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  />
+                  <select
+                    name="elevation_unit"
+                    bind:value={backpackingElevationUnit}
+                    class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  >
+                    <option value="feet">ft</option>
+                    <option value="meters">m</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label for="number-of-days" class="block text-sm font-medium text-gray-700 mb-1">
+                  Number of Days
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  id="number-of-days"
+                  name="number_of_days"
+                  bind:value={numberOfDays}
+                  placeholder="4"
+                  class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                />
+              </div>
+              <div>
+                <label for="number-of-nights" class="block text-sm font-medium text-gray-700 mb-1">
+                  Number of Nights
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  id="number-of-nights"
+                  name="number_of_nights"
+                  bind:value={numberOfNights}
+                  placeholder="3"
+                  class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                />
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label for="camping-style" class="block text-sm font-medium text-gray-700 mb-1">
+                  Camping Style
+                </label>
+                <select
+                  id="camping-style"
+                  name="camping_style"
+                  bind:value={campingStyle}
+                  class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                >
+                  <option value="">Select camping style...</option>
+                  <option value="dispersed">Dispersed Camping</option>
+                  <option value="designated_sites">Designated Sites</option>
+                  <option value="hut_to_hut">Hut to Hut</option>
+                </select>
+              </div>
+              <div>
+                <label
+                  for="backpacking-trail-type"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Trail Type
+                </label>
+                <select
+                  id="backpacking-trail-type"
+                  name="trail_type"
+                  bind:value={backpackingTrailType}
+                  class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                >
+                  <option value="">Select trail type...</option>
+                  <option value="loop">Loop</option>
+                  <option value="out_and_back">Out and Back</option>
+                  <option value="point_to_point">Point to Point</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label for="water-availability" class="block text-sm font-medium text-gray-700 mb-1">
+                Water Availability
+              </label>
+              <textarea
+                id="water-availability"
+                name="water_availability"
+                bind:value={waterAvailability}
+                rows="2"
+                placeholder="e.g., Seasonal streams at miles 5 and 12, requires treatment"
+                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              ></textarea>
+            </div>
+            <div>
+              <label for="backpacking-permits" class="block text-sm font-medium text-gray-700 mb-1">
+                Permits or Passes Required
+              </label>
+              <textarea
+                id="backpacking-permits"
+                name="permits_required"
+                bind:value={backpackingPermitsRequired}
+                rows="2"
+                maxlength="500"
+                placeholder="e.g., Wilderness permit required, quota system in summer"
+                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              ></textarea>
+            </div>
+            <div>
+              <label for="backpacking-parking" class="block text-sm font-medium text-gray-700 mb-1">
+                Parking Information
+              </label>
+              <textarea
+                id="backpacking-parking"
+                name="parking_info"
+                bind:value={backpackingParkingInfo}
+                rows="2"
+                maxlength="1000"
+                placeholder="e.g., Trailhead parking lot, 20 spaces, self-pay station"
+                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              ></textarea>
+            </div>
+            <label class="flex items-center">
+              <input
+                type="checkbox"
+                name="dog_friendly"
+                bind:checked={backpackingDogFriendly}
+                class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+              />
+              <span class="ml-2 text-sm text-gray-700">Dog Friendly</span>
+            </label>
+          </div>
+
+          <!-- Photos -->
+          <div class="p-6 space-y-4">
+            <h2 class="text-base font-semibold text-gray-900">Photos</h2>
+            <p class="text-sm text-gray-500">
+              Add photos to help others find and recognize this route. The starred photo will be
+              used as the banner image.
+            </p>
+            <div>
+              <label
+                for="backpacking-photo-input"
+                class="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer"
+              >
+                <ImagePlus size={16} />
+                Add Photos
+              </label>
+              <input
+                id="backpacking-photo-input"
+                type="file"
+                accept="image/*"
+                multiple
+                on:change={(e) => {
+                  addPhotos(e.currentTarget.files);
+                  e.currentTarget.value = "";
+                }}
+                class="sr-only"
+              />
+              <p class="mt-1 text-xs text-gray-500">JPEG, PNG, WebP — up to 10MB each</p>
+            </div>
+            {#if stagedPhotos.length > 0}
+              <div class="grid grid-cols-3 gap-3">
+                {#each stagedPhotos as photo, i (photo.previewUrl)}
+                  <div class="relative group">
+                    <div class="aspect-square rounded-lg overflow-hidden bg-gray-100">
+                      <img
+                        src={photo.previewUrl}
+                        alt="Photo {i + 1}"
+                        class="w-full h-full object-cover"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      on:click={() => setStagedBanner(i)}
+                      title={photo.isBanner ? "Banner image" : "Set as banner"}
+                      class="absolute top-1 left-1 p-1 rounded-full transition-all {photo.isBanner
+                        ? 'bg-amber-400 text-white'
+                        : 'bg-white/80 text-gray-400 opacity-0 group-hover:opacity-100 hover:text-amber-500'}"
+                    >
+                      <Star size={14} />
+                    </button>
+                    <button
+                      type="button"
+                      on:click={() => removeStagedPhoto(i)}
+                      title="Remove photo"
+                      class="absolute top-1 right-1 p-1 rounded-full bg-white/80 text-gray-400 opacity-0 group-hover:opacity-100 hover:text-red-500 transition-all"
+                    >
+                      <X size={14} />
+                    </button>
+                    {#if photo.isBanner}
+                      <span
+                        class="absolute bottom-1 left-1 text-xs bg-amber-400 text-white px-1.5 py-0.5 rounded font-medium"
+                      >
+                        Banner
+                      </span>
+                    {/if}
+                  </div>
+                {/each}
+              </div>
+            {/if}
+          </div>
+
+          <!-- Submit -->
+          <div class="p-6">
+            {#if submitError}
+              <p class="mb-4 text-sm text-red-600">{submitError}</p>
+            {/if}
+            <button
+              type="submit"
+              disabled={loading}
+              class="w-full flex justify-center items-center gap-2 px-6 py-3 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              {#if uploadingPhotos}
+                <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                Uploading photos...
+              {:else if loading}
+                <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                Submitting...
+              {:else}
+                Submit Backpacking Route
+              {/if}
+            </button>
+          </div>
+        </div>
+      </form>
+    {:else}
+      <form
+        method="POST"
+        action="?/submitCampingSite"
+        use:enhance={makeEnhanceHandler("camping_site")}
+      >
+        <div class="bg-white shadow rounded-lg divide-y divide-gray-200">
           <!-- Basic Info -->
           <div class="p-6 space-y-4">
             <h2 class="text-base font-semibold text-gray-900">Basic Information</h2>
@@ -847,13 +1351,22 @@
                   <Tooltip text="Check if advance reservations are mandatory" />
                 </label>
                 <div>
-                  <div class="block text-sm font-medium text-gray-700 mb-2" id="operating-season-label">
+                  <div
+                    class="block text-sm font-medium text-gray-700 mb-2"
+                    id="operating-season-label"
+                  >
                     Operating Season
                     <Tooltip text="Dates when the campground is open" />
                   </div>
-                  <div class="grid grid-cols-2 gap-4" role="group" aria-labelledby="operating-season-label">
+                  <div
+                    class="grid grid-cols-2 gap-4"
+                    role="group"
+                    aria-labelledby="operating-season-label"
+                  >
                     <div>
-                      <label for="season_start" class="block text-xs text-gray-600 mb-1">Start</label>
+                      <label for="season_start" class="block text-xs text-gray-600 mb-1"
+                        >Start</label
+                      >
                       <input
                         type="text"
                         id="season_start"
@@ -912,7 +1425,11 @@
                 {#each stagedPhotos as photo, i (photo.previewUrl)}
                   <div class="relative group">
                     <div class="aspect-square rounded-lg overflow-hidden bg-gray-100">
-                      <img src={photo.previewUrl} alt="Photo {i + 1}" class="w-full h-full object-cover" />
+                      <img
+                        src={photo.previewUrl}
+                        alt="Photo {i + 1}"
+                        class="w-full h-full object-cover"
+                      />
                     </div>
                     <button
                       type="button"
@@ -933,7 +1450,9 @@
                       <X size={14} />
                     </button>
                     {#if photo.isBanner}
-                      <span class="absolute bottom-1 left-1 text-xs bg-amber-400 text-white px-1.5 py-0.5 rounded font-medium">
+                      <span
+                        class="absolute bottom-1 left-1 text-xs bg-amber-400 text-white px-1.5 py-0.5 rounded font-medium"
+                      >
                         Banner
                       </span>
                     {/if}
@@ -955,14 +1474,36 @@
             >
               {#if uploadingPhotos}
                 <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
                 Uploading photos...
               {:else if loading}
                 <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
                 Submitting...
               {:else}
@@ -970,7 +1511,6 @@
               {/if}
             </button>
           </div>
-
         </div>
       </form>
     {/if}

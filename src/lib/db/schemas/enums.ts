@@ -3,8 +3,17 @@ import { pgEnum } from "drizzle-orm/pg-core";
 export const statusEnum = pgEnum("status", ["pending", "approved", "rejected"]);
 export const VALID_STATUSES = statusEnum.enumValues;
 export type Status = (typeof VALID_STATUSES)[number];
-export const entityTypeEnum = pgEnum("entity_type", ["hike", "camping_site", "alteration"]);
-export const fileEntityTypeEnum = pgEnum("file_entity_type", ["hike", "camping_site"]);
+export const entityTypeEnum = pgEnum("entity_type", [
+  "hike",
+  "camping_site",
+  "backpacking",
+  "alteration",
+]);
+export const fileEntityTypeEnum = pgEnum("file_entity_type", [
+  "hike",
+  "camping_site",
+  "backpacking",
+]);
 export const fileTypeEnum = pgEnum("file_type", ["image", "document"]);
 export const difficultyEnum = pgEnum("difficulty", ["easy", "moderate", "hard", "very_hard"]);
 export const distanceUnitEnum = pgEnum("distance_unit", ["miles", "kilometers"]);
@@ -32,4 +41,14 @@ export const TRAIL_TYPE_LABELS: Record<string, string> = {
   loop: "Loop",
   out_and_back: "Out and Back",
   point_to_point: "Point to Point",
+};
+export const campingStyleEnum = pgEnum("camping_style", [
+  "dispersed",
+  "designated_sites",
+  "hut_to_hut",
+]);
+export const CAMPING_STYLE_LABELS: Record<string, string> = {
+  dispersed: "Dispersed Camping",
+  designated_sites: "Designated Sites",
+  hut_to_hut: "Hut to Hut",
 };

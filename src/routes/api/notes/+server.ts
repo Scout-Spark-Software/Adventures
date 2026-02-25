@@ -5,12 +5,13 @@ import { notes } from "$lib/db/schemas";
 import { eq, and, desc } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 
-// GET /api/notes?hike_id=xxx or ?camping_site_id=xxx or neither (all user notes)
+// GET /api/notes?hike_id=xxx or ?camping_site_id=xxx or ?backpacking_id=xxx or neither (all user notes)
 export const GET: RequestHandler = async ({ locals, url }) => {
   const user = requireAuth({ locals } as any);
 
   const hikeId = url.searchParams.get("hike_id");
   const campingSiteId = url.searchParams.get("camping_site_id");
+  const backpackingId = url.searchParams.get("backpacking_id");
 
   const conditions = [eq(notes.userId, user.id)];
 
@@ -20,6 +21,10 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 
   if (campingSiteId) {
     conditions.push(eq(notes.campingSiteId, campingSiteId));
+  }
+
+  if (backpackingId) {
+    conditions.push(eq(notes.backpackingId, backpackingId));
   }
 
   const results = await db.query.notes.findMany({
@@ -38,6 +43,12 @@ export const GET: RequestHandler = async ({ locals, url }) => {
           name: true,
         },
       },
+      backpacking: {
+        columns: {
+          id: true,
+          name: true,
+        },
+      },
     },
   });
 
@@ -49,15 +60,16 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   const user = requireAuth({ locals } as any);
 
   const body = await request.json();
-  const { hikeId, campingSiteId, content } = body;
+  const { hikeId, campingSiteId, backpackingId, content } = body;
 
   // Validation
-  if (!hikeId && !campingSiteId) {
-    throw error(400, "Either hikeId or campingSiteId is required");
+  if (!hikeId && !campingSiteId && !backpackingId) {
+    throw error(400, "Either hikeId, campingSiteId, or backpackingId is required");
   }
 
-  if (hikeId && campingSiteId) {
-    throw error(400, "Cannot create note for both hike and camping site");
+  const entityCount = [hikeId, campingSiteId, backpackingId].filter(Boolean).length;
+  if (entityCount > 1) {
+    throw error(400, "Cannot create note for more than one entity at once");
   }
 
   if (!content || typeof content !== "string") {
@@ -80,6 +92,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       userId: user.id,
       hikeId: hikeId || null,
       campingSiteId: campingSiteId || null,
+      backpackingId: backpackingId || null,
       content: trimmedContent,
     })
     .returning();

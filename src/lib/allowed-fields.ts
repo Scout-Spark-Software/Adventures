@@ -36,10 +36,39 @@ export const CAMPING_SITE_ALTERABLE_FIELDS = [
   "firePolicy",
 ] as const;
 
+export const BACKPACKING_ALTERABLE_FIELDS = [
+  "name",
+  "description",
+  "difficulty",
+  "distance",
+  "distanceUnit",
+  "duration",
+  "durationUnit",
+  "elevation",
+  "elevationUnit",
+  "trailType",
+  "features",
+  "permitsRequired",
+  "bestSeason",
+  "waterSources",
+  "parkingInfo",
+  "dogFriendly",
+  "numberOfDays",
+  "numberOfNights",
+  "campingStyle",
+  "waterAvailability",
+  "waypoints",
+] as const;
+
 export function isAllowedAlterationField(
   fieldName: string,
-  entityType: "hike" | "campingSite"
+  entityType: "hike" | "campingSite" | "backpacking"
 ): boolean {
-  const fields = entityType === "hike" ? HIKE_ALTERABLE_FIELDS : CAMPING_SITE_ALTERABLE_FIELDS;
+  const fields =
+    entityType === "hike"
+      ? HIKE_ALTERABLE_FIELDS
+      : entityType === "campingSite"
+        ? CAMPING_SITE_ALTERABLE_FIELDS
+        : BACKPACKING_ALTERABLE_FIELDS;
   return (fields as readonly string[]).includes(fieldName);
 }

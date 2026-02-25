@@ -7,22 +7,24 @@ import { requireAuth } from "$lib/auth/middleware";
 import { sanitizeReview } from "$lib/utils/profanity-filter";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
 
-// GET /api/ratings?hike_id=xxx or ?camping_site_id=xxx
+// GET /api/ratings?hike_id=xxx or ?camping_site_id=xxx or ?backpacking_id=xxx
 // Returns all ratings for an entity (paginated)
 export const GET: RequestHandler = async ({ url }) => {
   const hikeId = url.searchParams.get("hike_id");
   const campingSiteId = url.searchParams.get("camping_site_id");
+  const backpackingId = url.searchParams.get("backpacking_id");
   const limit = parseLimit(url.searchParams.get("limit"));
   const offset = parseOffset(url.searchParams.get("offset"));
   const withReviewsOnly = url.searchParams.get("reviews_only") === "true";
 
-  if (!hikeId && !campingSiteId) {
-    throw error(400, "Either hike_id or camping_site_id is required");
+  if (!hikeId && !campingSiteId && !backpackingId) {
+    throw error(400, "Either hike_id, camping_site_id, or backpacking_id is required");
   }
 
   const conditions = [];
   if (hikeId) conditions.push(eq(ratings.hikeId, hikeId));
   if (campingSiteId) conditions.push(eq(ratings.campingSiteId, campingSiteId));
+  if (backpackingId) conditions.push(eq(ratings.backpackingId, backpackingId));
   if (withReviewsOnly) conditions.push(sql`${ratings.reviewText} IS NOT NULL`);
 
   const results = await db.query.ratings.findMany({
@@ -36,6 +38,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const aggregateConditions = [];
   if (hikeId) aggregateConditions.push(eq(ratingAggregates.hikeId, hikeId));
   if (campingSiteId) aggregateConditions.push(eq(ratingAggregates.campingSiteId, campingSiteId));
+  if (backpackingId) aggregateConditions.push(eq(ratingAggregates.backpackingId, backpackingId));
 
   const aggregate = await db.query.ratingAggregates.findFirst({
     where: aggregateConditions.length > 0 ? and(...aggregateConditions) : undefined,
@@ -63,15 +66,16 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   const user = requireAuth({ locals } as any);
 
   const body = await request.json();
-  const { hikeId, campingSiteId, rating, reviewText } = body;
+  const { hikeId, campingSiteId, backpackingId, rating, reviewText } = body;
 
   // Validation
-  if (!hikeId && !campingSiteId) {
-    throw error(400, "Either hikeId or campingSiteId is required");
+  if (!hikeId && !campingSiteId && !backpackingId) {
+    throw error(400, "Either hikeId, campingSiteId, or backpackingId is required");
   }
 
-  if (hikeId && campingSiteId) {
-    throw error(400, "Cannot rate both hike and camping site at once");
+  const entityCount = [hikeId, campingSiteId, backpackingId].filter(Boolean).length;
+  if (entityCount > 1) {
+    throw error(400, "Cannot rate more than one entity at once");
   }
 
   if (!rating || typeof rating !== "number") {
@@ -96,17 +100,24 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   }
 
   // Upsert: insert or update if user already rated this entity
+  const conflictTarget = hikeId
+    ? [ratings.userId, ratings.hikeId]
+    : backpackingId
+      ? [ratings.userId, ratings.backpackingId]
+      : [ratings.userId, ratings.campingSiteId];
+
   const [result] = await db
     .insert(ratings)
     .values({
       userId: user.id,
       hikeId: hikeId || null,
       campingSiteId: campingSiteId || null,
+      backpackingId: backpackingId || null,
       rating: rating.toString(),
       reviewText: sanitizedReview,
     })
     .onConflictDoUpdate({
-      target: hikeId ? [ratings.userId, ratings.hikeId] : [ratings.userId, ratings.campingSiteId],
+      target: conflictTarget,
       set: {
         rating: rating.toString(),
         reviewText: sanitizedReview,
@@ -116,27 +127,29 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     .returning();
 
   // Update aggregates
-  await updateRatingAggregates(hikeId, campingSiteId);
+  await updateRatingAggregates(hikeId, campingSiteId, backpackingId);
 
   return json(result);
 };
 
-// DELETE /api/ratings?hike_id=xxx or ?camping_site_id=xxx
+// DELETE /api/ratings?hike_id=xxx or ?camping_site_id=xxx or ?backpacking_id=xxx
 // Deletes the user's rating for an entity
 export const DELETE: RequestHandler = async ({ url, locals }) => {
   const user = requireAuth({ locals } as any);
 
   const hikeId = url.searchParams.get("hike_id");
   const campingSiteId = url.searchParams.get("camping_site_id");
+  const backpackingId = url.searchParams.get("backpacking_id");
 
-  if (!hikeId && !campingSiteId) {
-    throw error(400, "Either hike_id or camping_site_id is required");
+  if (!hikeId && !campingSiteId && !backpackingId) {
+    throw error(400, "Either hike_id, camping_site_id, or backpacking_id is required");
   }
 
   // Find the rating to delete
   const conditions = [eq(ratings.userId, user.id)];
   if (hikeId) conditions.push(eq(ratings.hikeId, hikeId));
   if (campingSiteId) conditions.push(eq(ratings.campingSiteId, campingSiteId));
+  if (backpackingId) conditions.push(eq(ratings.backpackingId, backpackingId));
 
   const existing = await db.query.ratings.findFirst({
     where: and(...conditions),
@@ -150,16 +163,21 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
   await db.delete(ratings).where(eq(ratings.id, existing.id));
 
   // Update aggregates
-  await updateRatingAggregates(hikeId, campingSiteId);
+  await updateRatingAggregates(hikeId, campingSiteId, backpackingId);
 
   return json({ success: true });
 };
 
 // Helper function to update aggregates (2-query upsert)
-async function updateRatingAggregates(hikeId: string | null, campingSiteId: string | null) {
+async function updateRatingAggregates(
+  hikeId: string | null,
+  campingSiteId: string | null,
+  backpackingId: string | null = null
+) {
   const conditions = [];
   if (hikeId) conditions.push(eq(ratings.hikeId, hikeId));
   if (campingSiteId) conditions.push(eq(ratings.campingSiteId, campingSiteId));
+  if (backpackingId) conditions.push(eq(ratings.backpackingId, backpackingId));
 
   const stats = await db
     .select({
@@ -172,17 +190,24 @@ async function updateRatingAggregates(hikeId: string | null, campingSiteId: stri
 
   const { avgRating, totalCount, reviewCount } = stats[0];
 
+  const conflictTarget = hikeId
+    ? [ratingAggregates.hikeId]
+    : backpackingId
+      ? [ratingAggregates.backpackingId]
+      : [ratingAggregates.campingSiteId];
+
   await db
     .insert(ratingAggregates)
     .values({
       hikeId: hikeId || null,
       campingSiteId: campingSiteId || null,
+      backpackingId: backpackingId || null,
       averageRating: avgRating ? avgRating.toString() : null,
       totalRatings: totalCount,
       totalReviews: reviewCount,
     })
     .onConflictDoUpdate({
-      target: hikeId ? [ratingAggregates.hikeId] : [ratingAggregates.campingSiteId],
+      target: conflictTarget,
       set: {
         averageRating: avgRating ? avgRating.toString() : null,
         totalRatings: totalCount,
