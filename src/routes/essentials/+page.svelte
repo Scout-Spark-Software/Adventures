@@ -13,6 +13,7 @@
     Map,
     FlameKindling,
     Backpack,
+    ArrowRight,
   } from "lucide-svelte";
   import type { ComponentType } from "svelte";
 
@@ -227,77 +228,92 @@
   />
 </svelte:head>
 
-<div class="min-h-screen bg-gradient-to-b from-slate-50 to-white">
-  <!-- Hero Section -->
-  <div class="bg-gradient-to-r from-emerald-600 to-green-600 text-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 class="text-4xl font-bold mb-4">Scout Essentials</h1>
-      <p class="text-xl text-emerald-100 max-w-3xl">
-        Essential gear every scout should carry for safe and prepared outdoor adventures
-      </p>
+<div class="min-h-screen bg-stone-50">
+  <!-- Hero — matches site hero style -->
+  <div class="relative overflow-hidden hero-bg -mt-16">
+    <div class="absolute inset-0 hero-gradient"></div>
+    <div class="absolute -top-20 right-0 w-[600px] h-[600px] rounded-full pointer-events-none" style="background: radial-gradient(circle at 70% 30%, rgba(251,191,36,0.15) 0%, transparent 60%);"></div>
+    <div class="absolute bottom-0 -left-10 w-[500px] h-[400px] pointer-events-none" style="background: radial-gradient(ellipse at 20% 90%, rgba(52,211,153,0.18) 0%, transparent 65%);"></div>
+
+    <div class="absolute bottom-0 left-0 right-0 pointer-events-none">
+      <svg class="absolute bottom-0 w-full" viewBox="0 0 1440 200" preserveAspectRatio="none">
+        <path d="M0,200 L0,140 L180,80 L360,120 L540,60 L720,100 L900,50 L1080,90 L1260,70 L1440,110 L1440,200 Z" fill="rgba(6,78,59,0.4)" />
+      </svg>
+      <svg class="absolute bottom-0 w-full" viewBox="0 0 1440 140" preserveAspectRatio="none">
+        <path d="M0,140 L0,100 L220,60 L420,90 L620,40 L820,75 L1020,45 L1220,80 L1440,55 L1440,140 Z" fill="rgba(2,44,34,0.65)" />
+      </svg>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 pb-20">
+      <div class="max-w-2xl">
+        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase border mb-8" style="background: rgba(251,146,60,0.1); border-color: rgba(251,146,60,0.3); color: rgb(251,146,60);">
+          Be Prepared
+        </span>
+        <h1 class="font-black tracking-tight leading-[0.95] mb-5" style="font-size: clamp(2.5rem, 6vw, 4.5rem); color: #f5f0e8;">
+          Scout<br />
+          <span style="background: linear-gradient(135deg, #86efac 0%, #34d399 40%, #6ee7b7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+            Essentials
+          </span>
+        </h1>
+        <p class="text-lg max-w-xl leading-relaxed" style="color: rgba(245,240,232,0.65);">
+          The right gear can turn a close call into a great story. Know what to carry before you head out.
+        </p>
+      </div>
     </div>
   </div>
 
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <!-- Introduction -->
-    <div class="mb-12 bg-white rounded-lg shadow-md p-8">
-      <h2 class="text-2xl font-bold text-gray-900 mb-4">Be Prepared</h2>
-      <p class="text-gray-700 mb-4">
-        The Scout motto "Be Prepared" means being ready for any situation. Carrying the right gear
-        can make the difference between a minor inconvenience and a serious emergency.
-      </p>
-      <p class="text-gray-700">
-        There are two essential gear lists every scout should know: the <strong>6 Essentials</strong
-        >
-        for day trips and the <strong>10 Essentials</strong> for longer adventures. Start with the 6 Essentials
-        and work your way up to the 10 Essentials as you gain experience.
-      </p>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+
+    <!-- Intro callout -->
+    <div class="rounded-2xl p-8 mb-16 border border-emerald-100" style="background: linear-gradient(135deg, #f0fdf4, #ecfdf5);">
+      <div class="flex gap-4 items-start">
+        <div class="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-lg font-bold text-stone-900 mb-2">The Scout Motto: Be Prepared</h2>
+          <p class="text-stone-600 leading-relaxed">
+            Start with the <strong class="text-stone-800">6 Essentials</strong> for day hikes, then build up to the <strong class="text-stone-800">10 Essentials</strong> as you take on longer wilderness adventures. Carrying the right gear is the difference between a minor inconvenience and a serious emergency.
+          </p>
+        </div>
+      </div>
     </div>
 
-    <!-- 6 Essentials Section -->
-    <div class="mb-16">
-      <div class="mb-8">
-        <h2 class="text-3xl font-bold text-gray-900 mb-2">The 6 Essentials</h2>
-        <p class="text-lg text-gray-600">Perfect for day hikes and shorter outdoor activities</p>
+    <!-- 6 Essentials -->
+    <div class="mb-20">
+      <div class="flex items-end justify-between mb-10">
+        <div>
+          <p class="text-xs font-bold tracking-widest uppercase mb-2 text-emerald-600">Day Trips</p>
+          <h2 class="text-3xl font-black text-stone-900">The 6 Essentials</h2>
+        </div>
+        <span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">
+          Start here
+        </span>
       </div>
 
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {#each sixEssentials as essential (essential.name)}
-          <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow p-6">
-            <div class="flex items-start gap-4 mb-4">
-              <div
-                class="flex-shrink-0 w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center"
-              >
-                <svelte:component this={essential.icon} class="w-6 h-6 text-emerald-600" />
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {#each sixEssentials as essential, i (essential.name)}
+          <div class="bg-white rounded-2xl border border-stone-100 shadow-sm hover:shadow-md hover:border-emerald-100 transition-all p-6">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style="background: linear-gradient(135deg, #d1fae5, #a7f3d0);">
+                <svelte:component this={essential.icon} class="w-5 h-5 text-emerald-700" />
               </div>
               <div>
-                <h3 class="text-xl font-semibold text-gray-900">
-                  {essential.name}
-                </h3>
+                <p class="text-xs font-bold text-stone-400 mb-0.5">#{i + 1}</p>
+                <h3 class="font-bold text-stone-900 leading-tight">{essential.name}</h3>
               </div>
             </div>
 
-            <p class="text-gray-700 mb-4">{essential.description}</p>
+            <p class="text-sm text-stone-600 leading-relaxed mb-4">{essential.description}</p>
 
-            <div class="border-t border-gray-200 pt-4">
-              <p class="text-sm font-medium text-gray-900 mb-2">Tips:</p>
+            <div class="pt-4 border-t border-stone-100">
               <ul class="space-y-2">
                 {#each essential.tips as tip (tip)}
-                  <li class="text-sm text-gray-600 flex items-start gap-2">
-                    <svg
-                      class="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                    <span>{tip}</span>
+                  <li class="text-xs text-stone-500 flex items-start gap-2">
+                    <span class="mt-1 w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0"></span>
+                    {tip}
                   </li>
                 {/each}
               </ul>
@@ -307,52 +323,51 @@
       </div>
     </div>
 
-    <!-- 10 Essentials Section -->
-    <div class="mb-12">
-      <div class="mb-8">
-        <h2 class="text-3xl font-bold text-gray-900 mb-2">The 10 Essentials</h2>
-        <p class="text-lg text-gray-600">
-          Complete gear list for extended trips and wilderness adventures
-        </p>
+    <!-- Level up divider -->
+    <div class="flex items-center gap-4 mb-20">
+      <div class="flex-1 h-px bg-stone-200"></div>
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-stone-900 text-white text-xs font-bold tracking-widest uppercase">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+        </svg>
+        Level Up
+      </div>
+      <div class="flex-1 h-px bg-stone-200"></div>
+    </div>
+
+    <!-- 10 Essentials -->
+    <div class="mb-16">
+      <div class="flex items-end justify-between mb-10">
+        <div>
+          <p class="text-xs font-bold tracking-widest uppercase mb-2 text-amber-600">Extended Trips</p>
+          <h2 class="text-3xl font-black text-stone-900">The 10 Essentials</h2>
+        </div>
+        <span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-amber-100 text-amber-700">
+          Wilderness ready
+        </span>
       </div>
 
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {#each tenEssentials as essential (essential.name)}
-          <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow p-6">
-            <div class="flex items-start gap-4 mb-4">
-              <div
-                class="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center"
-              >
-                <svelte:component this={essential.icon} class="w-6 h-6 text-blue-600" />
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {#each tenEssentials as essential, i (essential.name)}
+          <div class="bg-white rounded-2xl border border-stone-100 shadow-sm hover:shadow-md hover:border-amber-100 transition-all p-6">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style="background: linear-gradient(135deg, #fef3c7, #fde68a);">
+                <svelte:component this={essential.icon} class="w-5 h-5 text-amber-700" />
               </div>
               <div>
-                <h3 class="text-xl font-semibold text-gray-900">
-                  {essential.name}
-                </h3>
+                <p class="text-xs font-bold text-stone-400 mb-0.5">#{i + 1}</p>
+                <h3 class="font-bold text-stone-900 leading-tight">{essential.name}</h3>
               </div>
             </div>
 
-            <p class="text-gray-700 mb-4">{essential.description}</p>
+            <p class="text-sm text-stone-600 leading-relaxed mb-4">{essential.description}</p>
 
-            <div class="border-t border-gray-200 pt-4">
-              <p class="text-sm font-medium text-gray-900 mb-2">Tips:</p>
+            <div class="pt-4 border-t border-stone-100">
               <ul class="space-y-2">
                 {#each essential.tips as tip (tip)}
-                  <li class="text-sm text-gray-600 flex items-start gap-2">
-                    <svg
-                      class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                    <span>{tip}</span>
+                  <li class="text-xs text-stone-500 flex items-start gap-2">
+                    <span class="mt-1 w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0"></span>
+                    {tip}
                   </li>
                 {/each}
               </ul>
@@ -363,43 +378,55 @@
     </div>
 
     <!-- Bottom CTA -->
-    <div
-      class="bg-gradient-to-r from-emerald-600 to-green-600 rounded-lg shadow-xl p-8 text-white text-center"
-    >
-      <h3 class="text-2xl font-bold mb-4">Ready for Your Next Adventure?</h3>
-      <p class="text-emerald-100 mb-6 max-w-2xl mx-auto">
-        Now that you know what to pack, explore trails and campsites shared by fellow scouts
-      </p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a
-          href="/hikes"
-          class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-emerald-600 font-semibold rounded-lg hover:bg-emerald-50 transition-colors"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-            />
-          </svg>
-          Explore Trails
-        </a>
-        <a
-          href="/camping"
-          class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white font-semibold rounded-lg hover:bg-white/20 transition-colors"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-            />
-          </svg>
-          Find Campsites
-        </a>
+    <div class="relative overflow-hidden rounded-2xl cta-bg p-10 text-center">
+      <div class="absolute inset-0 cta-gradient"></div>
+      <div class="absolute inset-0 grain-overlay pointer-events-none"></div>
+      <div class="relative">
+        <p class="text-xs font-bold tracking-widest uppercase mb-4" style="color: rgba(245,240,232,0.4);">Ready?</p>
+        <h3 class="text-2xl sm:text-3xl font-black mb-3" style="color: #f5f0e8;">Pack your bag. Hit the trail.</h3>
+        <p class="mb-8 max-w-md mx-auto text-sm" style="color: rgba(245,240,232,0.5);">
+          Explore hikes, campsites, and backpacking routes shared by scouts who've been there.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+          <a href="/hikes" class="group inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold text-sm text-stone-950 transition-all hover:scale-105" style="background: linear-gradient(135deg, #86efac, #34d399);">
+            Explore Trails
+            <ArrowRight size={15} class="group-hover:translate-x-0.5 transition-transform" />
+          </a>
+          <a href="/camping" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all" style="background: rgba(245,240,232,0.07); border: 1px solid rgba(245,240,232,0.18); color: rgba(245,240,232,0.85);">
+            Find Campsites
+          </a>
+          <a href="/backpacking" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all" style="background: rgba(251,146,60,0.12); border: 1px solid rgba(251,146,60,0.3); color: rgba(251,146,60,0.9);">
+            Backpacking Routes
+          </a>
+        </div>
       </div>
     </div>
+
   </div>
 </div>
+
+<style>
+  .hero-bg {
+    background-color: #0c0f0a;
+  }
+  .hero-gradient {
+    background:
+      radial-gradient(ellipse 80% 60% at 75% 20%, #1c2a14 0%, transparent 60%),
+      radial-gradient(ellipse 100% 80% at 20% 60%, #0d2a1f 0%, transparent 65%),
+      linear-gradient(170deg, #0a1a0d 0%, #081510 40%, #050a08 100%);
+  }
+  .cta-bg {
+    background-color: #0c0f0a;
+  }
+  .cta-gradient {
+    background:
+      radial-gradient(ellipse 80% 100% at 80% 50%, rgba(52,211,153,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 10% 50%, rgba(251,146,60,0.1) 0%, transparent 60%),
+      linear-gradient(135deg, #0a1a0d, #050a08);
+  }
+  .grain-overlay {
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/></filter><rect width='300' height='300' filter='url(%23n)'/></svg>");
+    background-size: 200px 200px;
+  }
+</style>

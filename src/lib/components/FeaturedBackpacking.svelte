@@ -10,29 +10,27 @@
 </script>
 
 {#if routes && routes.length > 0}
-  <div class="bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <div class="flex items-center justify-between mb-6">
+  <section class="bg-stone-50 py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex items-end justify-between mb-10">
         <div>
-          <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
-            <Backpack size={24} class="text-amber-600" />
-            Featured Backpacking Routes
-          </h2>
-          <p class="mt-1 text-sm text-slate-600">Multi-day wilderness adventures for scouts</p>
+          <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color: #d97706;">Backpacking</p>
+          <h2 class="text-3xl font-black text-stone-900 leading-tight">Featured Routes</h2>
         </div>
         <a
           href="/backpacking"
-          class="group inline-flex items-center gap-2 text-amber-700 hover:text-amber-800 font-semibold transition-colors"
+          class="group inline-flex items-center gap-1.5 text-sm font-bold transition-colors"
+          style="color: #d97706;"
         >
-          View All
-          <ArrowRight size={20} class="group-hover:translate-x-1 transition-transform" />
+          View all
+          <ArrowRight size={15} class="group-hover:translate-x-1 transition-transform" />
         </a>
       </div>
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {#each routes as route (route.id)}
           <BackpackingCard backpacking={route} />
         {/each}
       </div>
     </div>
-  </div>
+  </section>
 {/if}

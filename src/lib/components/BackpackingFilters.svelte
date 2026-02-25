@@ -3,6 +3,8 @@
   import { goto } from "$app/navigation";
   import { onDestroy } from "svelte";
   import { SlidersHorizontal, X } from "lucide-svelte";
+  import FilterInput from "$lib/components/FilterInput.svelte";
+  import FilterSelect from "$lib/components/FilterSelect.svelte";
 
   export let currentFilters: Record<string, string> = {};
   export let userRole: string | null = null;
@@ -153,30 +155,24 @@
       <label for="statusFilter" class="block text-sm font-medium text-gray-700 mb-1.5">
         Status
       </label>
-      <select
-        id="statusFilter"
-        bind:value={statusFilter}
-        on:change={applyFilters}
-        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-      >
+      <FilterSelect id="statusFilter" bind:value={statusFilter} on:change={applyFilters}>
         <option value="">Approved only</option>
         <option value="pending">Pending</option>
         <option value="rejected">Rejected</option>
         <option value="all">All statuses</option>
-      </select>
+      </FilterSelect>
     </div>
   {/if}
 
   <!-- Search Input -->
   <div class="mb-3">
     <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Search</label>
-    <input
+    <FilterInput
       id="search"
       type="text"
       bind:value={search}
       on:input={handleSearchInput}
       placeholder="Name, description, location..."
-      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
     />
   </div>
 
@@ -185,17 +181,13 @@
     <label for="difficulty" class="block text-sm font-medium text-gray-700 mb-1.5">
       Difficulty
     </label>
-    <select
-      id="difficulty"
-      bind:value={difficulty}
-      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-    >
+    <FilterSelect id="difficulty" bind:value={difficulty}>
       <option value="">All Levels</option>
       <option value="easy">Easy</option>
       <option value="moderate">Moderate</option>
       <option value="hard">Hard</option>
       <option value="very_hard">Very Hard</option>
-    </select>
+    </FilterSelect>
   </div>
 
   <!-- Trail Type Dropdown -->
@@ -203,16 +195,12 @@
     <label for="trailType" class="block text-sm font-medium text-gray-700 mb-1.5">
       Trail Type
     </label>
-    <select
-      id="trailType"
-      bind:value={trailType}
-      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-    >
+    <FilterSelect id="trailType" bind:value={trailType}>
       <option value="">All Types</option>
       {#each Object.entries(TRAIL_TYPE_LABELS) as [value, label] (value)}
         <option {value}>{label}</option>
       {/each}
-    </select>
+    </FilterSelect>
   </div>
 
   <!-- Camping Style Dropdown -->
@@ -220,16 +208,12 @@
     <label for="campingStyle" class="block text-sm font-medium text-gray-700 mb-1.5">
       Camping Style
     </label>
-    <select
-      id="campingStyle"
-      bind:value={campingStyle}
-      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-    >
+    <FilterSelect id="campingStyle" bind:value={campingStyle}>
       <option value="">All Styles</option>
       {#each Object.entries(CAMPING_STYLE_LABELS) as [value, label] (value)}
         <option {value}>{label}</option>
       {/each}
-    </select>
+    </FilterSelect>
   </div>
 
   <!-- Distance Range -->
@@ -238,25 +222,25 @@
       Distance (miles)
     </label>
     <div class="flex gap-2">
-      <input
+      <FilterInput
         id="minDistance"
         type="number"
         bind:value={minDistance}
         placeholder="Min"
-        min="0"
-        step="0.1"
-        class="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-        aria-label="Minimum distance in miles"
+        min={0}
+        step={0.1}
+        ariaLabel="Minimum distance in miles"
+        fullWidth={false}
       />
-      <input
+      <FilterInput
         id="maxDistance"
         type="number"
         bind:value={maxDistance}
         placeholder="Max"
-        min="0"
-        step="0.1"
-        class="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-        aria-label="Maximum distance in miles"
+        min={0}
+        step={0.1}
+        ariaLabel="Maximum distance in miles"
+        fullWidth={false}
       />
     </div>
   </div>
@@ -267,25 +251,25 @@
       Trip Length (days)
     </label>
     <div class="flex gap-2">
-      <input
+      <FilterInput
         id="minDays"
         type="number"
         bind:value={minDays}
         placeholder="Min"
-        min="1"
-        step="1"
-        class="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-        aria-label="Minimum trip length in days"
+        min={1}
+        step={1}
+        ariaLabel="Minimum trip length in days"
+        fullWidth={false}
       />
-      <input
+      <FilterInput
         id="maxDays"
         type="number"
         bind:value={maxDays}
         placeholder="Max"
-        min="1"
-        step="1"
-        class="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-        aria-label="Maximum trip length in days"
+        min={1}
+        step={1}
+        ariaLabel="Maximum trip length in days"
+        fullWidth={false}
       />
     </div>
   </div>
@@ -295,18 +279,14 @@
     <label for="minRating" class="block text-sm font-medium text-gray-700 mb-1.5">
       Minimum Rating
     </label>
-    <select
-      id="minRating"
-      bind:value={minRating}
-      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-    >
+    <FilterSelect id="minRating" bind:value={minRating}>
       <option value="">Any Rating</option>
       <option value="1">⭐ 1+ Stars</option>
       <option value="2">⭐⭐ 2+ Stars</option>
       <option value="3">⭐⭐⭐ 3+ Stars</option>
       <option value="4">⭐⭐⭐⭐ 4+ Stars</option>
       <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
-    </select>
+    </FilterSelect>
   </div>
 
   <!-- Dog Friendly Checkbox -->
@@ -327,7 +307,7 @@
       type="button"
       on:click={applyFilters}
       disabled={isApplyingFilters}
-      class="flex-1 bg-emerald-600 text-white px-4 py-2.5 rounded-lg font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+      class="flex-1 bg-emerald-600 text-white px-3 py-1.5 rounded-lg font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       aria-label="Apply selected filters"
     >
       {#if isApplyingFilters}
@@ -355,7 +335,7 @@
       type="button"
       on:click={clearFilters}
       disabled={isApplyingFilters}
-      class="px-4 py-2.5 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      class="px-3 py-1.5 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       aria-label="Clear all filters"
     >
       Clear All

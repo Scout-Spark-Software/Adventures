@@ -18,7 +18,7 @@
   <title>Adventure Spark - Discover Hikes & Camping Sites</title>
 </svelte:head>
 
-<div class="min-h-screen bg-slate-50">
+<div class="min-h-screen">
   <Hero stats={data.stats} />
 
   <FeaturedHikes hikes={data.featuredHikes} />

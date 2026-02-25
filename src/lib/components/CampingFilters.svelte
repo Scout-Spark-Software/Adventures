@@ -3,6 +3,8 @@
   import { goto } from "$app/navigation";
   import { onDestroy } from "svelte";
   import { SlidersHorizontal, X } from "lucide-svelte";
+  import FilterInput from "$lib/components/FilterInput.svelte";
+  import FilterSelect from "$lib/components/FilterSelect.svelte";
 
   export let amenityTypes: AmenityType[] = [];
   export let facilityTypes: FacilityType[] = [];
@@ -190,47 +192,36 @@
       <label for="statusFilter" class="block text-sm font-medium text-gray-700 mb-1.5">
         Status
       </label>
-      <select
-        id="statusFilter"
-        bind:value={statusFilter}
-        on:change={handleFilterChange}
-        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-      >
+      <FilterSelect id="statusFilter" bind:value={statusFilter} on:change={handleFilterChange}>
         <option value="">Approved only</option>
         <option value="pending">Pending</option>
         <option value="rejected">Rejected</option>
         <option value="all">All statuses</option>
-      </select>
+      </FilterSelect>
     </div>
   {/if}
 
   <!-- Search Input -->
   <div class="mb-3">
-    <label for="search" class="block text-sm font-medium text-gray-700 mb-1.5"> Search </label>
-    <input
+    <label for="search" class="block text-sm font-medium text-gray-700 mb-1.5">Search</label>
+    <FilterInput
       id="search"
       type="text"
       bind:value={search}
       on:input={handleSearchInput}
       placeholder="Name, description, location..."
-      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
     />
   </div>
 
   <!-- Site Type Dropdown -->
   <div class="mb-3">
-    <label for="siteType" class="block text-sm font-medium text-gray-700 mb-1.5"> Site Type </label>
-    <select
-      id="siteType"
-      bind:value={siteType}
-      on:change={handleFilterChange}
-      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-    >
+    <label for="siteType" class="block text-sm font-medium text-gray-700 mb-1.5">Site Type</label>
+    <FilterSelect id="siteType" bind:value={siteType} on:change={handleFilterChange}>
       <option value="">All Types</option>
       <option value="public">Public</option>
       <option value="private">Private</option>
       <option value="public_private_partnership">Public-Private Partnership</option>
-    </select>
+    </FilterSelect>
   </div>
 
   <!-- Pet Policy Dropdown -->
@@ -238,17 +229,12 @@
     <label for="petPolicy" class="block text-sm font-medium text-gray-700 mb-1.5">
       Pet Policy
     </label>
-    <select
-      id="petPolicy"
-      bind:value={petPolicy}
-      on:change={handleFilterChange}
-      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-    >
+    <FilterSelect id="petPolicy" bind:value={petPolicy} on:change={handleFilterChange}>
       <option value="">All Policies</option>
       <option value="allowed">Allowed</option>
       <option value="not_allowed">Not Allowed</option>
       <option value="restricted">Restricted</option>
-    </select>
+    </FilterSelect>
   </div>
 
   <!-- Fire Policy Dropdown -->
@@ -256,18 +242,13 @@
     <label for="firePolicy" class="block text-sm font-medium text-gray-700 mb-1.5">
       Fire Policy
     </label>
-    <select
-      id="firePolicy"
-      bind:value={firePolicy}
-      on:change={handleFilterChange}
-      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-    >
+    <FilterSelect id="firePolicy" bind:value={firePolicy} on:change={handleFilterChange}>
       <option value="">All Policies</option>
       <option value="allowed">Allowed</option>
       <option value="not_allowed">Not Allowed</option>
       <option value="fire_pits_only">Fire Pits Only</option>
       <option value="seasonal">Seasonal</option>
-    </select>
+    </FilterSelect>
   </div>
 
   <!-- Cost Range -->
@@ -276,27 +257,27 @@
       Cost Per Night ($)
     </label>
     <div class="flex gap-2">
-      <input
+      <FilterInput
         id="minCost"
         type="number"
         bind:value={minCost}
         on:input={handleSearchInput}
         placeholder="Min"
-        min="0"
-        step="1"
-        class="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-        aria-label="Minimum cost per night"
+        min={0}
+        step={1}
+        ariaLabel="Minimum cost per night"
+        fullWidth={false}
       />
-      <input
+      <FilterInput
         id="maxCost"
         type="number"
         bind:value={maxCost}
         on:input={handleSearchInput}
         placeholder="Max"
-        min="0"
-        step="1"
-        class="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-        aria-label="Maximum cost per night"
+        min={0}
+        step={1}
+        ariaLabel="Maximum cost per night"
+        fullWidth={false}
       />
     </div>
   </div>
@@ -306,19 +287,14 @@
     <label for="minRating" class="block text-sm font-medium text-gray-700 mb-1.5">
       Minimum Rating
     </label>
-    <select
-      id="minRating"
-      bind:value={minRating}
-      on:change={handleFilterChange}
-      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-    >
+    <FilterSelect id="minRating" bind:value={minRating} on:change={handleFilterChange}>
       <option value="">Any Rating</option>
       <option value="1">⭐ 1+ Stars</option>
       <option value="2">⭐⭐ 2+ Stars</option>
       <option value="3">⭐⭐⭐ 3+ Stars</option>
       <option value="4">⭐⭐⭐⭐ 4+ Stars</option>
       <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
-    </select>
+    </FilterSelect>
   </div>
 
   <!-- Amenities Multi-Select -->
@@ -384,7 +360,7 @@
       type="button"
       on:click={clearFilters}
       disabled={isApplyingFilters}
-      class="w-full px-4 py-2.5 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      class="w-full px-3 py-1.5 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       aria-label="Clear all filters"
     >
       Clear All

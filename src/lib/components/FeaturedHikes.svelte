@@ -7,27 +7,27 @@
 </script>
 
 {#if hikes && hikes.length > 0}
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-    <div class="flex items-center justify-between mb-6">
-      <div>
-        <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
-          <TrendingUp size={24} class="text-sky-600" />
-          Featured Hikes
-        </h2>
-        <p class="mt-1 text-sm text-slate-600">Handpicked trails for your next adventure</p>
+  <section class="bg-stone-50 py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex items-end justify-between mb-10">
+        <div>
+          <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color: #16a34a;">Trails</p>
+          <h2 class="text-3xl font-black text-stone-900 leading-tight">Featured Hikes</h2>
+        </div>
+        <a
+          href="/hikes"
+          class="group inline-flex items-center gap-1.5 text-sm font-bold transition-colors"
+          style="color: #16a34a;"
+        >
+          View all
+          <ArrowRight size={15} class="group-hover:translate-x-1 transition-transform" />
+        </a>
       </div>
-      <a
-        href="/hikes"
-        class="group inline-flex items-center gap-2 text-sky-700 hover:text-sky-800 font-semibold transition-colors"
-      >
-        View All
-        <ArrowRight size={20} class="group-hover:translate-x-1 transition-transform" />
-      </a>
+      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {#each hikes as hike (hike.id)}
+          <HikeCard {hike} />
+        {/each}
+      </div>
     </div>
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {#each hikes as hike (hike.id)}
-        <HikeCard {hike} />
-      {/each}
-    </div>
-  </div>
+  </section>
 {/if}

@@ -274,15 +274,31 @@
 </script>
 
 <svelte:head>
-  <title>Submit Adventure - Adventure Spark</title>
+  <title>Submit Adventure — Adventure Spark</title>
 </svelte:head>
 
-<div class="min-h-screen bg-gray-50 py-8">
-  <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-    <h1 class="text-2xl font-bold text-gray-900 mb-2">Submit New Adventure</h1>
-    <p class="text-sm text-gray-500 mb-6">
-      Fill out the details below and your submission will be reviewed before going live.
-    </p>
+<div class="min-h-screen bg-stone-100">
+  <!-- Page header -->
+  <div class="bg-white border-b border-stone-200">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm" style="background: linear-gradient(135deg, #059669, #34d399);">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-xs font-bold tracking-widest uppercase text-stone-400 mb-0.5">Community</p>
+          <h1 class="text-2xl font-black text-stone-900 leading-tight">Submit an Adventure</h1>
+        </div>
+      </div>
+      <p class="text-sm text-stone-500 mt-4 ml-16">
+        Fill out the details below and your submission will be reviewed before going live.
+      </p>
+    </div>
+  </div>
+
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
     <!-- Type selector -->
     <div class="bg-white shadow rounded-lg p-5 mb-6">

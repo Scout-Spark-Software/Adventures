@@ -41,7 +41,7 @@
   }
 </script>
 
-<div class="border-b border-gray-200">
+<div class="border-b border-stone-200">
   <div
     class="-mb-px {fullWidth ? 'grid' : 'flex space-x-8'}"
     style={fullWidth ? `grid-template-columns: repeat(${tabs.length}, minmax(0, 1fr))` : ""}
@@ -60,9 +60,9 @@
         on:keydown={(e) => handleKeyDown(e, i)}
         class="
           {activeTab === tab.id
-          ? 'border-indigo-500 text-indigo-600'
-          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}
-          whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors {fullWidth
+          ? 'border-emerald-500 text-emerald-700 font-bold'
+          : 'border-transparent text-stone-400 hover:text-stone-700 hover:border-stone-300'}
+          whitespace-nowrap py-4 px-1 border-b-2 text-sm transition-colors {fullWidth
           ? 'text-center'
           : ''}
         "
@@ -71,7 +71,7 @@
         {#if tab.count !== undefined}
           <span
             class="
-              {activeTab === tab.id ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-900'}
+              {activeTab === tab.id ? 'bg-emerald-100 text-emerald-700' : 'bg-stone-100 text-stone-600'}
               ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium
             "
           >
