@@ -177,12 +177,17 @@ export const DELETE: RequestHandler = async (event) => {
     where: eq(files.entityId, event.params.id),
   });
 
-  await Promise.allSettled(
+  const deleteResults = await Promise.allSettled(
     entityFiles.map((f) => {
       const pathname = new URL(f.fileUrl).pathname;
       return deleteFile(pathname);
     })
   );
+  deleteResults.forEach((result, i) => {
+    if (result.status === "rejected") {
+      console.error(`Failed to delete blob for file ${entityFiles[i].id}:`, result.reason);
+    }
+  });
 
   if (entityFiles.length > 0) {
     await db.delete(files).where(eq(files.entityId, event.params.id));

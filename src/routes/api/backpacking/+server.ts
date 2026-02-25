@@ -3,6 +3,7 @@ import { requireAuth } from "$lib/auth/middleware";
 import { db } from "$lib/db";
 import { addresses, backpacking, ratingAggregates } from "$lib/db/schemas";
 import { addToModerationQueue } from "$lib/moderation";
+import { sanitizeSearchQuery, validateNumericParam } from "$lib/security";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
 import { error, json } from "@sveltejs/kit";
 import { and, desc, eq, gte, lte, or, sql } from "drizzle-orm";
@@ -14,15 +15,23 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   const limit = parseLimit(url.searchParams.get("limit"));
   const offset = parseOffset(url.searchParams.get("offset"));
 
-  const search = url.searchParams.get("search");
+  const searchRaw = url.searchParams.get("search");
+  const search = searchRaw ? sanitizeSearchQuery(searchRaw) : null;
   const difficulty = url.searchParams.get("difficulty");
   const trailType = url.searchParams.get("trailType");
   const campingStyle = url.searchParams.get("campingStyle");
-  const minDistance = url.searchParams.get("minDistance");
-  const maxDistance = url.searchParams.get("maxDistance");
-  const minDays = url.searchParams.get("minDays");
-  const maxDays = url.searchParams.get("maxDays");
-  const minRating = url.searchParams.get("minRating");
+  const minDistanceVal = validateNumericParam(url.searchParams.get("minDistance"), 0, 10000);
+  const maxDistanceVal = validateNumericParam(url.searchParams.get("maxDistance"), 0, 10000);
+  const minRatingVal = validateNumericParam(url.searchParams.get("minRating"), 0, 5);
+  const minDistance = minDistanceVal !== null ? String(minDistanceVal) : null;
+  const maxDistance = maxDistanceVal !== null ? String(maxDistanceVal) : null;
+  const minRating = minRatingVal !== null ? String(minRatingVal) : null;
+  const minDaysRaw = url.searchParams.get("minDays");
+  const maxDaysRaw = url.searchParams.get("maxDays");
+  const minDaysVal = validateNumericParam(minDaysRaw, 0, 365);
+  const maxDaysVal = validateNumericParam(maxDaysRaw, 0, 365);
+  const minDays = minDaysVal !== null ? String(minDaysVal) : null;
+  const maxDays = maxDaysVal !== null ? String(maxDaysVal) : null;
   const dogFriendly = url.searchParams.get("dogFriendly");
 
   const conditions = [];
@@ -61,12 +70,12 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     conditions.push(lte(backpacking.distance, maxDistance));
   }
 
-  if (minDays) {
-    conditions.push(gte(backpacking.numberOfDays, parseInt(minDays)));
+  if (minDaysVal !== null) {
+    conditions.push(gte(backpacking.numberOfDays, minDaysVal));
   }
 
-  if (maxDays) {
-    conditions.push(lte(backpacking.numberOfDays, parseInt(maxDays)));
+  if (maxDaysVal !== null) {
+    conditions.push(lte(backpacking.numberOfDays, maxDaysVal));
   }
 
   if (dogFriendly === "true") {

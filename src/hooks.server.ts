@@ -1,6 +1,7 @@
 import type { Handle } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
 import { workosAuth } from "$lib/server/workos";
+import { SECURITY_HEADERS } from "$lib/security";
 
 const authHandle: Handle = async ({ event, resolve }) => {
   // Get the access token from cookies
@@ -168,4 +169,12 @@ const authHandle: Handle = async ({ event, resolve }) => {
   return resolve(event);
 };
 
-export const handle: Handle = sequence(authHandle);
+const securityHandle: Handle = async ({ event, resolve }) => {
+  const response = await resolve(event);
+  for (const [header, value] of Object.entries(SECURITY_HEADERS)) {
+    response.headers.set(header, value);
+  }
+  return response;
+};
+
+export const handle: Handle = sequence(authHandle, securityHandle);

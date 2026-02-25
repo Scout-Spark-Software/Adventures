@@ -2,7 +2,7 @@ import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
 import { hikes } from "$lib/db/schemas";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { requireAdmin } from "$lib/auth/middleware";
 
 export const PUT: RequestHandler = async ({ params, request, locals }) => {
@@ -15,27 +15,23 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     throw error(400, "featured must be a boolean");
   }
 
-  const hike = await db.query.hikes.findFirst({
-    where: eq(hikes.id, params.id),
-  });
-
-  if (!hike) {
-    throw error(404, "Hike not found");
-  }
-
-  // Only approved hikes can be featured
-  if (featured && hike.status !== "approved") {
-    throw error(400, "Only approved hikes can be featured");
-  }
+  // Atomic update: only feature approved hikes, unfeaturing is always allowed
+  const whereCondition = featured
+    ? and(eq(hikes.id, params.id), eq(hikes.status, "approved"))
+    : eq(hikes.id, params.id);
 
   const [updatedHike] = await db
     .update(hikes)
-    .set({
-      featured,
-      updatedAt: new Date(),
-    })
-    .where(eq(hikes.id, params.id))
+    .set({ featured, updatedAt: new Date() })
+    .where(whereCondition)
     .returning();
+
+  if (!updatedHike) {
+    // Could be not found, or not approved (when featuring)
+    const exists = await db.query.hikes.findFirst({ where: eq(hikes.id, params.id) });
+    if (!exists) throw error(404, "Hike not found");
+    throw error(400, "Only approved hikes can be featured");
+  }
 
   return json(updatedHike);
 };

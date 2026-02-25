@@ -2,7 +2,7 @@ import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
 import { campingSites } from "$lib/db/schemas";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { requireAdmin } from "$lib/auth/middleware";
 
 export const PUT: RequestHandler = async ({ params, request, locals }) => {
@@ -15,27 +15,24 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     throw error(400, "featured must be a boolean");
   }
 
-  const campingSite = await db.query.campingSites.findFirst({
-    where: eq(campingSites.id, params.id),
-  });
-
-  if (!campingSite) {
-    throw error(404, "Camping site not found");
-  }
-
-  // Only approved camping sites can be featured
-  if (featured && campingSite.status !== "approved") {
-    throw error(400, "Only approved camping sites can be featured");
-  }
+  // Atomic update: only feature approved camping sites, unfeaturing is always allowed
+  const whereCondition = featured
+    ? and(eq(campingSites.id, params.id), eq(campingSites.status, "approved"))
+    : eq(campingSites.id, params.id);
 
   const [updatedCampingSite] = await db
     .update(campingSites)
-    .set({
-      featured,
-      updatedAt: new Date(),
-    })
-    .where(eq(campingSites.id, params.id))
+    .set({ featured, updatedAt: new Date() })
+    .where(whereCondition)
     .returning();
+
+  if (!updatedCampingSite) {
+    const exists = await db.query.campingSites.findFirst({
+      where: eq(campingSites.id, params.id),
+    });
+    if (!exists) throw error(404, "Camping site not found");
+    throw error(400, "Only approved camping sites can be featured");
+  }
 
   return json(updatedCampingSite);
 };

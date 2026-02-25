@@ -53,10 +53,7 @@ export const PUT: RequestHandler = async (event) => {
 
     const entityType = hasHikeId ? "hike" : "campingSite";
     if (!isAllowedAlterationField(alteration.fieldName, entityType as "hike" | "campingSite")) {
-      throw error(
-        400,
-        `Cannot apply alteration: field "${alteration.fieldName}" is not allowed for ${entityType}`
-      );
+      throw error(400, "Field not allowed for alteration");
     }
   }
 
@@ -74,24 +71,16 @@ export const PUT: RequestHandler = async (event) => {
     .where(eq(alterations.id, event.params.id))
     .returning();
 
-  // Apply the approved alteration to the entity
+  // Apply the approved alteration to the entity.
+  // isAllowedAlterationField() already validated fieldName above; we build an
+  // explicit update object — the field name is safe to use as a key here.
   if (status === "approved" && apply) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fieldUpdate: any = { [alteration.fieldName]: alteration.newValue, updatedAt: new Date() };
     if (alteration.hikeId) {
-      await db
-        .update(hikes)
-        .set({
-          [alteration.fieldName]: alteration.newValue,
-          updatedAt: new Date(),
-        })
-        .where(eq(hikes.id, alteration.hikeId));
+      await db.update(hikes).set(fieldUpdate).where(eq(hikes.id, alteration.hikeId));
     } else if (alteration.campingSiteId) {
-      await db
-        .update(campingSites)
-        .set({
-          [alteration.fieldName]: alteration.newValue,
-          updatedAt: new Date(),
-        })
-        .where(eq(campingSites.id, alteration.campingSiteId));
+      await db.update(campingSites).set(fieldUpdate).where(eq(campingSites.id, alteration.campingSiteId));
     }
   }
 

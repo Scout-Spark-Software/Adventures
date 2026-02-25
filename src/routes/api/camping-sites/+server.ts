@@ -3,6 +3,7 @@ import { requireAuth } from "$lib/auth/middleware";
 import { db } from "$lib/db";
 import { addresses, campingSites, files, ratingAggregates } from "$lib/db/schemas";
 import { addToModerationQueue } from "$lib/moderation";
+import { sanitizeSearchQuery, validateNumericParam } from "$lib/security";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
 import { error, json } from "@sveltejs/kit";
 import { and, desc, eq, gte, lte, or, sql } from "drizzle-orm";
@@ -15,13 +16,17 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   const offset = parseOffset(url.searchParams.get("offset"));
 
   // New filter parameters
-  const search = url.searchParams.get("search");
+  const searchRaw = url.searchParams.get("search");
+  const search = searchRaw ? sanitizeSearchQuery(searchRaw) : null;
   const siteType = url.searchParams.get("siteType");
   const petPolicy = url.searchParams.get("petPolicy");
   const firePolicy = url.searchParams.get("firePolicy");
-  const minCost = url.searchParams.get("minCost");
-  const maxCost = url.searchParams.get("maxCost");
-  const minRating = url.searchParams.get("minRating");
+  const minCostVal = validateNumericParam(url.searchParams.get("minCost"), 0, 100000);
+  const maxCostVal = validateNumericParam(url.searchParams.get("maxCost"), 0, 100000);
+  const minRatingVal = validateNumericParam(url.searchParams.get("minRating"), 0, 5);
+  const minCost = minCostVal !== null ? String(minCostVal) : null;
+  const maxCost = maxCostVal !== null ? String(maxCostVal) : null;
+  const minRating = minRatingVal !== null ? String(minRatingVal) : null;
   const amenitiesParam = url.searchParams.get("amenities");
   const facilitiesParam = url.searchParams.get("facilities");
   const reservationRequired = url.searchParams.get("reservationRequired");

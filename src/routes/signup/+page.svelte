@@ -12,6 +12,19 @@
   let userEmail = "";
   let userId = "";
 
+  let password = "";
+  let confirmPassword = "";
+  let showPassword = false;
+  let showConfirmPassword = false;
+
+  // Password requirement checks
+  $: hasMinLength = password.length >= 12;
+  $: hasUppercase = /[A-Z]/.test(password);
+  $: hasLowercase = /[a-z]/.test(password);
+  $: hasNumber = /[0-9]/.test(password);
+  $: passwordsMatch = confirmPassword.length > 0 && password === confirmPassword;
+  $: allRequirementsMet = hasMinLength && hasUppercase && hasLowercase && hasNumber;
+
   // Check if we're in verification mode from server load or form response
   $: if (data.needsVerification || form?.needsVerification) {
     showVerification = true;
@@ -90,7 +103,7 @@
             <div class="text-sm text-red-800">{form.error}</div>
           </div>
         {/if}
-        <div class="rounded-md shadow-sm space-y-4">
+        <div class="space-y-4">
           <div>
             <label for="name" class="sr-only">Name</label>
             <input
@@ -114,24 +127,118 @@
               placeholder="Email address"
             />
           </div>
-          <div>
+
+          <!-- Password field -->
+          <div class="relative">
             <label for="password" class="sr-only">Password</label>
             <input
               id="password"
               name="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               autocomplete="new-password"
               required
-              class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              bind:value={password}
+              class="appearance-none rounded-md relative block w-full px-3 py-2 pr-10 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="Password"
             />
+            <button
+              type="button"
+              class="absolute inset-y-0 right-0 z-10 flex items-center pr-3 text-gray-400 hover:text-gray-600 focus:outline-none"
+              on:click={() => (showPassword = !showPassword)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {#if showPassword}
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                </svg>
+              {:else}
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              {/if}
+            </button>
+
+            <!-- Password requirements tooltip — floats to the right, no layout shift -->
+            {#if password.length > 0}
+              <div class="absolute left-full top-0 ml-3 w-52 z-50">
+                <!-- Arrow pointing left -->
+                <div class="relative">
+                  <div class="absolute -left-1.5 top-3 w-3 h-3 rotate-45 bg-white border-l border-b border-gray-200"></div>
+                  <div class="rounded-lg bg-white border border-gray-200 shadow-lg p-3 space-y-1.5">
+                    <p class="text-xs font-medium text-gray-500 mb-1">Password must have:</p>
+                    {#each [
+                      { met: hasMinLength, label: "12+ characters" },
+                      { met: hasUppercase, label: "Uppercase letter" },
+                      { met: hasLowercase, label: "Lowercase letter" },
+                      { met: hasNumber,    label: "Number" },
+                    ] as req}
+                      <div class="flex items-center gap-1.5">
+                        {#if req.met}
+                          <svg class="h-3.5 w-3.5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                          </svg>
+                        {:else}
+                          <svg class="h-3.5 w-3.5 text-gray-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                          </svg>
+                        {/if}
+                        <span class="text-xs {req.met ? 'text-green-700' : 'text-gray-400'}">{req.label}</span>
+                      </div>
+                    {/each}
+                  </div>
+                </div>
+              </div>
+            {/if}
+          </div>
+
+          <!-- Confirm password field -->
+          <div>
+            <div class="relative">
+              <label for="confirmPassword" class="sr-only">Confirm password</label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                autocomplete="new-password"
+                required
+                bind:value={confirmPassword}
+                class="appearance-none rounded-md relative block w-full px-3 py-2 pr-10 border placeholder-gray-500 text-gray-900 focus:outline-none sm:text-sm
+                  {confirmPassword.length > 0
+                    ? passwordsMatch
+                      ? 'border-green-400 focus:ring-green-500 focus:border-green-500'
+                      : 'border-red-400 focus:ring-red-500 focus:border-red-500'
+                    : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'}"
+                placeholder="Confirm password"
+              />
+              <button
+                type="button"
+                class="absolute inset-y-0 right-0 z-10 flex items-center pr-3 text-gray-400 hover:text-gray-600 focus:outline-none"
+                on:click={() => (showConfirmPassword = !showConfirmPassword)}
+                aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+              >
+                {#if showConfirmPassword}
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                  </svg>
+                {:else}
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                {/if}
+              </button>
+            </div>
+            {#if confirmPassword.length > 0 && !passwordsMatch}
+              <p class="mt-1 text-xs text-red-600">Passwords do not match</p>
+            {/if}
           </div>
         </div>
 
         <div>
           <button
             type="submit"
-            disabled={isSigningUp}
+            disabled={isSigningUp || !allRequirementsMet || !passwordsMatch}
             class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {#if isSigningUp}

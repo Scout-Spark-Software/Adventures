@@ -2,6 +2,7 @@ import { fail } from "@sveltejs/kit";
 import type { PageServerLoad, Actions } from "./$types";
 import { requireAuth } from "$lib/auth/middleware";
 import { workosAuth } from "$lib/server/workos";
+import { sanitizeAuthError } from "$lib/security";
 
 export const load: PageServerLoad = async (event) => {
   const user = requireAuth(event);
@@ -38,9 +39,15 @@ export const actions: Actions = {
       return fail(400, { error: "New passwords do not match" });
     }
 
-    if (newPassword.length < 8) {
+    if (newPassword.length < 12) {
       return fail(400, {
-        error: "Password must be at least 8 characters long",
+        error: "Password must be at least 12 characters long",
+      });
+    }
+
+    if (!/[A-Z]/.test(newPassword) || !/[a-z]/.test(newPassword) || !/[0-9]/.test(newPassword)) {
+      return fail(400, {
+        error: "Password must contain at least one uppercase letter, one lowercase letter, and one number",
       });
     }
 
@@ -60,8 +67,8 @@ export const actions: Actions = {
 
       return { success: true, message: "Password updated successfully" };
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to update password";
-      return fail(400, { error: errorMessage });
+      console.error("Password change error:", error instanceof Error ? error.message : "unknown");
+      return fail(400, { error: sanitizeAuthError(error) });
     }
   },
 };

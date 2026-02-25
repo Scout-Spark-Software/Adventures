@@ -1,7 +1,7 @@
 import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
-import { files } from "$lib/db/schemas";
+import { files, hikes, campingSites, backpacking } from "$lib/db/schemas";
 import { eq, and } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 import { deleteFile } from "$lib/storage/blob";
@@ -29,9 +29,31 @@ export const PATCH: RequestHandler = async (event) => {
     throw error(404, "File not found");
   }
 
-  // Only uploader or admin can set banner
+  // Only uploader or admin can update file metadata
   if (file.uploadedBy !== user.id && user.role !== "admin") {
     throw error(403, "Not authorized to update this file");
+  }
+
+  // Also verify the user owns the entity this file belongs to (or is admin)
+  if (user.role !== "admin") {
+    let entityCreatedBy: string | null = null;
+    if (file.entityType === "hike") {
+      const entity = await db.query.hikes.findFirst({ where: eq(hikes.id, file.entityId) });
+      entityCreatedBy = entity?.createdBy ?? null;
+    } else if (file.entityType === "camping_site") {
+      const entity = await db.query.campingSites.findFirst({
+        where: eq(campingSites.id, file.entityId),
+      });
+      entityCreatedBy = entity?.createdBy ?? null;
+    } else if (file.entityType === "backpacking") {
+      const entity = await db.query.backpacking.findFirst({
+        where: eq(backpacking.id, file.entityId),
+      });
+      entityCreatedBy = entity?.createdBy ?? null;
+    }
+    if (entityCreatedBy !== null && entityCreatedBy !== user.id) {
+      throw error(403, "Not authorized to update files for this entity");
+    }
   }
 
   const body = await event.request.json();

@@ -1,6 +1,7 @@
 import { fail, redirect } from "@sveltejs/kit";
 import type { PageServerLoad, Actions } from "./$types";
 import { workosAuth } from "$lib/server/workos";
+import { sanitizeAuthError } from "$lib/security";
 
 export const load: PageServerLoad = async ({ url }) => {
   const email = url.searchParams.get("email");
@@ -36,9 +37,25 @@ export const actions: Actions = {
     const name = formData.get("name")?.toString();
     const email = formData.get("email")?.toString();
     const password = formData.get("password")?.toString();
+    const confirmPassword = formData.get("confirmPassword")?.toString();
 
-    if (!name || !email || !password) {
-      return fail(400, { error: "Name, email, and password are required" });
+    if (!name || !email || !password || !confirmPassword) {
+      return fail(400, { error: "All fields are required" });
+    }
+
+    if (password !== confirmPassword) {
+      return fail(400, { error: "Passwords do not match" });
+    }
+
+    if (password.length < 12) {
+      return fail(400, { error: "Password must be at least 12 characters long" });
+    }
+
+    if (!/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password)) {
+      return fail(400, {
+        error:
+          "Password must contain at least one uppercase letter, one lowercase letter, and one number",
+      });
     }
 
     try {
@@ -65,9 +82,8 @@ export const actions: Actions = {
       if (typeof error === "object" && error !== null && "status" in error && "location" in error) {
         throw error;
       }
-      return fail(500, {
-        error: error instanceof Error ? error.message : "An unexpected error occurred",
-      });
+      console.error("Signup error:", error instanceof Error ? error.message : "unknown");
+      return fail(400, { error: sanitizeAuthError(error) });
     }
   },
 
@@ -107,14 +123,13 @@ export const actions: Actions = {
         throw error;
       }
 
-      console.error("Verification error:", error);
+      console.error("Verification error:", error instanceof Error ? error.message : "unknown");
 
       return fail(400, {
         needsVerification: true,
         email,
         userId,
-        error:
-          error instanceof Error ? error.message : "Invalid verification code. Please try again.",
+        error: "Invalid or expired verification code. Please try again.",
       });
     }
   },
@@ -143,11 +158,12 @@ export const actions: Actions = {
         message: "Verification code sent! Check your email.",
       };
     } catch (error) {
+      console.error("Resend error:", error instanceof Error ? error.message : "unknown");
       return fail(500, {
         needsVerification: true,
         email,
         userId,
-        error: error instanceof Error ? error.message : "Failed to send verification code",
+        error: "Failed to send verification code. Please try again.",
       });
     }
   },

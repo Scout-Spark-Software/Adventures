@@ -3,6 +3,7 @@ import { requireAuth } from "$lib/auth/middleware";
 import { db } from "$lib/db";
 import { addresses, files, hikes, ratingAggregates } from "$lib/db/schemas";
 import { addToModerationQueue } from "$lib/moderation";
+import { sanitizeSearchQuery, validateNumericParam } from "$lib/security";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
 import { error, json } from "@sveltejs/kit";
 import { and, desc, eq, gte, lte, or, sql } from "drizzle-orm";
@@ -15,12 +16,17 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   const offset = parseOffset(url.searchParams.get("offset"));
 
   // New filter parameters
-  const search = url.searchParams.get("search");
+  const searchRaw = url.searchParams.get("search");
+  const search = searchRaw ? sanitizeSearchQuery(searchRaw) : null;
   const difficulty = url.searchParams.get("difficulty");
   const trailType = url.searchParams.get("trailType");
-  const minDistance = url.searchParams.get("minDistance");
-  const maxDistance = url.searchParams.get("maxDistance");
-  const minRating = url.searchParams.get("minRating");
+  const minDistanceVal = validateNumericParam(url.searchParams.get("minDistance"), 0, 10000);
+  const maxDistanceVal = validateNumericParam(url.searchParams.get("maxDistance"), 0, 10000);
+  const minRatingVal = validateNumericParam(url.searchParams.get("minRating"), 0, 5);
+  // Keep string versions for backward-compat with existing Drizzle filter expressions
+  const minDistance = minDistanceVal !== null ? String(minDistanceVal) : null;
+  const maxDistance = maxDistanceVal !== null ? String(maxDistanceVal) : null;
+  const minRating = minRatingVal !== null ? String(minRatingVal) : null;
   const featuresParam = url.searchParams.get("features");
   const dogFriendly = url.searchParams.get("dogFriendly");
 

@@ -2,6 +2,7 @@ import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { requireAuth } from "$lib/auth/middleware";
 import { uploadFile } from "$lib/storage/blob";
+import { sanitizeFilename } from "$lib/security";
 import { db } from "$lib/db";
 import { files } from "$lib/db/schemas";
 import { eq, and } from "drizzle-orm";
@@ -32,9 +33,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     throw error(400, 'file_type must be "image" or "document"');
   }
 
-  // Generate unique path
+  // Generate unique path (sanitize filename to prevent path traversal)
   const timestamp = Date.now();
-  const path = `${entityType}/${entityId}/${fileType}/${timestamp}-${file.name}`;
+  const safeName = sanitizeFilename(file.name);
+  const path = `${entityType}/${entityId}/${fileType}/${timestamp}-${safeName}`;
 
   // Upload to Vercel Blob
   const { url } = await uploadFile(file, fileType, path);

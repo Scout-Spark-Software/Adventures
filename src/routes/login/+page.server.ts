@@ -1,6 +1,7 @@
 import { fail, redirect } from "@sveltejs/kit";
 import type { Actions } from "./$types";
 import { workosAuth } from "$lib/server/workos";
+import { sanitizeAuthError } from "$lib/security";
 
 export const actions: Actions = {
   login: async ({ request, cookies }) => {
@@ -45,7 +46,7 @@ export const actions: Actions = {
         throw error;
       }
 
-      console.error("Login error:", error);
+      console.error("Login error:", error instanceof Error ? error.message : "unknown");
 
       // Check if error is about email verification
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -55,14 +56,9 @@ export const actions: Actions = {
         errorMessage.includes("email verification") ||
         errorMessage.includes("verify")
       ) {
-        // Get user ID to send verification email
-        // We need to fetch the user by email to get their ID
         try {
-          // Since we can't sign in, we need to handle this differently
-          // Redirect to signup page which will show verification form
           throw redirect(303, `/signup?email=${encodeURIComponent(email)}&needsVerification=true`);
         } catch (redirectError) {
-          // Re-throw redirect
           if (
             typeof redirectError === "object" &&
             redirectError !== null &&
@@ -73,9 +69,7 @@ export const actions: Actions = {
         }
       }
 
-      return fail(500, {
-        error: error instanceof Error ? error.message : "An unexpected error occurred",
-      });
+      return fail(401, { error: sanitizeAuthError(error) });
     }
   },
 };
