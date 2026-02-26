@@ -7,6 +7,9 @@
   import CouncilSelect from "$lib/components/CouncilSelect.svelte";
   import WaypointMap from "$lib/components/WaypointMap.svelte";
   import FormSection from "$lib/components/FormSection.svelte";
+  import FormInput from "$lib/components/FormInput.svelte";
+  import FormSelect from "$lib/components/FormSelect.svelte";
+  import FormTextarea from "$lib/components/FormTextarea.svelte";
   import Tooltip from "$lib/components/Tooltip.svelte";
   import SuccessAnimation from "$lib/components/SuccessAnimation.svelte";
   import { Star, CircleCheck, Building, DollarSign, FileText, ImagePlus, X } from "lucide-svelte";
@@ -328,13 +331,11 @@
               <label for="hike-name" class="block text-sm font-medium text-gray-700 mb-1">
                 Name *
               </label>
-              <input
-                type="text"
+              <FormInput
                 id="hike-name"
                 name="name"
                 bind:value={hikeName}
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                class:border-red-500={errors.name}
+                error={!!errors.name}
               />
               {#if errors.name}
                 <p class="mt-1 text-sm text-red-600">{errors.name}</p>
@@ -344,13 +345,12 @@
               <label for="hike-description" class="block text-sm font-medium text-gray-700 mb-1">
                 Description
               </label>
-              <textarea
+              <FormTextarea
                 id="hike-description"
                 name="description"
                 bind:value={hikeDescription}
-                rows="3"
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              ></textarea>
+                rows={3}
+              />
             </div>
             <div>
               <label for="hike-council" class="block text-sm font-medium text-gray-700 mb-1">
@@ -361,7 +361,7 @@
                 bind:value={councilId}
                 councils={data.councils}
                 placeholder="Select a council (optional)"
-                selectClass="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                variant="form"
               />
               <input type="hidden" name="council_id" value={councilId} />
             </div>
@@ -391,18 +391,17 @@
               <label for="difficulty" class="block text-sm font-medium text-gray-700 mb-1">
                 Difficulty
               </label>
-              <select
+              <FormSelect
                 id="difficulty"
                 name="difficulty"
                 bind:value={difficulty}
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               >
                 <option value="">Select difficulty...</option>
                 <option value="easy">Easy</option>
                 <option value="moderate">Moderate</option>
                 <option value="hard">Hard</option>
                 <option value="very_hard">Very Hard</option>
-              </select>
+              </FormSelect>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
@@ -410,14 +409,13 @@
                   Distance
                 </label>
                 <div class="flex gap-2">
-                  <input
+                  <FormInput
                     type="number"
                     step="0.1"
                     id="distance"
                     name="distance"
                     bind:value={distance}
                     placeholder="5.2"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   />
                   <select
                     name="distance_unit"
@@ -434,14 +432,13 @@
                   Duration
                 </label>
                 <div class="flex gap-2">
-                  <input
+                  <FormInput
                     type="number"
                     step="0.5"
                     id="duration"
                     name="duration"
                     bind:value={duration}
                     placeholder="2.5"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   />
                   <select
                     name="duration_unit"
@@ -460,14 +457,13 @@
                   Elevation Gain
                 </label>
                 <div class="flex gap-2">
-                  <input
+                  <FormInput
                     type="number"
                     step="1"
                     id="elevation"
                     name="elevation"
                     bind:value={elevation}
                     placeholder="500"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   />
                   <select
                     name="elevation_unit"
@@ -483,17 +479,16 @@
                 <label for="trail_type" class="block text-sm font-medium text-gray-700 mb-1">
                   Trail Type
                 </label>
-                <select
+                <FormSelect
                   id="trail_type"
                   name="trail_type"
                   bind:value={trailType}
-                  class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 >
                   <option value="">Select trail type...</option>
                   <option value="loop">Loop</option>
                   <option value="out_and_back">Out and Back</option>
                   <option value="point_to_point">Point to Point</option>
-                </select>
+                </FormSelect>
               </div>
             </div>
           </div>
@@ -529,16 +524,15 @@
                     Permits or Passes Required
                     <Tooltip text="Describe any permits, parking passes, or fees needed" />
                   </label>
-                  <textarea
+                  <FormTextarea
                     id="permits"
                     name="permits_required"
                     bind:value={permitsRequired}
-                    rows="2"
-                    maxlength="500"
+                    rows={2}
+                    maxlength={500}
                     placeholder="e.g., National Park Pass required, $5 parking fee"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    class:border-red-500={permitsError}
-                  ></textarea>
+                    error={permitsError}
+                  />
                   {#if permitsError}
                     <p class="mt-1 text-sm text-red-600">{permitsError}</p>
                   {:else}
@@ -586,16 +580,15 @@
                     Parking Information
                     <Tooltip text="Details about parking availability, capacity, and fees" />
                   </label>
-                  <textarea
+                  <FormTextarea
                     id="parking"
                     name="parking_info"
                     bind:value={parkingInfo}
-                    rows="3"
-                    maxlength="1000"
+                    rows={3}
+                    maxlength={1000}
                     placeholder="e.g., Large paved parking lot, 50 spaces, $10 daily fee"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    class:border-red-500={parkingError}
-                  ></textarea>
+                    error={parkingError}
+                  />
                   {#if parkingError}
                     <p class="mt-1 text-sm text-red-600">{parkingError}</p>
                   {:else}
@@ -741,13 +734,11 @@
               <label for="backpacking-name" class="block text-sm font-medium text-gray-700 mb-1">
                 Route Name *
               </label>
-              <input
-                type="text"
+              <FormInput
                 id="backpacking-name"
                 name="name"
                 bind:value={backpackingName}
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                class:border-red-500={errors.name}
+                error={!!errors.name}
               />
               {#if errors.name}
                 <p class="mt-1 text-sm text-red-600">{errors.name}</p>
@@ -760,13 +751,12 @@
               >
                 Description
               </label>
-              <textarea
+              <FormTextarea
                 id="backpacking-description"
                 name="description"
                 bind:value={backpackingDescription}
-                rows="3"
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              ></textarea>
+                rows={3}
+              />
             </div>
             <div>
               <label
@@ -780,7 +770,7 @@
                 bind:value={councilId}
                 councils={data.councils}
                 placeholder="Select a council (optional)"
-                selectClass="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                variant="form"
               />
               <input type="hidden" name="council_id" value={councilId} />
             </div>
@@ -851,18 +841,17 @@
               >
                 Difficulty
               </label>
-              <select
+              <FormSelect
                 id="backpacking-difficulty"
                 name="difficulty"
                 bind:value={backpackingDifficulty}
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               >
                 <option value="">Select difficulty...</option>
                 <option value="easy">Easy</option>
                 <option value="moderate">Moderate</option>
                 <option value="hard">Hard</option>
                 <option value="very_hard">Very Hard</option>
-              </select>
+              </FormSelect>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
@@ -873,14 +862,13 @@
                   Total Distance
                 </label>
                 <div class="flex gap-2">
-                  <input
+                  <FormInput
                     type="number"
                     step="0.1"
                     id="backpacking-distance"
                     name="distance"
                     bind:value={backpackingDistance}
                     placeholder="25"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   />
                   <select
                     name="distance_unit"
@@ -900,14 +888,13 @@
                   Elevation Gain
                 </label>
                 <div class="flex gap-2">
-                  <input
+                  <FormInput
                     type="number"
                     step="1"
                     id="backpacking-elevation"
                     name="elevation"
                     bind:value={backpackingElevation}
                     placeholder="3000"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   />
                   <select
                     name="elevation_unit"
@@ -925,28 +912,26 @@
                 <label for="number-of-days" class="block text-sm font-medium text-gray-700 mb-1">
                   Number of Days
                 </label>
-                <input
+                <FormInput
                   type="number"
                   min="1"
                   id="number-of-days"
                   name="number_of_days"
                   bind:value={numberOfDays}
                   placeholder="4"
-                  class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 />
               </div>
               <div>
                 <label for="number-of-nights" class="block text-sm font-medium text-gray-700 mb-1">
                   Number of Nights
                 </label>
-                <input
+                <FormInput
                   type="number"
                   min="0"
                   id="number-of-nights"
                   name="number_of_nights"
                   bind:value={numberOfNights}
                   placeholder="3"
-                  class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 />
               </div>
             </div>
@@ -955,17 +940,16 @@
                 <label for="camping-style" class="block text-sm font-medium text-gray-700 mb-1">
                   Camping Style
                 </label>
-                <select
+                <FormSelect
                   id="camping-style"
                   name="camping_style"
                   bind:value={campingStyle}
-                  class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 >
                   <option value="">Select camping style...</option>
                   <option value="dispersed">Dispersed Camping</option>
                   <option value="designated_sites">Designated Sites</option>
                   <option value="hut_to_hut">Hut to Hut</option>
-                </select>
+                </FormSelect>
               </div>
               <div>
                 <label
@@ -974,59 +958,55 @@
                 >
                   Trail Type
                 </label>
-                <select
+                <FormSelect
                   id="backpacking-trail-type"
                   name="trail_type"
                   bind:value={backpackingTrailType}
-                  class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                 >
                   <option value="">Select trail type...</option>
                   <option value="loop">Loop</option>
                   <option value="out_and_back">Out and Back</option>
                   <option value="point_to_point">Point to Point</option>
-                </select>
+                </FormSelect>
               </div>
             </div>
             <div>
               <label for="water-availability" class="block text-sm font-medium text-gray-700 mb-1">
                 Water Availability
               </label>
-              <textarea
+              <FormTextarea
                 id="water-availability"
                 name="water_availability"
                 bind:value={waterAvailability}
-                rows="2"
+                rows={2}
                 placeholder="e.g., Seasonal streams at miles 5 and 12, requires treatment"
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              ></textarea>
+              />
             </div>
             <div>
               <label for="backpacking-permits" class="block text-sm font-medium text-gray-700 mb-1">
                 Permits or Passes Required
               </label>
-              <textarea
+              <FormTextarea
                 id="backpacking-permits"
                 name="permits_required"
                 bind:value={backpackingPermitsRequired}
-                rows="2"
-                maxlength="500"
+                rows={2}
+                maxlength={500}
                 placeholder="e.g., Wilderness permit required, quota system in summer"
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              ></textarea>
+              />
             </div>
             <div>
               <label for="backpacking-parking" class="block text-sm font-medium text-gray-700 mb-1">
                 Parking Information
               </label>
-              <textarea
+              <FormTextarea
                 id="backpacking-parking"
                 name="parking_info"
                 bind:value={backpackingParkingInfo}
-                rows="2"
-                maxlength="1000"
+                rows={2}
+                maxlength={1000}
                 placeholder="e.g., Trailhead parking lot, 20 spaces, self-pay station"
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              ></textarea>
+              />
             </div>
             <label class="flex items-center">
               <input
@@ -1174,13 +1154,11 @@
               <label for="camping-name" class="block text-sm font-medium text-gray-700 mb-1">
                 Name *
               </label>
-              <input
-                type="text"
+              <FormInput
                 id="camping-name"
                 name="name"
                 bind:value={campingName}
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                class:border-red-500={errors.name}
+                error={!!errors.name}
               />
               {#if errors.name}
                 <p class="mt-1 text-sm text-red-600">{errors.name}</p>
@@ -1190,13 +1168,12 @@
               <label for="camping-description" class="block text-sm font-medium text-gray-700 mb-1">
                 Description
               </label>
-              <textarea
+              <FormTextarea
                 id="camping-description"
                 name="description"
                 bind:value={campingDescription}
-                rows="3"
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              ></textarea>
+                rows={3}
+              />
             </div>
             <div>
               <label for="camping-council" class="block text-sm font-medium text-gray-700 mb-1">
@@ -1207,7 +1184,7 @@
                 bind:value={councilId}
                 councils={data.councils}
                 placeholder="Select a council (optional)"
-                selectClass="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                variant="form"
               />
               <input type="hidden" name="council_id" value={councilId} />
             </div>
@@ -1237,27 +1214,24 @@
               <label for="capacity" class="block text-sm font-medium text-gray-700 mb-1">
                 Capacity (number of people/tents)
               </label>
-              <input
-                type="text"
+              <FormInput
                 id="capacity"
                 name="capacity"
                 bind:value={capacity}
                 placeholder="20 people or 10 tents"
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               />
             </div>
             <div>
               <label for="reservation_info" class="block text-sm font-medium text-gray-700 mb-1">
                 Reservation Info
               </label>
-              <textarea
+              <FormTextarea
                 id="reservation_info"
                 name="reservation_info"
                 bind:value={reservationInfo}
-                rows="3"
+                rows={3}
                 placeholder="How to make reservations, website, phone number, etc."
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              ></textarea>
+              />
             </div>
           </div>
 
@@ -1307,7 +1281,7 @@
                     Base Fee ($)
                     <Tooltip text="One-time fee for the entire stay" />
                   </label>
-                  <input
+                  <FormInput
                     type="number"
                     step="0.01"
                     min="0"
@@ -1316,7 +1290,6 @@
                     name="base_fee"
                     bind:value={baseFee}
                     placeholder="0.00"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   />
                 </div>
                 <div>
@@ -1324,7 +1297,7 @@
                     Cost Per Night ($)
                     <Tooltip text="Nightly rate for camping" />
                   </label>
-                  <input
+                  <FormInput
                     type="number"
                     step="0.01"
                     min="0"
@@ -1333,7 +1306,6 @@
                     name="cost_per_night"
                     bind:value={costPerNight}
                     placeholder="0.00"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   />
                 </div>
               </div>
@@ -1346,18 +1318,17 @@
                     Site Type *
                     <Tooltip text="Whether this is a public or private campground" />
                   </label>
-                  <select
+                  <FormSelect
                     id="site_type"
                     name="site_type"
                     bind:value={siteType}
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    class:border-red-500={errors.siteType}
+                    error={!!errors.siteType}
                   >
-                    <option value="">Select site type...</option>
+                    <option value="">Select site type... *</option>
                     <option value="public">Public</option>
                     <option value="private">Private</option>
                     <option value="public_private_partnership">Public-Private Partnership</option>
-                  </select>
+                  </FormSelect>
                   {#if errors.siteType}
                     <p class="mt-1 text-sm text-red-600">{errors.siteType}</p>
                   {/if}
@@ -1367,18 +1338,17 @@
                     Pet Policy *
                     <Tooltip text="Policy regarding pets at this campground" />
                   </label>
-                  <select
+                  <FormSelect
                     id="pet_policy"
                     name="pet_policy"
                     bind:value={petPolicy}
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    class:border-red-500={errors.petPolicy}
+                    error={!!errors.petPolicy}
                   >
-                    <option value="">Select pet policy...</option>
-                    <option value="allowed">Pets Allowed</option>
-                    <option value="not_allowed">Pets Not Allowed</option>
-                    <option value="restricted">Restricted (e.g., leashed only)</option>
-                  </select>
+                    <option value="">Select pet policy... *</option>
+                    <option value="allowed">Allowed</option>
+                    <option value="not_allowed">Not Allowed</option>
+                    <option value="restricted">Restricted</option>
+                  </FormSelect>
                   {#if errors.petPolicy}
                     <p class="mt-1 text-sm text-red-600">{errors.petPolicy}</p>
                   {/if}
@@ -1388,19 +1358,18 @@
                     Fire Policy *
                     <Tooltip text="Policy regarding campfires" />
                   </label>
-                  <select
+                  <FormSelect
                     id="fire_policy"
                     name="fire_policy"
                     bind:value={firePolicy}
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    class:border-red-500={errors.firePolicy}
+                    error={!!errors.firePolicy}
                   >
-                    <option value="">Select fire policy...</option>
-                    <option value="allowed">Fires Allowed</option>
-                    <option value="not_allowed">Fires Not Allowed</option>
+                    <option value="">Select fire policy... *</option>
+                    <option value="allowed">Allowed</option>
+                    <option value="not_allowed">Not Allowed</option>
                     <option value="fire_pits_only">Fire Pits Only</option>
-                    <option value="seasonal">Seasonal (varies by time of year)</option>
-                  </select>
+                    <option value="seasonal">Seasonal</option>
+                  </FormSelect>
                   {#if errors.firePolicy}
                     <p class="mt-1 text-sm text-red-600">{errors.firePolicy}</p>
                   {/if}
@@ -1432,24 +1401,20 @@
                       <label for="season_start" class="block text-xs text-gray-600 mb-1"
                         >Start</label
                       >
-                      <input
-                        type="text"
+                      <FormInput
                         id="season_start"
                         name="operating_season_start"
                         bind:value={operatingSeasonStart}
                         placeholder="e.g., May 1 or Year-round"
-                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                       />
                     </div>
                     <div>
                       <label for="season_end" class="block text-xs text-gray-600 mb-1">End</label>
-                      <input
-                        type="text"
+                      <FormInput
                         id="season_end"
                         name="operating_season_end"
                         bind:value={operatingSeasonEnd}
                         placeholder="e.g., October 31"
-                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                       />
                     </div>
                   </div>

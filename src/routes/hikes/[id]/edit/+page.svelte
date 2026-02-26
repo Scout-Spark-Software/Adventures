@@ -4,6 +4,9 @@
   import { enhance } from "$app/forms";
   import LocationPicker from "$lib/components/LocationPicker.svelte";
   import CouncilSelect from "$lib/components/CouncilSelect.svelte";
+  import FormInput from "$lib/components/FormInput.svelte";
+  import FormSelect from "$lib/components/FormSelect.svelte";
+  import FormTextarea from "$lib/components/FormTextarea.svelte";
 
   export let data: PageData;
   export let form: ActionData;
@@ -151,19 +154,18 @@
           <label for="field" class="block text-sm font-medium text-gray-700 mb-1">
             Field to Edit *
           </label>
-          <select
+          <FormSelect
             id="field"
             name="fieldName"
             bind:value={selectedField}
             on:change={handleFieldChange}
             required
-            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
             <option value="">Select a field...</option>
             {#each editableFields as field (field.key)}
               <option value={field.key}>{field.label}</option>
             {/each}
-          </select>
+          </FormSelect>
         </div>
 
         {#if selectedField}
@@ -200,21 +202,19 @@
                   New Value *
                 </label>
                 {#if field.type === "textarea"}
-                  <textarea
+                  <FormTextarea
                     id="value"
                     name="newValue"
                     bind:value={newValue}
                     required
-                    rows="4"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                  ></textarea>
+                    rows={4}
+                  />
                 {:else if field.type === "select"}
-                  <select
+                  <FormSelect
                     id="value"
                     name="newValue"
                     bind:value={newValue}
                     required
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   >
                     <option value="">Select {field.label}...</option>
                     {#each field.options || [] as option (option)}
@@ -223,7 +223,7 @@
                           option.replaceAll("_", " ").slice(1)}</option
                       >
                     {/each}
-                  </select>
+                  </FormSelect>
                 {:else if field.type === "council"}
                   <CouncilSelect
                     id="value"
@@ -231,26 +231,23 @@
                     bind:value={newValue}
                     councils={data.councils}
                     placeholder="No council (clear)"
-                    selectClass="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    variant="form"
                   />
                 {:else if field.type === "number"}
-                  <input
+                  <FormInput
                     type="number"
                     id="value"
                     name="newValue"
                     bind:value={newValue}
                     required
                     step="0.1"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   />
                 {:else}
-                  <input
-                    type="text"
+                  <FormInput
                     id="value"
                     name="newValue"
                     bind:value={newValue}
                     required
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   />
                 {/if}
                 <p class="mt-1 text-xs text-gray-500">
@@ -265,14 +262,13 @@
               <label for="reason" class="block text-sm font-medium text-gray-700 mb-1">
                 Reason for Change
               </label>
-              <textarea
+              <FormTextarea
                 id="reason"
                 name="reason"
                 bind:value={reason}
-                rows="3"
+                rows={3}
                 placeholder="Explain why this change should be made..."
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              ></textarea>
+              />
               <p class="mt-1 text-xs text-gray-500">
                 Help moderators understand your suggested change
               </p>

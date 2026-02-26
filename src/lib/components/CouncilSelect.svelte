@@ -10,7 +10,14 @@
     headquartersState: string | null;
   }[] = [];
   export let placeholder: string = "All Councils";
-  export let selectClass: string = "w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent";
+  export let variant: "filter" | "form" = "filter";
+
+  const classes = {
+    filter:
+      "w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent",
+    form:
+      "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500",
+  };
 
   // Group councils by state, sorted alphabetically; councils sorted by name within each state
   $: councilsByState = (() => {
@@ -35,7 +42,7 @@
   {id}
   {name}
   bind:value
-  class={selectClass}
+  class={classes[variant]}
   on:change
 >
   <option value="">{placeholder}</option>
