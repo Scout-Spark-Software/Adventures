@@ -57,6 +57,7 @@
       type: "select",
       options: ["allowed", "not_allowed", "fire_pits_only", "seasonal"],
     },
+    { key: "councilId", label: "BSA Council", type: "council" },
     { key: "location", label: "Location", type: "location" },
   ];
 
@@ -240,6 +241,20 @@
                     <option value="">Select {field.label}...</option>
                     {#each field.options || [] as option (option)}
                       <option value={option}>{formatOption(field.key, option)}</option>
+                    {/each}
+                  </select>
+                {:else if field.type === "council"}
+                  <select
+                    id="value"
+                    name="newValue"
+                    bind:value={newValue}
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  >
+                    <option value="">No council (clear)</option>
+                    {#each data.councils as council (council.id)}
+                      <option value={council.id}>
+                        {council.name}{council.headquartersState ? ` — ${council.headquartersState}` : ""}
+                      </option>
                     {/each}
                   </select>
                 {:else if field.type === "number"}

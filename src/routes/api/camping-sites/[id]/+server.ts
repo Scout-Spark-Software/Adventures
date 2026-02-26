@@ -1,7 +1,7 @@
 import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
-import { campingSites, addresses, ratingAggregates, files } from "$lib/db/schemas";
+import { campingSites, addresses, ratingAggregates, files, councils } from "$lib/db/schemas";
 import { eq, sql } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 import { isPrivilegedUser } from "$lib/auth/helpers";
@@ -30,6 +30,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       featured: campingSites.featured,
       createdBy: campingSites.createdBy,
       createdAt: campingSites.createdAt,
+      councilId: campingSites.councilId,
       updatedAt: campingSites.updatedAt,
       address: {
         id: addresses.id,
@@ -40,6 +41,13 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         postalCode: addresses.postalCode,
         latitude: addresses.latitude,
         longitude: addresses.longitude,
+      },
+      council: {
+        id: councils.id,
+        name: councils.name,
+        councilNumber: councils.councilNumber,
+        headquartersCity: councils.headquartersCity,
+        headquartersState: councils.headquartersState,
       },
       ratingAggregate: {
         averageRating: ratingAggregates.averageRating,
@@ -57,6 +65,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     })
     .from(campingSites)
     .leftJoin(addresses, eq(campingSites.addressId, addresses.id))
+    .leftJoin(councils, eq(campingSites.councilId, councils.id))
     .leftJoin(ratingAggregates, eq(campingSites.id, ratingAggregates.campingSiteId))
     .where(eq(campingSites.id, params.id))
     .limit(1);
@@ -76,6 +85,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
   const result = {
     ...campingSite,
     address: campingSite.address?.id != null ? campingSite.address : null,
+    council: campingSite.council?.id != null ? campingSite.council : null,
     ratingAggregate:
       campingSite.ratingAggregate?.averageRating != null
         ? {
@@ -123,6 +133,7 @@ export const PUT: RequestHandler = async (event) => {
   const allowedFields = [
     "name",
     "description",
+    "councilId",
     "capacity",
     "amenities",
     "facilities",

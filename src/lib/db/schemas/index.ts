@@ -1,5 +1,6 @@
 export * from "./enums";
 export * from "./addresses";
+export * from "./councils";
 export * from "./hikes";
 export * from "./camping-sites";
 export * from "./backpacking";

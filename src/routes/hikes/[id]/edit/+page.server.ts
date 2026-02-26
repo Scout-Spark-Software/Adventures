@@ -24,9 +24,13 @@ export const load: PageServerLoad = async (event) => {
     });
   }
 
+  const councilsRes = await event.fetch("/api/councils");
+  const councils = councilsRes.ok ? await councilsRes.json() : [];
+
   return {
     hike,
     address,
+    councils,
     userRole: user.role,
   };
 };

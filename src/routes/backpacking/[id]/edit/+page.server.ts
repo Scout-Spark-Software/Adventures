@@ -23,9 +23,13 @@ export const load: PageServerLoad = async (event) => {
     });
   }
 
+  const councilsRes = await event.fetch("/api/councils");
+  const councils = councilsRes.ok ? await councilsRes.json() : [];
+
   return {
     backpacking: entry,
     address,
+    councils,
     userRole: user.role,
   };
 };

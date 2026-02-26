@@ -16,12 +16,14 @@ const tsvector = customType<{ data: string }>({
 });
 import { statusEnum, petPolicyEnum, firePolicyEnum, siteTypeEnum } from "./enums";
 import { addresses } from "./addresses";
+import { councils } from "./councils";
 
 export const campingSites = pgTable("camping_sites", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
   description: text("description"),
   addressId: uuid("address_id").references(() => addresses.id),
+  councilId: uuid("council_id").references(() => councils.id),
   capacity: text("capacity"),
   amenities: jsonb("amenities"),
   facilities: jsonb("facilities"),

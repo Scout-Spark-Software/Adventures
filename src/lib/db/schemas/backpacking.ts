@@ -19,6 +19,7 @@ import {
   campingStyleEnum,
 } from "./enums";
 import { addresses } from "./addresses";
+import { councils } from "./councils";
 
 const tsvector = customType<{ data: string }>({
   dataType() {
@@ -31,6 +32,7 @@ export const backpacking = pgTable("backpacking", {
   name: text("name").notNull(),
   description: text("description"),
   addressId: uuid("address_id").references(() => addresses.id),
+  councilId: uuid("council_id").references(() => councils.id),
   difficulty: difficultyEnum("difficulty"),
   distance: numeric("distance"),
   distanceUnit: distanceUnitEnum("distance_unit").default("miles"),

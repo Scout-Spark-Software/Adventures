@@ -17,7 +17,8 @@
     "migrate": "tsx scripts/migrate.ts",
     "set-admin": "tsx scripts/set-admin.ts",
     "seed:hikes": "tsx scripts/seed-hikes.ts",
-    "seed:camping": "tsx scripts/seed-camping.ts"
+    "seed:camping": "tsx scripts/seed-camping.ts",
+    "seed:councils": "tsx scripts/seed-councils.ts"
   },
   "devDependencies": {
     "@ernane/svelte-star-rating": "^1.1.9",

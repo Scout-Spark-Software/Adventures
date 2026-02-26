@@ -3,6 +3,7 @@
 export const HIKE_ALTERABLE_FIELDS = [
   "name",
   "description",
+  "councilId",
   "difficulty",
   "distance",
   "distanceUnit",
@@ -22,6 +23,7 @@ export const HIKE_ALTERABLE_FIELDS = [
 export const CAMPING_SITE_ALTERABLE_FIELDS = [
   "name",
   "description",
+  "councilId",
   "capacity",
   "amenities",
   "facilities",
@@ -39,6 +41,7 @@ export const CAMPING_SITE_ALTERABLE_FIELDS = [
 export const BACKPACKING_ALTERABLE_FIELDS = [
   "name",
   "description",
+  "councilId",
   "difficulty",
   "distance",
   "distanceUnit",

@@ -1,7 +1,7 @@
 import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
-import { backpacking, addresses, ratingAggregates, files } from "$lib/db/schemas";
+import { backpacking, addresses, ratingAggregates, files, councils } from "$lib/db/schemas";
 import { eq, sql } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 import { isPrivilegedUser } from "$lib/auth/helpers";
@@ -38,6 +38,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       featured: backpacking.featured,
       createdBy: backpacking.createdBy,
       createdAt: backpacking.createdAt,
+      councilId: backpacking.councilId,
       updatedAt: backpacking.updatedAt,
       address: {
         id: addresses.id,
@@ -48,6 +49,13 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         postalCode: addresses.postalCode,
         latitude: addresses.latitude,
         longitude: addresses.longitude,
+      },
+      council: {
+        id: councils.id,
+        name: councils.name,
+        councilNumber: councils.councilNumber,
+        headquartersCity: councils.headquartersCity,
+        headquartersState: councils.headquartersState,
       },
       ratingAggregate: {
         averageRating: ratingAggregates.averageRating,
@@ -65,6 +73,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     })
     .from(backpacking)
     .leftJoin(addresses, eq(backpacking.addressId, addresses.id))
+    .leftJoin(councils, eq(backpacking.councilId, councils.id))
     .leftJoin(ratingAggregates, eq(backpacking.id, ratingAggregates.backpackingId))
     .where(eq(backpacking.id, params.id))
     .limit(1);
@@ -82,6 +91,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
   const result = {
     ...entry,
     address: entry.address?.id != null ? entry.address : null,
+    council: entry.council?.id != null ? entry.council : null,
     ratingAggregate:
       entry.ratingAggregate?.averageRating != null
         ? {
@@ -127,6 +137,7 @@ export const PUT: RequestHandler = async (event) => {
   const allowedFields = [
     "name",
     "description",
+    "councilId",
     "difficulty",
     "distance",
     "distanceUnit",

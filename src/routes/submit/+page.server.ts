@@ -13,16 +13,18 @@ export const load: PageServerLoad = async (event) => {
   requireAuth(event);
 
   // Load types from database
-  const [featureTypes, amenityTypes, facilityTypes] = await Promise.all([
+  const [featureTypes, amenityTypes, facilityTypes, councils] = await Promise.all([
     event.fetch("/api/feature-types?active=true").then((r) => r.json()),
     event.fetch("/api/amenity-types?active=true").then((r) => r.json()),
     event.fetch("/api/facility-types?active=true").then((r) => r.json()),
+    event.fetch("/api/councils").then((r) => r.json()),
   ]);
 
   return {
     featureTypes,
     amenityTypes,
     facilityTypes,
+    councils,
   };
 };
 
@@ -71,10 +73,13 @@ export const actions: Actions = {
     const waterSources = formData.get("water_sources") === "on";
     const parkingInfo = sanitizeString(formData.get("parking_info") as string);
 
+    const councilId = sanitizeString(formData.get("council_id") as string);
+
     const hikeData = {
       name,
       description: sanitizeString(formData.get("description") as string),
       addressId,
+      councilId,
       difficulty: sanitizeString(formData.get("difficulty") as string),
       distance: formData.get("distance") ? formData.get("distance") : null,
       distanceUnit: sanitizeString(formData.get("distance_unit") as string) || "miles",
@@ -170,10 +175,13 @@ export const actions: Actions = {
       return fail(400, { error: "Valid fire policy is required" });
     }
 
+    const campingCouncilId = sanitizeString(formData.get("council_id") as string);
+
     const campingSiteData = {
       name,
       description: sanitizeString(formData.get("description") as string),
       addressId,
+      councilId: campingCouncilId,
       capacity: sanitizeString(formData.get("capacity") as string),
       amenities: formData.get("amenities") ? JSON.parse(formData.get("amenities") as string) : null,
       facilities: formData.get("facilities")
@@ -238,10 +246,13 @@ export const actions: Actions = {
       addressId = newAddress.id;
     }
 
+    const backpackingCouncilId = sanitizeString(formData.get("council_id") as string);
+
     const backpackingData = {
       name,
       description: sanitizeString(formData.get("description") as string),
       addressId,
+      councilId: backpackingCouncilId,
       difficulty: sanitizeString(formData.get("difficulty") as string),
       distance: formData.get("distance") ? formData.get("distance") : null,
       distanceUnit: sanitizeString(formData.get("distance_unit") as string) || "miles",

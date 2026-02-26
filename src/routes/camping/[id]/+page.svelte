@@ -18,7 +18,7 @@
   import DetailPageHero from "$lib/components/DetailPageHero.svelte";
   import EditButton from "$lib/components/EditButton.svelte";
   import LocationMap from "$lib/components/LocationMap.svelte";
-  import { House, User, Map, MountainIcon, ChevronLeft, Flag, X, Trash2 } from "lucide-svelte";
+  import { House, User, Map, MountainIcon, ChevronLeft, Flag, X, Trash2, Shield } from "lucide-svelte";
   import CompactRating from "$lib/components/ratings/CompactRating.svelte";
   import ReviewsTab from "$lib/components/ratings/ReviewsTab.svelte";
   import HeroRatingDisplay from "$lib/components/ratings/HeroRatingDisplay.svelte";
@@ -330,6 +330,12 @@
             <span class="flex items-center gap-1">
               <Map size={16} />
               {[data.address.city, data.address.state].filter(Boolean).join(", ")}
+            </span>
+          {/if}
+          {#if data.campingSite.council}
+            <span class="flex items-center gap-1">
+              <Shield size={16} />
+              {data.campingSite.council.name}
             </span>
           {/if}
           {#if data.campingSite.capacity}

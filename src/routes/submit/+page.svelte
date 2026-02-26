@@ -108,6 +108,9 @@
   let siteType = "";
   let firePolicy = "";
 
+  // Council selection (shared across all form types)
+  let councilId = "";
+
   // Dynamic amenities/facilities from database
   let amenities: Record<string, boolean> = {};
   $: {
@@ -347,6 +350,24 @@
                 rows="3"
                 class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               ></textarea>
+            </div>
+            <div>
+              <label for="hike-council" class="block text-sm font-medium text-gray-700 mb-1">
+                BSA Council
+              </label>
+              <select
+                id="hike-council"
+                bind:value={councilId}
+                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              >
+                <option value="">Select a council (optional)</option>
+                {#each data.councils as council (council.id)}
+                  <option value={council.id}>
+                    {council.name}{council.headquartersState ? ` — ${council.headquartersState}` : ""}
+                  </option>
+                {/each}
+              </select>
+              <input type="hidden" name="council_id" value={councilId} />
             </div>
           </div>
 
@@ -750,6 +771,27 @@
                 rows="3"
                 class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               ></textarea>
+            </div>
+            <div>
+              <label
+                for="backpacking-council"
+                class="block text-sm font-medium text-gray-700 mb-1"
+              >
+                BSA Council
+              </label>
+              <select
+                id="backpacking-council"
+                bind:value={councilId}
+                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              >
+                <option value="">Select a council (optional)</option>
+                {#each data.councils as council (council.id)}
+                  <option value={council.id}>
+                    {council.name}{council.headquartersState ? ` — ${council.headquartersState}` : ""}
+                  </option>
+                {/each}
+              </select>
+              <input type="hidden" name="council_id" value={councilId} />
             </div>
           </div>
 
@@ -1164,6 +1206,24 @@
                 rows="3"
                 class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               ></textarea>
+            </div>
+            <div>
+              <label for="camping-council" class="block text-sm font-medium text-gray-700 mb-1">
+                BSA Council
+              </label>
+              <select
+                id="camping-council"
+                bind:value={councilId}
+                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              >
+                <option value="">Select a council (optional)</option>
+                {#each data.councils as council (council.id)}
+                  <option value={council.id}>
+                    {council.name}{council.headquartersState ? ` — ${council.headquartersState}` : ""}
+                  </option>
+                {/each}
+              </select>
+              <input type="hidden" name="council_id" value={councilId} />
             </div>
           </div>
 

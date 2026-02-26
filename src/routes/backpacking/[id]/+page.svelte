@@ -32,7 +32,7 @@
   import ReviewsTab from "$lib/components/ratings/ReviewsTab.svelte";
   import FileUpload from "$lib/components/FileUpload.svelte";
   import ImageLightbox from "$lib/components/ImageLightbox.svelte";
-  import { Flag, X, Trash2 } from "lucide-svelte";
+  import { Flag, X, Trash2, Shield } from "lucide-svelte";
   import { goto } from "$app/navigation";
 
   export let data: PageData;
@@ -336,6 +336,12 @@
             <span class="flex items-center gap-1">
               <MapPin size={16} />
               {locationString}
+            </span>
+          {/if}
+          {#if data.backpacking.council}
+            <span class="flex items-center gap-1">
+              <Shield size={16} />
+              {data.backpacking.council.name}
             </span>
           {/if}
           {#if data.backpacking.distance}

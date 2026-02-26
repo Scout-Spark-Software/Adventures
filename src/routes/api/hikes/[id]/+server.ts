@@ -1,7 +1,7 @@
 import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
-import { hikes, addresses, ratingAggregates, files } from "$lib/db/schemas";
+import { hikes, addresses, ratingAggregates, files, councils } from "$lib/db/schemas";
 import { eq, sql } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 import { isPrivilegedUser } from "$lib/auth/helpers";
@@ -32,6 +32,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       featured: hikes.featured,
       createdBy: hikes.createdBy,
       createdAt: hikes.createdAt,
+      councilId: hikes.councilId,
       updatedAt: hikes.updatedAt,
       address: {
         id: addresses.id,
@@ -42,6 +43,13 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         postalCode: addresses.postalCode,
         latitude: addresses.latitude,
         longitude: addresses.longitude,
+      },
+      council: {
+        id: councils.id,
+        name: councils.name,
+        councilNumber: councils.councilNumber,
+        headquartersCity: councils.headquartersCity,
+        headquartersState: councils.headquartersState,
       },
       ratingAggregate: {
         averageRating: ratingAggregates.averageRating,
@@ -59,6 +67,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     })
     .from(hikes)
     .leftJoin(addresses, eq(hikes.addressId, addresses.id))
+    .leftJoin(councils, eq(hikes.councilId, councils.id))
     .leftJoin(ratingAggregates, eq(hikes.id, ratingAggregates.hikeId))
     .where(eq(hikes.id, params.id))
     .limit(1);
@@ -78,6 +87,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
   const result = {
     ...hike,
     address: hike.address?.id != null ? hike.address : null,
+    council: hike.council?.id != null ? hike.council : null,
     ratingAggregate:
       hike.ratingAggregate?.averageRating != null
         ? {
@@ -125,6 +135,7 @@ export const PUT: RequestHandler = async (event) => {
   const allowedFields = [
     "name",
     "description",
+    "councilId",
     "difficulty",
     "distance",
     "distanceUnit",

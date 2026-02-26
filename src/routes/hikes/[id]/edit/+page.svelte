@@ -45,6 +45,7 @@
     },
     { key: "permitsRequired", label: "Permits Required", type: "textarea" },
     { key: "parkingInfo", label: "Parking Info", type: "textarea" },
+    { key: "councilId", label: "BSA Council", type: "council" },
     { key: "location", label: "Location", type: "location" },
   ];
 
@@ -220,6 +221,20 @@
                         >{option.replaceAll("_", " ").charAt(0).toUpperCase() +
                           option.replaceAll("_", " ").slice(1)}</option
                       >
+                    {/each}
+                  </select>
+                {:else if field.type === "council"}
+                  <select
+                    id="value"
+                    name="newValue"
+                    bind:value={newValue}
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  >
+                    <option value="">No council (clear)</option>
+                    {#each data.councils as council (council.id)}
+                      <option value={council.id}>
+                        {council.name}{council.headquartersState ? ` — ${council.headquartersState}` : ""}
+                      </option>
                     {/each}
                   </select>
                 {:else if field.type === "number"}
