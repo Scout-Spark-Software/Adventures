@@ -6,6 +6,7 @@
   import { SlidersHorizontal, X, ChevronDown, Check } from "lucide-svelte";
   import FilterInput from "$lib/components/FilterInput.svelte";
   import FilterSelect from "$lib/components/FilterSelect.svelte";
+  import CouncilSelect from "$lib/components/CouncilSelect.svelte";
 
   let featuresOpen = false;
   let featuresDropdownEl: HTMLDivElement;
@@ -17,6 +18,7 @@
   }
 
   export let featureTypes: FeatureType[] = [];
+  export let councils: { id: string; councilNumber: number; name: string; headquartersCity: string | null; headquartersState: string | null }[] = [];
   export let currentFilters: Record<string, string> = {};
   export let userRole: string | null = null;
 
@@ -24,6 +26,7 @@
 
   // Filter state
   let search = currentFilters.search || "";
+  let councilId = currentFilters.councilId || "";
   let difficulty = currentFilters.difficulty || "";
   let trailType = currentFilters.trailType || "";
   let campingStyle = currentFilters.campingStyle || "";
@@ -77,6 +80,7 @@
     const params = new URLSearchParams();
 
     if (search) params.set("search", search);
+    if (councilId) params.set("councilId", councilId);
     if (difficulty) params.set("difficulty", difficulty);
     if (trailType) params.set("trailType", trailType);
     if (campingStyle) params.set("campingStyle", campingStyle);
@@ -97,6 +101,7 @@
 
   function clearFilters() {
     search = "";
+    councilId = "";
     difficulty = "";
     trailType = "";
     campingStyle = "";
@@ -114,6 +119,7 @@
 
   $: activeFilterCount =
     (search ? 1 : 0) +
+    (councilId ? 1 : 0) +
     (difficulty ? 1 : 0) +
     (trailType ? 1 : 0) +
     (campingStyle ? 1 : 0) +
@@ -202,6 +208,14 @@
       on:input={handleSearchInput}
       placeholder="Name, description, location..."
     />
+  </div>
+
+  <!-- Council Filter -->
+  <div class="mb-3">
+    <label for="councilFilter" class="block text-sm font-medium text-gray-700 mb-1.5">
+      Council
+    </label>
+    <CouncilSelect id="councilFilter" bind:value={councilId} {councils} on:change={applyFilters} />
   </div>
 
   <!-- Difficulty Dropdown -->

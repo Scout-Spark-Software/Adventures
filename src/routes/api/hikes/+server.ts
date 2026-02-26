@@ -1,7 +1,7 @@
 import { isPrivilegedUser, parseStatusParam } from "$lib/auth/helpers";
 import { requireAuth } from "$lib/auth/middleware";
 import { db } from "$lib/db";
-import { addresses, files, hikes, ratingAggregates } from "$lib/db/schemas";
+import { addresses, hikes, ratingAggregates } from "$lib/db/schemas";
 import { addToModerationQueue } from "$lib/moderation";
 import { sanitizeSearchQuery, validateNumericParam } from "$lib/security";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
@@ -29,6 +29,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   const minRating = minRatingVal !== null ? String(minRatingVal) : null;
   const featuresParam = url.searchParams.get("features");
   const dogFriendly = url.searchParams.get("dogFriendly");
+  const councilId = url.searchParams.get("councilId");
 
   const conditions = [];
 
@@ -69,6 +70,11 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   // Filter by dog friendly
   if (dogFriendly === "true") {
     conditions.push(eq(hikes.dogFriendly, true));
+  }
+
+  // Filter by council
+  if (councilId) {
+    conditions.push(eq(hikes.councilId, councilId));
   }
 
   // Filter by features (JSONB array contains)
@@ -177,6 +183,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     minRating ||
     featuresParam ||
     dogFriendly === "true" ||
+    councilId ||
     limit !== 50 ||
     offset !== 0;
   if (!privileged && !hasFilters) {

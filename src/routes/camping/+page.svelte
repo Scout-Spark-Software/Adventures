@@ -75,6 +75,7 @@
         <CampingFilters
           amenityTypes={data.amenityTypes}
           facilityTypes={data.facilityTypes}
+          councils={data.councils}
           currentFilters={data.currentFilters}
           userRole={data.userRole}
         />
@@ -156,6 +157,7 @@
       <CampingFilters
         amenityTypes={data.amenityTypes}
         facilityTypes={data.facilityTypes}
+        councils={data.councils}
         currentFilters={data.currentFilters}
         userRole={data.userRole}
       />

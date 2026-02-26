@@ -1,7 +1,7 @@
 import { isPrivilegedUser, parseStatusParam } from "$lib/auth/helpers";
 import { requireAuth } from "$lib/auth/middleware";
 import { db } from "$lib/db";
-import { addresses, campingSites, files, ratingAggregates } from "$lib/db/schemas";
+import { addresses, campingSites, ratingAggregates } from "$lib/db/schemas";
 import { addToModerationQueue } from "$lib/moderation";
 import { sanitizeSearchQuery, validateNumericParam } from "$lib/security";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
@@ -30,6 +30,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   const amenitiesParam = url.searchParams.get("amenities");
   const facilitiesParam = url.searchParams.get("facilities");
   const reservationRequired = url.searchParams.get("reservationRequired");
+  const councilId = url.searchParams.get("councilId");
 
   const conditions = [];
 
@@ -75,6 +76,11 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   // Filter by reservation required
   if (reservationRequired === "true") {
     conditions.push(eq(campingSites.reservationRequired, true));
+  }
+
+  // Filter by council
+  if (councilId) {
+    conditions.push(eq(campingSites.councilId, councilId));
   }
 
   // Filter by amenities (JSONB array contains)
@@ -191,6 +197,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     amenitiesParam ||
     facilitiesParam ||
     reservationRequired === "true" ||
+    councilId ||
     limit !== 50 ||
     offset !== 0;
   if (!privileged && !hasFilters) {

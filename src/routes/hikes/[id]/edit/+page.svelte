@@ -3,6 +3,7 @@
   import { goto } from "$app/navigation";
   import { enhance } from "$app/forms";
   import LocationPicker from "$lib/components/LocationPicker.svelte";
+  import CouncilSelect from "$lib/components/CouncilSelect.svelte";
 
   export let data: PageData;
   export let form: ActionData;
@@ -224,19 +225,14 @@
                     {/each}
                   </select>
                 {:else if field.type === "council"}
-                  <select
+                  <CouncilSelect
                     id="value"
                     name="newValue"
                     bind:value={newValue}
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                  >
-                    <option value="">No council (clear)</option>
-                    {#each data.councils as council (council.id)}
-                      <option value={council.id}>
-                        {council.name}{council.headquartersState ? ` — ${council.headquartersState}` : ""}
-                      </option>
-                    {/each}
-                  </select>
+                    councils={data.councils}
+                    placeholder="No council (clear)"
+                    selectClass="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  />
                 {:else if field.type === "number"}
                   <input
                     type="number"

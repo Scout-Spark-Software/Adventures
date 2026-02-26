@@ -1,5 +1,5 @@
-import type { PageServerLoad } from "./$types";
 import { getUserRole } from "$lib/auth";
+import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ fetch, url, locals }) => {
   const params = new URLSearchParams();
@@ -17,6 +17,7 @@ export const load: PageServerLoad = async ({ fetch, url, locals }) => {
     "minRating",
     "features",
     "dogFriendly",
+    "councilId",
   ];
 
   filterParams.forEach((param) => {
@@ -28,9 +29,10 @@ export const load: PageServerLoad = async ({ fetch, url, locals }) => {
     params.append("limit", "50");
   }
 
-  const [backpackingEntries, featureTypes] = await Promise.all([
+  const [backpackingEntries, featureTypes, councils] = await Promise.all([
     fetch(`/api/backpacking?${params.toString()}`).then((r) => r.json()),
     fetch("/api/feature-types?active=true").then((r) => r.json()),
+    fetch("/api/councils").then((r) => r.json()),
   ]);
 
   const currentFilters: Record<string, string> = {};
@@ -44,6 +46,7 @@ export const load: PageServerLoad = async ({ fetch, url, locals }) => {
   return {
     backpackingEntries: backpackingEntries || [],
     featureTypes: featureTypes || [],
+    councils: councils || [],
     currentFilters,
     userRole,
   };

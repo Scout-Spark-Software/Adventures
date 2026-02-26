@@ -4,6 +4,7 @@
   import { page } from "$app/stores";
   import type { PageData } from "./$types";
   import LocationPicker from "$lib/components/LocationPicker.svelte";
+  import CouncilSelect from "$lib/components/CouncilSelect.svelte";
   import WaypointMap from "$lib/components/WaypointMap.svelte";
   import FormSection from "$lib/components/FormSection.svelte";
   import Tooltip from "$lib/components/Tooltip.svelte";
@@ -355,18 +356,13 @@
               <label for="hike-council" class="block text-sm font-medium text-gray-700 mb-1">
                 BSA Council
               </label>
-              <select
+              <CouncilSelect
                 id="hike-council"
                 bind:value={councilId}
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              >
-                <option value="">Select a council (optional)</option>
-                {#each data.councils as council (council.id)}
-                  <option value={council.id}>
-                    {council.name}{council.headquartersState ? ` — ${council.headquartersState}` : ""}
-                  </option>
-                {/each}
-              </select>
+                councils={data.councils}
+                placeholder="Select a council (optional)"
+                selectClass="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              />
               <input type="hidden" name="council_id" value={councilId} />
             </div>
           </div>
@@ -779,18 +775,13 @@
               >
                 BSA Council
               </label>
-              <select
+              <CouncilSelect
                 id="backpacking-council"
                 bind:value={councilId}
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              >
-                <option value="">Select a council (optional)</option>
-                {#each data.councils as council (council.id)}
-                  <option value={council.id}>
-                    {council.name}{council.headquartersState ? ` — ${council.headquartersState}` : ""}
-                  </option>
-                {/each}
-              </select>
+                councils={data.councils}
+                placeholder="Select a council (optional)"
+                selectClass="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              />
               <input type="hidden" name="council_id" value={councilId} />
             </div>
           </div>
@@ -1211,18 +1202,13 @@
               <label for="camping-council" class="block text-sm font-medium text-gray-700 mb-1">
                 BSA Council
               </label>
-              <select
+              <CouncilSelect
                 id="camping-council"
                 bind:value={councilId}
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              >
-                <option value="">Select a council (optional)</option>
-                {#each data.councils as council (council.id)}
-                  <option value={council.id}>
-                    {council.name}{council.headquartersState ? ` — ${council.headquartersState}` : ""}
-                  </option>
-                {/each}
-              </select>
+                councils={data.councils}
+                placeholder="Select a council (optional)"
+                selectClass="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              />
               <input type="hidden" name="council_id" value={councilId} />
             </div>
           </div>

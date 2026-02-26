@@ -33,6 +33,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   const minDays = minDaysVal !== null ? String(minDaysVal) : null;
   const maxDays = maxDaysVal !== null ? String(maxDaysVal) : null;
   const dogFriendly = url.searchParams.get("dogFriendly");
+  const councilId = url.searchParams.get("councilId");
 
   const conditions = [];
 
@@ -80,6 +81,11 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
   if (dogFriendly === "true") {
     conditions.push(eq(backpacking.dogFriendly, true));
+  }
+
+  // Filter by council
+  if (councilId) {
+    conditions.push(eq(backpacking.councilId, councilId));
   }
 
   let query = db
@@ -181,6 +187,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     maxDays ||
     minRating ||
     dogFriendly === "true" ||
+    councilId ||
     limit !== 50 ||
     offset !== 0;
 

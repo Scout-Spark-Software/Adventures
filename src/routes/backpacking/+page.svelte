@@ -74,6 +74,7 @@
       <aside class="hidden lg:block">
         <BackpackingFilters
           featureTypes={data.featureTypes}
+          councils={data.councils}
           currentFilters={data.currentFilters}
           userRole={data.userRole}
         />
@@ -153,6 +154,7 @@
     <!-- Mobile Filter Component -->
     <div class="lg:hidden">
       <BackpackingFilters
+        councils={data.councils}
         currentFilters={data.currentFilters}
         userRole={data.userRole}
       />

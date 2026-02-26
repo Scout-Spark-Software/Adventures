@@ -1,5 +1,5 @@
-import type { PageServerLoad } from "./$types";
 import { getUserRole } from "$lib/auth";
+import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ fetch, url, locals }) => {
   // Build params from all URL search params
@@ -9,6 +9,7 @@ export const load: PageServerLoad = async ({ fetch, url, locals }) => {
   const filterParams = [
     "status",
     "search",
+    "councilId",
     "siteType",
     "petPolicy",
     "firePolicy",
@@ -30,12 +31,13 @@ export const load: PageServerLoad = async ({ fetch, url, locals }) => {
     params.append("limit", "50");
   }
 
-  // Fetch camping sites with filters
-  const campingSites = await fetch(`/api/camping-sites?${params.toString()}`).then((r) => r.json());
-
-  // Fetch amenity types and facility types for filter component
-  const amenityTypes = await fetch("/api/amenity-types?active=true").then((r) => r.json());
-  const facilityTypes = await fetch("/api/facility-types?active=true").then((r) => r.json());
+  // Fetch camping sites with filters, amenity types, facility types, and councils in parallel
+  const [campingSites, amenityTypes, facilityTypes, councils] = await Promise.all([
+    fetch(`/api/camping-sites?${params.toString()}`).then((r) => r.json()),
+    fetch("/api/amenity-types?active=true").then((r) => r.json()),
+    fetch("/api/facility-types?active=true").then((r) => r.json()),
+    fetch("/api/councils").then((r) => r.json()),
+  ]);
 
   // Build current filters object for component
   const currentFilters: Record<string, string> = {};
@@ -50,6 +52,7 @@ export const load: PageServerLoad = async ({ fetch, url, locals }) => {
     campingSites: campingSites || [],
     amenityTypes: amenityTypes || [],
     facilityTypes: facilityTypes || [],
+    councils: councils || [],
     currentFilters,
     userRole,
   };

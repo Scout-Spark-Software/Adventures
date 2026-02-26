@@ -5,6 +5,7 @@
   import { SlidersHorizontal, X, ChevronDown, Check } from "lucide-svelte";
   import FilterInput from "$lib/components/FilterInput.svelte";
   import FilterSelect from "$lib/components/FilterSelect.svelte";
+  import CouncilSelect from "$lib/components/CouncilSelect.svelte";
 
   let amenitiesOpen = false;
   let facilitiesOpen = false;
@@ -22,6 +23,7 @@
 
   export let amenityTypes: AmenityType[] = [];
   export let facilityTypes: FacilityType[] = [];
+  export let councils: { id: string; councilNumber: number; name: string; headquartersCity: string | null; headquartersState: string | null }[] = [];
   export let currentFilters: Record<string, string> = {};
   export let userRole: string | null = null;
 
@@ -29,6 +31,7 @@
 
   // Filter state
   let search = currentFilters.search || "";
+  let councilId = currentFilters.councilId || "";
   let siteType = currentFilters.siteType || "";
   let petPolicy = currentFilters.petPolicy || "";
   let firePolicy = currentFilters.firePolicy || "";
@@ -100,6 +103,7 @@
     const params = new URLSearchParams();
 
     if (search) params.set("search", search);
+    if (councilId) params.set("councilId", councilId);
     if (siteType) params.set("siteType", siteType);
     if (petPolicy) params.set("petPolicy", petPolicy);
     if (firePolicy) params.set("firePolicy", firePolicy);
@@ -122,6 +126,7 @@
 
   function clearFilters() {
     search = "";
+    councilId = "";
     siteType = "";
     petPolicy = "";
     firePolicy = "";
@@ -139,6 +144,7 @@
   // Count active filters
   $: activeFilterCount =
     (search ? 1 : 0) +
+    (councilId ? 1 : 0) +
     (siteType ? 1 : 0) +
     (petPolicy ? 1 : 0) +
     (firePolicy ? 1 : 0) +
@@ -227,6 +233,14 @@
       on:input={handleSearchInput}
       placeholder="Name, description, location..."
     />
+  </div>
+
+  <!-- Council Filter -->
+  <div class="mb-3">
+    <label for="councilFilter" class="block text-sm font-medium text-gray-700 mb-1.5">
+      Council
+    </label>
+    <CouncilSelect id="councilFilter" bind:value={councilId} {councils} on:change={handleFilterChange} />
   </div>
 
   <!-- Site Type Dropdown -->

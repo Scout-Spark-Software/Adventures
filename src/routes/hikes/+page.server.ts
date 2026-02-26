@@ -1,5 +1,5 @@
-import type { PageServerLoad } from "./$types";
 import { getUserRole } from "$lib/auth";
+import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ fetch, url, locals }) => {
   // Build params from all URL search params
@@ -9,6 +9,7 @@ export const load: PageServerLoad = async ({ fetch, url, locals }) => {
   const filterParams = [
     "status",
     "search",
+    "councilId",
     "difficulty",
     "trailType",
     "minDistance",
@@ -28,11 +29,12 @@ export const load: PageServerLoad = async ({ fetch, url, locals }) => {
     params.append("limit", "50");
   }
 
-  // Fetch hikes with filters
-  const hikes = await fetch(`/api/hikes?${params.toString()}`).then((r) => r.json());
-
-  // Fetch feature types for filter component
-  const featureTypes = await fetch("/api/feature-types?active=true").then((r) => r.json());
+  // Fetch hikes with filters and feature types and councils in parallel
+  const [hikes, featureTypes, councils] = await Promise.all([
+    fetch(`/api/hikes?${params.toString()}`).then((r) => r.json()),
+    fetch("/api/feature-types?active=true").then((r) => r.json()),
+    fetch("/api/councils").then((r) => r.json()),
+  ]);
 
   // Build current filters object for component
   const currentFilters: Record<string, string> = {};
@@ -46,6 +48,7 @@ export const load: PageServerLoad = async ({ fetch, url, locals }) => {
   return {
     hikes: hikes || [],
     featureTypes: featureTypes || [],
+    councils: councils || [],
     currentFilters,
     userRole,
   };

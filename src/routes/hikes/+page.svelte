@@ -74,6 +74,7 @@
       <aside class="hidden lg:block">
         <HikeFilters
           featureTypes={data.featureTypes}
+          councils={data.councils}
           currentFilters={data.currentFilters}
           userRole={data.userRole}
         />
@@ -154,6 +155,7 @@
     <div class="lg:hidden">
       <HikeFilters
         featureTypes={data.featureTypes}
+        councils={data.councils}
         currentFilters={data.currentFilters}
         userRole={data.userRole}
       />
