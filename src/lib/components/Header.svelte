@@ -2,7 +2,6 @@
   import navLogo from "$lib/assets/Adventure_Spark_Nav_Image.png";
   import { page } from "$app/stores";
   import {
-    Compass,
     Tent,
     ChevronDown,
     Settings,
@@ -12,6 +11,8 @@
     LogOut,
     MountainIcon,
     Backpack,
+    Menu,
+    X,
   } from "lucide-svelte";
 
   export let user: {
@@ -39,6 +40,7 @@
 
   let userMenuOpen = false;
   let userMenuEl: HTMLDivElement;
+  let mobileMenuOpen = false;
 
   function toggleUserMenu() {
     userMenuOpen = !userMenuOpen;
@@ -46,6 +48,10 @@
 
   function closeUserMenu() {
     userMenuOpen = false;
+  }
+
+  function closeMobileMenu() {
+    mobileMenuOpen = false;
   }
 
   function handleClickOutside(event: MouseEvent) {
@@ -57,8 +63,15 @@
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === "Escape") {
       userMenuOpen = false;
+      mobileMenuOpen = false;
     }
   }
+
+  const navLinks = [
+    { href: "/hikes", label: "Hikes", icon: MountainIcon, activeColor: "emerald" },
+    { href: "/camping", label: "Camping Sites", icon: Tent, activeColor: "emerald" },
+    { href: "/backpacking", label: "Backpacking", icon: Backpack, activeColor: "amber" },
+  ];
 </script>
 
 <svelte:window on:click={handleClickOutside} on:keydown={handleKeydown} on:scroll={onScroll} />
@@ -73,11 +86,12 @@
 >
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between h-16">
+      <!-- Left: logo + desktop nav links -->
       <div class="flex">
         <div class="flex-shrink-0 flex items-center">
           <a href="/" class="flex items-center gap-2 group">
             <img src={navLogo} alt="Adventure Spark Logo" class="w-18 h-16" />
-            <div class="hidden sm:block">
+            <div class="hidden md:block">
               <div
                 class="text-lg font-bold leading-tight {isDark
                   ? 'text-stone-100'
@@ -88,6 +102,7 @@
             </div>
           </a>
         </div>
+        <!-- Desktop nav links (md+) -->
         <div class="hidden md:ml-8 md:flex md:space-x-1">
           <a
             href="/hikes"
@@ -130,6 +145,8 @@
           </a>
         </div>
       </div>
+
+      <!-- Right: user menu + hamburger -->
       <div class="flex items-center gap-2">
         {#if user}
           <div class="relative" bind:this={userMenuEl}>
@@ -224,7 +241,80 @@
             Sign Up
           </a>
         {/if}
+
+        <!-- Hamburger button (mobile only, below md) -->
+        <button
+          class="md:hidden p-2 rounded-lg transition-colors {isDark
+            ? 'text-stone-200 hover:bg-white/10'
+            : 'text-slate-600 hover:bg-slate-100'}"
+          on:click|stopPropagation={() => (mobileMenuOpen = !mobileMenuOpen)}
+          aria-label="Toggle navigation menu"
+          aria-expanded={mobileMenuOpen}
+        >
+          {#if mobileMenuOpen}
+            <X size={22} />
+          {:else}
+            <Menu size={22} />
+          {/if}
+        </button>
       </div>
     </div>
   </div>
 </nav>
+
+<!-- Mobile menu drawer -->
+{#if mobileMenuOpen}
+  <!-- Backdrop -->
+  <div
+    class="md:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+    on:click={closeMobileMenu}
+    role="button"
+    tabindex="-1"
+    aria-label="Close navigation menu"
+    on:keydown={(e) => e.key === "Escape" && closeMobileMenu()}
+  ></div>
+
+  <!-- Drawer panel -->
+  <div
+    class="md:hidden fixed top-16 left-0 right-0 z-40 shadow-xl border-b
+    {isDark
+      ? 'bg-stone-950/97 border-white/10'
+      : 'bg-white border-slate-200'}"
+  >
+    <div class="max-w-7xl mx-auto px-4 py-3 space-y-1">
+      <a
+        href="/hikes"
+        on:click={closeMobileMenu}
+        class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-colors
+        {currentPath.startsWith('/hikes')
+          ? isDark ? 'bg-emerald-500/15 text-emerald-300' : 'bg-emerald-50 text-emerald-700'
+          : isDark ? 'text-stone-300 hover:bg-white/5 hover:text-white' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}"
+      >
+        <MountainIcon size={18} />
+        Hikes
+      </a>
+      <a
+        href="/camping"
+        on:click={closeMobileMenu}
+        class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-colors
+        {currentPath.startsWith('/camping')
+          ? isDark ? 'bg-emerald-500/15 text-emerald-300' : 'bg-emerald-50 text-emerald-700'
+          : isDark ? 'text-stone-300 hover:bg-white/5 hover:text-white' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}"
+      >
+        <Tent size={18} />
+        Camping Sites
+      </a>
+      <a
+        href="/backpacking"
+        on:click={closeMobileMenu}
+        class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-colors
+        {currentPath.startsWith('/backpacking')
+          ? isDark ? 'bg-amber-500/15 text-amber-300' : 'bg-amber-50 text-amber-700'
+          : isDark ? 'text-stone-300 hover:bg-white/5 hover:text-white' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}"
+      >
+        <Backpack size={18} />
+        Backpacking
+      </a>
+    </div>
+  </div>
+{/if}

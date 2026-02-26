@@ -154,7 +154,7 @@
     </div>
 
     <!-- Tabs -->
-    <div class="flex gap-1 p-1 bg-white/5 border border-white/10 rounded-xl mb-6 w-fit">
+    <div class="flex flex-wrap gap-1 p-1 bg-white/5 border border-white/10 rounded-xl mb-6 w-fit max-w-full">
       {#each [["features", "Hike Features"], ["amenities", "Camping Amenities"], ["facilities", "Camping Facilities"]] as [tab, label]}
         <button
           on:click={() => { activeTab = tab as any; cancelEdit(); }}

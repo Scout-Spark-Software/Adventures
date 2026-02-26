@@ -100,25 +100,27 @@
       </p>
 
       <!-- CTAs -->
-      <div class="flex flex-wrap gap-3 justify-center lg:justify-start mb-16">
+      <div class="flex flex-col gap-3 items-center lg:items-start mb-16">
         <a href="/hikes" class="group inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm text-stone-950 transition-all hover:scale-105" style="background: linear-gradient(135deg, #86efac, #34d399);">
           Explore Adventures
           <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
           </svg>
         </a>
-        <a href="/submit" class="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all" style="background: rgba(245,240,232,0.07); border: 1px solid rgba(245,240,232,0.15); color: rgba(245,240,232,0.85);">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-          </svg>
-          Share a Trail
-        </a>
-        <a href="/essentials" class="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all" style="background: rgba(251,146,60,0.1); border: 1px solid rgba(251,146,60,0.25); color: rgba(251,146,60,0.9);">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-          </svg>
-          Scout Essentials
-        </a>
+        <div class="flex gap-3 flex-wrap justify-center lg:justify-start">
+          <a href="/submit" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm transition-all" style="background: rgba(245,240,232,0.07); border: 1px solid rgba(245,240,232,0.15); color: rgba(245,240,232,0.85);">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Share a Trail
+          </a>
+          <a href="/essentials" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm transition-all" style="background: rgba(251,146,60,0.1); border: 1px solid rgba(251,146,60,0.25); color: rgba(251,146,60,0.9);">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+            Scout Essentials
+          </a>
+        </div>
       </div>
     </div>
 

@@ -387,7 +387,7 @@
                 <option value="very_hard">Very Hard</option>
               </select>
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label for="distance" class="block text-sm font-medium text-gray-700 mb-1">
                   Distance
@@ -437,7 +437,7 @@
                 </div>
               </div>
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label for="elevation" class="block text-sm font-medium text-gray-700 mb-1">
                   Elevation Gain
@@ -618,7 +618,7 @@
               <p class="mt-1 text-xs text-gray-500">JPEG, PNG, WebP — up to 10MB each</p>
             </div>
             {#if stagedPhotos.length > 0}
-              <div class="grid grid-cols-3 gap-3">
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {#each stagedPhotos as photo, i (photo.previewUrl)}
                   <div class="relative group">
                     <div class="aspect-square rounded-lg overflow-hidden bg-gray-100">
@@ -831,7 +831,7 @@
                 <option value="very_hard">Very Hard</option>
               </select>
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label
                   for="backpacking-distance"
@@ -887,7 +887,7 @@
                 </div>
               </div>
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label for="number-of-days" class="block text-sm font-medium text-gray-700 mb-1">
                   Number of Days
@@ -917,7 +917,7 @@
                 />
               </div>
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label for="camping-style" class="block text-sm font-medium text-gray-700 mb-1">
                   Camping Style
@@ -1035,7 +1035,7 @@
               <p class="mt-1 text-xs text-gray-500">JPEG, PNG, WebP — up to 10MB each</p>
             </div>
             {#if stagedPhotos.length > 0}
-              <div class="grid grid-cols-3 gap-3">
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {#each stagedPhotos as photo, i (photo.previewUrl)}
                   <div class="relative group">
                     <div class="aspect-square rounded-lg overflow-hidden bg-gray-100">
@@ -1255,7 +1255,7 @@
           <div class="p-6 space-y-6">
             <h2 class="text-base font-semibold text-gray-900">Cost & Policies</h2>
             <FormSection title="Cost & Fees" icon={DollarSign}>
-              <div class="grid grid-cols-2 gap-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label for="base_fee" class="block text-sm font-medium text-gray-700 mb-1">
                     Base Fee ($)
@@ -1378,7 +1378,7 @@
                     <Tooltip text="Dates when the campground is open" />
                   </div>
                   <div
-                    class="grid grid-cols-2 gap-4"
+                    class="grid grid-cols-1 sm:grid-cols-2 gap-4"
                     role="group"
                     aria-labelledby="operating-season-label"
                   >
@@ -1440,7 +1440,7 @@
               <p class="mt-1 text-xs text-gray-500">JPEG, PNG, WebP — up to 10MB each</p>
             </div>
             {#if stagedPhotos.length > 0}
-              <div class="grid grid-cols-3 gap-3">
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {#each stagedPhotos as photo, i (photo.previewUrl)}
                   <div class="relative group">
                     <div class="aspect-square rounded-lg overflow-hidden bg-gray-100">

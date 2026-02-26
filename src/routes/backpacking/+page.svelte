@@ -47,19 +47,19 @@
         <div class="flex items-center gap-2 flex-shrink-0">
           <a
             href="/essentials"
-            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold transition-all hover:opacity-90"
+            class="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-2 rounded-full text-xs font-bold transition-all hover:opacity-90"
             style="background: rgba(251,146,60,0.08); border: 1px solid rgba(251,146,60,0.25); color: #c2410c;"
           >
             <BookOpen size={13} />
-            Essentials
+            <span class="hidden sm:inline">Essentials</span>
           </a>
           <a
             href="/submit?type=backpacking"
-            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold text-stone-950 transition-all hover:scale-105"
+            class="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-2 rounded-full text-xs font-bold text-stone-950 transition-all hover:scale-105"
             style="background: linear-gradient(135deg, #fde68a, #fbbf24);"
           >
             <Plus size={13} />
-            Submit
+            <span class="hidden sm:inline">Submit</span>
           </a>
         </div>
       </div>

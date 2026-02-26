@@ -215,12 +215,12 @@
                 {/if}
               </button>
 
-              <!-- Requirements tooltip -->
+              <!-- Requirements tooltip — right of field on sm+, below on mobile -->
               {#if password.length > 0}
-                <div class="absolute left-full top-0 ml-3 w-52 z-50">
+                <div class="sm:absolute sm:left-full sm:top-0 sm:ml-3 sm:w-52 sm:z-50 mt-2 sm:mt-0">
                   <div class="relative">
-                    <!-- Arrow -->
-                    <div class="absolute -left-1.5 top-3.5 w-3 h-3 rotate-45" style="background: rgba(12,20,14,0.97); border-left: 1px solid rgba(245,240,232,0.15); border-bottom: 1px solid rgba(245,240,232,0.15);"></div>
+                    <!-- Arrow (desktop only) -->
+                    <div class="hidden sm:block absolute -left-1.5 top-3.5 w-3 h-3 rotate-45" style="background: rgba(12,20,14,0.97); border-left: 1px solid rgba(245,240,232,0.15); border-bottom: 1px solid rgba(245,240,232,0.15);"></div>
                     <div class="rounded-xl p-3 space-y-2" style="background: rgba(12,20,14,0.97); border: 1px solid rgba(245,240,232,0.15); backdrop-filter: blur(12px);">
                       <p class="text-xs font-semibold tracking-wide uppercase" style="color: rgba(245,240,232,0.4);">Password must have:</p>
                       {#each [
