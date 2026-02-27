@@ -9,7 +9,7 @@
   export let backpackingId: string | null = null;
   export let userId: string | null = null;
 
-  type RatingWithUser = Rating & { userName?: string };
+  type RatingWithUser = Rating & { submitterName?: string | null; submitterUnit?: string | null };
 
   let reviews: RatingWithUser[] = [];
   let aggregate = {
@@ -180,6 +180,14 @@
                       &nbsp;• Updated {formatDate(String(review.updatedAt))}
                     {/if}
                   </p>
+                  {#if review.submitterName}
+                    <p class="text-xs text-gray-400 mt-0.5">
+                      {review.submitterName}
+                      {#if review.submitterUnit}
+                        &middot; {review.submitterUnit}
+                      {/if}
+                    </p>
+                  {/if}
                 </div>
               </div>
               {#if review.reviewText}
