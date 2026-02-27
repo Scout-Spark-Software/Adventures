@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { browser } from "$app/environment";
   import type { PageData } from "./$types";
   import FavoriteButton from "$lib/components/FavoriteButton.svelte";
@@ -44,7 +43,9 @@
   // Explicitly type userRole for type safety
   $: typedUserRole = data.userRole as "member" | "admin" | null | undefined;
 
-  let activeTab = "details";
+  const VALID_TABS = ["details", "reviews", "notes"];
+  const initialHash = browser ? window.location.hash.slice(1) : "";
+  let activeTab = VALID_TABS.includes(initialHash) ? initialHash : "details";
   let notesCount = data.notesCount;
 
   // Lazy-loaded files — only fetched when the media tab is first opened
@@ -80,13 +81,6 @@
   $: heroImageUrl = liveHeroUrl ?? data.campingSite.bannerImageUrl ?? null;
 
   // Handle URL hash navigation
-  onMount(() => {
-    const hash = window.location.hash.slice(1);
-    if (hash && ["details", "reviews", "notes"].includes(hash)) {
-      activeTab = hash;
-    }
-  });
-
   // Update URL when tab changes
   $: if (browser) {
     const newHash = `#${activeTab}`;
