@@ -4,8 +4,8 @@
   import HikeCard from "$lib/components/HikeCard.svelte";
   import HikeFilters from "$lib/components/HikeFilters.svelte";
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
-  import { MountainIcon, Plus, BookOpen, LayoutGrid, List, Map } from "lucide-svelte";
-  import { navigating } from "$app/stores";
+  import { MountainIcon, Plus, BookOpen, LayoutGrid, List, Map, ChevronLeft, ChevronRight } from "lucide-svelte";
+  import { navigating, page as pageStore } from "$app/stores";
   import ListingMap from "$lib/components/ListingMap.svelte";
 
   export let data: PageData;
@@ -27,6 +27,26 @@
       href: `/hikes/${h.id}`,
       color: "emerald" as const,
     }));
+
+  $: totalPages = Math.ceil(data.total / data.pageSize);
+
+  function pageUrl(p: number): string {
+    const params = new URLSearchParams($pageStore.url.searchParams);
+    params.set("page", String(p));
+    return `/hikes?${params.toString()}`;
+  }
+
+  $: pageNumbers = (() => {
+    const pages: (number | "…")[] = [];
+    for (let i = 1; i <= totalPages; i++) {
+      if (i === 1 || i === totalPages || (i >= data.page - 2 && i <= data.page + 2)) {
+        pages.push(i);
+      } else if (pages[pages.length - 1] !== "…") {
+        pages.push("…");
+      }
+    }
+    return pages;
+  })();
 </script>
 
 <svelte:head>
@@ -102,8 +122,8 @@
           <!-- Results count + view toggle -->
           <div class="flex items-center mb-4">
             <p class="text-sm text-stone-500">
-              <span class="font-black text-stone-800">{data.hikes.length}</span>
-              {data.hikes.length === 1 ? "trail" : "trails"} found
+              <span class="font-black text-stone-800">{data.total}</span>
+              {data.total === 1 ? "trail" : "trails"} found
             </p>
             <div class="flex items-center gap-0.5 ml-auto">
               <button
@@ -153,6 +173,49 @@
             </div>
           {:else}
             <ListingMap markers={hikeMarkers} />
+          {/if}
+
+          <!-- Pagination -->
+          {#if totalPages > 1 && viewMode !== "map"}
+            <div class="flex items-center justify-center gap-1 mt-8">
+              <a
+                href={pageUrl(data.page - 1)}
+                class="p-2 rounded-lg transition-colors {data.page <= 1
+                  ? 'pointer-events-none text-stone-300'
+                  : 'text-stone-500 hover:bg-stone-200 hover:text-stone-800'}"
+                aria-label="Previous page"
+                aria-disabled={data.page <= 1}
+              >
+                <ChevronLeft size={18} />
+              </a>
+
+              {#each pageNumbers as pg}
+                {#if pg === "…"}
+                  <span class="px-2 text-stone-400 text-sm select-none">…</span>
+                {:else}
+                  <a
+                    href={pageUrl(pg)}
+                    class="min-w-[36px] h-9 flex items-center justify-center rounded-lg text-sm font-bold transition-colors {pg === data.page
+                      ? 'bg-emerald-600 text-white'
+                      : 'text-stone-600 hover:bg-stone-200'}"
+                    aria-current={pg === data.page ? 'page' : undefined}
+                  >
+                    {pg}
+                  </a>
+                {/if}
+              {/each}
+
+              <a
+                href={pageUrl(data.page + 1)}
+                class="p-2 rounded-lg transition-colors {data.page >= totalPages
+                  ? 'pointer-events-none text-stone-300'
+                  : 'text-stone-500 hover:bg-stone-200 hover:text-stone-800'}"
+                aria-label="Next page"
+                aria-disabled={data.page >= totalPages}
+              >
+                <ChevronRight size={18} />
+              </a>
+            </div>
           {/if}
         {:else}
           <div

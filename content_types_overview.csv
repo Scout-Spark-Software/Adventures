@@ -1,0 +1,77 @@
+content_type,field,required,type,notes,in_seed_data,missing_from_seed
+Hike,id,auto,uuid,Primary key,N/A,N/A
+Hike,name,YES,text,,YES,no
+Hike,description,no,text,,YES,no
+Hike,addressId,no,uuid,FK to addresses,YES (partial),address street missing on 8 of 15
+Hike,councilId,no,uuid,FK to councils,NO,all 15
+Hike,difficulty,no,enum,"easy, moderate, hard, very_hard",YES,no
+Hike,distance,no,numeric,,YES,no
+Hike,distanceUnit,no,enum,"miles, kilometers — default: miles",YES,no
+Hike,duration,no,numeric,,YES,no
+Hike,durationUnit,no,enum,"minutes, hours — default: hours",YES,no
+Hike,elevation,no,numeric,,YES,no
+Hike,elevationUnit,no,enum,"feet, meters — default: feet",YES,no
+Hike,trailType,no,enum,"loop, out_and_back, point_to_point",YES,no
+Hike,features,no,jsonb,Array of feature strings,YES,no
+Hike,dogFriendly,no,boolean,Default: false,NO,all 15
+Hike,permitsRequired,no,text,,NO,all 15
+Hike,bestSeason,no,jsonb,,NO,all 15
+Hike,waterSources,no,boolean,Default: false,NO,all 15
+Hike,parkingInfo,no,text,,NO,all 15
+Hike,status,auto,enum,"pending, approved, rejected — default: pending",N/A,N/A
+Hike,featured,auto,boolean,Default: false,N/A,N/A
+Hike,createdBy,YES,text,User ID — empty in CSV (filled by seed script),PARTIAL,all 15 (seed script fills)
+Hike,createdAt,auto,timestamp,Auto-generated,N/A,N/A
+Hike,updatedAt,auto,timestamp,Auto-generated,N/A,N/A
+Camping Site,id,auto,uuid,Primary key,N/A,N/A
+Camping Site,name,YES,text,,YES,no
+Camping Site,description,no,text,,YES,no
+Camping Site,addressId,no,uuid,FK to addresses,YES,no
+Camping Site,councilId,no,uuid,FK to councils,NO,all 15
+Camping Site,capacity,no,text,,YES,no
+Camping Site,amenities,no,jsonb,Array of amenity strings,YES,no
+Camping Site,facilities,no,jsonb,Array of facility strings,YES,no
+Camping Site,reservationInfo,no,text,,YES,no
+Camping Site,costPerNight,no,numeric(10 2),,YES,no
+Camping Site,baseFee,no,numeric(10 2),,NO,all 15
+Camping Site,operatingSeasonStart,no,text,Month name e.g. January,YES,no
+Camping Site,operatingSeasonEnd,no,text,Month name e.g. December,YES,no
+Camping Site,petPolicy,YES,enum,"allowed, not_allowed, restricted",YES,no
+Camping Site,reservationRequired,no,boolean,Default: false,NO,all 15
+Camping Site,siteType,YES,enum,"public, private, public_private_partnership",YES,no
+Camping Site,firePolicy,YES,enum,"allowed, not_allowed, fire_pits_only, seasonal",YES,no
+Camping Site,status,auto,enum,"pending, approved, rejected — default: pending",N/A,N/A
+Camping Site,featured,auto,boolean,Default: false,N/A,N/A
+Camping Site,createdBy,YES,text,User ID — empty in CSV (filled by seed script),PARTIAL,all 15 (seed script fills)
+Camping Site,createdAt,auto,timestamp,Auto-generated,N/A,N/A
+Camping Site,updatedAt,auto,timestamp,Auto-generated,N/A,N/A
+Backpacking,id,auto,uuid,Primary key,N/A,N/A
+Backpacking,name,YES,text,,NO SEED DATA,—
+Backpacking,description,no,text,,NO SEED DATA,—
+Backpacking,addressId,no,uuid,FK to addresses,NO SEED DATA,—
+Backpacking,councilId,no,uuid,FK to councils,NO SEED DATA,—
+Backpacking,difficulty,no,enum,"easy, moderate, hard, very_hard",NO SEED DATA,—
+Backpacking,distance,no,numeric,,NO SEED DATA,—
+Backpacking,distanceUnit,no,enum,"miles, kilometers — default: miles",NO SEED DATA,—
+Backpacking,duration,no,numeric,,NO SEED DATA,—
+Backpacking,durationUnit,no,enum,"minutes, hours — default: hours",NO SEED DATA,—
+Backpacking,elevation,no,numeric,,NO SEED DATA,—
+Backpacking,elevationUnit,no,enum,"feet, meters — default: feet",NO SEED DATA,—
+Backpacking,trailType,no,enum,"loop, out_and_back, point_to_point",NO SEED DATA,—
+Backpacking,features,no,jsonb,Array of feature strings,NO SEED DATA,—
+Backpacking,dogFriendly,no,boolean,Default: false,NO SEED DATA,—
+Backpacking,permitsRequired,no,text,,NO SEED DATA,—
+Backpacking,bestSeason,no,jsonb,,NO SEED DATA,—
+Backpacking,waterSources,no,boolean,Default: false,NO SEED DATA,—
+Backpacking,parkingInfo,no,text,,NO SEED DATA,—
+Backpacking,numberOfDays,no,integer,Trip duration in days,NO SEED DATA,—
+Backpacking,numberOfNights,no,integer,Trip duration in nights,NO SEED DATA,—
+Backpacking,campingStyle,no,enum,"dispersed, designated_sites, hut_to_hut",NO SEED DATA,—
+Backpacking,resupplyPoints,no,jsonb,Array of resupply location objects,NO SEED DATA,—
+Backpacking,waterAvailability,no,text,,NO SEED DATA,—
+Backpacking,waypoints,no,jsonb,Array of waypoint coordinates,NO SEED DATA,—
+Backpacking,status,auto,enum,"pending, approved, rejected — default: pending",N/A,N/A
+Backpacking,featured,auto,boolean,Default: false,N/A,N/A
+Backpacking,createdBy,YES,text,User ID,NO SEED DATA,—
+Backpacking,createdAt,auto,timestamp,Auto-generated,N/A,N/A
+Backpacking,updatedAt,auto,timestamp,Auto-generated,N/A,N/A

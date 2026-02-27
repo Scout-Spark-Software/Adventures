@@ -1,11 +1,11 @@
 import { getUserRole } from "$lib/auth";
 import type { PageServerLoad } from "./$types";
 
+const PAGE_SIZE = 25;
+
 export const load: PageServerLoad = async ({ fetch, url, locals }) => {
-  // Build params from all URL search params
   const params = new URLSearchParams();
 
-  // Pass all filter params to the API
   const filterParams = [
     "status",
     "search",
@@ -26,20 +26,19 @@ export const load: PageServerLoad = async ({ fetch, url, locals }) => {
     if (value) params.append(param, value);
   });
 
-  // Ensure limit is set for pagination
-  if (!params.has("limit")) {
-    params.append("limit", "50");
-  }
+  const page = Math.max(1, parseInt(url.searchParams.get("page") || "1"));
+  const offset = (page - 1) * PAGE_SIZE;
 
-  // Fetch camping sites with filters, amenity types, facility types, and councils in parallel
-  const [campingSites, amenityTypes, facilityTypes, councils] = await Promise.all([
+  params.set("limit", String(PAGE_SIZE));
+  params.set("offset", String(offset));
+
+  const [campingResponse, amenityTypes, facilityTypes, councils] = await Promise.all([
     fetch(`/api/camping-sites?${params.toString()}`).then((r) => r.json()),
     fetch("/api/amenity-types?active=true").then((r) => r.json()),
     fetch("/api/facility-types?active=true").then((r) => r.json()),
     fetch("/api/councils").then((r) => r.json()),
   ]);
 
-  // Build current filters object for component
   const currentFilters: Record<string, string> = {};
   filterParams.forEach((param) => {
     const value = url.searchParams.get(param);
@@ -49,7 +48,10 @@ export const load: PageServerLoad = async ({ fetch, url, locals }) => {
   const userRole = locals.userId ? await getUserRole(locals.userId) : null;
 
   return {
-    campingSites: campingSites || [],
+    campingSites: campingResponse?.data || [],
+    total: campingResponse?.total || 0,
+    page,
+    pageSize: PAGE_SIZE,
     amenityTypes: amenityTypes || [],
     facilityTypes: facilityTypes || [],
     councils: councils || [],

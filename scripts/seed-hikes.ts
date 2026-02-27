@@ -31,6 +31,11 @@ interface HikeCSVRow {
   elevation: string;
   trail_type: string;
   features: string;
+  dog_friendly: string;
+  permits_required: string;
+  best_season: string;
+  water_sources: string;
+  parking_info: string;
   status: string;
   featured: string;
   created_by: string;
@@ -82,14 +87,12 @@ function parseCSV(content: string): HikeCSVRow[] {
 async function seedHikes() {
   console.log("Starting hikes seed process...\n");
 
-  // Read CSV file
   const csvPath = join(__dirname, "..", "hikes_seed.csv");
   const csvContent = readFileSync(csvPath, "utf-8");
   const rows = parseCSV(csvContent);
 
   console.log(`Found ${rows.length} hikes to seed\n`);
 
-  // Create a default user ID for seeded data
   const defaultUserId = "26f210a0-9e3b-4025-915d-9ad8c7749f5d";
 
   let successCount = 0;
@@ -97,7 +100,6 @@ async function seedHikes() {
 
   for (const row of rows) {
     try {
-      // Create address first
       const addressData = {
         address: row.address || null,
         city: row.city || null,
@@ -110,38 +112,37 @@ async function seedHikes() {
 
       const [address] = await db.insert(schema.addresses).values(addressData).returning();
 
-      // Parse features from comma-separated string
       let features = null;
       if (row.features) {
         features = row.features.split(",").map((f) => f.trim());
       }
 
-      // Parse duration (e.g., "4-5 hours" -> take the average)
-      let duration = null;
-      if (row.duration) {
-        const match = row.duration.match(/(\d+)-?(\d+)?/);
-        if (match) {
-          const min = parseInt(match[1]);
-          const max = match[2] ? parseInt(match[2]) : min;
-          duration = ((min + max) / 2).toString();
-        }
+      // best_season stored as pipe-separated e.g. "summer|fall"
+      let bestSeason = null;
+      if (row.best_season) {
+        bestSeason = row.best_season.split("|").map((s: string) => s.trim());
       }
 
-      // Create hike
       const hikeData = {
         name: row.name,
         description: row.description || null,
         addressId: address.id,
-        difficulty: row.difficulty || null,
+        difficulty: (row.difficulty as "easy" | "moderate" | "hard" | "very_hard") || null,
         distance: row.distance || null,
         distanceUnit: "miles" as const,
-        duration: duration,
+        duration: row.duration || null,
         durationUnit: "hours" as const,
         elevation: row.elevation || null,
         elevationUnit: "feet" as const,
-        trailType: row.trail_type || null,
+        trailType:
+          (row.trail_type as "loop" | "out_and_back" | "point_to_point") || null,
         features: features,
-        status: (row.status || "active") as "pending" | "active" | "inactive",
+        dogFriendly: row.dog_friendly === "true",
+        permitsRequired: row.permits_required || null,
+        bestSeason: bestSeason,
+        waterSources: row.water_sources === "true",
+        parkingInfo: row.parking_info || null,
+        status: (row.status || "approved") as "pending" | "approved" | "rejected",
         featured: row.featured === "true",
         createdBy: row.created_by || defaultUserId,
       };

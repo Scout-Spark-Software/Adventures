@@ -6,7 +6,7 @@ import { addToModerationQueue } from "$lib/moderation";
 import { sanitizeSearchQuery, validateNumericParam } from "$lib/security";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
 import { error, json } from "@sveltejs/kit";
-import { and, desc, eq, gte, lte, or, sql } from "drizzle-orm";
+import { and, count, desc, eq, gte, lte, or, sql } from "drizzle-orm";
 import type { RequestHandler } from "./$types";
 
 export const GET: RequestHandler = async ({ url, locals }) => {
@@ -162,14 +162,31 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     whereConditions.push(gte(ratingAggregates.averageRating, minRating));
   }
 
-  const results = await query
-    .where(whereConditions.length > 0 ? and(...whereConditions) : undefined)
+  const whereClause = whereConditions.length > 0 ? and(...whereConditions) : undefined;
+
+  const finalQuery = query
+    .where(whereClause)
     .limit(limit)
     .offset(offset)
     .orderBy(desc(backpacking.createdAt));
 
+  let countQuery = db
+    .select({ total: count() })
+    .from(backpacking)
+    .leftJoin(addresses, eq(backpacking.addressId, addresses.id));
+  if (minRating) {
+    countQuery = countQuery.leftJoin(
+      ratingAggregates,
+      eq(backpacking.id, ratingAggregates.backpackingId)
+    );
+  }
+
+  const [results, [{ total }]] = await Promise.all([finalQuery, countQuery.where(whereClause)]);
+
+  const response = { data: results, total };
+
   if (featured === "true" && !privileged) {
-    return json(results, {
+    return json(response, {
       headers: {
         "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
       },
@@ -192,14 +209,14 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     offset !== 0;
 
   if (!privileged && !hasFilters) {
-    return json(results, {
+    return json(response, {
       headers: {
         "Cache-Control": "public, s-maxage=120, stale-while-revalidate=300",
       },
     });
   }
 
-  return json(results);
+  return json(response);
 };
 
 export const POST: RequestHandler = async ({ request, locals }) => {

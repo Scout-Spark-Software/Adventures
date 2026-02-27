@@ -21,22 +21,24 @@ if (!databaseUrl) {
 const sql = neon(databaseUrl);
 const db = drizzle(sql, { schema });
 
-interface CampingCSVRow {
+interface BackpackingCSVRow {
   name: string;
   description: string;
   location: string;
-  capacity: string;
-  amenities: string;
-  facilities: string;
-  reservation_info: string;
-  pet_policy: string;
-  fire_policy: string;
-  site_type: string;
-  cost_per_night: string;
-  base_fee: string;
-  operating_season_start: string;
-  operating_season_end: string;
-  reservation_required: string;
+  difficulty: string;
+  distance: string;
+  elevation: string;
+  trail_type: string;
+  features: string;
+  dog_friendly: string;
+  permits_required: string;
+  best_season: string;
+  water_sources: string;
+  parking_info: string;
+  number_of_days: string;
+  number_of_nights: string;
+  camping_style: string;
+  water_availability: string;
   status: string;
   featured: string;
   created_by: string;
@@ -71,7 +73,7 @@ function parseCSVLine(line: string): string[] {
   return values;
 }
 
-function parseCSV(content: string): CampingCSVRow[] {
+function parseCSV(content: string): BackpackingCSVRow[] {
   const lines = content.split("\n").filter((line) => line.trim());
   const headers = parseCSVLine(lines[0]);
 
@@ -85,16 +87,16 @@ function parseCSV(content: string): CampingCSVRow[] {
   });
 }
 
-async function seedCampingSites() {
-  console.log("Starting camping sites seed process...\n");
+async function seedBackpacking() {
+  console.log("Starting backpacking seed process...\n");
 
-  const csvPath = join(__dirname, "..", "camping_sites_seed.csv");
+  const csvPath = join(__dirname, "..", "backpacking_seed.csv");
   const csvContent = readFileSync(csvPath, "utf-8");
   const rows = parseCSV(csvContent);
 
-  console.log(`Found ${rows.length} camping sites to seed\n`);
+  console.log(`Found ${rows.length} backpacking routes to seed\n`);
 
-  const defaultUserId = "00000000-0000-0000-0000-000000000001";
+  const defaultUserId = "26f210a0-9e3b-4025-915d-9ad8c7749f5d";
 
   let successCount = 0;
   let errorCount = 0;
@@ -113,47 +115,44 @@ async function seedCampingSites() {
 
       const [address] = await db.insert(schema.addresses).values(addressData).returning();
 
-      let amenities = null;
-      if (row.amenities) {
-        amenities = row.amenities.split(",").map((a) => a.trim());
+      let features = null;
+      if (row.features) {
+        features = row.features.split(",").map((f) => f.trim());
       }
 
-      let facilities = null;
-      if (row.facilities) {
-        facilities = row.facilities.split(",").map((f) => f.trim());
+      // best_season stored as pipe-separated e.g. "summer|fall"
+      let bestSeason = null;
+      if (row.best_season) {
+        bestSeason = row.best_season.split("|").map((s: string) => s.trim());
       }
 
-      const petPolicy = row.pet_policy as "allowed" | "not_allowed" | "restricted";
-      const firePolicy = row.fire_policy as
-        | "allowed"
-        | "not_allowed"
-        | "fire_pits_only"
-        | "seasonal";
-      const siteType = row.site_type as "public" | "private" | "public_private_partnership";
-      const status = (row.status || "approved") as "pending" | "approved" | "rejected";
-
-      const campingData = {
+      const backpackingData = {
         name: row.name,
         description: row.description || null,
         addressId: address.id,
-        capacity: row.capacity || null,
-        amenities: amenities,
-        facilities: facilities,
-        reservationInfo: row.reservation_info || null,
-        petPolicy: petPolicy,
-        firePolicy: firePolicy,
-        siteType: siteType,
-        costPerNight: row.cost_per_night || null,
-        baseFee: row.base_fee || null,
-        operatingSeasonStart: row.operating_season_start || null,
-        operatingSeasonEnd: row.operating_season_end || null,
-        reservationRequired: row.reservation_required === "true",
-        status: status,
+        difficulty: (row.difficulty as "easy" | "moderate" | "hard" | "very_hard") || null,
+        distance: row.distance || null,
+        distanceUnit: "miles" as const,
+        elevation: row.elevation || null,
+        elevationUnit: "feet" as const,
+        trailType: (row.trail_type as "loop" | "out_and_back" | "point_to_point") || null,
+        features: features,
+        dogFriendly: row.dog_friendly === "true",
+        permitsRequired: row.permits_required || null,
+        bestSeason: bestSeason,
+        waterSources: row.water_sources === "true",
+        parkingInfo: row.parking_info || null,
+        numberOfDays: row.number_of_days ? parseInt(row.number_of_days) : null,
+        numberOfNights: row.number_of_nights ? parseInt(row.number_of_nights) : null,
+        campingStyle:
+          (row.camping_style as "dispersed" | "designated_sites" | "hut_to_hut") || null,
+        waterAvailability: row.water_availability || null,
+        status: (row.status || "approved") as "pending" | "approved" | "rejected",
         featured: row.featured === "true",
         createdBy: row.created_by || defaultUserId,
       };
 
-      await db.insert(schema.campingSites).values(campingData);
+      await db.insert(schema.backpacking).values(backpackingData);
 
       console.log(`✓ Seeded: ${row.name}`);
       successCount++;
@@ -168,7 +167,7 @@ async function seedCampingSites() {
   console.log(`  Errors: ${errorCount}`);
 }
 
-seedCampingSites()
+seedBackpacking()
   .then(() => {
     console.log("\nDone!");
     process.exit(0);

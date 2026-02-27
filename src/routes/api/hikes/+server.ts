@@ -6,7 +6,7 @@ import { addToModerationQueue } from "$lib/moderation";
 import { sanitizeSearchQuery, validateNumericParam } from "$lib/security";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
 import { error, json } from "@sveltejs/kit";
-import { and, desc, eq, gte, lte, or, sql } from "drizzle-orm";
+import { and, count, desc, eq, gte, lte, or, sql } from "drizzle-orm";
 import type { RequestHandler } from "./$types";
 
 export const GET: RequestHandler = async ({ url, locals }) => {
@@ -164,10 +164,22 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     .offset(offset)
     .orderBy(desc(hikes.createdAt));
 
-  const results = await finalQuery;
+  const whereClause = whereConditions.length > 0 ? and(...whereConditions) : undefined;
+
+  let countQuery = db
+    .select({ total: count() })
+    .from(hikes)
+    .leftJoin(addresses, eq(hikes.addressId, addresses.id));
+  if (minRating) {
+    countQuery = countQuery.leftJoin(ratingAggregates, eq(hikes.id, ratingAggregates.hikeId));
+  }
+
+  const [results, [{ total }]] = await Promise.all([finalQuery, countQuery.where(whereClause)]);
+
+  const response = { data: results, total };
 
   if (featured === "true" && !privileged) {
-    return json(results, {
+    return json(response, {
       headers: {
         "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
       },
@@ -187,14 +199,14 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     limit !== 50 ||
     offset !== 0;
   if (!privileged && !hasFilters) {
-    return json(results, {
+    return json(response, {
       headers: {
         "Cache-Control": "public, s-maxage=120, stale-while-revalidate=300",
       },
     });
   }
 
-  return json(results);
+  return json(response);
 };
 
 export const POST: RequestHandler = async ({ request, locals }) => {

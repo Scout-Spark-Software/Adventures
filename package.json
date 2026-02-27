@@ -18,6 +18,7 @@
     "set-admin": "tsx scripts/set-admin.ts",
     "seed:hikes": "tsx scripts/seed-hikes.ts",
     "seed:camping": "tsx scripts/seed-camping.ts",
+    "seed:backpacking": "tsx scripts/seed-backpacking.ts",
     "seed:councils": "tsx scripts/seed-councils.ts"
   },
   "devDependencies": {
