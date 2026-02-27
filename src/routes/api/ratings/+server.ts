@@ -58,21 +58,16 @@ export const GET: RequestHandler = async ({ url }) => {
     };
   });
 
-  return json(
-    {
-      ratings: ratingsWithAttribution,
-      aggregate: aggregate || {
-        averageRating: null,
-        totalRatings: 0,
-        totalReviews: 0,
-      },
+  // No CDN cache: response contains user attribution data that must reflect
+  // the submitter's current privacy preference in real time.
+  return json({
+    ratings: ratingsWithAttribution,
+    aggregate: aggregate || {
+      averageRating: null,
+      totalRatings: 0,
+      totalReviews: 0,
     },
-    {
-      headers: {
-        "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
-      },
-    }
-  );
+  });
 };
 
 // POST /api/ratings - Create or update rating (upsert)
