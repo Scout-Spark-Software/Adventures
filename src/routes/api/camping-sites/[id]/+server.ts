@@ -104,8 +104,13 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     submitterUnit: attribution.unitLabel,
   };
 
-  // No CDN cache: response contains submitter attribution that reflects
-  // the user's current privacy preference in real time.
+  if (result.status === "approved") {
+    return json(resultWithAttribution, {
+      headers: {
+        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+      },
+    });
+  }
   return json(resultWithAttribution);
 };
 
