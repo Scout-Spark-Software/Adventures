@@ -6,6 +6,7 @@ import { eq, sql } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 import { isPrivilegedUser } from "$lib/auth/helpers";
 import { deleteFile } from "$lib/storage/blob";
+import { getAttribution } from "$lib/server/attribution";
 
 export const GET: RequestHandler = async ({ params, locals }) => {
   const rows = await db
@@ -96,14 +97,21 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         : null,
   };
 
+  const attribution = await getAttribution(campingSite.createdBy);
+  const resultWithAttribution = {
+    ...result,
+    submitterName: attribution.displayName,
+    submitterUnit: attribution.unitLabel,
+  };
+
   if (result.status === "approved") {
-    return json(result, {
+    return json(resultWithAttribution, {
       headers: {
         "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
       },
     });
   }
-  return json(result);
+  return json(resultWithAttribution);
 };
 
 export const PUT: RequestHandler = async (event) => {
