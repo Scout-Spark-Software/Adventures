@@ -4,7 +4,8 @@
   import { enhance } from "$app/forms";
   import Tabs from "$lib/components/Tabs.svelte";
   import NotesSection from "$lib/components/NotesSection.svelte";
-  import { Check, CircleAlertIcon, LogOut, Lock, Mail, UserCircle } from "lucide-svelte";
+  import { Check, CircleAlertIcon, LogOut, Lock, Mail, UserCircle, Shield } from "lucide-svelte";
+  import CouncilSelect from "$lib/components/CouncilSelect.svelte";
 
   export let data: PageData;
   export let form: ActionData;
@@ -17,6 +18,7 @@
   ];
 
   let isChangingPassword = false;
+  let isSavingProfile = false;
 
   async function handleLogout() {
     await fetch("/logout", { method: "POST" });
@@ -87,6 +89,109 @@
                   </div>
                   <p class="text-sm font-semibold text-stone-900">{data.user.name || "Not set"}</p>
                 </div>
+              </div>
+
+              <!-- Scout Unit Information -->
+              <div class="pt-4 border-t border-stone-100">
+                <h3 class="text-xs font-bold text-stone-400 uppercase tracking-widest mb-4">Scout Unit</h3>
+
+                {#if form?.profileSuccess}
+                  <div class="mb-4 p-4 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-3">
+                    <div class="w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0">
+                      <Check size={13} class="text-white" />
+                    </div>
+                    <p class="text-sm font-semibold text-emerald-800">Unit info saved!</p>
+                  </div>
+                {/if}
+                {#if form?.profileError}
+                  <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3">
+                    <div class="w-7 h-7 rounded-full bg-red-500 flex items-center justify-center flex-shrink-0">
+                      <CircleAlertIcon size={13} class="text-white" />
+                    </div>
+                    <p class="text-sm font-semibold text-red-800">{form.profileError}</p>
+                  </div>
+                {/if}
+
+                <form
+                  method="POST"
+                  action="?/saveProfile"
+                  use:enhance={() => {
+                    isSavingProfile = true;
+                    return async ({ update }) => {
+                      await update();
+                      isSavingProfile = false;
+                    };
+                  }}
+                  class="space-y-4"
+                >
+                  <div>
+                    <label for="councilId" class="block text-xs font-bold text-stone-500 uppercase tracking-widest mb-2">Council</label>
+                    <CouncilSelect
+                      id="councilId"
+                      name="councilId"
+                      value={data.profile?.councilId ?? ""}
+                      councils={data.councils}
+                      placeholder="Select your council..."
+                      variant="form"
+                    />
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-3">
+                    <div>
+                      <label for="unitType" class="block text-xs font-bold text-stone-500 uppercase tracking-widest mb-2">Unit Type</label>
+                      <select
+                        id="unitType"
+                        name="unitType"
+                        value={data.profile?.unitType ?? ""}
+                        class="w-full px-4 py-3 border border-stone-200 rounded-xl bg-stone-50 text-stone-900 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent focus:bg-white transition-all outline-none"
+                      >
+                        <option value="">Select type...</option>
+                        <option value="Pack">Pack (Cub Scouts)</option>
+                        <option value="Troop">Troop (Scouts BSA)</option>
+                        <option value="Crew">Crew (Venturing)</option>
+                        <option value="Ship">Ship (Sea Scouts)</option>
+                        <option value="Post">Post (Exploring)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label for="unitNumber" class="block text-xs font-bold text-stone-500 uppercase tracking-widest mb-2">Unit Number</label>
+                      <input
+                        type="text"
+                        id="unitNumber"
+                        name="unitNumber"
+                        value={data.profile?.unitNumber ?? ""}
+                        maxlength="10"
+                        placeholder="e.g. 42"
+                        class="w-full px-4 py-3 border border-stone-200 rounded-xl bg-stone-50 text-stone-900 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent focus:bg-white transition-all outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="rounded-xl p-4 bg-stone-50 border border-stone-100 flex items-start gap-4">
+                    <div class="flex-1">
+                      <div class="flex items-center gap-2 mb-1">
+                        <Shield size={13} class="text-stone-400" />
+                        <p class="text-xs font-bold text-stone-500 uppercase tracking-widest">Display Unit Info Publicly</p>
+                      </div>
+                      <p class="text-xs text-stone-400">When on, your name and unit appear on submissions and reviews. Toggle off to hide this info from all your past and future posts.</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer mt-0.5">
+                      <input type="checkbox" name="showUnitInfo" class="sr-only peer" checked={data.profile?.showUnitInfo ?? true} />
+                      <div class="w-10 h-6 bg-stone-200 peer-focus:ring-2 peer-focus:ring-emerald-400 rounded-full peer peer-checked:bg-emerald-500 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                    </label>
+                  </div>
+
+                  <div class="pt-2">
+                    <button
+                      type="submit"
+                      disabled={isSavingProfile}
+                      class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold text-stone-950 transition-all hover:opacity-90 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                      style="background: linear-gradient(135deg, #86efac, #34d399);"
+                    >
+                      {isSavingProfile ? "Saving..." : "Save Unit Info"}
+                    </button>
+                  </div>
+                </form>
               </div>
 
               <div class="pt-2 border-t border-stone-100">
