@@ -113,12 +113,23 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
   }
 
-  // Upsert: insert or update if user already rated this entity
-  const conflictTarget = hikeId
-    ? [ratings.userId, ratings.hikeId]
+  // Upsert: insert or update if user already rated this entity.
+  // The unique indexes are partial (WHERE hike_id IS NOT NULL etc.), so we must
+  // supply targetWhere to match the exact partial index Postgres should use.
+  const conflictConfig = hikeId
+    ? {
+        target: [ratings.userId, ratings.hikeId],
+        targetWhere: sql`${ratings.hikeId} IS NOT NULL`,
+      }
     : backpackingId
-      ? [ratings.userId, ratings.backpackingId]
-      : [ratings.userId, ratings.campingSiteId];
+      ? {
+          target: [ratings.userId, ratings.backpackingId],
+          targetWhere: sql`${ratings.backpackingId} IS NOT NULL`,
+        }
+      : {
+          target: [ratings.userId, ratings.campingSiteId],
+          targetWhere: sql`${ratings.campingSiteId} IS NOT NULL`,
+        };
 
   const [result] = await db
     .insert(ratings)
@@ -131,7 +142,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       reviewText: sanitizedReview,
     })
     .onConflictDoUpdate({
-      target: conflictTarget,
+      target: conflictConfig.target,
+      targetWhere: conflictConfig.targetWhere,
       set: {
         rating: rating.toString(),
         reviewText: sanitizedReview,
