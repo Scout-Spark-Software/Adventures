@@ -370,6 +370,14 @@
             </button>
           {/if}
         </div>
+        {#if data.hike.submitterName}
+          <p class="text-xs text-white/60 mt-1">
+            Submitted by <span class="text-white/80 font-medium">{data.hike.submitterName}</span>
+            {#if data.hike.submitterUnit}
+              &middot; <span class="text-white/60">{data.hike.submitterUnit}</span>
+            {/if}
+          </p>
+        {/if}
       </div>
     </div>
 
