@@ -6,6 +6,7 @@ import { eq, and, avg, count, sql, desc } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 import { sanitizeReview } from "$lib/utils/profanity-filter";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
+import { getAttributions } from "$lib/server/attribution";
 
 // GET /api/ratings?hike_id=xxx or ?camping_site_id=xxx or ?backpacking_id=xxx
 // Returns all ratings for an entity (paginated)
@@ -44,9 +45,22 @@ export const GET: RequestHandler = async ({ url }) => {
     where: aggregateConditions.length > 0 ? and(...aggregateConditions) : undefined,
   });
 
+  // Batch-resolve attribution for all reviewers
+  const userIds = results.map((r) => r.userId);
+  const attributionMap = userIds.length > 0 ? await getAttributions(userIds) : new Map();
+
+  const ratingsWithAttribution = results.map((r) => {
+    const attr = attributionMap.get(r.userId);
+    return {
+      ...r,
+      submitterName: attr?.displayName ?? null,
+      submitterUnit: attr?.unitLabel ?? null,
+    };
+  });
+
   return json(
     {
-      ratings: results,
+      ratings: ratingsWithAttribution,
       aggregate: aggregate || {
         averageRating: null,
         totalRatings: 0,
