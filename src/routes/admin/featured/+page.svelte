@@ -75,21 +75,6 @@
   <title>Featured Items - Adventure Spark</title>
 </svelte:head>
 
-<style>
-  .grain {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.035;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    background-size: 200px 200px;
-  }
-  :global(body) {
-    background-color: #0c0f0a;
-  }
-</style>
-
 <div class="grain"></div>
 
 <div class="relative z-10 min-h-screen pt-10 pb-16">
@@ -122,10 +107,22 @@
         <table class="min-w-full">
           <thead>
             <tr class="border-b border-white/10">
-              <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider">Name</th>
-              <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider hidden sm:table-cell">Location</th>
-              <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider">Status</th>
-              <th class="px-5 py-3 text-right text-xs font-semibold text-stone-400 uppercase tracking-wider">Action</th>
+              <th
+                class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider"
+                >Name</th
+              >
+              <th
+                class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider hidden sm:table-cell"
+                >Location</th
+              >
+              <th
+                class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider"
+                >Status</th
+              >
+              <th
+                class="px-5 py-3 text-right text-xs font-semibold text-stone-400 uppercase tracking-wider"
+                >Action</th
+              >
             </tr>
           </thead>
           <tbody class="divide-y divide-white/5">
@@ -139,7 +136,9 @@
                 </td>
                 <td class="px-5 py-3.5">
                   {#if hike.featured}
-                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    <span
+                      class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                    >
                       <Star size={10} />
                       Featured
                     </span>
@@ -155,11 +154,7 @@
                       ? 'text-stone-400 hover:text-red-300 border-white/10 hover:border-red-500/30'
                       : 'text-emerald-400 hover:text-emerald-300 border-emerald-500/30 hover:border-emerald-400/50'} text-xs font-semibold border rounded-lg px-3 py-1.5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                   >
-                    {processingIds.has(hike.id)
-                      ? "..."
-                      : hike.featured
-                        ? "Remove"
-                        : "Feature"}
+                    {processingIds.has(hike.id) ? "..." : hike.featured ? "Remove" : "Feature"}
                   </button>
                 </td>
               </tr>
@@ -180,10 +175,22 @@
         <table class="min-w-full">
           <thead>
             <tr class="border-b border-white/10">
-              <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider">Name</th>
-              <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider hidden sm:table-cell">Location</th>
-              <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider">Status</th>
-              <th class="px-5 py-3 text-right text-xs font-semibold text-stone-400 uppercase tracking-wider">Action</th>
+              <th
+                class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider"
+                >Name</th
+              >
+              <th
+                class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider hidden sm:table-cell"
+                >Location</th
+              >
+              <th
+                class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider"
+                >Status</th
+              >
+              <th
+                class="px-5 py-3 text-right text-xs font-semibold text-stone-400 uppercase tracking-wider"
+                >Action</th
+              >
             </tr>
           </thead>
           <tbody class="divide-y divide-white/5">
@@ -197,7 +204,9 @@
                 </td>
                 <td class="px-5 py-3.5">
                   {#if campingSite.featured}
-                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    <span
+                      class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                    >
                       <Star size={10} />
                       Featured
                     </span>
@@ -207,7 +216,8 @@
                 </td>
                 <td class="px-5 py-3.5 text-right">
                   <button
-                    on:click={() => toggleFeatured("camping_site", campingSite.id, campingSite.featured)}
+                    on:click={() =>
+                      toggleFeatured("camping_site", campingSite.id, campingSite.featured)}
                     disabled={processingIds.has(campingSite.id)}
                     class="{campingSite.featured
                       ? 'text-stone-400 hover:text-red-300 border-white/10 hover:border-red-500/30'
@@ -239,20 +249,36 @@
           <table class="min-w-full">
             <thead>
               <tr class="border-b border-white/10">
-                <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider">Name</th>
-                <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider hidden sm:table-cell">Location</th>
-                <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider">Status</th>
-                <th class="px-5 py-3 text-right text-xs font-semibold text-stone-400 uppercase tracking-wider">Action</th>
+                <th
+                  class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider"
+                  >Name</th
+                >
+                <th
+                  class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider hidden sm:table-cell"
+                  >Location</th
+                >
+                <th
+                  class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider"
+                  >Status</th
+                >
+                <th
+                  class="px-5 py-3 text-right text-xs font-semibold text-stone-400 uppercase tracking-wider"
+                  >Action</th
+                >
               </tr>
             </thead>
             <tbody class="divide-y divide-white/5">
               {#each data.backpackingRoutes as route (route.id)}
                 <tr class="hover:bg-white/3 transition-colors">
                   <td class="px-5 py-3.5 text-sm font-medium text-stone-200">{route.name}</td>
-                  <td class="px-5 py-3.5 text-sm text-stone-500 hidden sm:table-cell">{formatLocation(route.address)}</td>
+                  <td class="px-5 py-3.5 text-sm text-stone-500 hidden sm:table-cell"
+                    >{formatLocation(route.address)}</td
+                  >
                   <td class="px-5 py-3.5">
                     {#if route.featured}
-                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                      <span
+                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                      >
                         <Star size={10} />
                         Featured
                       </span>
@@ -268,11 +294,7 @@
                         ? 'text-stone-400 hover:text-red-300 border-white/10 hover:border-red-500/30'
                         : 'text-emerald-400 hover:text-emerald-300 border-emerald-500/30 hover:border-emerald-400/50'} text-xs font-semibold border rounded-lg px-3 py-1.5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                     >
-                      {processingIds.has(route.id)
-                        ? "..."
-                        : route.featured
-                          ? "Remove"
-                          : "Feature"}
+                      {processingIds.has(route.id) ? "..." : route.featured ? "Remove" : "Feature"}
                     </button>
                   </td>
                 </tr>
@@ -284,3 +306,18 @@
     {/if}
   </div>
 </div>
+
+<style>
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+  :global(body) {
+    background-color: #0c0f0a;
+  }
+</style>

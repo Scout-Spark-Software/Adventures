@@ -18,7 +18,13 @@
   }
 
   export let featureTypes: FeatureType[] = [];
-  export let councils: { id: string; councilNumber: number; name: string; headquartersCity: string | null; headquartersState: string | null }[] = [];
+  export let councils: {
+    id: string;
+    councilNumber: number;
+    name: string;
+    headquartersCity: string | null;
+    headquartersState: string | null;
+  }[] = [];
   export let currentFilters: Record<string, string> = {};
   export let userRole: string | null = null;
 
@@ -339,25 +345,40 @@
       on:click|stopPropagation={() => (featuresOpen = !featuresOpen)}
       class="w-full flex items-center justify-between px-3 py-1.5 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-left"
     >
-      <span class="truncate {selectedFeatures.length === 0 ? 'text-gray-400' : 'text-gray-900 font-medium'}">
+      <span
+        class="truncate {selectedFeatures.length === 0
+          ? 'text-gray-400'
+          : 'text-gray-900 font-medium'}"
+      >
         {selectedFeatures.length === 0
           ? "Any features"
           : selectedFeatures.length === 1
-            ? (featureTypes.find(f => f.id === selectedFeatures[0])?.name ?? "1 selected")
+            ? (featureTypes.find((f) => f.id === selectedFeatures[0])?.name ?? "1 selected")
             : `${selectedFeatures.length} selected`}
       </span>
-      <ChevronDown size={16} class="text-gray-400 flex-shrink-0 ml-2 transition-transform {featuresOpen ? 'rotate-180' : ''}" />
+      <ChevronDown
+        size={16}
+        class="text-gray-400 flex-shrink-0 ml-2 transition-transform {featuresOpen
+          ? 'rotate-180'
+          : ''}"
+      />
     </button>
     {#if featuresOpen}
       <div class="relative z-20">
-        <div class="absolute top-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+        <div
+          class="absolute top-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
+        >
           {#each featureTypes as feature (feature.id)}
             <button
               type="button"
               on:click|stopPropagation={() => toggleFeature(feature.id)}
               class="w-full flex items-center justify-between px-4 py-2.5 text-sm hover:bg-stone-50 transition-colors text-left"
             >
-              <span class="{selectedFeatures.includes(feature.id) ? 'text-emerald-700 font-semibold' : 'text-gray-700'}">{feature.name}</span>
+              <span
+                class={selectedFeatures.includes(feature.id)
+                  ? "text-emerald-700 font-semibold"
+                  : "text-gray-700"}>{feature.name}</span
+              >
               {#if selectedFeatures.includes(feature.id)}
                 <Check size={14} class="text-emerald-600 flex-shrink-0" />
               {/if}
@@ -367,7 +388,11 @@
             <div class="border-t border-gray-100 px-4 py-2">
               <button
                 type="button"
-                on:click|stopPropagation={() => { selectedFeatures = []; featuresOpen = false; applyFilters(); }}
+                on:click|stopPropagation={() => {
+                  selectedFeatures = [];
+                  featuresOpen = false;
+                  applyFilters();
+                }}
                 class="text-xs text-red-500 hover:text-red-700 font-medium"
               >
                 Clear features

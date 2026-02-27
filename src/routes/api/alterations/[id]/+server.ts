@@ -80,7 +80,10 @@ export const PUT: RequestHandler = async (event) => {
     if (alteration.hikeId) {
       await db.update(hikes).set(fieldUpdate).where(eq(hikes.id, alteration.hikeId));
     } else if (alteration.campingSiteId) {
-      await db.update(campingSites).set(fieldUpdate).where(eq(campingSites.id, alteration.campingSiteId));
+      await db
+        .update(campingSites)
+        .set(fieldUpdate)
+        .where(eq(campingSites.id, alteration.campingSiteId));
     }
   }
 

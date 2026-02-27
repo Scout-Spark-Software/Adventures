@@ -15,8 +15,7 @@
   const classes = {
     filter:
       "w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent",
-    form:
-      "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500",
+    form: "block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500",
   };
 
   // Group councils by state, sorted alphabetically; councils sorted by name within each state
@@ -38,13 +37,7 @@
   })();
 </script>
 
-<select
-  {id}
-  {name}
-  bind:value
-  class={classes[variant]}
-  on:change
->
+<select {id} {name} bind:value class={classes[variant]} on:change>
   <option value="">{placeholder}</option>
   {#each councilsByState as [state, stateCouncils] (state)}
     <optgroup label={state}>

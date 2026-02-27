@@ -19,7 +19,9 @@
   {max}
   {step}
   aria-label={ariaLabel}
-  class="{fullWidth ? 'w-full' : 'w-1/2'} px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+  class="{fullWidth
+    ? 'w-full'
+    : 'w-1/2'} px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
   on:input
   on:change
 />

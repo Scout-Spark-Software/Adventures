@@ -41,9 +41,7 @@
 
     for (const m of markers) {
       const icon = makeIcon(m.color);
-      const marker = leaflet
-        .marker([m.lat, m.lng], { icon })
-        .addTo(markerLayer);
+      const marker = leaflet.marker([m.lat, m.lng], { icon }).addTo(markerLayer);
 
       marker.bindPopup(
         `<div style="min-width:140px;">
@@ -102,7 +100,11 @@
   />
 </svelte:head>
 
-<div bind:this={mapContainer} style="height: {height};" class="w-full rounded-xl overflow-hidden"></div>
+<div
+  bind:this={mapContainer}
+  style="height: {height};"
+  class="w-full rounded-xl overflow-hidden"
+></div>
 
 <style>
   :global(.leaflet-container) {

@@ -61,7 +61,8 @@ export const actions: Actions = {
 
     if (!/[A-Z]/.test(newPassword) || !/[a-z]/.test(newPassword) || !/[0-9]/.test(newPassword)) {
       return fail(400, {
-        error: "Password must contain at least one uppercase letter, one lowercase letter, and one number",
+        error:
+          "Password must contain at least one uppercase letter, one lowercase letter, and one number",
       });
     }
 

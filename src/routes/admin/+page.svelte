@@ -23,28 +23,16 @@
   <title>Admin Dashboard - Adventure Spark</title>
 </svelte:head>
 
-<style>
-  .grain {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.035;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    background-size: 200px 200px;
-  }
-  :global(body) {
-    background-color: #0c0f0a;
-  }
-</style>
-
 <div class="grain"></div>
 
 <div class="relative z-10 min-h-screen pt-16 pb-16">
   <!-- Mountain silhouette -->
   <div class="absolute bottom-0 left-0 right-0 pointer-events-none overflow-hidden opacity-10">
     <svg viewBox="0 0 1440 200" xmlns="http://www.w3.org/2000/svg" class="w-full">
-      <path d="M0,200 L0,140 L120,60 L240,130 L360,40 L480,110 L600,30 L720,100 L840,20 L960,90 L1080,10 L1200,80 L1320,50 L1440,120 L1440,200 Z" fill="#4ade80" />
+      <path
+        d="M0,200 L0,140 L120,60 L240,130 L360,40 L480,110 L600,30 L720,100 L840,20 L960,90 L1080,10 L1200,80 L1320,50 L1440,120 L1440,200 Z"
+        fill="#4ade80"
+      />
     </svg>
   </div>
 
@@ -83,7 +71,8 @@
       <div class="bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl px-4 py-4">
         <div class="flex items-center gap-2 mb-3">
           <CircleAlert size={14} class="text-amber-400" />
-          <span class="text-xs font-semibold text-stone-400 uppercase tracking-widest">Pending</span>
+          <span class="text-xs font-semibold text-stone-400 uppercase tracking-widest">Pending</span
+          >
         </div>
         <p class="text-3xl font-bold text-amber-300 tabular-nums">
           {stats.pendingHikes + stats.pendingCampingSites}
@@ -130,11 +119,16 @@
         </div>
         <div class="flex items-center gap-2">
           {#if stats.pendingHikes + stats.pendingCampingSites > 0}
-            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+            <span
+              class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30"
+            >
               {stats.pendingHikes + stats.pendingCampingSites}
             </span>
           {/if}
-          <ChevronRight size={16} class="text-stone-600 group-hover:text-emerald-400 transition-colors" />
+          <ChevronRight
+            size={16}
+            class="text-stone-600 group-hover:text-emerald-400 transition-colors"
+          />
         </div>
       </a>
 
@@ -152,10 +146,15 @@
           </div>
         </div>
         <div class="flex items-center gap-2">
-          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-sky-500/20 text-sky-300 border border-sky-500/30">
+          <span
+            class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-sky-500/20 text-sky-300 border border-sky-500/30"
+          >
             {stats.featuredHikes + stats.featuredCampingSites}
           </span>
-          <ChevronRight size={16} class="text-stone-600 group-hover:text-emerald-400 transition-colors" />
+          <ChevronRight
+            size={16}
+            class="text-stone-600 group-hover:text-emerald-400 transition-colors"
+          />
         </div>
       </a>
 
@@ -172,7 +171,10 @@
             <p class="text-xs text-stone-500 mt-0.5">Features, amenities, facilities</p>
           </div>
         </div>
-        <ChevronRight size={16} class="text-stone-600 group-hover:text-emerald-400 transition-colors" />
+        <ChevronRight
+          size={16}
+          class="text-stone-600 group-hover:text-emerald-400 transition-colors"
+        />
       </a>
 
       <a
@@ -188,7 +190,10 @@
             <p class="text-xs text-stone-500 mt-0.5">Manage users and roles</p>
           </div>
         </div>
-        <ChevronRight size={16} class="text-stone-600 group-hover:text-emerald-400 transition-colors" />
+        <ChevronRight
+          size={16}
+          class="text-stone-600 group-hover:text-emerald-400 transition-colors"
+        />
       </a>
 
       <a
@@ -206,13 +211,33 @@
         </div>
         <div class="flex items-center gap-2">
           {#if stats.pendingImageFlags > 0}
-            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-red-500/20 text-red-300 border border-red-500/30">
+            <span
+              class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-red-500/20 text-red-300 border border-red-500/30"
+            >
               {stats.pendingImageFlags}
             </span>
           {/if}
-          <ChevronRight size={16} class="text-stone-600 group-hover:text-emerald-400 transition-colors" />
+          <ChevronRight
+            size={16}
+            class="text-stone-600 group-hover:text-emerald-400 transition-colors"
+          />
         </div>
       </a>
     </div>
   </div>
 </div>
+
+<style>
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+  :global(body) {
+    background-color: #0c0f0a;
+  }
+</style>

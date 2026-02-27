@@ -117,21 +117,6 @@
   <title>Manage Types - Admin - Adventure Spark</title>
 </svelte:head>
 
-<style>
-  .grain {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.035;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    background-size: 200px 200px;
-  }
-  :global(body) {
-    background-color: #0c0f0a;
-  }
-</style>
-
 <div class="grain"></div>
 
 <div class="relative z-10 min-h-screen pt-10 pb-16">
@@ -154,10 +139,15 @@
     </div>
 
     <!-- Tabs -->
-    <div class="flex flex-wrap gap-1 p-1 bg-white/5 border border-white/10 rounded-xl mb-6 w-fit max-w-full">
+    <div
+      class="flex flex-wrap gap-1 p-1 bg-white/5 border border-white/10 rounded-xl mb-6 w-fit max-w-full"
+    >
       {#each [["features", "Hike Features"], ["amenities", "Camping Amenities"], ["facilities", "Camping Facilities"]] as [tab, label]}
         <button
-          on:click={() => { activeTab = tab as any; cancelEdit(); }}
+          on:click={() => {
+            activeTab = tab as any;
+            cancelEdit();
+          }}
           class="{activeTab === tab
             ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
             : 'text-stone-500 hover:text-stone-300 border-transparent'} px-4 py-2 rounded-lg text-sm font-medium border transition-all"
@@ -173,7 +163,11 @@
         <div class="bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl overflow-hidden">
           <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
             <h2 class="text-sm font-bold text-stone-200">
-              {activeTab === "features" ? "Features" : activeTab === "amenities" ? "Amenities" : "Facilities"}
+              {activeTab === "features"
+                ? "Features"
+                : activeTab === "amenities"
+                  ? "Amenities"
+                  : "Facilities"}
               <span class="text-stone-600 font-normal ml-1">({currentItems.length})</span>
             </h2>
             <button
@@ -187,12 +181,16 @@
 
           <div class="divide-y divide-white/5">
             {#each currentItems as item (item.id)}
-              <div class="flex items-center justify-between px-5 py-3.5 hover:bg-white/3 transition-colors">
+              <div
+                class="flex items-center justify-between px-5 py-3.5 hover:bg-white/3 transition-colors"
+              >
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-2">
                     <span class="text-sm font-medium text-stone-200">{item.name}</span>
                     {#if !item.active}
-                      <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-stone-500/20 text-stone-500">
+                      <span
+                        class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-stone-500/20 text-stone-500"
+                      >
                         Inactive
                       </span>
                     {/if}
@@ -232,16 +230,22 @@
       <!-- Form Panel -->
       {#if editingItem || isCreating}
         <div class="lg:col-span-1">
-          <div class="bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl overflow-hidden sticky top-6">
+          <div
+            class="bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl overflow-hidden sticky top-6"
+          >
             <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
               <h3 class="text-sm font-bold text-stone-200">
-                {isCreating ? "New" : "Edit"} {tabLabel}
+                {isCreating ? "New" : "Edit"}
+                {tabLabel}
               </h3>
             </div>
 
             <div class="px-5 py-4 space-y-4">
               <div>
-                <label for="name" class="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1.5">
+                <label
+                  for="name"
+                  class="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1.5"
+                >
                   Name *
                 </label>
                 <input
@@ -255,7 +259,10 @@
 
               {#if needsKey}
                 <div>
-                  <label for="key" class="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1.5">
+                  <label
+                    for="key"
+                    class="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1.5"
+                  >
                     Key * <span class="normal-case font-normal text-stone-600">(camelCase)</span>
                   </label>
                   <input
@@ -269,7 +276,10 @@
               {/if}
 
               <div>
-                <label for="description" class="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1.5">
+                <label
+                  for="description"
+                  class="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1.5"
+                >
                   Description
                 </label>
                 <textarea
@@ -282,7 +292,10 @@
               </div>
 
               <div>
-                <label for="displayOrder" class="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1.5">
+                <label
+                  for="displayOrder"
+                  class="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1.5"
+                >
                   Display Order
                 </label>
                 <input
@@ -324,3 +337,18 @@
     </div>
   </div>
 </div>
+
+<style>
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+  :global(body) {
+    background-color: #0c0f0a;
+  }
+</style>

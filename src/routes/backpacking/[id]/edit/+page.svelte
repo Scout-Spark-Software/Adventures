@@ -22,10 +22,11 @@
   let deleteLoading = false;
 
   // Waypoints state (for waypoints field editor)
-  let editWaypoints: Array<{ lat: number; lng: number; label?: string }> =
-    Array.isArray((data.backpacking as any).waypoints)
-      ? [...((data.backpacking as any).waypoints as any[])]
-      : [];
+  let editWaypoints: Array<{ lat: number; lng: number; label?: string }> = Array.isArray(
+    (data.backpacking as any).waypoints
+  )
+    ? [...((data.backpacking as any).waypoints as any[])]
+    : [];
 
   // Location fields
   let address = data.address?.address || "";
@@ -196,7 +197,8 @@
               {#if field.type === "waypoints"}
                 <h3 class="text-sm font-medium text-gray-700 mb-3">Edit Route Waypoints</h3>
                 <p class="text-xs text-gray-500 mb-3">
-                  Click map to add waypoints &bull; Right-click a marker to remove &bull; Drag to reposition
+                  Click map to add waypoints &bull; Right-click a marker to remove &bull; Drag to
+                  reposition
                 </p>
                 <WaypointMap
                   bind:waypoints={editWaypoints}
@@ -214,14 +216,17 @@
                       <li class="flex items-center gap-2 text-xs text-gray-600">
                         <span
                           class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-600 text-white font-bold text-[10px]"
-                        >{i + 1}</span>
+                          >{i + 1}</span
+                        >
                         <input
                           type="text"
                           bind:value={wp.label}
                           placeholder="Label (optional)"
                           class="flex-1 px-2 py-1 border border-gray-300 rounded text-xs focus:ring-1 focus:ring-indigo-500"
                         />
-                        <span class="text-gray-400 font-mono">{wp.lat.toFixed(5)}, {wp.lng.toFixed(5)}</span>
+                        <span class="text-gray-400 font-mono"
+                          >{wp.lat.toFixed(5)}, {wp.lng.toFixed(5)}</span
+                        >
                       </li>
                     {/each}
                   </ul>
@@ -265,12 +270,7 @@
                     rows={4}
                   />
                 {:else if field.type === "select"}
-                  <FormSelect
-                    id="value"
-                    name="newValue"
-                    bind:value={newValue}
-                    required
-                  >
+                  <FormSelect id="value" name="newValue" bind:value={newValue} required>
                     <option value="">Select {field.label}...</option>
                     {#each field.options || [] as option (option)}
                       <option value={option}>
@@ -298,12 +298,7 @@
                     step="0.1"
                   />
                 {:else}
-                  <FormInput
-                    id="value"
-                    name="newValue"
-                    bind:value={newValue}
-                    required
-                  />
+                  <FormInput id="value" name="newValue" bind:value={newValue} required />
                 {/if}
                 <p class="mt-1 text-xs text-gray-500">
                   Current: {getCurrentValue(selectedField) || "(not set)"}

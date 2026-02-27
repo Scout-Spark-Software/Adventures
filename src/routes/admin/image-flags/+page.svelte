@@ -61,21 +61,6 @@
   <title>Flagged Images - Admin</title>
 </svelte:head>
 
-<style>
-  .grain {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.035;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    background-size: 200px 200px;
-  }
-  :global(body) {
-    background-color: #0c0f0a;
-  }
-</style>
-
 <div class="grain"></div>
 
 <div class="relative z-10 min-h-screen pt-10 pb-16">
@@ -106,7 +91,9 @@
             <div class="flex items-start gap-5">
               <!-- Image thumbnail -->
               {#if flag.file?.fileUrl}
-                <div class="flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden border border-white/10">
+                <div
+                  class="flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden border border-white/10"
+                >
                   <img
                     src={flag.file.fileUrl}
                     alt={flag.file.fileName}
@@ -114,7 +101,9 @@
                   />
                 </div>
               {:else}
-                <div class="flex-shrink-0 w-24 h-24 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-stone-600 text-xs">
+                <div
+                  class="flex-shrink-0 w-24 h-24 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-stone-600 text-xs"
+                >
                   No preview
                 </div>
               {/if}
@@ -185,7 +174,9 @@
       </div>
     {:else}
       <div class="text-center py-20">
-        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+        <div
+          class="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center"
+        >
           <Flag size={28} class="text-emerald-500/50" />
         </div>
         <p class="text-stone-400 text-lg font-medium">No flagged images</p>
@@ -194,3 +185,18 @@
     {/if}
   </div>
 </div>
+
+<style>
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+  :global(body) {
+    background-color: #0c0f0a;
+  }
+</style>

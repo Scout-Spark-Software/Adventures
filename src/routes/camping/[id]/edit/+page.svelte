@@ -233,12 +233,7 @@
                     rows={4}
                   />
                 {:else if field.type === "select"}
-                  <FormSelect
-                    id="value"
-                    name="newValue"
-                    bind:value={newValue}
-                    required
-                  >
+                  <FormSelect id="value" name="newValue" bind:value={newValue} required>
                     <option value="">Select {field.label}...</option>
                     {#each field.options || [] as option (option)}
                       <option value={option}>{formatOption(field.key, option)}</option>
@@ -263,12 +258,7 @@
                     step="0.01"
                   />
                 {:else}
-                  <FormInput
-                    id="value"
-                    name="newValue"
-                    bind:value={newValue}
-                    required
-                  />
+                  <FormInput id="value" name="newValue" bind:value={newValue} required />
                 {/if}
                 <p class="mt-1 text-xs text-gray-500">
                   Current: {getCurrentValue(selectedField) || "(not set)"}

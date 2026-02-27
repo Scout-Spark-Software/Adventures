@@ -232,50 +232,82 @@
   <!-- Hero — matches site hero style -->
   <div class="relative overflow-hidden hero-bg -mt-16">
     <div class="absolute inset-0 hero-gradient"></div>
-    <div class="absolute -top-20 right-0 w-[600px] h-[600px] rounded-full pointer-events-none" style="background: radial-gradient(circle at 70% 30%, rgba(251,191,36,0.15) 0%, transparent 60%);"></div>
-    <div class="absolute bottom-0 -left-10 w-[500px] h-[400px] pointer-events-none" style="background: radial-gradient(ellipse at 20% 90%, rgba(52,211,153,0.18) 0%, transparent 65%);"></div>
+    <div
+      class="absolute -top-20 right-0 w-[600px] h-[600px] rounded-full pointer-events-none"
+      style="background: radial-gradient(circle at 70% 30%, rgba(251,191,36,0.15) 0%, transparent 60%);"
+    ></div>
+    <div
+      class="absolute bottom-0 -left-10 w-[500px] h-[400px] pointer-events-none"
+      style="background: radial-gradient(ellipse at 20% 90%, rgba(52,211,153,0.18) 0%, transparent 65%);"
+    ></div>
 
     <div class="absolute bottom-0 left-0 right-0 pointer-events-none">
       <svg class="absolute bottom-0 w-full" viewBox="0 0 1440 200" preserveAspectRatio="none">
-        <path d="M0,200 L0,140 L180,80 L360,120 L540,60 L720,100 L900,50 L1080,90 L1260,70 L1440,110 L1440,200 Z" fill="rgba(6,78,59,0.4)" />
+        <path
+          d="M0,200 L0,140 L180,80 L360,120 L540,60 L720,100 L900,50 L1080,90 L1260,70 L1440,110 L1440,200 Z"
+          fill="rgba(6,78,59,0.4)"
+        />
       </svg>
       <svg class="absolute bottom-0 w-full" viewBox="0 0 1440 140" preserveAspectRatio="none">
-        <path d="M0,140 L0,100 L220,60 L420,90 L620,40 L820,75 L1020,45 L1220,80 L1440,55 L1440,140 Z" fill="rgba(2,44,34,0.65)" />
+        <path
+          d="M0,140 L0,100 L220,60 L420,90 L620,40 L820,75 L1020,45 L1220,80 L1440,55 L1440,140 Z"
+          fill="rgba(2,44,34,0.65)"
+        />
       </svg>
     </div>
 
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 pb-20">
       <div class="max-w-2xl">
-        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase border mb-8" style="background: rgba(251,146,60,0.1); border-color: rgba(251,146,60,0.3); color: rgb(251,146,60);">
+        <span
+          class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase border mb-8"
+          style="background: rgba(251,146,60,0.1); border-color: rgba(251,146,60,0.3); color: rgb(251,146,60);"
+        >
           Be Prepared
         </span>
-        <h1 class="font-black tracking-tight leading-[0.95] mb-5" style="font-size: clamp(2.5rem, 6vw, 4.5rem); color: #f5f0e8;">
+        <h1
+          class="font-black tracking-tight leading-[0.95] mb-5"
+          style="font-size: clamp(2.5rem, 6vw, 4.5rem); color: #f5f0e8;"
+        >
           Scout<br />
-          <span style="background: linear-gradient(135deg, #86efac 0%, #34d399 40%, #6ee7b7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+          <span
+            style="background: linear-gradient(135deg, #86efac 0%, #34d399 40%, #6ee7b7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"
+          >
             Essentials
           </span>
         </h1>
         <p class="text-lg max-w-xl leading-relaxed" style="color: rgba(245,240,232,0.65);">
-          The right gear can turn a close call into a great story. Know what to carry before you head out.
+          The right gear can turn a close call into a great story. Know what to carry before you
+          head out.
         </p>
       </div>
     </div>
   </div>
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-
     <!-- Intro callout -->
-    <div class="rounded-2xl p-8 mb-16 border border-emerald-100" style="background: linear-gradient(135deg, #f0fdf4, #ecfdf5);">
+    <div
+      class="rounded-2xl p-8 mb-16 border border-emerald-100"
+      style="background: linear-gradient(135deg, #f0fdf4, #ecfdf5);"
+    >
       <div class="flex gap-4 items-start">
-        <div class="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+        <div
+          class="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5"
+        >
           <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+            <path
+              fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+              clip-rule="evenodd"
+            />
           </svg>
         </div>
         <div>
           <h2 class="text-lg font-bold text-stone-900 mb-2">The Scout Motto: Be Prepared</h2>
           <p class="text-stone-600 leading-relaxed">
-            Start with the <strong class="text-stone-800">6 Essentials</strong> for day hikes, then build up to the <strong class="text-stone-800">10 Essentials</strong> as you take on longer wilderness adventures. Carrying the right gear is the difference between a minor inconvenience and a serious emergency.
+            Start with the <strong class="text-stone-800">6 Essentials</strong> for day hikes, then
+            build up to the <strong class="text-stone-800">10 Essentials</strong> as you take on longer
+            wilderness adventures. Carrying the right gear is the difference between a minor inconvenience
+            and a serious emergency.
           </p>
         </div>
       </div>
@@ -288,16 +320,23 @@
           <p class="text-xs font-bold tracking-widest uppercase mb-2 text-emerald-600">Day Trips</p>
           <h2 class="text-3xl font-black text-stone-900">The 6 Essentials</h2>
         </div>
-        <span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">
+        <span
+          class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700"
+        >
           Start here
         </span>
       </div>
 
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
         {#each sixEssentials as essential, i (essential.name)}
-          <div class="bg-white rounded-2xl border border-stone-100 shadow-sm hover:shadow-md hover:border-emerald-100 transition-all p-6">
+          <div
+            class="bg-white rounded-2xl border border-stone-100 shadow-sm hover:shadow-md hover:border-emerald-100 transition-all p-6"
+          >
             <div class="flex items-center gap-3 mb-4">
-              <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style="background: linear-gradient(135deg, #d1fae5, #a7f3d0);">
+              <div
+                class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                style="background: linear-gradient(135deg, #d1fae5, #a7f3d0);"
+              >
                 <svelte:component this={essential.icon} class="w-5 h-5 text-emerald-700" />
               </div>
               <div>
@@ -326,9 +365,16 @@
     <!-- Level up divider -->
     <div class="flex items-center gap-4 mb-20">
       <div class="flex-1 h-px bg-stone-200"></div>
-      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-stone-900 text-white text-xs font-bold tracking-widest uppercase">
+      <div
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-stone-900 text-white text-xs font-bold tracking-widest uppercase"
+      >
         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+          />
         </svg>
         Level Up
       </div>
@@ -339,19 +385,28 @@
     <div class="mb-16">
       <div class="flex items-end justify-between mb-10">
         <div>
-          <p class="text-xs font-bold tracking-widest uppercase mb-2 text-amber-600">Extended Trips</p>
+          <p class="text-xs font-bold tracking-widest uppercase mb-2 text-amber-600">
+            Extended Trips
+          </p>
           <h2 class="text-3xl font-black text-stone-900">The 10 Essentials</h2>
         </div>
-        <span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-amber-100 text-amber-700">
+        <span
+          class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-amber-100 text-amber-700"
+        >
           Wilderness ready
         </span>
       </div>
 
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
         {#each tenEssentials as essential, i (essential.name)}
-          <div class="bg-white rounded-2xl border border-stone-100 shadow-sm hover:shadow-md hover:border-amber-100 transition-all p-6">
+          <div
+            class="bg-white rounded-2xl border border-stone-100 shadow-sm hover:shadow-md hover:border-amber-100 transition-all p-6"
+          >
             <div class="flex items-center gap-3 mb-4">
-              <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style="background: linear-gradient(135deg, #fef3c7, #fde68a);">
+              <div
+                class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                style="background: linear-gradient(135deg, #fef3c7, #fde68a);"
+              >
                 <svelte:component this={essential.icon} class="w-5 h-5 text-amber-700" />
               </div>
               <div>
@@ -382,26 +437,44 @@
       <div class="absolute inset-0 cta-gradient"></div>
       <div class="absolute inset-0 grain-overlay pointer-events-none"></div>
       <div class="relative">
-        <p class="text-xs font-bold tracking-widest uppercase mb-4" style="color: rgba(245,240,232,0.4);">Ready?</p>
-        <h3 class="text-2xl sm:text-3xl font-black mb-3" style="color: #f5f0e8;">Pack your bag. Hit the trail.</h3>
+        <p
+          class="text-xs font-bold tracking-widest uppercase mb-4"
+          style="color: rgba(245,240,232,0.4);"
+        >
+          Ready?
+        </p>
+        <h3 class="text-2xl sm:text-3xl font-black mb-3" style="color: #f5f0e8;">
+          Pack your bag. Hit the trail.
+        </h3>
         <p class="mb-8 max-w-md mx-auto text-sm" style="color: rgba(245,240,232,0.5);">
           Explore hikes, campsites, and backpacking routes shared by scouts who've been there.
         </p>
         <div class="flex flex-col sm:flex-row gap-3 justify-center">
-          <a href="/hikes" class="group inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold text-sm text-stone-950 transition-all hover:scale-105" style="background: linear-gradient(135deg, #86efac, #34d399);">
+          <a
+            href="/hikes"
+            class="group inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold text-sm text-stone-950 transition-all hover:scale-105"
+            style="background: linear-gradient(135deg, #86efac, #34d399);"
+          >
             Explore Trails
             <ArrowRight size={15} class="group-hover:translate-x-0.5 transition-transform" />
           </a>
-          <a href="/camping" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all" style="background: rgba(245,240,232,0.07); border: 1px solid rgba(245,240,232,0.18); color: rgba(245,240,232,0.85);">
+          <a
+            href="/camping"
+            class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all"
+            style="background: rgba(245,240,232,0.07); border: 1px solid rgba(245,240,232,0.18); color: rgba(245,240,232,0.85);"
+          >
             Find Campsites
           </a>
-          <a href="/backpacking" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all" style="background: rgba(251,146,60,0.12); border: 1px solid rgba(251,146,60,0.3); color: rgba(251,146,60,0.9);">
+          <a
+            href="/backpacking"
+            class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all"
+            style="background: rgba(251,146,60,0.12); border: 1px solid rgba(251,146,60,0.3); color: rgba(251,146,60,0.9);"
+          >
             Backpacking Routes
           </a>
         </div>
       </div>
     </div>
-
   </div>
 </div>
 
@@ -420,8 +493,8 @@
   }
   .cta-gradient {
     background:
-      radial-gradient(ellipse 80% 100% at 80% 50%, rgba(52,211,153,0.12) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 80% at 10% 50%, rgba(251,146,60,0.1) 0%, transparent 60%),
+      radial-gradient(ellipse 80% 100% at 80% 50%, rgba(52, 211, 153, 0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 10% 50%, rgba(251, 146, 60, 0.1) 0%, transparent 60%),
       linear-gradient(135deg, #0a1a0d, #050a08);
   }
   .grain-overlay {

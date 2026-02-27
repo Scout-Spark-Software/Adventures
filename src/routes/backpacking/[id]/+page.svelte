@@ -379,7 +379,9 @@
         </div>
         {#if data.backpacking.submitterName}
           <p class="text-xs text-white/60 mt-1">
-            Submitted by <span class="text-white/80 font-medium">{data.backpacking.submitterName}</span>
+            Submitted by <span class="text-white/80 font-medium"
+              >{data.backpacking.submitterName}</span
+            >
             {#if data.backpacking.submitterUnit}
               &middot; <span class="text-white/60">{data.backpacking.submitterUnit}</span>
             {/if}

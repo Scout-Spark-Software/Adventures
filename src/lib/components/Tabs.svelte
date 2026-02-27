@@ -71,7 +71,9 @@
         {#if tab.count !== undefined}
           <span
             class="
-              {activeTab === tab.id ? 'bg-emerald-100 text-emerald-700' : 'bg-stone-100 text-stone-600'}
+              {activeTab === tab.id
+              ? 'bg-emerald-100 text-emerald-700'
+              : 'bg-stone-100 text-stone-600'}
               hidden sm:inline ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium
             "
           >

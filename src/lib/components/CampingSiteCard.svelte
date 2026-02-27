@@ -21,19 +21,34 @@
     class="group bg-white rounded-xl border border-gray-100 hover:border-emerald-200 shadow-sm hover:shadow-md transition-all duration-200 flex items-stretch overflow-hidden"
   >
     <!-- Thumbnail -->
-    <div class="relative w-36 self-stretch flex-shrink-0 bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600 overflow-hidden">
+    <div
+      class="relative w-36 self-stretch flex-shrink-0 bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600 overflow-hidden"
+    >
       {#if campingSite.bannerImageUrl}
-        <img src={campingSite.bannerImageUrl} alt={campingSite.name} class="absolute inset-0 w-full h-full object-cover" />
+        <img
+          src={campingSite.bannerImageUrl}
+          alt={campingSite.name}
+          class="absolute inset-0 w-full h-full object-cover"
+        />
       {:else}
         <div class="absolute inset-0">
-          <svg class="absolute bottom-0 w-full h-16 text-indigo-600/30" viewBox="0 0 1200 200" preserveAspectRatio="none">
-            <path d="M0 200 L0 120 L150 60 L300 100 L450 30 L600 80 L750 20 L900 70 L1050 40 L1200 90 L1200 200 Z" fill="currentColor" />
+          <svg
+            class="absolute bottom-0 w-full h-16 text-indigo-600/30"
+            viewBox="0 0 1200 200"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M0 200 L0 120 L150 60 L300 100 L450 30 L600 80 L750 20 L900 70 L1050 40 L1200 90 L1200 200 Z"
+              fill="currentColor"
+            />
           </svg>
         </div>
       {/if}
       {#if campingSite.siteType}
         <div class="absolute bottom-1.5 left-1.5">
-          <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full backdrop-blur-sm bg-blue-100/90 text-blue-800">
+          <span
+            class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full backdrop-blur-sm bg-blue-100/90 text-blue-800"
+          >
             {SITE_TYPE_LABELS[campingSite.siteType] ?? campingSite.siteType}
           </span>
         </div>
@@ -68,7 +83,10 @@
         </div>
         <div class="flex items-center gap-2 flex-shrink-0">
           <ModerationBadge status={campingSite.status} />
-          <ChevronRight size={16} class="text-indigo-600 transition-transform group-hover:translate-x-1" />
+          <ChevronRight
+            size={16}
+            class="text-indigo-600 transition-transform group-hover:translate-x-1"
+          />
         </div>
       </div>
     </div>

@@ -289,9 +289,17 @@
   <div class="bg-white border-b border-stone-200">
     <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="flex items-center gap-4">
-        <div class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm" style="background: linear-gradient(135deg, #059669, #34d399);">
+        <div
+          class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm"
+          style="background: linear-gradient(135deg, #059669, #34d399);"
+        >
           <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2.5"
+              d="M12 4v16m8-8H4"
+            />
           </svg>
         </div>
         <div>
@@ -306,7 +314,6 @@
   </div>
 
   <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
     <!-- Type selector -->
     <div class="bg-white shadow rounded-lg p-5 mb-6">
       <label for="submission-type" class="block text-sm font-medium text-gray-700 mb-2">Type</label>
@@ -331,12 +338,7 @@
               <label for="hike-name" class="block text-sm font-medium text-gray-700 mb-1">
                 Name *
               </label>
-              <FormInput
-                id="hike-name"
-                name="name"
-                bind:value={hikeName}
-                error={!!errors.name}
-              />
+              <FormInput id="hike-name" name="name" bind:value={hikeName} error={!!errors.name} />
               {#if errors.name}
                 <p class="mt-1 text-sm text-red-600">{errors.name}</p>
               {/if}
@@ -391,11 +393,7 @@
               <label for="difficulty" class="block text-sm font-medium text-gray-700 mb-1">
                 Difficulty
               </label>
-              <FormSelect
-                id="difficulty"
-                name="difficulty"
-                bind:value={difficulty}
-              >
+              <FormSelect id="difficulty" name="difficulty" bind:value={difficulty}>
                 <option value="">Select difficulty...</option>
                 <option value="easy">Easy</option>
                 <option value="moderate">Moderate</option>
@@ -479,11 +477,7 @@
                 <label for="trail_type" class="block text-sm font-medium text-gray-700 mb-1">
                   Trail Type
                 </label>
-                <FormSelect
-                  id="trail_type"
-                  name="trail_type"
-                  bind:value={trailType}
-                >
+                <FormSelect id="trail_type" name="trail_type" bind:value={trailType}>
                   <option value="">Select trail type...</option>
                   <option value="loop">Loop</option>
                   <option value="out_and_back">Out and Back</option>
@@ -759,10 +753,7 @@
               />
             </div>
             <div>
-              <label
-                for="backpacking-council"
-                class="block text-sm font-medium text-gray-700 mb-1"
-              >
+              <label for="backpacking-council" class="block text-sm font-medium text-gray-700 mb-1">
                 BSA Council
               </label>
               <CouncilSelect
@@ -814,7 +805,8 @@
                   <li class="flex items-center gap-2 text-xs text-gray-600">
                     <span
                       class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-600 text-white font-bold text-[10px]"
-                    >{i + 1}</span>
+                      >{i + 1}</span
+                    >
                     <input
                       type="text"
                       bind:value={wp.label}
@@ -940,11 +932,7 @@
                 <label for="camping-style" class="block text-sm font-medium text-gray-700 mb-1">
                   Camping Style
                 </label>
-                <FormSelect
-                  id="camping-style"
-                  name="camping_style"
-                  bind:value={campingStyle}
-                >
+                <FormSelect id="camping-style" name="camping_style" bind:value={campingStyle}>
                   <option value="">Select camping style...</option>
                   <option value="dispersed">Dispersed Camping</option>
                   <option value="designated_sites">Designated Sites</option>

@@ -13,13 +13,14 @@
     ? [hike.address.city, hike.address.state].filter(Boolean).join(", ")
     : "";
 
-  $: difficultyClass = hike.difficulty === 'easy'
-    ? 'bg-green-100/90 text-green-800'
-    : hike.difficulty === 'moderate'
-      ? 'bg-yellow-100/90 text-yellow-800'
-      : hike.difficulty === 'hard'
-        ? 'bg-orange-100/90 text-orange-800'
-        : 'bg-red-100/90 text-red-800';
+  $: difficultyClass =
+    hike.difficulty === "easy"
+      ? "bg-green-100/90 text-green-800"
+      : hike.difficulty === "moderate"
+        ? "bg-yellow-100/90 text-yellow-800"
+        : hike.difficulty === "hard"
+          ? "bg-orange-100/90 text-orange-800"
+          : "bg-red-100/90 text-red-800";
 
   $: difficultyLabel = hike.difficulty
     ? hike.difficulty.charAt(0).toUpperCase() + hike.difficulty.slice(1).replace("_", " ")
@@ -32,19 +33,34 @@
     class="group bg-white rounded-xl border border-gray-100 hover:border-emerald-200 shadow-sm hover:shadow-md transition-all duration-200 flex items-stretch overflow-hidden"
   >
     <!-- Thumbnail -->
-    <div class="relative w-36 self-stretch flex-shrink-0 bg-gradient-to-br from-green-400 via-emerald-500 to-teal-600 overflow-hidden">
+    <div
+      class="relative w-36 self-stretch flex-shrink-0 bg-gradient-to-br from-green-400 via-emerald-500 to-teal-600 overflow-hidden"
+    >
       {#if hike.bannerImageUrl}
-        <img src={hike.bannerImageUrl} alt={hike.name} class="absolute inset-0 w-full h-full object-cover" />
+        <img
+          src={hike.bannerImageUrl}
+          alt={hike.name}
+          class="absolute inset-0 w-full h-full object-cover"
+        />
       {:else}
         <div class="absolute inset-0">
-          <svg class="absolute bottom-0 w-full h-16 text-green-600/30" viewBox="0 0 1200 200" preserveAspectRatio="none">
-            <path d="M0 200 L0 120 L150 60 L300 100 L450 30 L600 80 L750 20 L900 70 L1050 40 L1200 90 L1200 200 Z" fill="currentColor" />
+          <svg
+            class="absolute bottom-0 w-full h-16 text-green-600/30"
+            viewBox="0 0 1200 200"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M0 200 L0 120 L150 60 L300 100 L450 30 L600 80 L750 20 L900 70 L1050 40 L1200 90 L1200 200 Z"
+              fill="currentColor"
+            />
           </svg>
         </div>
       {/if}
       {#if hike.difficulty}
         <div class="absolute bottom-1.5 left-1.5">
-          <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full backdrop-blur-sm {difficultyClass}">
+          <span
+            class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full backdrop-blur-sm {difficultyClass}"
+          >
             {difficultyLabel}
           </span>
         </div>
@@ -79,7 +95,10 @@
         </div>
         <div class="flex items-center gap-2 flex-shrink-0">
           <ModerationBadge status={hike.status} />
-          <ChevronRight size={16} class="text-emerald-600 transition-transform group-hover:translate-x-1" />
+          <ChevronRight
+            size={16}
+            class="text-emerald-600 transition-transform group-hover:translate-x-1"
+          />
         </div>
       </div>
     </div>
@@ -180,7 +199,9 @@
         </div>
       {/if}
 
-      <div class="flex items-center justify-between pt-2 border-t border-gray-100 group-hover:border-emerald-100">
+      <div
+        class="flex items-center justify-between pt-2 border-t border-gray-100 group-hover:border-emerald-100"
+      >
         <span class="text-sm font-semibold text-emerald-600 group-hover:text-emerald-700">
           View Details
         </span>

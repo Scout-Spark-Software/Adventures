@@ -138,21 +138,6 @@
   <title>Moderation Queue - Adventure Spark</title>
 </svelte:head>
 
-<style>
-  .grain {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.035;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    background-size: 200px 200px;
-  }
-  :global(body) {
-    background-color: #0c0f0a;
-  }
-</style>
-
 <div class="grain"></div>
 
 <div class="relative z-10 min-h-screen pt-10 pb-16">
@@ -185,7 +170,11 @@
             <div class="flex items-start justify-between gap-4 mb-4">
               <div class="min-w-0">
                 <div class="flex items-center gap-2 flex-wrap mb-2">
-                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border {entityTypeColor(item.entityType)}">
+                  <span
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border {entityTypeColor(
+                      item.entityType
+                    )}"
+                  >
                     {entityTypeLabel(item.entityType)}
                   </span>
                   <span class="text-xs text-stone-500">
@@ -256,54 +245,77 @@
               <div class="flex flex-wrap gap-2 mb-3">
                 {#if item.entityType === "hike"}
                   {#if item.entity.difficulty}
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-300 capitalize">
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-300 capitalize"
+                    >
                       {item.entity.difficulty.replace("_", " ")}
                     </span>
                   {/if}
                   {#if item.entity.distance}
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-stone-400">
-                      {item.entity.distance} {item.entity.distanceUnit ?? "miles"}
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-stone-400"
+                    >
+                      {item.entity.distance}
+                      {item.entity.distanceUnit ?? "miles"}
                     </span>
                   {/if}
                   {#if item.entity.duration}
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-stone-400">
-                      {item.entity.duration} {item.entity.durationUnit ?? "hours"}
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-stone-400"
+                    >
+                      {item.entity.duration}
+                      {item.entity.durationUnit ?? "hours"}
                     </span>
                   {/if}
                   {#if item.entity.trailType}
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-stone-400 capitalize">
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-stone-400 capitalize"
+                    >
                       {item.entity.trailType.replace("_", " ")}
                     </span>
                   {/if}
                 {:else if item.entityType === "camping_site"}
                   {#if item.entity.siteType}
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-sky-500/15 text-sky-300 capitalize">
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-sky-500/15 text-sky-300 capitalize"
+                    >
                       {item.entity.siteType.replace("_", " ")}
                     </span>
                   {/if}
                   {#if item.entity.costPerNight}
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-stone-400">
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-stone-400"
+                    >
                       ${item.entity.costPerNight}/night
                     </span>
                   {/if}
                   {#if item.entity.petPolicy}
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-stone-400 capitalize">
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-stone-400 capitalize"
+                    >
                       Pets: {item.entity.petPolicy.replace("_", " ")}
                     </span>
                   {/if}
                 {:else if item.entityType === "backpacking"}
                   {#if item.entity.difficulty}
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500/15 text-amber-300 capitalize">
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500/15 text-amber-300 capitalize"
+                    >
                       {item.entity.difficulty.replace("_", " ")}
                     </span>
                   {/if}
                   {#if item.entity.distance}
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-stone-400">
-                      {item.entity.distance} {item.entity.distanceUnit ?? "miles"}
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-stone-400"
+                    >
+                      {item.entity.distance}
+                      {item.entity.distanceUnit ?? "miles"}
                     </span>
                   {/if}
                   {#if item.entity.numberOfDays}
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-stone-400">
+                    <span
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/5 text-stone-400"
+                    >
                       {item.entity.numberOfDays} day{item.entity.numberOfDays !== 1 ? "s" : ""}
                     </span>
                   {/if}
@@ -325,7 +337,9 @@
       </div>
     {:else}
       <div class="text-center py-20">
-        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+        <div
+          class="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center"
+        >
           <CircleAlert size={28} class="text-emerald-500/50" />
         </div>
         <p class="text-stone-400 text-lg font-medium">Queue is empty</p>
@@ -334,3 +348,18 @@
     {/if}
   </div>
 </div>
+
+<style>
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+  :global(body) {
+    background-color: #0c0f0a;
+  }
+</style>

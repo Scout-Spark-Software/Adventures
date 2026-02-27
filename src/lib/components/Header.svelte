@@ -277,9 +277,7 @@
   <!-- Drawer panel -->
   <div
     class="md:hidden fixed top-16 left-0 right-0 z-40 shadow-xl border-b
-    {isDark
-      ? 'bg-stone-950/97 border-white/10'
-      : 'bg-white border-slate-200'}"
+    {isDark ? 'bg-stone-950/97 border-white/10' : 'bg-white border-slate-200'}"
   >
     <div class="max-w-7xl mx-auto px-4 py-3 space-y-1">
       <a
@@ -287,8 +285,12 @@
         on:click={closeMobileMenu}
         class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-colors
         {currentPath.startsWith('/hikes')
-          ? isDark ? 'bg-emerald-500/15 text-emerald-300' : 'bg-emerald-50 text-emerald-700'
-          : isDark ? 'text-stone-300 hover:bg-white/5 hover:text-white' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}"
+          ? isDark
+            ? 'bg-emerald-500/15 text-emerald-300'
+            : 'bg-emerald-50 text-emerald-700'
+          : isDark
+            ? 'text-stone-300 hover:bg-white/5 hover:text-white'
+            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}"
       >
         <MountainIcon size={18} />
         Hikes
@@ -298,8 +300,12 @@
         on:click={closeMobileMenu}
         class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-colors
         {currentPath.startsWith('/camping')
-          ? isDark ? 'bg-emerald-500/15 text-emerald-300' : 'bg-emerald-50 text-emerald-700'
-          : isDark ? 'text-stone-300 hover:bg-white/5 hover:text-white' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}"
+          ? isDark
+            ? 'bg-emerald-500/15 text-emerald-300'
+            : 'bg-emerald-50 text-emerald-700'
+          : isDark
+            ? 'text-stone-300 hover:bg-white/5 hover:text-white'
+            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}"
       >
         <Tent size={18} />
         Camping Sites
@@ -309,8 +315,12 @@
         on:click={closeMobileMenu}
         class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-colors
         {currentPath.startsWith('/backpacking')
-          ? isDark ? 'bg-amber-500/15 text-amber-300' : 'bg-amber-50 text-amber-700'
-          : isDark ? 'text-stone-300 hover:bg-white/5 hover:text-white' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}"
+          ? isDark
+            ? 'bg-amber-500/15 text-amber-300'
+            : 'bg-amber-50 text-amber-700'
+          : isDark
+            ? 'text-stone-300 hover:bg-white/5 hover:text-white'
+            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}"
       >
         <Backpack size={18} />
         Backpacking

@@ -18,7 +18,17 @@
   import DetailPageHero from "$lib/components/DetailPageHero.svelte";
   import EditButton from "$lib/components/EditButton.svelte";
   import LocationMap from "$lib/components/LocationMap.svelte";
-  import { House, User, Map, MountainIcon, ChevronLeft, Flag, X, Trash2, Shield } from "lucide-svelte";
+  import {
+    House,
+    User,
+    Map,
+    MountainIcon,
+    ChevronLeft,
+    Flag,
+    X,
+    Trash2,
+    Shield,
+  } from "lucide-svelte";
   import CompactRating from "$lib/components/ratings/CompactRating.svelte";
   import ReviewsTab from "$lib/components/ratings/ReviewsTab.svelte";
   import HeroRatingDisplay from "$lib/components/ratings/HeroRatingDisplay.svelte";
@@ -369,7 +379,9 @@
         </div>
         {#if data.campingSite.submitterName}
           <p class="text-xs text-white/60 mt-1">
-            Submitted by <span class="text-white/80 font-medium">{data.campingSite.submitterName}</span>
+            Submitted by <span class="text-white/80 font-medium"
+              >{data.campingSite.submitterName}</span
+            >
             {#if data.campingSite.submitterUnit}
               &middot; <span class="text-white/60">{data.campingSite.submitterUnit}</span>
             {/if}

@@ -13,16 +13,18 @@
     ? [backpacking.address.city, backpacking.address.state].filter(Boolean).join(", ")
     : "";
 
-  $: difficultyClass = backpacking.difficulty === 'easy'
-    ? 'bg-green-100/90 text-green-800'
-    : backpacking.difficulty === 'moderate'
-      ? 'bg-yellow-100/90 text-yellow-800'
-      : backpacking.difficulty === 'hard'
-        ? 'bg-orange-100/90 text-orange-800'
-        : 'bg-red-100/90 text-red-800';
+  $: difficultyClass =
+    backpacking.difficulty === "easy"
+      ? "bg-green-100/90 text-green-800"
+      : backpacking.difficulty === "moderate"
+        ? "bg-yellow-100/90 text-yellow-800"
+        : backpacking.difficulty === "hard"
+          ? "bg-orange-100/90 text-orange-800"
+          : "bg-red-100/90 text-red-800";
 
   $: difficultyLabel = backpacking.difficulty
-    ? backpacking.difficulty.charAt(0).toUpperCase() + backpacking.difficulty.slice(1).replace("_", " ")
+    ? backpacking.difficulty.charAt(0).toUpperCase() +
+      backpacking.difficulty.slice(1).replace("_", " ")
     : "";
 </script>
 
@@ -32,19 +34,34 @@
     class="group bg-white rounded-xl border border-gray-100 hover:border-amber-200 shadow-sm hover:shadow-md transition-all duration-200 flex items-stretch overflow-hidden"
   >
     <!-- Thumbnail -->
-    <div class="relative w-36 self-stretch flex-shrink-0 bg-gradient-to-br from-amber-400 via-orange-500 to-red-600 overflow-hidden">
+    <div
+      class="relative w-36 self-stretch flex-shrink-0 bg-gradient-to-br from-amber-400 via-orange-500 to-red-600 overflow-hidden"
+    >
       {#if backpacking.bannerImageUrl}
-        <img src={backpacking.bannerImageUrl} alt={backpacking.name} class="absolute inset-0 w-full h-full object-cover" />
+        <img
+          src={backpacking.bannerImageUrl}
+          alt={backpacking.name}
+          class="absolute inset-0 w-full h-full object-cover"
+        />
       {:else}
         <div class="absolute inset-0">
-          <svg class="absolute bottom-0 w-full h-16 text-orange-600/30" viewBox="0 0 1200 200" preserveAspectRatio="none">
-            <path d="M0 200 L0 120 L150 60 L300 100 L450 30 L600 80 L750 20 L900 70 L1050 40 L1200 90 L1200 200 Z" fill="currentColor" />
+          <svg
+            class="absolute bottom-0 w-full h-16 text-orange-600/30"
+            viewBox="0 0 1200 200"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M0 200 L0 120 L150 60 L300 100 L450 30 L600 80 L750 20 L900 70 L1050 40 L1200 90 L1200 200 Z"
+              fill="currentColor"
+            />
           </svg>
         </div>
       {/if}
       {#if backpacking.difficulty}
         <div class="absolute bottom-1.5 left-1.5">
-          <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full backdrop-blur-sm {difficultyClass}">
+          <span
+            class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full backdrop-blur-sm {difficultyClass}"
+          >
             {difficultyLabel}
           </span>
         </div>
@@ -72,14 +89,18 @@
             {/if}
             {#if backpacking.numberOfDays}
               <span class="flex items-center text-xs text-gray-500">
-                <Calendar size={11} class="mr-1 flex-shrink-0" />{backpacking.numberOfDays} {backpacking.numberOfDays === 1 ? "day" : "days"}
+                <Calendar size={11} class="mr-1 flex-shrink-0" />{backpacking.numberOfDays}
+                {backpacking.numberOfDays === 1 ? "day" : "days"}
               </span>
             {/if}
           </div>
         </div>
         <div class="flex items-center gap-2 flex-shrink-0">
           <ModerationBadge status={backpacking.status} />
-          <ChevronRight size={16} class="text-amber-600 transition-transform group-hover:translate-x-1" />
+          <ChevronRight
+            size={16}
+            class="text-amber-600 transition-transform group-hover:translate-x-1"
+          />
         </div>
       </div>
     </div>
@@ -181,7 +202,9 @@
         </div>
       {/if}
 
-      <div class="flex items-center justify-between pt-2 border-t border-gray-100 group-hover:border-amber-100">
+      <div
+        class="flex items-center justify-between pt-2 border-t border-gray-100 group-hover:border-amber-100"
+      >
         <span class="text-sm font-semibold text-amber-600 group-hover:text-amber-700">
           View Details
         </span>

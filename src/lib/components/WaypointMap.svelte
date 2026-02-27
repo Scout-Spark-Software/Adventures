@@ -188,8 +188,7 @@
   {#if editable}
     <div class="mt-2 flex items-center justify-between text-xs text-gray-500">
       <span
-        >Click map to add waypoints &bull; Right-click a marker to remove &bull; Drag to
-        reposition</span
+        >Click map to add waypoints &bull; Right-click a marker to remove &bull; Drag to reposition</span
       >
       {#if waypoints.length > 0}
         <button

@@ -23,7 +23,13 @@
 
   export let amenityTypes: AmenityType[] = [];
   export let facilityTypes: FacilityType[] = [];
-  export let councils: { id: string; councilNumber: number; name: string; headquartersCity: string | null; headquartersState: string | null }[] = [];
+  export let councils: {
+    id: string;
+    councilNumber: number;
+    name: string;
+    headquartersCity: string | null;
+    headquartersState: string | null;
+  }[] = [];
   export let currentFilters: Record<string, string> = {};
   export let userRole: string | null = null;
 
@@ -240,7 +246,12 @@
     <label for="councilFilter" class="block text-sm font-medium text-gray-700 mb-1.5">
       Council
     </label>
-    <CouncilSelect id="councilFilter" bind:value={councilId} {councils} on:change={handleFilterChange} />
+    <CouncilSelect
+      id="councilFilter"
+      bind:value={councilId}
+      {councils}
+      on:change={handleFilterChange}
+    />
   </div>
 
   <!-- Site Type Dropdown -->
@@ -335,25 +346,40 @@
       on:click|stopPropagation={() => (amenitiesOpen = !amenitiesOpen)}
       class="w-full flex items-center justify-between px-3 py-1.5 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-left"
     >
-      <span class="truncate {selectedAmenities.length === 0 ? 'text-gray-400' : 'text-gray-900 font-medium'}">
+      <span
+        class="truncate {selectedAmenities.length === 0
+          ? 'text-gray-400'
+          : 'text-gray-900 font-medium'}"
+      >
         {selectedAmenities.length === 0
           ? "Any amenities"
           : selectedAmenities.length === 1
-            ? (amenityTypes.find(a => a.id === selectedAmenities[0])?.name ?? "1 selected")
+            ? (amenityTypes.find((a) => a.id === selectedAmenities[0])?.name ?? "1 selected")
             : `${selectedAmenities.length} selected`}
       </span>
-      <ChevronDown size={16} class="text-gray-400 flex-shrink-0 ml-2 transition-transform {amenitiesOpen ? 'rotate-180' : ''}" />
+      <ChevronDown
+        size={16}
+        class="text-gray-400 flex-shrink-0 ml-2 transition-transform {amenitiesOpen
+          ? 'rotate-180'
+          : ''}"
+      />
     </button>
     {#if amenitiesOpen}
       <div class="relative z-20">
-        <div class="absolute top-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+        <div
+          class="absolute top-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
+        >
           {#each amenityTypes as amenity (amenity.id)}
             <button
               type="button"
               on:click|stopPropagation={() => toggleAmenity(amenity.id)}
               class="w-full flex items-center justify-between px-4 py-2.5 text-sm hover:bg-stone-50 transition-colors text-left"
             >
-              <span class="{selectedAmenities.includes(amenity.id) ? 'text-emerald-700 font-semibold' : 'text-gray-700'}">{amenity.name}</span>
+              <span
+                class={selectedAmenities.includes(amenity.id)
+                  ? "text-emerald-700 font-semibold"
+                  : "text-gray-700"}>{amenity.name}</span
+              >
               {#if selectedAmenities.includes(amenity.id)}
                 <Check size={14} class="text-emerald-600 flex-shrink-0" />
               {/if}
@@ -363,7 +389,11 @@
             <div class="border-t border-gray-100 px-4 py-2">
               <button
                 type="button"
-                on:click|stopPropagation={() => { selectedAmenities = []; amenitiesOpen = false; applyFilters(); }}
+                on:click|stopPropagation={() => {
+                  selectedAmenities = [];
+                  amenitiesOpen = false;
+                  applyFilters();
+                }}
                 class="text-xs text-red-500 hover:text-red-700 font-medium"
               >
                 Clear amenities
@@ -383,25 +413,40 @@
       on:click|stopPropagation={() => (facilitiesOpen = !facilitiesOpen)}
       class="w-full flex items-center justify-between px-3 py-1.5 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-left"
     >
-      <span class="truncate {selectedFacilities.length === 0 ? 'text-gray-400' : 'text-gray-900 font-medium'}">
+      <span
+        class="truncate {selectedFacilities.length === 0
+          ? 'text-gray-400'
+          : 'text-gray-900 font-medium'}"
+      >
         {selectedFacilities.length === 0
           ? "Any facilities"
           : selectedFacilities.length === 1
-            ? (facilityTypes.find(f => f.id === selectedFacilities[0])?.name ?? "1 selected")
+            ? (facilityTypes.find((f) => f.id === selectedFacilities[0])?.name ?? "1 selected")
             : `${selectedFacilities.length} selected`}
       </span>
-      <ChevronDown size={16} class="text-gray-400 flex-shrink-0 ml-2 transition-transform {facilitiesOpen ? 'rotate-180' : ''}" />
+      <ChevronDown
+        size={16}
+        class="text-gray-400 flex-shrink-0 ml-2 transition-transform {facilitiesOpen
+          ? 'rotate-180'
+          : ''}"
+      />
     </button>
     {#if facilitiesOpen}
       <div class="relative z-20">
-        <div class="absolute top-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+        <div
+          class="absolute top-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
+        >
           {#each facilityTypes as facility (facility.id)}
             <button
               type="button"
               on:click|stopPropagation={() => toggleFacility(facility.id)}
               class="w-full flex items-center justify-between px-4 py-2.5 text-sm hover:bg-stone-50 transition-colors text-left"
             >
-              <span class="{selectedFacilities.includes(facility.id) ? 'text-emerald-700 font-semibold' : 'text-gray-700'}">{facility.name}</span>
+              <span
+                class={selectedFacilities.includes(facility.id)
+                  ? "text-emerald-700 font-semibold"
+                  : "text-gray-700"}>{facility.name}</span
+              >
               {#if selectedFacilities.includes(facility.id)}
                 <Check size={14} class="text-emerald-600 flex-shrink-0" />
               {/if}
@@ -411,7 +456,11 @@
             <div class="border-t border-gray-100 px-4 py-2">
               <button
                 type="button"
-                on:click|stopPropagation={() => { selectedFacilities = []; facilitiesOpen = false; applyFilters(); }}
+                on:click|stopPropagation={() => {
+                  selectedFacilities = [];
+                  facilitiesOpen = false;
+                  applyFilters();
+                }}
                 class="text-xs text-red-500 hover:text-red-700 font-medium"
               >
                 Clear facilities

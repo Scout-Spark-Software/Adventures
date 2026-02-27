@@ -181,7 +181,13 @@ export const actions: Actions = {
       // waypoints arrives as a JSON string — parse it back to an array
       const fieldValue =
         fieldName === "waypoints"
-          ? (() => { try { return JSON.parse(newValue || "[]"); } catch { return []; } })()
+          ? (() => {
+              try {
+                return JSON.parse(newValue || "[]");
+              } catch {
+                return [];
+              }
+            })()
           : newValue;
 
       const response = await event.fetch(`/api/backpacking/${event.params.id}`, {

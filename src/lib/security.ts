@@ -28,11 +28,7 @@ export function sanitizeSearchQuery(q: string): string {
  * Parses and clamps a numeric query parameter.
  * Returns null if the value is missing or not a finite number.
  */
-export function validateNumericParam(
-  val: string | null,
-  min: number,
-  max: number
-): number | null {
+export function validateNumericParam(val: string | null, min: number, max: number): number | null {
   if (val === null || val === "") return null;
   const num = parseFloat(val);
   if (!isFinite(num)) return null;
@@ -67,10 +63,7 @@ export const SECURITY_HEADERS: Record<string, string> = {
 export function sanitizeAuthError(error: unknown): string {
   const msg = error instanceof Error ? error.message : String(error);
 
-  if (
-    msg.includes("email") &&
-    (msg.includes("verif") || msg.includes("ownership"))
-  ) {
+  if (msg.includes("email") && (msg.includes("verif") || msg.includes("ownership"))) {
     return "Please verify your email address before logging in.";
   }
   if (

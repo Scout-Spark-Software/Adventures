@@ -11,7 +11,9 @@
     <div class="max-w-7xl mx-auto">
       <div class="flex items-end justify-between mb-10">
         <div>
-          <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color: #16a34a;">Trails</p>
+          <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color: #16a34a;">
+            Trails
+          </p>
           <h2 class="text-3xl font-black text-stone-900 leading-tight">Featured Hikes</h2>
         </div>
         <a

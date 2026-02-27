@@ -12,9 +12,12 @@
 
   let viewMode: "grid" | "list" | "map" = "grid";
 
-  type CampingWithAddress = CampingSite & { address?: Pick<Address, "city" | "state" | "latitude" | "longitude"> | null; bannerImageUrl?: string | null };
+  type CampingWithAddress = CampingSite & {
+    address?: Pick<Address, "city" | "state" | "latitude" | "longitude"> | null;
+    bannerImageUrl?: string | null;
+  };
 
-  $: campingMarkers = (data.campingSites as CampingWithAddress[] ?? [])
+  $: campingMarkers = ((data.campingSites as CampingWithAddress[]) ?? [])
     .filter((c) => c.address?.latitude && c.address?.longitude)
     .map((c) => ({
       id: c.id,
@@ -36,7 +39,10 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="flex items-center justify-between gap-4">
         <div class="flex items-center gap-4">
-          <div class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm" style="background: linear-gradient(135deg, #059669, #34d399);">
+          <div
+            class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm"
+            style="background: linear-gradient(135deg, #059669, #34d399);"
+          >
             <Tent size={22} class="text-white" />
           </div>
           <div>
@@ -67,7 +73,6 @@
   </div>
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
     <!-- Two-column layout: filters sidebar + content -->
     <div class="lg:grid lg:grid-cols-[280px_1fr] lg:gap-6">
       <!-- Filter Sidebar (desktop) -->
@@ -85,7 +90,9 @@
       <main class="relative">
         <!-- Loading Overlay -->
         {#if $navigating}
-          <div class="absolute inset-0 bg-stone-100/80 backdrop-blur-sm z-10 flex items-start justify-center pt-12">
+          <div
+            class="absolute inset-0 bg-stone-100/80 backdrop-blur-sm z-10 flex items-start justify-center pt-12"
+          >
             <div class="bg-white rounded-2xl shadow-lg p-6">
               <LoadingSpinner size="lg" destination={$navigating?.to?.url?.pathname} />
             </div>
@@ -102,7 +109,9 @@
             <div class="flex items-center gap-0.5 ml-auto">
               <button
                 on:click={() => (viewMode = "grid")}
-                class="p-1.5 rounded transition-colors {viewMode === 'grid' ? 'bg-stone-200 text-stone-800' : 'text-stone-400 hover:text-stone-600'}"
+                class="p-1.5 rounded transition-colors {viewMode === 'grid'
+                  ? 'bg-stone-200 text-stone-800'
+                  : 'text-stone-400 hover:text-stone-600'}"
                 aria-label="Grid view"
                 aria-pressed={viewMode === "grid"}
               >
@@ -110,7 +119,9 @@
               </button>
               <button
                 on:click={() => (viewMode = "list")}
-                class="p-1.5 rounded transition-colors {viewMode === 'list' ? 'bg-stone-200 text-stone-800' : 'text-stone-400 hover:text-stone-600'}"
+                class="p-1.5 rounded transition-colors {viewMode === 'list'
+                  ? 'bg-stone-200 text-stone-800'
+                  : 'text-stone-400 hover:text-stone-600'}"
                 aria-label="List view"
                 aria-pressed={viewMode === "list"}
               >
@@ -118,7 +129,9 @@
               </button>
               <button
                 on:click={() => (viewMode = "map")}
-                class="p-1.5 rounded transition-colors {viewMode === 'map' ? 'bg-stone-200 text-stone-800' : 'text-stone-400 hover:text-stone-600'}"
+                class="p-1.5 rounded transition-colors {viewMode === 'map'
+                  ? 'bg-stone-200 text-stone-800'
+                  : 'text-stone-400 hover:text-stone-600'}"
                 aria-label="Map view"
                 aria-pressed={viewMode === "map"}
               >
@@ -143,7 +156,9 @@
             <ListingMap markers={campingMarkers} />
           {/if}
         {:else}
-          <div class="rounded-2xl border border-dashed border-stone-300 bg-white/60 py-16 text-center">
+          <div
+            class="rounded-2xl border border-dashed border-stone-300 bg-white/60 py-16 text-center"
+          >
             <Tent size={40} class="mx-auto mb-4" style="color: rgba(0,0,0,0.12);" />
             <p class="text-base font-black text-stone-700 mb-1">No camping sites found</p>
             <p class="text-sm text-stone-400">Try adjusting your filters or search criteria</p>

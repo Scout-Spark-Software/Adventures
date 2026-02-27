@@ -84,17 +84,38 @@
     animation: dotpop 0.8s ease-in-out infinite;
   }
 
-  .dot1 { background-color: #6ee7b7; animation-delay: 0.1s; }
-  .dot2 { background-color: #10b981; animation-delay: 0.25s; }
-  .dot3 { background-color: #059669; animation-delay: 0.4s; }
+  .dot1 {
+    background-color: #6ee7b7;
+    animation-delay: 0.1s;
+  }
+  .dot2 {
+    background-color: #10b981;
+    animation-delay: 0.25s;
+  }
+  .dot3 {
+    background-color: #059669;
+    animation-delay: 0.4s;
+  }
 
   @keyframes trailbounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-14px); }
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-14px);
+    }
   }
 
   @keyframes dotpop {
-    0%, 100% { transform: scale(1); opacity: 0.35; }
-    50% { transform: scale(1.5); opacity: 1; }
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.35;
+    }
+    50% {
+      transform: scale(1.5);
+      opacity: 1;
+    }
   }
 </style>

@@ -70,21 +70,6 @@
   <title>Users - Admin - Adventure Spark</title>
 </svelte:head>
 
-<style>
-  .grain {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.035;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    background-size: 200px 200px;
-  }
-  :global(body) {
-    background-color: #0c0f0a;
-  }
-</style>
-
 <div class="grain"></div>
 
 <div class="relative z-10 min-h-screen pt-10 pb-16">
@@ -103,7 +88,9 @@
         </div>
         <div>
           <h1 class="text-2xl font-bold text-stone-100">Users</h1>
-          <p class="text-sm text-stone-400">{data.users.length} registered user{data.users.length !== 1 ? "s" : ""}</p>
+          <p class="text-sm text-stone-400">
+            {data.users.length} registered user{data.users.length !== 1 ? "s" : ""}
+          </p>
         </div>
       </div>
     </div>
@@ -114,10 +101,22 @@
         <table class="min-w-full">
           <thead>
             <tr class="border-b border-white/10">
-              <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider">User</th>
-              <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider">Email</th>
-              <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider">Role</th>
-              <th class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider">Joined</th>
+              <th
+                class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider"
+                >User</th
+              >
+              <th
+                class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider"
+                >Email</th
+              >
+              <th
+                class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider"
+                >Role</th
+              >
+              <th
+                class="px-5 py-3 text-left text-xs font-semibold text-stone-400 uppercase tracking-wider"
+                >Joined</th
+              >
             </tr>
           </thead>
           <tbody class="divide-y divide-white/5">
@@ -125,7 +124,9 @@
               <tr class="hover:bg-white/3 transition-colors">
                 <td class="px-5 py-4">
                   <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-emerald-600/30 border border-emerald-500/30 text-emerald-300 flex items-center justify-center text-xs font-bold flex-shrink-0">
+                    <div
+                      class="w-8 h-8 rounded-full bg-emerald-600/30 border border-emerald-500/30 text-emerald-300 flex items-center justify-center text-xs font-bold flex-shrink-0"
+                    >
                       {avatarLetter(user)}
                     </div>
                     <span class="text-sm font-medium text-stone-200">{formatName(user)}</span>
@@ -136,7 +137,11 @@
                 </td>
                 <td class="px-5 py-4">
                   {#if user.id === data.currentUserId}
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border {roleBadgeClass(user.role)}">
+                    <span
+                      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border {roleBadgeClass(
+                        user.role
+                      )}"
+                    >
                       {user.role}
                     </span>
                   {:else}
@@ -163,7 +168,9 @@
               </tr>
             {:else}
               <tr>
-                <td colspan="4" class="px-5 py-12 text-center text-stone-600 text-sm">No users found.</td>
+                <td colspan="4" class="px-5 py-12 text-center text-stone-600 text-sm"
+                  >No users found.</td
+                >
               </tr>
             {/each}
           </tbody>
@@ -175,7 +182,9 @@
         {#each data.users as user (user.id)}
           <div class="px-4 py-4">
             <div class="flex items-center gap-3 mb-3">
-              <div class="w-9 h-9 rounded-full bg-emerald-600/30 border border-emerald-500/30 text-emerald-300 flex items-center justify-center text-sm font-bold flex-shrink-0">
+              <div
+                class="w-9 h-9 rounded-full bg-emerald-600/30 border border-emerald-500/30 text-emerald-300 flex items-center justify-center text-sm font-bold flex-shrink-0"
+              >
                 {avatarLetter(user)}
               </div>
               <div class="min-w-0">
@@ -186,7 +195,11 @@
             <div class="flex items-center justify-between">
               <span class="text-xs text-stone-600">{formatDate(user.createdAt)}</span>
               {#if user.id === data.currentUserId}
-                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border {roleBadgeClass(user.role)}">
+                <span
+                  class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border {roleBadgeClass(
+                    user.role
+                  )}"
+                >
                   {user.role}
                 </span>
               {:else}
@@ -213,3 +226,18 @@
     </div>
   </div>
 </div>
+
+<style>
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+  :global(body) {
+    background-color: #0c0f0a;
+  }
+</style>

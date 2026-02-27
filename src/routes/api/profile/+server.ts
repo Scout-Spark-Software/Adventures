@@ -27,7 +27,10 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
 
   // Validate unitType
   if (unitType !== undefined && !VALID_UNIT_TYPES.includes(unitType)) {
-    throw error(400, `unitType must be one of: ${VALID_UNIT_TYPES.map((t) => (t === "" ? '""' : t)).join(", ")}`);
+    throw error(
+      400,
+      `unitType must be one of: ${VALID_UNIT_TYPES.map((t) => (t === "" ? '""' : t)).join(", ")}`
+    );
   }
 
   // Validate unitNumber length
