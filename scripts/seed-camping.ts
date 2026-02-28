@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import dotenv from "dotenv";
 import * as schema from "../src/lib/db/schemas/index.js";
+import { eq } from "drizzle-orm";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -97,10 +98,23 @@ async function seedCampingSites() {
   const defaultUserId = "00000000-0000-0000-0000-000000000001";
 
   let successCount = 0;
+  let skippedCount = 0;
   let errorCount = 0;
 
   for (const row of rows) {
     try {
+      // Skip if a camping site with this name already exists
+      const existing = await db
+        .select({ id: schema.campingSites.id })
+        .from(schema.campingSites)
+        .where(eq(schema.campingSites.name, row.name))
+        .limit(1);
+      if (existing.length > 0) {
+        console.log(`⟳ Skipped (already exists): ${row.name}`);
+        skippedCount++;
+        continue;
+      }
+
       const addressData = {
         address: row.address || null,
         city: row.city || null,
@@ -164,8 +178,9 @@ async function seedCampingSites() {
   }
 
   console.log(`\n✓ Seed completed!`);
-  console.log(`  Success: ${successCount}`);
-  console.log(`  Errors: ${errorCount}`);
+  console.log(`  Inserted: ${successCount}`);
+  console.log(`  Skipped:  ${skippedCount}`);
+  console.log(`  Errors:   ${errorCount}`);
 }
 
 seedCampingSites()

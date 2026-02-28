@@ -4,6 +4,9 @@
   export let entityType: "hike" | "camping_site" | "backpacking";
   export let entityId: string;
   export let fileType: "image" | "document" = "image";
+  export let existingCount: number = 0;
+
+  const MAX_PHOTOS = 6;
 
   const dispatch = createEventDispatcher<{ uploaded: void }>();
 
@@ -13,10 +16,14 @@
   let success = false;
   let fileInput: HTMLInputElement;
 
+  $: atLimit = fileType === "image" && existingCount >= MAX_PHOTOS;
+  $: remaining = fileType === "image" ? Math.max(0, MAX_PHOTOS - existingCount) : Infinity;
+
   async function handleFileSelect(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files) {
-      files = Array.from(input.files);
+      const selected = Array.from(input.files);
+      files = selected.slice(0, remaining);
       success = false;
       error = null;
     }
@@ -44,7 +51,8 @@
         });
 
         if (!response.ok) {
-          throw new Error("Upload failed");
+          const data = await response.json().catch(() => ({}));
+          throw new Error(data?.message ?? "Upload failed");
         }
       }
 
@@ -65,15 +73,24 @@
     <label class="block text-sm font-medium text-gray-700 mb-2">
       Upload {fileType === "image" ? "Images" : "Documents"}
     </label>
-    <input
-      type="file"
-      multiple
-      accept={fileType === "image" ? "image/*" : ".pdf,.doc,.docx"}
-      disabled={uploading}
-      bind:this={fileInput}
-      on:change={handleFileSelect}
-      class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
-    />
+    {#if fileType === "image"}
+      <p class="text-xs text-gray-500 mb-2">{existingCount}/{MAX_PHOTOS} photos</p>
+    {/if}
+    {#if !atLimit}
+      <input
+        type="file"
+        multiple
+        accept={fileType === "image" ? "image/*" : ".pdf,.doc,.docx"}
+        disabled={uploading}
+        bind:this={fileInput}
+        on:change={handleFileSelect}
+        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+      />
+    {:else}
+      <p class="text-sm text-amber-700 bg-amber-50 rounded-md px-3 py-2">
+        Photo limit reached (max {MAX_PHOTOS}). Delete a photo to add more.
+      </p>
+    {/if}
   </div>
 
   {#if files.length > 0}

@@ -5,7 +5,9 @@ import { uploadFile } from "$lib/storage/blob";
 import { sanitizeFilename } from "$lib/security";
 import { db } from "$lib/db";
 import { files } from "$lib/db/schemas";
-import { eq, and } from "drizzle-orm";
+import { eq, and, count } from "drizzle-orm";
+
+const MAX_PHOTOS_PER_ENTITY = 6;
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   const user = requireAuth({ locals } as any);
@@ -31,6 +33,23 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
   if (!fileType || !["image", "document"].includes(fileType)) {
     throw error(400, 'file_type must be "image" or "document"');
+  }
+
+  // Enforce photo limit for images
+  if (fileType === "image") {
+    const [{ value: existingCount }] = await db
+      .select({ value: count() })
+      .from(files)
+      .where(
+        and(
+          eq(files.entityType, entityType),
+          eq(files.entityId, entityId),
+          eq(files.fileType, "image")
+        )
+      );
+    if (existingCount >= MAX_PHOTOS_PER_ENTITY) {
+      throw error(400, `Photo limit reached. Maximum ${MAX_PHOTOS_PER_ENTITY} photos per item.`);
+    }
   }
 
   // Generate unique path (sanitize filename to prevent path traversal)

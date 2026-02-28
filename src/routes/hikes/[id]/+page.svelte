@@ -615,7 +615,7 @@
           <!-- Header row -->
           <div slot="header" class="flex items-center justify-between">
             <h2 class="text-xl font-semibold text-gray-900">Photos</h2>
-            {#if data.userId}
+            {#if data.userId && imageFiles.length < 6}
               <button
                 on:click={() => (showUploadModal = true)}
                 class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white transition-colors"
@@ -630,7 +630,7 @@
                 </svg>
                 Add Photos
               </button>
-            {:else}
+            {:else if !data.userId}
               <a href="/login" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
                 >Sign in to add photos</a
               >
@@ -751,6 +751,7 @@
                 entityType="hike"
                 entityId={data.hike.id}
                 fileType="image"
+                existingCount={imageFiles.length}
                 on:uploaded={handleImageUploaded}
               />
             </div>
