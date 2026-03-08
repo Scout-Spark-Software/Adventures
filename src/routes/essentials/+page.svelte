@@ -206,17 +206,6 @@
         "Dehydration affects performance and safety",
       ],
     },
-    {
-      name: "Backpack",
-      icon: Backpack,
-      description: "A properly fitted pack to carry all your gear comfortably.",
-      tips: [
-        "Choose a pack sized for your trip length",
-        "Adjust straps so weight rests on your hips",
-        "Pack heavy items close to your back",
-        "Use a rain cover to keep gear dry",
-      ],
-    },
   ];
 </script>
 

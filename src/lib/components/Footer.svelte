@@ -205,15 +205,20 @@
 
     <!-- Bottom bar -->
     <div
-      class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-8"
+      class="flex flex-col items-center gap-3 pt-8"
       style="border-top: 1px solid rgba(245,240,232,0.07);"
     >
-      <p class="text-xs" style="color: rgba(245,240,232,0.25);">
-        &copy; {new Date().getFullYear()} Adventure Spark. All rights reserved.
+      <p class="text-xs text-center" style="color: rgba(245,240,232,0.18);">
+        Adventure Spark is an independent community platform and is not affiliated with, endorsed by, or sponsored by Scouting America or any official scouting organization.
       </p>
-      <p class="text-xs" style="color: rgba(245,240,232,0.2);">
-        Made with ❤️ for scouts everywhere
-      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-between w-full gap-3">
+        <p class="text-xs" style="color: rgba(245,240,232,0.25);">
+          &copy; {new Date().getFullYear()} Adventure Spark. All rights reserved.
+        </p>
+        <p class="text-xs" style="color: rgba(245,240,232,0.2);">
+          Made with ❤️ for scouts everywhere
+        </p>
+      </div>
     </div>
   </div>
 </footer>

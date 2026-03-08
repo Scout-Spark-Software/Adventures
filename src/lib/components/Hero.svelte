@@ -7,13 +7,11 @@
     trails: number;
     campsites: number;
     backpacking: number;
-    scouts: number;
   } | null = null;
 
   const trailCount = tweened(0, { duration: 2000, easing: cubicOut });
   const campsiteCount = tweened(0, { duration: 2000, easing: cubicOut });
   const backpackingCount = tweened(0, { duration: 2000, easing: cubicOut });
-  const scoutCount = tweened(0, { duration: 2000, easing: cubicOut });
 
   let loading = true;
 
@@ -21,12 +19,10 @@
     trails: number;
     campsites: number;
     backpacking: number;
-    scouts: number;
   }) {
     $trailCount = data.trails;
     $campsiteCount = data.campsites;
     $backpackingCount = data.backpacking;
-    $scoutCount = data.scouts;
     loading = false;
   }
 
@@ -194,10 +190,10 @@
 
     <!-- Stats bar -->
     <div
-      class="grid grid-cols-2 sm:grid-cols-4 gap-px overflow-hidden"
+      class="grid grid-cols-3 gap-px overflow-hidden"
       style="border-top: 1px solid rgba(245,240,232,0.08);"
     >
-      {#each [{ count: $trailCount, label: "Trails", accent: "#86efac" }, { count: $campsiteCount, label: "Campsites", accent: "#6ee7b7" }, { count: $backpackingCount, label: "Routes", accent: "#fbbf24" }, { count: $scoutCount, label: "Scouts", accent: "#c4b5fd" }] as stat}
+      {#each [{ count: $trailCount, label: "Trails", accent: "#86efac" }, { count: $campsiteCount, label: "Campsites", accent: "#6ee7b7" }, { count: $backpackingCount, label: "Routes", accent: "#fbbf24" }] as stat (stat.label)}
         <div
           class="px-6 py-6 text-center sm:text-left"
           style="background: rgba(245,240,232,0.025);"
