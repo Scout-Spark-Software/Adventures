@@ -1,31 +1,64 @@
 import { WorkOS } from "@workos-inc/node";
 import { jwtVerify, compactVerify, createRemoteJWKSet } from "jose";
-import {
-  WORKOS_API_KEY,
-  WORKOS_CLIENT_ID,
-  WORKOS_ORGANIZATION_ID,
-  WORKOS_COOKIE_PASSWORD,
-} from "$env/static/private";
+import { env } from "$env/dynamic/private";
 
-if (!WORKOS_API_KEY || !WORKOS_CLIENT_ID || !WORKOS_ORGANIZATION_ID || !WORKOS_COOKIE_PASSWORD) {
-  throw new Error(
-    "WorkOS environment variables are not set. " +
-      "Please ensure WORKOS_API_KEY, WORKOS_CLIENT_ID, WORKOS_ORGANIZATION_ID, and WORKOS_COOKIE_PASSWORD are in your .env file."
-  );
-}
-
-// Initialize WorkOS client
-export const workos = new WorkOS(WORKOS_API_KEY);
-
-// Export config for easy access
-export const workosConfig = {
-  clientId: WORKOS_CLIENT_ID,
-  organizationId: WORKOS_ORGANIZATION_ID,
-  cookiePassword: WORKOS_COOKIE_PASSWORD,
+type WorkosInstance = {
+  workos: WorkOS;
+  workosConfig: { clientId: string; organizationId: string; cookiePassword: string };
+  JWKS: ReturnType<typeof createRemoteJWKSet>;
 };
 
+let _instance: WorkosInstance | undefined;
+
+function getInstance(): WorkosInstance {
+  if (_instance) return _instance;
+
+  const { WORKOS_API_KEY, WORKOS_CLIENT_ID, WORKOS_ORGANIZATION_ID, WORKOS_COOKIE_PASSWORD } = env;
+
+  if (!WORKOS_API_KEY || !WORKOS_CLIENT_ID || !WORKOS_ORGANIZATION_ID || !WORKOS_COOKIE_PASSWORD) {
+    throw new Error(
+      "WorkOS environment variables are not set. " +
+        "Please ensure WORKOS_API_KEY, WORKOS_CLIENT_ID, WORKOS_ORGANIZATION_ID, and WORKOS_COOKIE_PASSWORD are in your .env file."
+    );
+  }
+
+  _instance = {
+    workos: new WorkOS(WORKOS_API_KEY),
+    workosConfig: {
+      clientId: WORKOS_CLIENT_ID,
+      organizationId: WORKOS_ORGANIZATION_ID,
+      cookiePassword: WORKOS_COOKIE_PASSWORD,
+    },
+    JWKS: createRemoteJWKSet(new URL(`https://api.workos.com/sso/jwks/${WORKOS_CLIENT_ID}`)),
+  };
+
+  return _instance;
+}
+
+export const workos = new Proxy({} as WorkOS, {
+  get(_, prop) {
+    return Reflect.get(getInstance().workos, prop);
+  },
+});
+
+export const workosConfig = new Proxy(
+  {} as WorkosInstance["workosConfig"],
+  {
+    get(_, prop) {
+      return Reflect.get(getInstance().workosConfig, prop);
+    },
+  }
+);
+
 // Create JWKS instance once at module level so jose can cache the keys
-const JWKS = createRemoteJWKSet(new URL(`https://api.workos.com/sso/jwks/${WORKOS_CLIENT_ID}`));
+const JWKS = new Proxy(function () {} as unknown as WorkosInstance["JWKS"], {
+  apply(_, thisArg, args) {
+    return Reflect.apply(getInstance().JWKS as unknown as Function, thisArg, args);
+  },
+  get(_, prop) {
+    return Reflect.get(getInstance().JWKS, prop);
+  },
+});
 
 // WorkOS User Management authentication methods
 export const workosAuth = {
