@@ -19,7 +19,9 @@
     "seed:hikes": "tsx scripts/seed-hikes.ts",
     "seed:camping": "tsx scripts/seed-camping.ts",
     "seed:backpacking": "tsx scripts/seed-backpacking.ts",
-    "seed:councils": "tsx scripts/seed-councils.ts"
+    "seed:councils": "tsx scripts/seed-councils.ts",
+    "secrets:upload": "node scripts/upload-secrets.cjs .env production",
+    "secrets:upload:preview": "node scripts/upload-secrets.cjs .env.dev preview"
   },
   "devDependencies": {
     "@ernane/svelte-star-rating": "^1.1.9",
