@@ -1,4 +1,9 @@
-import { put, list, del } from "@vercel/blob";
+import {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectCommand,
+  ListObjectsV2Command,
+} from "@aws-sdk/client-s3";
 import { error } from "@sveltejs/kit";
 import { env } from "$env/dynamic/private";
 
@@ -28,6 +33,50 @@ export function validateFile(file: File, fileType: FileType): void {
   }
 }
 
+/** Strips leading slashes to produce a valid R2/S3 object key. */
+function toKey(pathname: string): string {
+  return pathname.replace(/^\/+/, "");
+}
+
+function createS3Client(): S3Client {
+  const accountId = env.R2_ACCOUNT_ID;
+  const accessKeyId = env.R2_ACCESS_KEY_ID;
+  const secretAccessKey = env.R2_SECRET_ACCESS_KEY;
+
+  if (!accountId || !accessKeyId || !secretAccessKey) {
+    throw error(500, "R2 storage not configured");
+  }
+
+  const endpoint =
+    env.R2_ENDPOINT_OVERRIDE ?? `https://${accountId}.r2.cloudflarestorage.com`;
+
+  return new S3Client({
+    region: "auto",
+    endpoint,
+    credentials: { accessKeyId, secretAccessKey },
+    forcePathStyle: Boolean(env.R2_ENDPOINT_OVERRIDE),
+  });
+}
+
+function getPublicUrl(key: string): string {
+  let base = env.R2_PUBLIC_URL;
+  if (!base) {
+    throw error(500, "R2_PUBLIC_URL not configured");
+  }
+  if (!base.startsWith("http://") && !base.startsWith("https://")) {
+    base = `https://${base}`;
+  }
+  return `${base.replace(/\/$/, "")}/${key}`;
+}
+
+function getBucketName(): string {
+  const bucket = env.R2_BUCKET_NAME;
+  if (!bucket) {
+    throw error(500, "R2_BUCKET_NAME not configured");
+  }
+  return bucket;
+}
+
 export async function uploadFile(
   file: File,
   fileType: FileType,
@@ -35,40 +84,48 @@ export async function uploadFile(
 ): Promise<{ url: string; pathname: string }> {
   validateFile(file, fileType);
 
-  if (!env.BLOB_READ_WRITE_TOKEN) {
-    throw error(500, "Vercel Blob storage not configured");
-  }
+  const client = createS3Client();
+  const bucket = getBucketName();
+  const key = toKey(path);
 
-  const blob = await put(path, file, {
-    access: "public",
-    token: env.BLOB_READ_WRITE_TOKEN,
-  });
+  const arrayBuffer = await file.arrayBuffer();
 
-  return {
-    url: blob.url,
-    pathname: blob.pathname,
-  };
+  await client.send(
+    new PutObjectCommand({
+      Bucket: bucket,
+      Key: key,
+      Body: new Uint8Array(arrayBuffer),
+      ContentType: file.type,
+      ContentLength: file.size,
+    })
+  );
+
+  return { url: getPublicUrl(key), pathname: key };
 }
 
 export async function deleteFile(pathname: string): Promise<void> {
-  if (!env.BLOB_READ_WRITE_TOKEN) {
-    throw error(500, "Vercel Blob storage not configured");
-  }
-
-  await del(pathname, {
-    token: env.BLOB_READ_WRITE_TOKEN,
-  });
+  const client = createS3Client();
+  const bucket = getBucketName();
+  // DeleteObjectCommand silently no-ops on missing keys — correct behaviour
+  // for legacy Vercel Blob paths that haven't been migrated yet.
+  await client.send(
+    new DeleteObjectCommand({
+      Bucket: bucket,
+      Key: toKey(pathname),
+    })
+  );
 }
 
 export async function listFiles(prefix: string): Promise<any[]> {
-  if (!env.BLOB_READ_WRITE_TOKEN) {
-    throw error(500, "Vercel Blob storage not configured");
-  }
+  const client = createS3Client();
+  const bucket = getBucketName();
 
-  const { blobs } = await list({
-    prefix,
-    token: env.BLOB_READ_WRITE_TOKEN,
-  });
+  const response = await client.send(
+    new ListObjectsV2Command({
+      Bucket: bucket,
+      Prefix: toKey(prefix),
+    })
+  );
 
-  return blobs;
+  return response.Contents ?? [];
 }

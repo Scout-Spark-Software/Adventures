@@ -15,13 +15,16 @@
     "db:migrate": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "migrate": "tsx scripts/migrate.ts",
+    "migrate:r2": "tsx scripts/migrate-r2.ts",
     "set-admin": "tsx scripts/set-admin.ts",
     "seed:hikes": "tsx scripts/seed-hikes.ts",
     "seed:camping": "tsx scripts/seed-camping.ts",
     "seed:backpacking": "tsx scripts/seed-backpacking.ts",
     "seed:councils": "tsx scripts/seed-councils.ts",
     "secrets:upload:prod": "node scripts/upload-secrets.cjs .env production",
-    "secrets:upload:preview": "node scripts/upload-secrets.cjs .env.dev preview"
+    "secrets:upload:preview": "node scripts/upload-secrets.cjs .env.dev preview",
+    "deploy:prod": "npm run build && wrangler pages deploy",
+    "deploy:preview": "npm run build && wrangler pages deploy --branch preview"
   },
   "devDependencies": {
     "@ernane/svelte-star-rating": "^1.1.9",
@@ -66,7 +69,7 @@
     "@neondatabase/neon-js": "^0.1.0-beta.18",
     "@neondatabase/serverless": "^1.0.2",
     "@vercel/analytics": "^1.6.1",
-    "@vercel/blob": "^0.19.0",
+    "@aws-sdk/client-s3": "^3.600.0",
     "@vercel/edge-config": "^1.4.3",
     "@workos-inc/node": "^7.77.0",
     "dotenv": "^17.2.3",

@@ -95,12 +95,10 @@ export const DELETE: RequestHandler = async (event) => {
     throw error(403, "Not authorized to delete this file");
   }
 
-  // Extract pathname from URL
-  const urlObj = new URL(file.fileUrl);
-  const pathname = urlObj.pathname;
-
-  // Delete from Vercel Blob
-  await deleteFile(pathname);
+  // Fire-and-forget R2 deletion — don't block the response on it
+  deleteFile(new URL(file.fileUrl).pathname).catch((err) =>
+    console.error("R2 deletion failed for file", file.id, err)
+  );
 
   // Delete from database
   await db.delete(files).where(eq(files.id, event.params.id));
