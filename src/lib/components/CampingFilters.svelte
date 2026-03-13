@@ -340,8 +340,9 @@
 
   <!-- Amenities Multi-Select Dropdown -->
   <div class="mb-3" bind:this={amenitiesDropdownEl}>
-    <label class="block text-sm font-medium text-gray-700 mb-1.5">Amenities</label>
+    <label for="amenities-dropdown" class="block text-sm font-medium text-gray-700 mb-1.5">Amenities</label>
     <button
+      id="amenities-dropdown"
       type="button"
       on:click|stopPropagation={() => (amenitiesOpen = !amenitiesOpen)}
       class="w-full flex items-center justify-between px-3 py-1.5 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-left"
@@ -407,8 +408,9 @@
 
   <!-- Facilities Multi-Select Dropdown -->
   <div class="mb-3" bind:this={facilitiesDropdownEl}>
-    <label class="block text-sm font-medium text-gray-700 mb-1.5">Facilities</label>
+    <label for="facilities-dropdown" class="block text-sm font-medium text-gray-700 mb-1.5">Facilities</label>
     <button
+      id="facilities-dropdown"
       type="button"
       on:click|stopPropagation={() => (facilitiesOpen = !facilitiesOpen)}
       class="w-full flex items-center justify-between px-3 py-1.5 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-left"

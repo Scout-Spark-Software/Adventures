@@ -339,8 +339,9 @@
 
   <!-- Trail Features Multi-Select Dropdown -->
   <div class="mb-3" bind:this={featuresDropdownEl}>
-    <label class="block text-sm font-medium text-gray-700 mb-1.5">Trail Features</label>
+    <label for="features-dropdown" class="block text-sm font-medium text-gray-700 mb-1.5">Trail Features</label>
     <button
+      id="features-dropdown"
       type="button"
       on:click|stopPropagation={() => (featuresOpen = !featuresOpen)}
       class="w-full flex items-center justify-between px-3 py-1.5 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-left"

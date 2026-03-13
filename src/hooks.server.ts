@@ -31,9 +31,6 @@ const authHandle: Handle = async ({ event, resolve }) => {
         event.locals.userId = null;
       }
     } catch (error) {
-      // Session validation failed - check if we have a refresh token to try
-      console.error("Session validation error:", error);
-
       // If this is a transient network error (e.g. JWKS timeout), don't
       // invalidate the session — just skip auth for this request.
       const isTransientError =
@@ -57,6 +54,10 @@ const authHandle: Handle = async ({ event, resolve }) => {
           error !== null &&
           "code" in error &&
           error.code === "ERR_JWT_EXPIRED");
+
+      if (!isExpiredToken) {
+        console.error("Session validation error:", error);
+      }
 
       if (refreshToken && isExpiredToken) {
         try {
