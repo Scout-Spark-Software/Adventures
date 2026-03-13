@@ -53,7 +53,7 @@ export const workosConfig = new Proxy(
 // Create JWKS instance once at module level so jose can cache the keys
 const JWKS = new Proxy(function () {} as unknown as WorkosInstance["JWKS"], {
   apply(_, thisArg, args) {
-    return Reflect.apply(getInstance().JWKS as unknown as Function, thisArg, args);
+    return Reflect.apply(getInstance().JWKS as unknown as (...args: unknown[]) => unknown, thisArg, args);
   },
   get(_, prop) {
     return Reflect.get(getInstance().JWKS, prop);

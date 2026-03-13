@@ -118,8 +118,7 @@
 </script>
 
 <!-- Backdrop -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
   class="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
   on:click|self={close}

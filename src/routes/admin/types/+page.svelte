@@ -142,7 +142,7 @@
     <div
       class="flex flex-wrap gap-1 p-1 bg-white/5 border border-white/10 rounded-xl mb-6 w-fit max-w-full"
     >
-      {#each [["features", "Hike Features"], ["amenities", "Camping Amenities"], ["facilities", "Camping Facilities"]] as [tab, label]}
+      {#each [["features", "Hike Features"], ["amenities", "Camping Amenities"], ["facilities", "Camping Facilities"]] as [tab, label] (tab)}
         <button
           on:click={() => {
             activeTab = tab as any;

@@ -189,7 +189,7 @@
                 <ChevronLeft size={18} />
               </a>
 
-              {#each pageNumbers as pg}
+              {#each pageNumbers as pg (pg)}
                 {#if pg === "…"}
                   <span class="px-2 text-stone-400 text-sm select-none">…</span>
                 {:else}

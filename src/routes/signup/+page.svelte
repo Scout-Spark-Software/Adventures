@@ -250,7 +250,7 @@
                       >
                         Password must have:
                       </p>
-                      {#each [{ met: hasMinLength, label: "12+ characters" }, { met: hasUppercase, label: "Uppercase letter" }, { met: hasLowercase, label: "Lowercase letter" }, { met: hasNumber, label: "Number" }] as req}
+                      {#each [{ met: hasMinLength, label: "12+ characters" }, { met: hasUppercase, label: "Uppercase letter" }, { met: hasLowercase, label: "Lowercase letter" }, { met: hasNumber, label: "Number" }] as req (req.label)}
                         <div class="flex items-center gap-2">
                           {#if req.met}
                             <svg

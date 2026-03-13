@@ -152,7 +152,7 @@
                         disabled={processingIds.has(user.id)}
                         class="bg-white/5 border border-white/10 rounded-lg px-2.5 py-1 text-xs text-stone-300 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       >
-                        {#each roles as role}
+                        {#each roles as role (role)}
                           <option value={role} class="bg-stone-900">{role}</option>
                         {/each}
                       </select>
@@ -209,7 +209,7 @@
                   disabled={processingIds.has(user.id)}
                   class="bg-white/5 border border-white/10 rounded-lg px-2.5 py-1 text-xs text-stone-300 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {#each roles as role}
+                  {#each roles as role (role)}
                     <option value={role} class="bg-stone-900">{role}</option>
                   {/each}
                 </select>
