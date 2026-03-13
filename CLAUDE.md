@@ -37,12 +37,11 @@ npm run seed:camping         # Seed camping sites from CSV
 - **Framework**: SvelteKit 2 with TypeScript, Svelte 5
 - **Database**: Neon Serverless PostgreSQL with Drizzle ORM
 - **Auth**: WorkOS User Management (password auth with JWT sessions)
-- **Storage**: Vercel Blob for file uploads
+- **Storage**: Cloudflare R2 for file uploads
 - **Styling**: Tailwind CSS with forms/typography plugins
 - **Maps**: Leaflet for interactive maps and location picking
 - **Icons**: `lucide-svelte`
-- **Analytics**: Vercel Analytics
-- **Deployment**: Vercel (adapter-vercel)
+- **Deployment**: Cloudflare Pages (adapter-cloudflare)
 
 ### Key Directories
 
@@ -50,7 +49,7 @@ npm run seed:camping         # Seed camping sites from CSV
 - `src/lib/server/workos.ts` - WorkOS authentication wrapper
 - `src/lib/auth/middleware.ts` - Auth guards: `requireAuth()`, `requireAdmin()`, `requireModerator()`
 - `src/lib/auth/helpers.ts` - `isPrivilegedUser()`, `parseStatusParam()`
-- `src/lib/storage/blob.ts` - Vercel Blob utilities: `uploadFile()`, `deleteFile()`, `listFiles()`, `validateFile()`
+- `src/lib/storage/blob.ts` - R2 storage utilities: `uploadFile()`, `deleteFile()`, `listFiles()`, `validateFile()`
 - `src/lib/moderation.ts` - Content moderation queue helpers
 - `src/lib/allowed-fields.ts` - Allowlists for alteration proposals (prevents altering `status`, `featured`, etc.)
 - `src/lib/server/detail-page-loader.ts` - Shared server utility for hike/camping detail pages
@@ -140,7 +139,7 @@ POST/DELETE       /api/files/[id]/flag            - Flag or unflag an image
 
 GET/PUT           /api/admin/image-flags          - Admin review (approve deletes from Blob)
 
-POST              /api/upload                     - Upload to Vercel Blob + save record
+POST              /api/upload                     - Upload to Cloudflare R2 + save record
 
 GET/POST          /api/amenity-types
 PUT/DELETE        /api/amenity-types/[id]
@@ -192,8 +191,7 @@ Required in `.env` (see `.env.example`):
 
 - `DATABASE_URL` - Neon PostgreSQL connection string
 - `WORKOS_API_KEY`, `WORKOS_CLIENT_ID`, `WORKOS_ORGANIZATION_ID`, `WORKOS_COOKIE_PASSWORD` - Auth
-- `VERCEL_BLOB_TOKEN` - File storage (code reads `BLOB_READ_WRITE_TOKEN`)
-- `VERCEL_BLOB_STORE_ID` - Blob store ID
+- `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `R2_ACCOUNT_ID` - Cloudflare R2 storage
 - `NODE_ENV` - Environment
 
 ## Conventions
@@ -201,5 +199,5 @@ Required in `.env` (see `.env.example`):
 - Schema files export type aliases: `type Hike = typeof hikes.$inferSelect`
 - Components in `src/lib/components/` with subdirectories: `hikes/`, `camping/`, `detail-pages/`, `ratings/`
 - Form submissions create entities with `status: "pending"` and add to moderation queue
-- Delete operations on hikes/camping sites also cascade-delete all associated Vercel Blob files
+- Delete operations on hikes/camping sites also cascade-delete all associated R2 files
 - Alteration proposals are validated against per-entity allowlists in `src/lib/allowed-fields.ts`
