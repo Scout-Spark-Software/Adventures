@@ -41,6 +41,8 @@
           src={hike.bannerImageUrl}
           alt={hike.name}
           class="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
         />
       {:else}
         <div class="absolute inset-0">
@@ -117,6 +119,8 @@
           src={hike.bannerImageUrl}
           alt={hike.name}
           class="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
         />
       {:else}
         <!-- Decorative mountain shapes -->

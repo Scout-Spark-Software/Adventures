@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ url }) => {
   if (entity?.status === "approved") {
     return json(results, {
       headers: {
-        "Cache-Control": "public, s-maxage=600, stale-while-revalidate=3600",
+        "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
       },
     });
   }

@@ -15,6 +15,8 @@
             src={file.fileUrl}
             alt={file.fileName}
             class="w-full h-48 object-cover rounded-lg shadow"
+            loading="lazy"
+            decoding="async"
           />
         {:else}
           <a

@@ -20,7 +20,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
   return json(results, {
     headers: {
-      "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+      "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=604800",
     },
   });
 };

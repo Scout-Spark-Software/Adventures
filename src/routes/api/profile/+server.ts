@@ -15,7 +15,7 @@ export const GET: RequestHandler = async ({ locals }) => {
     where: eq(userProfiles.userId, user.id),
   });
 
-  return json(profile ?? null);
+  return json(profile ?? null, { headers: { "Cache-Control": "no-store" } });
 };
 
 // PUT /api/profile - Upserts the current user's profile

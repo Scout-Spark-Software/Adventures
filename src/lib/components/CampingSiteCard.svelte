@@ -29,6 +29,8 @@
           src={campingSite.bannerImageUrl}
           alt={campingSite.name}
           class="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
         />
       {:else}
         <div class="absolute inset-0">
@@ -105,6 +107,8 @@
           src={campingSite.bannerImageUrl}
           alt={campingSite.name}
           class="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
         />
       {:else}
         <!-- Decorative mountain shapes -->

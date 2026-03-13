@@ -113,11 +113,11 @@ export const GET: RequestHandler = async ({ params, locals }) => {
   if (result.status === "approved") {
     return json(resultWithAttribution, {
       headers: {
-        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+        "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=7200",
       },
     });
   }
-  return json(resultWithAttribution);
+  return json(resultWithAttribution, { headers: { "Cache-Control": "no-store" } });
 };
 
 export const PUT: RequestHandler = async (event) => {

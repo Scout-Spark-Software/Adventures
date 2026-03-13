@@ -81,7 +81,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     entity: entityMap.get(item.entityId) ?? null,
   }));
 
-  return json(enrichedItems);
+  return json(enrichedItems, { headers: { "Cache-Control": "no-store" } });
 };
 
 export const PUT: RequestHandler = async ({ request, locals }) => {

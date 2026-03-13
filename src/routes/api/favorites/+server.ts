@@ -30,7 +30,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     where: and(...conditions),
   });
 
-  return json(results);
+  return json(results, { headers: { "Cache-Control": "no-store" } });
 };
 
 export const POST: RequestHandler = async ({ request, locals }) => {

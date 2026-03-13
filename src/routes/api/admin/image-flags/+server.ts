@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     },
   });
 
-  return json(flags);
+  return json(flags, { headers: { "Cache-Control": "no-store" } });
 };
 
 export const PUT: RequestHandler = async ({ request, locals }) => {

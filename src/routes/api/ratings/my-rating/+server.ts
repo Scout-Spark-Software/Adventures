@@ -24,8 +24,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     where: and(...conditions),
   });
 
-  return json({
-    hasRated: !!userRating,
-    rating: userRating || null,
-  });
+  return json(
+    { hasRated: !!userRating, rating: userRating || null },
+    { headers: { "Cache-Control": "no-store" } }
+  );
 };

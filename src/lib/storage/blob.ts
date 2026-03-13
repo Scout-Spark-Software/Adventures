@@ -97,6 +97,9 @@ export async function uploadFile(
       Body: new Uint8Array(arrayBuffer),
       ContentType: file.type,
       ContentLength: file.size,
+      // Paths include a timestamp so the content never changes at a given key.
+      // Immutable caching maximises CDN cache hit rates and reduces R2 egress.
+      CacheControl: "public, max-age=31536000, immutable",
     })
   );
 

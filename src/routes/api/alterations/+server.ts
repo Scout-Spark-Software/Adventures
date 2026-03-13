@@ -41,7 +41,7 @@ export const GET: RequestHandler = async ({ url }) => {
     orderBy: [desc(alterations.createdAt)],
   });
 
-  return json(results);
+  return json(results, { headers: { "Cache-Control": "no-store" } });
 };
 
 export const POST: RequestHandler = async ({ request, locals }) => {

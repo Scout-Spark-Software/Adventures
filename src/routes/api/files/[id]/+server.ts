@@ -15,7 +15,9 @@ export const GET: RequestHandler = async ({ params }) => {
     throw error(404, "File not found");
   }
 
-  return json(file);
+  return json(file, {
+    headers: { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400" },
+  });
 };
 
 export const PATCH: RequestHandler = async (event) => {

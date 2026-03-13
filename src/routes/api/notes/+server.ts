@@ -52,7 +52,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     },
   });
 
-  return json(results);
+  return json(results, { headers: { "Cache-Control": "no-store" } });
 };
 
 // POST /api/notes - Create new note

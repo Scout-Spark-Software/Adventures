@@ -60,14 +60,17 @@ export const GET: RequestHandler = async ({ url }) => {
 
   // No CDN cache: response contains user attribution data that must reflect
   // the submitter's current privacy preference in real time.
-  return json({
-    ratings: ratingsWithAttribution,
-    aggregate: aggregate || {
-      averageRating: null,
-      totalRatings: 0,
-      totalReviews: 0,
+  return json(
+    {
+      ratings: ratingsWithAttribution,
+      aggregate: aggregate || {
+        averageRating: null,
+        totalRatings: 0,
+        totalReviews: 0,
+      },
     },
-  });
+    { headers: { "Cache-Control": "no-store" } }
+  );
 };
 
 // POST /api/ratings - Create or update rating (upsert)

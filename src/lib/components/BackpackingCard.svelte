@@ -42,6 +42,8 @@
           src={backpacking.bannerImageUrl}
           alt={backpacking.name}
           class="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
         />
       {:else}
         <div class="absolute inset-0">
@@ -119,6 +121,8 @@
           src={backpacking.bannerImageUrl}
           alt={backpacking.name}
           class="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
         />
       {:else}
         <!-- Decorative mountain shapes -->

@@ -196,7 +196,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   if (featured === "true" && !privileged) {
     return json(response, {
       headers: {
-        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+        "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=7200",
       },
     });
   }
@@ -218,12 +218,17 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   if (!privileged && !hasFilters) {
     return json(response, {
       headers: {
-        "Cache-Control": "public, s-maxage=120, stale-while-revalidate=300",
+        "Cache-Control": "public, s-maxage=1800, stale-while-revalidate=3600",
       },
     });
   }
 
-  return json(response);
+  if (!privileged) {
+    return json(response, {
+      headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=900" },
+    });
+  }
+  return json(response, { headers: { "Cache-Control": "no-store" } });
 };
 
 export const POST: RequestHandler = async ({ request, locals }) => {
