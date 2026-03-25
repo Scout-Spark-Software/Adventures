@@ -283,7 +283,7 @@
 
 {#if !userId}
   <div class="text-center py-8 bg-gray-50 rounded-lg">
-    <p class="text-gray-600">Please log in to create and view notes.</p>
+    <p class="text-gray-600">Please log in to create and view your private notes.</p>
   </div>
 {:else}
   {#if error}

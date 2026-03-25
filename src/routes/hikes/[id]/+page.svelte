@@ -94,7 +94,7 @@
       label: "Reviews",
       count: data.ratingAggregate?.totalReviews || 0,
     },
-    { id: "notes", label: "Notes", count: notesCount },
+    { id: "notes", label: "My Notes", count: notesCount },
   ];
 
   function scrollToReviews() {

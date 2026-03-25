@@ -47,8 +47,7 @@ function createS3Client(): S3Client {
     throw error(500, "R2 storage not configured");
   }
 
-  const endpoint =
-    env.R2_ENDPOINT_OVERRIDE ?? `https://${accountId}.r2.cloudflarestorage.com`;
+  const endpoint = env.R2_ENDPOINT_OVERRIDE ?? `https://${accountId}.r2.cloudflarestorage.com`;
 
   return new S3Client({
     region: "auto",
@@ -110,7 +109,6 @@ export async function deleteFile(pathname: string): Promise<void> {
   const client = createS3Client();
   const bucket = getBucketName();
   // DeleteObjectCommand silently no-ops on missing keys — correct behaviour
-  // for legacy Vercel Blob paths that haven't been migrated yet.
   await client.send(
     new DeleteObjectCommand({
       Bucket: bucket,

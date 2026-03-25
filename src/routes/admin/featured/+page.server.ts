@@ -5,18 +5,14 @@ export const load: PageServerLoad = async (event) => {
   requireAdmin(event);
 
   const [hikesResponse, campingSitesResponse, backpackingResponse] = await Promise.all([
-    event.fetch("/api/hikes?status=approved"),
-    event.fetch("/api/camping-sites?status=approved"),
-    event.fetch("/api/backpacking?status=approved"),
+    (await event.fetch("/api/hikes?status=approved")).json().then((r) => r.data),
+    (await event.fetch("/api/camping-sites?status=approved")).json().then((r) => r.data),
+    (await event.fetch("/api/backpacking?status=approved")).json().then((r) => r.data),
   ]);
 
-  const hikes = hikesResponse.ok ? await hikesResponse.json() : [];
-  const campingSites = campingSitesResponse.ok ? await campingSitesResponse.json() : [];
-  const backpackingRoutes = backpackingResponse.ok ? await backpackingResponse.json() : [];
-
   return {
-    hikes: Array.isArray(hikes) ? hikes : [],
-    campingSites: Array.isArray(campingSites) ? campingSites : [],
-    backpackingRoutes: Array.isArray(backpackingRoutes) ? backpackingRoutes : [],
+    hikes: Array.isArray(hikesResponse) ? hikesResponse : [],
+    campingSites: Array.isArray(campingSitesResponse) ? campingSitesResponse : [],
+    backpackingRoutes: Array.isArray(backpackingResponse) ? backpackingResponse : [],
   };
 };

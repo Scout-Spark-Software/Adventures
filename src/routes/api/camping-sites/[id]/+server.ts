@@ -187,7 +187,7 @@ export const DELETE: RequestHandler = async (event) => {
     throw error(403, "Not authorized to delete this camping site");
   }
 
-  // Delete associated files from Vercel Blob and DB
+  // Delete associated files from R2 and DB
   const entityFiles = await db.query.files.findMany({
     where: eq(files.entityId, event.params.id),
   });

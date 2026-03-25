@@ -14,7 +14,7 @@
   const tabs = [
     { id: "profile", label: "Profile" },
     { id: "security", label: "Security" },
-    { id: "notes", label: "Notes" },
+    { id: "notes", label: "My Notes" },
   ];
 
   let isChangingPassword = false;
