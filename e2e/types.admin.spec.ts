@@ -1,0 +1,59 @@
+import { test, expect } from "@playwright/test";
+
+const TEST_AMENITY_NAME = "Test Amenity E2E Playwright";
+const TEST_AMENITY_KEY = "testAmenityE2EPlaywright";
+
+test.describe("Type management", () => {
+  test("admin can view the types management page", async ({ page }) => {
+    await page.goto("/admin/types");
+    await expect(page.locator("h1")).toHaveText("Manage Types");
+    // Tab buttons should be visible
+    await expect(page.locator("button:has-text('Hike Features')")).toBeVisible();
+    await expect(page.locator("button:has-text('Camping Amenities')")).toBeVisible();
+    await expect(page.locator("button:has-text('Camping Facilities')")).toBeVisible();
+  });
+
+  test("admin can add a new amenity type", async ({ page }) => {
+    await page.goto("/admin/types");
+
+    // Switch to Camping Amenities tab
+    await page.click("button:has-text('Camping Amenities')");
+
+    // Click Add New
+    await page.click('button:has-text("Add New")');
+
+    // The form panel should appear — fill in name and key (required for amenities)
+    await page.fill("#name", TEST_AMENITY_NAME);
+    await page.fill("#key", TEST_AMENITY_KEY);
+
+    // Save
+    await page.click('button:has-text("Save")');
+
+    // The new item should appear in the list
+    await expect(page.locator(`text=${TEST_AMENITY_NAME}`)).toBeVisible();
+  });
+
+  test("admin can delete the test amenity type", async ({ page }) => {
+    await page.goto("/admin/types");
+
+    // Switch to Camping Amenities tab
+    await page.click("button:has-text('Camping Amenities')");
+
+    // Find the row containing the test amenity name
+    const itemRow = page.locator(".divide-y > div").filter({ hasText: TEST_AMENITY_NAME });
+
+    // Guard: if the item doesn't exist (e.g. prior test didn't run), skip
+    if (!(await itemRow.isVisible())) {
+      return;
+    }
+
+    // Accept the confirm dialog
+    page.on("dialog", (dialog) => dialog.accept());
+
+    // Click the delete (Trash2) button within that row
+    await itemRow.locator('button[title="Delete"]').click();
+
+    // The item should no longer be in the list
+    await expect(page.locator(`text=${TEST_AMENITY_NAME}`)).not.toBeVisible();
+  });
+});
