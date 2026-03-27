@@ -46,7 +46,7 @@ export const SECURITY_HEADERS: Record<string, string> = {
   "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
   "Content-Security-Policy": [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://pagead2.googlesyndication.com https://partner.googleadservices.com https://tpc.googlesyndication.com",
+    "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://pagead2.googlesyndication.com https://partner.googleadservices.com https://tpc.googlesyndication.com https://static.cloudflareinsights.com",
     "style-src 'self' 'unsafe-inline' https://unpkg.com",
     "img-src 'self' blob: data: https://files.adventurespark.org https://*.tile.openstreetmap.org https://pagead2.googlesyndication.com https://tpc.googlesyndication.com",
     "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://pagead2.googlesyndication.com",
