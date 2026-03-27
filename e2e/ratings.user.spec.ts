@@ -18,9 +18,7 @@ test.describe('Ratings – authenticated user', () => {
     await page.getByRole('button', { name: 'Reviews' }).click();
     await page.waitForLoadState('networkidle');
 
-    // If there is an existing rating, delete it
-    const deleteRatingBtn = page.getByRole('button', { name: 'Delete' }).filter({ hasText: 'Delete' }).first();
-    // Look specifically inside the "Your Rating" card
+    // If there is an existing rating, delete it — look inside the "Your Rating" card
     const yourRatingCard = page.locator('.bg-indigo-50');
     const deleteBtn = yourRatingCard.getByRole('button', { name: 'Delete' });
     if (await deleteBtn.isVisible({ timeout: 2000 }).catch(() => false)) {

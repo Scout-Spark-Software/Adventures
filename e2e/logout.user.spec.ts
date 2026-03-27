@@ -1,8 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-// Uses the saved authenticated user session from auth setup
-test.use({ storageState: 'e2e/.auth/user.json' });
-
 test.describe('Logout – authenticated user', () => {
   test('logs out and returns to homepage without authenticated nav', async ({ page }) => {
     await page.goto('/');
