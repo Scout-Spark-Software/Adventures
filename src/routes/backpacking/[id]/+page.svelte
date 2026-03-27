@@ -248,7 +248,7 @@
   <title>{data.backpacking.name} - Adventure Spark</title>
 </svelte:head>
 
-<div class="min-h-screen bg-gray-100/60">
+<div class="min-h-screen bg-gray-100">
   <div class="max-w-6xl mx-auto px-4 py-6 space-y-8">
     <!-- Top Bar -->
     <div class="relative flex items-center justify-between">
