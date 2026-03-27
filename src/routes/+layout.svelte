@@ -9,6 +9,12 @@
   $: user = data.user;
 </script>
 
+{#if data.isPreview}
+  <div class="bg-yellow-400 text-yellow-900 text-center text-xs font-semibold py-1.5 px-4">
+    Preview Environment
+  </div>
+{/if}
+
 <Header {user} />
 
 <main>

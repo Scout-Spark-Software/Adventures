@@ -3,6 +3,7 @@ import {
   PutObjectCommand,
   DeleteObjectCommand,
   ListObjectsV2Command,
+  type _Object,
 } from "@aws-sdk/client-s3";
 import { error } from "@sveltejs/kit";
 import { env } from "$env/dynamic/private";
@@ -38,7 +39,11 @@ function toKey(pathname: string): string {
   return pathname.replace(/^\/+/, "");
 }
 
-function createS3Client(): S3Client {
+let _s3Client: S3Client | undefined;
+
+function getS3Client(): S3Client {
+  if (_s3Client) return _s3Client;
+
   const accountId = env.R2_ACCOUNT_ID;
   const accessKeyId = env.R2_ACCESS_KEY_ID;
   const secretAccessKey = env.R2_SECRET_ACCESS_KEY;
@@ -49,12 +54,14 @@ function createS3Client(): S3Client {
 
   const endpoint = env.R2_ENDPOINT_OVERRIDE ?? `https://${accountId}.r2.cloudflarestorage.com`;
 
-  return new S3Client({
+  _s3Client = new S3Client({
     region: "auto",
     endpoint,
     credentials: { accessKeyId, secretAccessKey },
     forcePathStyle: Boolean(env.R2_ENDPOINT_OVERRIDE),
   });
+
+  return _s3Client;
 }
 
 function getPublicUrl(key: string): string {
@@ -83,7 +90,7 @@ export async function uploadFile(
 ): Promise<{ url: string; pathname: string }> {
   validateFile(file, fileType);
 
-  const client = createS3Client();
+  const client = getS3Client();
   const bucket = getBucketName();
   const key = toKey(path);
 
@@ -106,7 +113,7 @@ export async function uploadFile(
 }
 
 export async function deleteFile(pathname: string): Promise<void> {
-  const client = createS3Client();
+  const client = getS3Client();
   const bucket = getBucketName();
   // DeleteObjectCommand silently no-ops on missing keys — correct behaviour
   await client.send(
@@ -117,8 +124,8 @@ export async function deleteFile(pathname: string): Promise<void> {
   );
 }
 
-export async function listFiles(prefix: string): Promise<any[]> {
-  const client = createS3Client();
+export async function listFiles(prefix: string): Promise<_Object[]> {
+  const client = getS3Client();
   const bucket = getBucketName();
 
   const response = await client.send(
