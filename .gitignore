@@ -7,9 +7,14 @@ node_modules
 .env
 .env.*
 !.env.example
+!.env.test.example
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vercel
 .env*.local
 wrangler.jsonc
 secrets.json
+
+e2e/.auth/
+playwright-report/
+test-results/
