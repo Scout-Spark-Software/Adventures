@@ -125,6 +125,7 @@
   role="dialog"
   aria-modal="true"
   aria-label="Image viewer"
+  tabindex="-1"
 >
   <!-- Top bar -->
   <div
