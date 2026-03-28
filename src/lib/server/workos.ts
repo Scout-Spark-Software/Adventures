@@ -227,6 +227,32 @@ export const workosAuth = {
     }
   },
 
+  // Send password reset email
+  async sendPasswordResetEmail(email: string, passwordResetUrl: string) {
+    try {
+      await workos.userManagement.sendPasswordResetEmail({
+        email,
+        passwordResetUrl,
+      });
+      return true;
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : "Failed to send password reset email");
+    }
+  },
+
+  // Reset password with token
+  async resetPassword(token: string, newPassword: string) {
+    try {
+      await workos.userManagement.resetPassword({
+        token,
+        newPassword,
+      });
+      return true;
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : "Failed to reset password");
+    }
+  },
+
   // Get user by email
   async getUserByEmail(email: string) {
     try {

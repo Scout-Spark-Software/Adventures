@@ -9,6 +9,7 @@
   let showPassword = false;
 
   $: verified = $page.url.searchParams.get("verified") === "true";
+  $: passwordReset = $page.url.searchParams.get("passwordReset") === "true";
 </script>
 
 <svelte:head>
@@ -87,6 +88,30 @@
       class="rounded-2xl p-8 space-y-6"
       style="background: rgba(245,240,232,0.05); border: 1px solid rgba(245,240,232,0.1); backdrop-filter: blur(12px);"
     >
+      {#if passwordReset}
+        <div
+          class="rounded-xl p-4 flex items-start gap-3"
+          style="background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.25);"
+        >
+          <svg
+            class="h-5 w-5 flex-shrink-0 mt-0.5"
+            fill="none"
+            stroke="#34d399"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <p class="text-sm font-medium" style="color: #6ee7b7;">
+            Password reset! You can now sign in with your new password.
+          </p>
+        </div>
+      {/if}
+
       {#if verified}
         <div
           class="rounded-xl p-4 flex items-start gap-3"
