@@ -1,7 +1,7 @@
 import type { PageServerLoad } from "./$types";
 import { requireAdmin } from "$lib/auth/middleware";
 import { db } from "$lib/db";
-import { hikes, campingSites, moderationQueue, favorites, imageFlags } from "$lib/db/schemas";
+import { hikes, campingSites, moderationQueue, favorites, imageFlags, backpacking } from "$lib/db/schemas";
 import { count, eq, and } from "drizzle-orm";
 
 export const load: PageServerLoad = async (event) => {
@@ -11,8 +11,10 @@ export const load: PageServerLoad = async (event) => {
   const [
     totalHikes,
     totalCampingSites,
+    totalBackpacking,
     pendingHikes,
     pendingCampingSites,
+    pendingBackpacking,
     featuredHikes,
     featuredCampingSites,
     pendingAlterations,
@@ -21,6 +23,7 @@ export const load: PageServerLoad = async (event) => {
   ] = await Promise.all([
     db.select({ count: count() }).from(hikes).where(eq(hikes.status, "approved")),
     db.select({ count: count() }).from(campingSites).where(eq(campingSites.status, "approved")),
+    db.select({ count: count() }).from(backpacking).where(eq(backpacking.status, "approved")),
     db
       .select({ count: count() })
       .from(moderationQueue)
@@ -30,6 +33,12 @@ export const load: PageServerLoad = async (event) => {
       .from(moderationQueue)
       .where(
         and(eq(moderationQueue.status, "pending"), eq(moderationQueue.entityType, "camping_site"))
+      ),
+    db
+      .select({ count: count() })
+      .from(moderationQueue)
+      .where(
+        and(eq(moderationQueue.status, "pending"), eq(moderationQueue.entityType, "backpacking"))
       ),
     db
       .select({ count: count() })
@@ -54,8 +63,10 @@ export const load: PageServerLoad = async (event) => {
     stats: {
       totalHikes: totalHikes[0].count,
       totalCampingSites: totalCampingSites[0].count,
+      totalBackpacking: totalBackpacking[0].count,
       pendingHikes: pendingHikes[0].count,
       pendingCampingSites: pendingCampingSites[0].count,
+      pendingBackpacking: pendingBackpacking[0].count,
       featuredHikes: featuredHikes[0].count,
       featuredCampingSites: featuredCampingSites[0].count,
       pendingAlterations: pendingAlterations[0].count,

@@ -49,7 +49,7 @@
     </div>
 
     <!-- Stats Row -->
-    <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 mb-10">
+    <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6 mb-10">
       <div class="bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl px-4 py-4">
         <div class="flex items-center gap-2 mb-3">
           <Mountain size={14} class="text-emerald-400" />
@@ -70,26 +70,41 @@
 
       <div class="bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl px-4 py-4">
         <div class="flex items-center gap-2 mb-3">
+          <Backpack size={14} class="text-emerald-400" />
+          <span class="text-xs font-semibold text-stone-400 uppercase tracking-widest">Backpacking</span>
+        </div>
+        <p class="text-3xl font-bold text-stone-100 tabular-nums">{stats.totalBackpacking}</p>
+        <p class="text-xs text-stone-500 mt-1">Approved routes</p>
+      </div>
+
+      <a
+        href="/admin/moderation"
+        class="bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl px-4 py-4 hover:bg-white/10 hover:border-amber-500/30 transition-all duration-200"
+      >
+        <div class="flex items-center gap-2 mb-3">
           <CircleAlert size={14} class="text-amber-400" />
           <span class="text-xs font-semibold text-stone-400 uppercase tracking-widest">Pending</span
           >
         </div>
         <p class="text-3xl font-bold text-amber-300 tabular-nums">
-          {stats.pendingHikes + stats.pendingCampingSites}
+          {stats.pendingHikes + stats.pendingCampingSites + stats.pendingBackpacking}
         </p>
         <p class="text-xs text-stone-500 mt-1">
-          {stats.pendingHikes} hikes, {stats.pendingCampingSites} sites
+          {stats.pendingHikes} hikes, {stats.pendingCampingSites} camping, {stats.pendingBackpacking} backpacking
         </p>
-      </div>
+      </a>
 
-      <div class="bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl px-4 py-4">
+      <a
+        href="/admin/moderation"
+        class="bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl px-4 py-4 hover:bg-white/10 hover:border-white/20 transition-all duration-200"
+      >
         <div class="flex items-center gap-2 mb-3">
           <Pencil size={14} class="text-stone-400" />
           <span class="text-xs font-semibold text-stone-400 uppercase tracking-widest">Edits</span>
         </div>
         <p class="text-3xl font-bold text-stone-100 tabular-nums">{stats.pendingAlterations}</p>
         <p class="text-xs text-stone-500 mt-1">Pending review</p>
-      </div>
+      </a>
 
       <div class="bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl px-4 py-4">
         <div class="flex items-center gap-2 mb-3">
