@@ -1,8 +1,8 @@
 import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
-import { backpacking, addresses, ratingAggregates, files, councils } from "$lib/db/schemas";
-import { eq, sql } from "drizzle-orm";
+import { backpacking, addresses, ratingAggregates, files, councils, moderationQueue } from "$lib/db/schemas";
+import { eq, sql, and } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 import { isPrivilegedUser } from "$lib/auth/helpers";
 import { deleteFile } from "$lib/storage/blob";
@@ -225,6 +225,14 @@ export const DELETE: RequestHandler = async (event) => {
   }
 
   await db.delete(backpacking).where(eq(backpacking.id, event.params.id));
+  await db
+    .delete(moderationQueue)
+    .where(
+      and(
+        eq(moderationQueue.entityType, "backpacking"),
+        eq(moderationQueue.entityId, event.params.id)
+      )
+    );
 
   return json({ success: true });
 };
