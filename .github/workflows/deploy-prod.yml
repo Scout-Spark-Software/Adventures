@@ -1,0 +1,60 @@
+name: Deploy (Production)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  migrate:
+    name: Run DB migrations
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run migrations
+        run: npm run migrate all
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+  deploy:
+    name: Deploy to Cloudflare Pages (production)
+    runs-on: ubuntu-latest
+    environment: production
+    needs: migrate
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Deploy to Cloudflare Pages
+        run: npx wrangler pages deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
