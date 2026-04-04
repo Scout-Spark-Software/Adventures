@@ -53,7 +53,7 @@ export const backpacking = pgTable("backpacking", {
   resupplyPoints: jsonb("resupply_points"),
   waterAvailability: text("water_availability"),
   waypoints: jsonb("waypoints"),
-  slug: text("slug").unique(),
+  slug: text("slug").unique().notNull(),
   searchVector: tsvector("search_vector"),
   status: statusEnum("status").default("pending").notNull(),
   featured: boolean("featured").default(false).notNull(),

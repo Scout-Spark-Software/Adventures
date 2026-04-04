@@ -45,7 +45,7 @@ export const hikes = pgTable("hikes", {
   bestSeason: jsonb("best_season"),
   waterSources: boolean("water_sources").default(false),
   parkingInfo: text("parking_info"),
-  slug: text("slug").unique(),
+  slug: text("slug").unique().notNull(),
   searchVector: tsvector("search_vector"),
   status: statusEnum("status").default("pending").notNull(),
   featured: boolean("featured").default(false).notNull(),
