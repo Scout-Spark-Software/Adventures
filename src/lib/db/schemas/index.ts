@@ -17,4 +17,3 @@ export * from "./ratings";
 export * from "./rating-aggregates";
 export * from "./image-flags";
 export * from "./user-profiles";
-export * from "./data-requests";
