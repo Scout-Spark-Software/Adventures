@@ -83,7 +83,7 @@
   <!-- Main content area -->
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
-      <div class="px-6">
+      <div class="px-6 pt-6">
         <Tabs {tabs} bind:activeTab>
           {#if activeTab === "profile"}
             <div class="space-y-6 pb-6">
