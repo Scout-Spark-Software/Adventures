@@ -90,7 +90,7 @@
   }
 
   function handleCancel() {
-    goto(`/camping/${data.campingSite.id}`);
+    goto(`/camping/${data.campingSite.slug}`);
   }
 </script>
 

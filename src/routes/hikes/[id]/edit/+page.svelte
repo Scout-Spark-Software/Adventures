@@ -67,7 +67,7 @@
   }
 
   function handleCancel() {
-    goto(`/hikes/${data.hike.id}`);
+    goto(`/hikes/${data.hike.slug}`);
   }
 </script>
 

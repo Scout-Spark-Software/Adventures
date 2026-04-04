@@ -93,7 +93,7 @@
   }
 
   function handleCancel() {
-    goto(`/backpacking/${data.backpacking.id}`);
+    goto(`/backpacking/${data.backpacking.slug}`);
   }
 </script>
 
