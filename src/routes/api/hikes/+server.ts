@@ -3,6 +3,7 @@ import { requireAuth } from "$lib/auth/middleware";
 import { db } from "$lib/db";
 import { addresses, hikes, ratingAggregates } from "$lib/db/schemas";
 import { addToModerationQueue } from "$lib/moderation";
+import { generateUniqueSlug } from "$lib/server/slug";
 import { sanitizeSearchQuery, validateNumericParam } from "$lib/security";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
 import { error, json } from "@sveltejs/kit";
@@ -242,6 +243,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     throw error(400, "Name is required");
   }
 
+  const slug = await generateUniqueSlug(name, "hike");
+
   const [newHike] = await db
     .insert(hikes)
     .values({
@@ -262,6 +265,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       bestSeason: bestSeason ? JSON.parse(JSON.stringify(bestSeason)) : null,
       waterSources: waterSources === true,
       parkingInfo: parkingInfo || null,
+      slug,
       status: "pending",
       createdBy: user.id,
     })

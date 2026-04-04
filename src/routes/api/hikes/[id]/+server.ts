@@ -7,6 +7,7 @@ import { requireAuth } from "$lib/auth/middleware";
 import { isPrivilegedUser } from "$lib/auth/helpers";
 import { deleteFile } from "$lib/storage/blob";
 import { getAttribution } from "$lib/server/attribution";
+import { generateUniqueSlug } from "$lib/server/slug";
 
 export const GET: RequestHandler = async ({ params, locals }) => {
   const rows = await db
@@ -134,9 +135,15 @@ export const PUT: RequestHandler = async (event) => {
 
   const body = await event.request.json();
 
+  let slug = hike.slug;
+  if (body.name && body.name !== hike.name) {
+    slug = await generateUniqueSlug(body.name, "hike", hike.id);
+  }
+
   // Support partial updates - only update fields that are provided
   const updateData: any = {
     updatedAt: new Date(),
+    slug,
   };
 
   // Add provided fields to update

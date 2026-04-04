@@ -13,6 +13,10 @@ const __dirname = dirname(__filename);
 
 dotenv.config();
 
+function toSlug(text: string): string {
+  return text.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, " ").trim().replace(/[\s-]+/g, "-").replace(/^-+|-+$/g, "");
+}
+
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
   console.error("DATABASE_URL environment variable is not set");
@@ -155,6 +159,7 @@ async function seedHikes() {
         bestSeason: bestSeason,
         waterSources: row.water_sources === "true",
         parkingInfo: row.parking_info || null,
+        slug: toSlug(row.name) || row.name.toLowerCase().replace(/\s+/g, "-"),
         status: (row.status || "approved") as "pending" | "approved" | "rejected",
         featured: row.featured === "true",
         createdBy: row.created_by || defaultUserId,

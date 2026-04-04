@@ -4,6 +4,7 @@ import { db } from "$lib/db";
 import { addresses, backpacking, ratingAggregates } from "$lib/db/schemas";
 import { addToModerationQueue } from "$lib/moderation";
 import { sanitizeSearchQuery, validateNumericParam } from "$lib/security";
+import { generateUniqueSlug } from "$lib/server/slug";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
 import { error, json } from "@sveltejs/kit";
 import { and, count, desc, eq, gte, lte, or, sql } from "drizzle-orm";
@@ -259,6 +260,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     throw error(400, "Name is required");
   }
 
+  const slug = await generateUniqueSlug(name, "backpacking");
+
   const [newEntry] = await db
     .insert(backpacking)
     .values({
@@ -286,6 +289,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       resupplyPoints: resupplyPoints ? JSON.parse(JSON.stringify(resupplyPoints)) : null,
       waterAvailability: waterAvailability || null,
       waypoints: waypoints ? JSON.parse(JSON.stringify(waypoints)) : null,
+      slug,
       status: "pending",
       createdBy: user.id,
     })

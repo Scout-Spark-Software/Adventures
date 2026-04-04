@@ -7,6 +7,7 @@ import { requireAuth } from "$lib/auth/middleware";
 import { isPrivilegedUser } from "$lib/auth/helpers";
 import { deleteFile } from "$lib/storage/blob";
 import { getAttribution } from "$lib/server/attribution";
+import { generateUniqueSlug } from "$lib/server/slug";
 
 export const GET: RequestHandler = async ({ params, locals }) => {
   const rows = await db
@@ -137,6 +138,11 @@ export const PUT: RequestHandler = async (event) => {
 
   const body = await event.request.json();
 
+  let slug = entry.slug;
+  if (body.name && body.name !== entry.name) {
+    slug = await generateUniqueSlug(body.name, "backpacking", entry.id);
+  }
+
   const updateData: any = {
     updatedAt: new Date(),
   };
@@ -171,6 +177,8 @@ export const PUT: RequestHandler = async (event) => {
       updateData[field] = body[field];
     }
   }
+
+  updateData.slug = slug;
 
   const [updated] = await db
     .update(backpacking)
