@@ -9,8 +9,6 @@ import { deleteFile } from "$lib/storage/blob";
 import { getAttribution } from "$lib/server/attribution";
 import { generateUniqueSlug } from "$lib/server/slug";
 
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
 export const GET: RequestHandler = async ({ params, locals }) => {
   const rows = await db
     .select({
@@ -120,10 +118,9 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
 export const PUT: RequestHandler = async (event) => {
   const user = requireAuth(event);
-  const isUuid = UUID_RE.test(event.params.id);
 
   const campingSite = await db.query.campingSites.findFirst({
-    where: isUuid ? eq(campingSites.id, event.params.id) : eq(campingSites.slug, event.params.id),
+    where: eq(campingSites.slug, event.params.id),
   });
 
   if (!campingSite) {
@@ -184,10 +181,9 @@ export const PUT: RequestHandler = async (event) => {
 
 export const DELETE: RequestHandler = async (event) => {
   const user = requireAuth(event);
-  const isUuid = UUID_RE.test(event.params.id);
 
   const campingSite = await db.query.campingSites.findFirst({
-    where: isUuid ? eq(campingSites.id, event.params.id) : eq(campingSites.slug, event.params.id),
+    where: eq(campingSites.slug, event.params.id),
   });
 
   if (!campingSite) {
