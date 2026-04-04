@@ -104,6 +104,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   let query = db
     .select({
       id: campingSites.id,
+      slug: campingSites.slug,
       name: campingSites.name,
       description: campingSites.description,
       addressId: campingSites.addressId,
