@@ -148,13 +148,13 @@
                 </td>
                 <td class="px-5 py-3.5 text-right">
                   <button
-                    on:click={() => toggleFeatured("hike", hike.id, hike.featured)}
-                    disabled={processingIds.has(hike.id)}
+                    on:click={() => toggleFeatured("hike", hike.slug, hike.featured)}
+                    disabled={processingIds.has(hike.slug)}
                     class="{hike.featured
                       ? 'text-stone-400 hover:text-red-300 border-white/10 hover:border-red-500/30'
                       : 'text-emerald-400 hover:text-emerald-300 border-emerald-500/30 hover:border-emerald-400/50'} text-xs font-semibold border rounded-lg px-3 py-1.5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                   >
-                    {processingIds.has(hike.id) ? "..." : hike.featured ? "Remove" : "Feature"}
+                    {processingIds.has(hike.slug) ? "..." : hike.featured ? "Remove" : "Feature"}
                   </button>
                 </td>
               </tr>
@@ -217,13 +217,13 @@
                 <td class="px-5 py-3.5 text-right">
                   <button
                     on:click={() =>
-                      toggleFeatured("camping_site", campingSite.id, campingSite.featured)}
-                    disabled={processingIds.has(campingSite.id)}
+                      toggleFeatured("camping_site", campingSite.slug, campingSite.featured)}
+                    disabled={processingIds.has(campingSite.slug)}
                     class="{campingSite.featured
                       ? 'text-stone-400 hover:text-red-300 border-white/10 hover:border-red-500/30'
                       : 'text-emerald-400 hover:text-emerald-300 border-emerald-500/30 hover:border-emerald-400/50'} text-xs font-semibold border rounded-lg px-3 py-1.5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                   >
-                    {processingIds.has(campingSite.id)
+                    {processingIds.has(campingSite.slug)
                       ? "..."
                       : campingSite.featured
                         ? "Remove"
@@ -288,13 +288,13 @@
                   </td>
                   <td class="px-5 py-3.5 text-right">
                     <button
-                      on:click={() => toggleFeatured("backpacking", route.id, route.featured)}
-                      disabled={processingIds.has(route.id)}
+                      on:click={() => toggleFeatured("backpacking", route.slug, route.featured)}
+                      disabled={processingIds.has(route.slug)}
                       class="{route.featured
                         ? 'text-stone-400 hover:text-red-300 border-white/10 hover:border-red-500/30'
                         : 'text-emerald-400 hover:text-emerald-300 border-emerald-500/30 hover:border-emerald-400/50'} text-xs font-semibold border rounded-lg px-3 py-1.5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                     >
-                      {processingIds.has(route.id) ? "..." : route.featured ? "Remove" : "Feature"}
+                      {processingIds.has(route.slug) ? "..." : route.featured ? "Remove" : "Feature"}
                     </button>
                   </td>
                 </tr>
