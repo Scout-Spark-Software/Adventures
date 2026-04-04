@@ -12,7 +12,6 @@ import { generateUniqueSlug } from "$lib/server/slug";
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export const GET: RequestHandler = async ({ params, locals }) => {
-  const isUuid = UUID_RE.test(params.id);
   const rows = await db
     .select({
       id: hikes.id,
@@ -75,7 +74,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     .leftJoin(addresses, eq(hikes.addressId, addresses.id))
     .leftJoin(councils, eq(hikes.councilId, councils.id))
     .leftJoin(ratingAggregates, eq(hikes.id, ratingAggregates.hikeId))
-    .where(isUuid ? eq(hikes.id, params.id) : eq(hikes.slug, params.id))
+    .where(eq(hikes.slug, params.id))
     .limit(1);
 
   const hike = rows[0];
@@ -123,9 +122,10 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
 export const PUT: RequestHandler = async (event) => {
   const user = requireAuth(event);
+  const isUuid = UUID_RE.test(event.params.id);
 
   const hike = await db.query.hikes.findFirst({
-    where: eq(hikes.id, event.params.id),
+    where: isUuid ? eq(hikes.id, event.params.id) : eq(hikes.slug, event.params.id),
   });
 
   if (!hike) {
@@ -180,7 +180,7 @@ export const PUT: RequestHandler = async (event) => {
   const [updatedHike] = await db
     .update(hikes)
     .set(updateData)
-    .where(eq(hikes.id, event.params.id))
+    .where(eq(hikes.id, hike.id))
     .returning();
 
   return json(updatedHike);
@@ -188,9 +188,10 @@ export const PUT: RequestHandler = async (event) => {
 
 export const DELETE: RequestHandler = async (event) => {
   const user = requireAuth(event);
+  const isUuid = UUID_RE.test(event.params.id);
 
   const hike = await db.query.hikes.findFirst({
-    where: eq(hikes.id, event.params.id),
+    where: isUuid ? eq(hikes.id, event.params.id) : eq(hikes.slug, event.params.id),
   });
 
   if (!hike) {
@@ -204,7 +205,7 @@ export const DELETE: RequestHandler = async (event) => {
 
   // Delete associated files from Vercel Blob and DB
   const entityFiles = await db.query.files.findMany({
-    where: eq(files.entityId, event.params.id),
+    where: eq(files.entityId, hike.id),
   });
 
   const deleteResults = await Promise.allSettled(
@@ -220,14 +221,14 @@ export const DELETE: RequestHandler = async (event) => {
   });
 
   if (entityFiles.length > 0) {
-    await db.delete(files).where(eq(files.entityId, event.params.id));
+    await db.delete(files).where(eq(files.entityId, hike.id));
   }
 
-  await db.delete(hikes).where(eq(hikes.id, event.params.id));
+  await db.delete(hikes).where(eq(hikes.id, hike.id));
   await db
     .delete(moderationQueue)
     .where(
-      and(eq(moderationQueue.entityType, "hike"), eq(moderationQueue.entityId, event.params.id))
+      and(eq(moderationQueue.entityType, "hike"), eq(moderationQueue.entityId, hike.id))
     );
 
   return json({ success: true });

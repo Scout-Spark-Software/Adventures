@@ -12,7 +12,6 @@ import { generateUniqueSlug } from "$lib/server/slug";
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export const GET: RequestHandler = async ({ params, locals }) => {
-  const isUuid = UUID_RE.test(params.id);
   const rows = await db
     .select({
       id: campingSites.id,
@@ -73,7 +72,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     .leftJoin(addresses, eq(campingSites.addressId, addresses.id))
     .leftJoin(councils, eq(campingSites.councilId, councils.id))
     .leftJoin(ratingAggregates, eq(campingSites.id, ratingAggregates.campingSiteId))
-    .where(isUuid ? eq(campingSites.id, params.id) : eq(campingSites.slug, params.id))
+    .where(eq(campingSites.slug, params.id))
     .limit(1);
 
   const campingSite = rows[0];
@@ -121,9 +120,10 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
 export const PUT: RequestHandler = async (event) => {
   const user = requireAuth(event);
+  const isUuid = UUID_RE.test(event.params.id);
 
   const campingSite = await db.query.campingSites.findFirst({
-    where: eq(campingSites.id, event.params.id),
+    where: isUuid ? eq(campingSites.id, event.params.id) : eq(campingSites.slug, event.params.id),
   });
 
   if (!campingSite) {
@@ -176,7 +176,7 @@ export const PUT: RequestHandler = async (event) => {
   const [updatedCampingSite] = await db
     .update(campingSites)
     .set(updateData)
-    .where(eq(campingSites.id, event.params.id))
+    .where(eq(campingSites.id, campingSite.id))
     .returning();
 
   return json(updatedCampingSite);
@@ -184,9 +184,10 @@ export const PUT: RequestHandler = async (event) => {
 
 export const DELETE: RequestHandler = async (event) => {
   const user = requireAuth(event);
+  const isUuid = UUID_RE.test(event.params.id);
 
   const campingSite = await db.query.campingSites.findFirst({
-    where: eq(campingSites.id, event.params.id),
+    where: isUuid ? eq(campingSites.id, event.params.id) : eq(campingSites.slug, event.params.id),
   });
 
   if (!campingSite) {
@@ -200,7 +201,7 @@ export const DELETE: RequestHandler = async (event) => {
 
   // Delete associated files from R2 and DB
   const entityFiles = await db.query.files.findMany({
-    where: eq(files.entityId, event.params.id),
+    where: eq(files.entityId, campingSite.id),
   });
 
   const deleteResults = await Promise.allSettled(
@@ -216,16 +217,16 @@ export const DELETE: RequestHandler = async (event) => {
   });
 
   if (entityFiles.length > 0) {
-    await db.delete(files).where(eq(files.entityId, event.params.id));
+    await db.delete(files).where(eq(files.entityId, campingSite.id));
   }
 
-  await db.delete(campingSites).where(eq(campingSites.id, event.params.id));
+  await db.delete(campingSites).where(eq(campingSites.id, campingSite.id));
   await db
     .delete(moderationQueue)
     .where(
       and(
         eq(moderationQueue.entityType, "camping_site"),
-        eq(moderationQueue.entityId, event.params.id)
+        eq(moderationQueue.entityId, campingSite.id)
       )
     );
 
