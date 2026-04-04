@@ -16,6 +16,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
   const rows = await db
     .select({
       id: campingSites.id,
+      slug: campingSites.slug,
       name: campingSites.name,
       description: campingSites.description,
       addressId: campingSites.addressId,

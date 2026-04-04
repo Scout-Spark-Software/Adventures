@@ -62,8 +62,9 @@ export async function loadDetailPage(params: {
   }
 
   // Get notes count for this user and entity
+  // Use entity.id (UUID) not entityId (may be a slug) to avoid UUID column type error
   let notesCount = 0;
-  if (locals.userId) {
+  if (locals.userId && entity.id) {
     const noteIdField =
       entityType === "hike"
         ? notes.hikeId
@@ -73,7 +74,7 @@ export async function loadDetailPage(params: {
     const result = await db
       .select({ count: count() })
       .from(notes)
-      .where(and(eq(notes.userId, locals.userId), eq(noteIdField, entityId)));
+      .where(and(eq(notes.userId, locals.userId), eq(noteIdField, entity.id)));
     notesCount = result[0]?.count || 0;
   }
 
