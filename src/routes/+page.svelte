@@ -16,6 +16,11 @@
 
 <svelte:head>
   <title>Adventure Spark - Discover Hikes & Camping Sites</title>
+  <meta name="description" content="Discover hiking trails, camping sites, and backpacking routes for scouts. Browse community-submitted adventures by difficulty, location, and features." />
+  <meta property="og:title" content="Adventure Spark - Discover Hikes & Camping Sites" />
+  <meta property="og:description" content="Discover hiking trails, camping sites, and backpacking routes for scouts. Browse community-submitted adventures by difficulty, location, and features." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
 
 <div class="min-h-screen">

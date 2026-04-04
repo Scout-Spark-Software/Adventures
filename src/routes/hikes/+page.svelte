@@ -51,6 +51,11 @@
 
 <svelte:head>
   <title>Hiking Trails — Adventure Spark</title>
+  <meta name="description" content="Browse scout hiking trails by difficulty, distance, trail type, and location. Find your next outdoor adventure." />
+  <meta property="og:title" content="Hiking Trails — Adventure Spark" />
+  <meta property="og:description" content="Browse scout hiking trails by difficulty, distance, trail type, and location. Find your next outdoor adventure." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary" />
 </svelte:head>
 
 <div class="min-h-screen bg-stone-100">

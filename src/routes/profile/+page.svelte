@@ -31,6 +31,7 @@
 
 <svelte:head>
   <title>Profile — Adventure Spark</title>
+  <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
 <div class="min-h-screen bg-stone-100">

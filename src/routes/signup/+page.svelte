@@ -35,6 +35,7 @@
 
 <svelte:head>
   <title>{showVerification ? "Verify Email" : "Sign Up"} - Adventure Spark</title>
+  <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
 <div

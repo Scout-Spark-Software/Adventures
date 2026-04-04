@@ -40,6 +40,7 @@
   export let data: PageData;
 
   $: isAdmin = data.userRole === "admin";
+  $: campingLocationString = [data.address?.city, data.address?.state].filter(Boolean).join(", ");
   // Explicitly type userRole for type safety
   $: typedUserRole = data.userRole as "member" | "admin" | null | undefined;
 
@@ -249,7 +250,55 @@
 </script>
 
 <svelte:head>
-  <title>{data.campingSite.name} - Adventure Spark</title>
+  <title>{data.campingSite.name}{campingLocationString ? ` – ${campingLocationString}` : ''} | Camping Site – Adventure Spark</title>
+  <meta name="description" content={[
+    data.campingSite.description ? data.campingSite.description.slice(0, 140).replace(/\s\S*$/, '') + '…' : null,
+    data.campingSite.siteType ? `${SITE_TYPE_LABELS[data.campingSite.siteType] ?? data.campingSite.siteType} campsite.` : null,
+    campingLocationString || null,
+  ].filter(Boolean).join(' ') || `Explore ${data.campingSite.name} camping site on Adventure Spark.`} />
+  <meta property="og:title" content="{data.campingSite.name}{campingLocationString ? ` – ${campingLocationString}` : ''}" />
+  <meta property="og:description" content={data.campingSite.description ? data.campingSite.description.slice(0, 200) : `Explore ${data.campingSite.name} camping site on Adventure Spark.`} />
+  <meta property="og:type" content="article" />
+  {#if data.campingSite.bannerImageUrl}
+    <meta property="og:image" content={data.campingSite.bannerImageUrl} />
+    <meta name="twitter:image" content={data.campingSite.bannerImageUrl} />
+  {/if}
+  <meta name="twitter:card" content={data.campingSite.bannerImageUrl ? 'summary_large_image' : 'summary'} />
+  {#if data.address?.latitude && data.address?.longitude}
+    <meta name="geo.position" content="{data.address.latitude};{data.address.longitude}" />
+    <meta name="ICBM" content="{data.address.latitude}, {data.address.longitude}" />
+  {/if}
+  {@html `<script type="application/ld+json">${JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Campground",
+    "name": data.campingSite.name,
+    "description": data.campingSite.description || undefined,
+    "url": `https://www.adventurespark.org/camping/${data.campingSite.id}`,
+    ...(data.campingSite.bannerImageUrl ? { "image": data.campingSite.bannerImageUrl } : {}),
+    ...(data.address?.latitude && data.address?.longitude ? {
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": data.address.latitude,
+        "longitude": data.address.longitude,
+      },
+      "address": {
+        "@type": "PostalAddress",
+        ...(data.address.city ? { "addressLocality": data.address.city } : {}),
+        ...(data.address.state ? { "addressRegion": data.address.state } : {}),
+        "addressCountry": "US",
+      },
+    } : {}),
+    ...(data.ratingAggregate && data.ratingAggregate.totalRatings > 0 ? {
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": parseFloat(String(data.ratingAggregate.averageRating)).toFixed(1),
+        "ratingCount": data.ratingAggregate.totalRatings,
+        "reviewCount": data.ratingAggregate.totalReviews,
+        "bestRating": "5",
+        "worstRating": "1",
+      },
+    } : {}),
+  })}</script>`}
 </svelte:head>
 
 <div class="min-h-screen bg-gray-100">

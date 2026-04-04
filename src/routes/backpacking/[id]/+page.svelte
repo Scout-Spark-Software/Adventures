@@ -245,7 +245,57 @@
 </script>
 
 <svelte:head>
-  <title>{data.backpacking.name} - Adventure Spark</title>
+  <title>{data.backpacking.name}{locationString ? ` – ${locationString}` : ''} | Backpacking Route – Adventure Spark</title>
+  <meta name="description" content={[
+    data.backpacking.description ? data.backpacking.description.slice(0, 140).replace(/\s\S*$/, '') + '…' : null,
+    difficultyLabel ? `${difficultyLabel} difficulty.` : null,
+    data.backpacking.distance ? `${data.backpacking.distance}${data.backpacking.distanceUnit === 'kilometers' ? 'km' : 'mi'}.` : null,
+    data.backpacking.numberOfDays ? `${data.backpacking.numberOfDays} day${data.backpacking.numberOfDays !== 1 ? 's' : ''}.` : null,
+    locationString || null,
+  ].filter(Boolean).join(' ') || `Explore the ${data.backpacking.name} backpacking route on Adventure Spark.`} />
+  <meta property="og:title" content="{data.backpacking.name}{locationString ? ` – ${locationString}` : ''}" />
+  <meta property="og:description" content={data.backpacking.description ? data.backpacking.description.slice(0, 200) : `Explore the ${data.backpacking.name} backpacking route on Adventure Spark.`} />
+  <meta property="og:type" content="article" />
+  {#if data.backpacking.bannerImageUrl}
+    <meta property="og:image" content={data.backpacking.bannerImageUrl} />
+    <meta name="twitter:image" content={data.backpacking.bannerImageUrl} />
+  {/if}
+  <meta name="twitter:card" content={data.backpacking.bannerImageUrl ? 'summary_large_image' : 'summary'} />
+  {#if data.address?.latitude && data.address?.longitude}
+    <meta name="geo.position" content="{data.address.latitude};{data.address.longitude}" />
+    <meta name="ICBM" content="{data.address.latitude}, {data.address.longitude}" />
+  {/if}
+  {@html `<script type="application/ld+json">${JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "TouristAttraction",
+    "name": data.backpacking.name,
+    "description": data.backpacking.description || undefined,
+    "url": `https://www.adventurespark.org/backpacking/${data.backpacking.id}`,
+    ...(data.backpacking.bannerImageUrl ? { "image": data.backpacking.bannerImageUrl } : {}),
+    ...(data.address?.latitude && data.address?.longitude ? {
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": data.address.latitude,
+        "longitude": data.address.longitude,
+      },
+      "address": {
+        "@type": "PostalAddress",
+        ...(data.address.city ? { "addressLocality": data.address.city } : {}),
+        ...(data.address.state ? { "addressRegion": data.address.state } : {}),
+        "addressCountry": "US",
+      },
+    } : {}),
+    ...(data.ratingAggregate && data.ratingAggregate.totalRatings > 0 ? {
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": parseFloat(String(data.ratingAggregate.averageRating)).toFixed(1),
+        "ratingCount": data.ratingAggregate.totalRatings,
+        "reviewCount": data.ratingAggregate.totalReviews,
+        "bestRating": "5",
+        "worstRating": "1",
+      },
+    } : {}),
+  })}</script>`}
 </svelte:head>
 
 <div class="min-h-screen bg-gray-100">

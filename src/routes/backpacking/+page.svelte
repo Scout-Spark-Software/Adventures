@@ -51,6 +51,11 @@
 
 <svelte:head>
   <title>Backpacking Routes — Adventure Spark</title>
+  <meta name="description" content="Explore multi-day backpacking routes for scouts. Filter by difficulty, distance, and number of days to plan your next backcountry adventure." />
+  <meta property="og:title" content="Backpacking Routes — Adventure Spark" />
+  <meta property="og:description" content="Explore multi-day backpacking routes for scouts. Filter by difficulty, distance, and number of days to plan your next backcountry adventure." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary" />
 </svelte:head>
 
 <div class="min-h-screen bg-stone-100">

@@ -19,6 +19,7 @@
 
 <svelte:head>
   <title>My Favorites — Adventure Spark</title>
+  <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
 <!-- Full-bleed dark banner, pulled up behind nav -->

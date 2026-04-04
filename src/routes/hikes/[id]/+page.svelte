@@ -242,7 +242,56 @@
 </script>
 
 <svelte:head>
-  <title>{data.hike.name} - Adventure Spark</title>
+  <title>{data.hike.name}{locationString ? ` – ${locationString}` : ''} | Hiking Trail – Adventure Spark</title>
+  <meta name="description" content={[
+    data.hike.description ? data.hike.description.slice(0, 140).replace(/\s\S*$/, '') + '…' : null,
+    difficultyLabel ? `${difficultyLabel} difficulty.` : null,
+    data.hike.distance ? `${data.hike.distance}${data.hike.distanceUnit === 'kilometers' ? 'km' : 'mi'}.` : null,
+    locationString || null,
+  ].filter(Boolean).join(' ') || `Explore the ${data.hike.name} hiking trail on Adventure Spark.`} />
+  <meta property="og:title" content="{data.hike.name}{locationString ? ` – ${locationString}` : ''}" />
+  <meta property="og:description" content={data.hike.description ? data.hike.description.slice(0, 200) : `Explore the ${data.hike.name} hiking trail on Adventure Spark.`} />
+  <meta property="og:type" content="article" />
+  {#if data.hike.bannerImageUrl}
+    <meta property="og:image" content={data.hike.bannerImageUrl} />
+    <meta name="twitter:image" content={data.hike.bannerImageUrl} />
+  {/if}
+  <meta name="twitter:card" content={data.hike.bannerImageUrl ? 'summary_large_image' : 'summary'} />
+  {#if data.address?.latitude && data.address?.longitude}
+    <meta name="geo.position" content="{data.address.latitude};{data.address.longitude}" />
+    <meta name="ICBM" content="{data.address.latitude}, {data.address.longitude}" />
+  {/if}
+  {@html `<script type="application/ld+json">${JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "TouristAttraction",
+    "name": data.hike.name,
+    "description": data.hike.description || undefined,
+    "url": `https://www.adventurespark.org/hikes/${data.hike.id}`,
+    ...(data.hike.bannerImageUrl ? { "image": data.hike.bannerImageUrl } : {}),
+    ...(data.address?.latitude && data.address?.longitude ? {
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": data.address.latitude,
+        "longitude": data.address.longitude,
+      },
+      "address": {
+        "@type": "PostalAddress",
+        ...(data.address.city ? { "addressLocality": data.address.city } : {}),
+        ...(data.address.state ? { "addressRegion": data.address.state } : {}),
+        "addressCountry": "US",
+      },
+    } : {}),
+    ...(data.ratingAggregate && data.ratingAggregate.totalRatings > 0 ? {
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": parseFloat(String(data.ratingAggregate.averageRating)).toFixed(1),
+        "ratingCount": data.ratingAggregate.totalRatings,
+        "reviewCount": data.ratingAggregate.totalReviews,
+        "bestRating": "5",
+        "worstRating": "1",
+      },
+    } : {}),
+  })}</script>`}
 </svelte:head>
 
 <div class="min-h-screen bg-gray-100">

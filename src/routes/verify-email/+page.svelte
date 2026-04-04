@@ -12,6 +12,7 @@
 
 <svelte:head>
   <title>Verify Email - Adventure Spark</title>
+  <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
 <div
