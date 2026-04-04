@@ -273,7 +273,7 @@
     "@type": "Campground",
     "name": data.campingSite.name,
     "description": data.campingSite.description || undefined,
-    "url": `https://www.adventurespark.org/camping/${data.campingSite.id}`,
+    "url": `https://www.adventurespark.org/camping/${data.campingSite.slug}`,
     ...(data.campingSite.bannerImageUrl ? { "image": data.campingSite.bannerImageUrl } : {}),
     ...(data.address?.latitude && data.address?.longitude ? {
       "geo": {

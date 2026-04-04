@@ -16,15 +16,15 @@ const STATIC_PAGES = [
 export const GET: RequestHandler = async () => {
   const [hikeList, campingList, backpackingList] = await Promise.all([
     db
-      .select({ id: hikes.id, updatedAt: hikes.updatedAt })
+      .select({ slug: hikes.slug, updatedAt: hikes.updatedAt })
       .from(hikes)
       .where(eq(hikes.status, "approved")),
     db
-      .select({ id: campingSites.id, updatedAt: campingSites.updatedAt })
+      .select({ slug: campingSites.slug, updatedAt: campingSites.updatedAt })
       .from(campingSites)
       .where(eq(campingSites.status, "approved")),
     db
-      .select({ id: backpacking.id, updatedAt: backpacking.updatedAt })
+      .select({ slug: backpacking.slug, updatedAt: backpacking.updatedAt })
       .from(backpacking)
       .where(eq(backpacking.status, "approved")),
   ]);
@@ -42,9 +42,9 @@ export const GET: RequestHandler = async () => {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${STATIC_PAGES.map((p) => urlEntry(`${BASE_URL}${p.url}`, undefined, p.priority, p.changefreq)).join("\n")}
-${hikeList.map((h) => urlEntry(`${BASE_URL}/hikes/${h.id}`, formatDate(h.updatedAt))).join("\n")}
-${campingList.map((c) => urlEntry(`${BASE_URL}/camping/${c.id}`, formatDate(c.updatedAt))).join("\n")}
-${backpackingList.map((b) => urlEntry(`${BASE_URL}/backpacking/${b.id}`, formatDate(b.updatedAt))).join("\n")}
+${hikeList.map((h) => urlEntry(`${BASE_URL}/hikes/${h.slug}`, formatDate(h.updatedAt))).join("\n")}
+${campingList.map((c) => urlEntry(`${BASE_URL}/camping/${c.slug}`, formatDate(c.updatedAt))).join("\n")}
+${backpackingList.map((b) => urlEntry(`${BASE_URL}/backpacking/${b.slug}`, formatDate(b.updatedAt))).join("\n")}
 </urlset>`;
 
   return new Response(xml, {

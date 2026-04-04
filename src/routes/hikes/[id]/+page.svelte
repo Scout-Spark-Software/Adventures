@@ -266,7 +266,7 @@
     "@type": "TouristAttraction",
     "name": data.hike.name,
     "description": data.hike.description || undefined,
-    "url": `https://www.adventurespark.org/hikes/${data.hike.id}`,
+    "url": `https://www.adventurespark.org/hikes/${data.hike.slug}`,
     ...(data.hike.bannerImageUrl ? { "image": data.hike.bannerImageUrl } : {}),
     ...(data.address?.latitude && data.address?.longitude ? {
       "geo": {

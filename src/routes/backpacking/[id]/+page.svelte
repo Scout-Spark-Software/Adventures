@@ -270,7 +270,7 @@
     "@type": "TouristAttraction",
     "name": data.backpacking.name,
     "description": data.backpacking.description || undefined,
-    "url": `https://www.adventurespark.org/backpacking/${data.backpacking.id}`,
+    "url": `https://www.adventurespark.org/backpacking/${data.backpacking.slug}`,
     ...(data.backpacking.bannerImageUrl ? { "image": data.backpacking.bannerImageUrl } : {}),
     ...(data.address?.latitude && data.address?.longitude ? {
       "geo": {

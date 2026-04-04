@@ -11,8 +11,8 @@
   const dispatch = createEventDispatcher();
 
   type NoteWithLocation = Note & {
-    hike?: { id: string; name: string } | null;
-    campingSite?: { id: string; name: string } | null;
+    hike?: { id: string; slug: string; name: string } | null;
+    campingSite?: { id: string; slug: string; name: string } | null;
   };
 
   let notes: NoteWithLocation[] = [];
