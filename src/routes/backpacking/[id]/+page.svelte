@@ -595,7 +595,7 @@
           {#if data.userId}
             <div class="max-w-7xl mx-auto">
               <EditButton
-                href="/backpacking/{data.backpacking.id}/edit"
+                href="/backpacking/{data.backpacking.slug}/edit"
                 text={isAdmin ? "Edit" : "Suggest Edit"}
               />
             </div>

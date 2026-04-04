@@ -463,7 +463,7 @@
               <div class="mb-3">
                 {#if note.hike}
                   <a
-                    href="/hikes/{note.hike.id}"
+                    href="/hikes/{note.hike.slug}"
                     class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors text-sm font-medium"
                   >
                     <MapPin size={16} />
@@ -471,7 +471,7 @@
                   </a>
                 {:else if note.campingSite}
                   <a
-                    href="/camping/{note.campingSite.id}"
+                    href="/camping/{note.campingSite.slug}"
                     class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 text-orange-700 rounded-lg hover:bg-orange-100 transition-colors text-sm font-medium"
                   >
                     <Home size={16} />

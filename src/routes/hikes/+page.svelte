@@ -24,7 +24,7 @@
       name: h.name,
       lat: h.address!.latitude!,
       lng: h.address!.longitude!,
-      href: `/hikes/${h.id}`,
+      href: `/hikes/${h.slug}`,
       color: "emerald" as const,
     }));
 

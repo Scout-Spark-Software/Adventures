@@ -29,7 +29,7 @@
 
 {#if listView}
   <a
-    href="/hikes/{hike.id}"
+    href="/hikes/{hike.slug}"
     class="group bg-white rounded-xl border border-gray-100 hover:border-emerald-200 shadow-sm hover:shadow-md transition-all duration-200 flex items-stretch overflow-hidden"
   >
     <!-- Thumbnail -->
@@ -107,7 +107,7 @@
   </a>
 {:else}
   <a
-    href="/hikes/{hike.id}"
+    href="/hikes/{hike.slug}"
     class="group bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl hover:shadow-emerald-100/50 transition-all duration-300 block border border-gray-100 hover:border-emerald-200"
   >
     <!-- Image -->

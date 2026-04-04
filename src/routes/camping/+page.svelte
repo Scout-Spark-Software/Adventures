@@ -24,7 +24,7 @@
       name: c.name,
       lat: c.address!.latitude!,
       lng: c.address!.longitude!,
-      href: `/camping/${c.id}`,
+      href: `/camping/${c.slug}`,
       color: "indigo" as const,
     }));
 

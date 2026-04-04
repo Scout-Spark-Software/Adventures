@@ -24,7 +24,7 @@
       name: b.name,
       lat: b.address!.latitude!,
       lng: b.address!.longitude!,
-      href: `/backpacking/${b.id}`,
+      href: `/backpacking/${b.slug}`,
       color: "amber" as const,
     }));
 

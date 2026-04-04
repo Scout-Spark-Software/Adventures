@@ -557,7 +557,7 @@
           {#if data.userId}
             <div class="max-w-7xl mx-auto">
               <EditButton
-                href="/hikes/{data.hike.id}/edit"
+                href="/hikes/{data.hike.slug}/edit"
                 text={isAdmin ? "Edit" : "Suggest Edit"}
               />
             </div>

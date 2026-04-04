@@ -460,7 +460,7 @@
           {#if data.userId}
             <div class="max-w-7xl mx-auto">
               <EditButton
-                href="/camping/{data.campingSite.id}/edit"
+                href="/camping/{data.campingSite.slug}/edit"
                 text={isAdmin ? "Edit" : "Suggest Edit"}
               />
             </div>
