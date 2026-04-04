@@ -17,8 +17,8 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 
   // Atomic update: only feature approved hikes, unfeaturing is always allowed
   const whereCondition = featured
-    ? and(eq(hikes.id, params.id), eq(hikes.status, "approved"))
-    : eq(hikes.id, params.id);
+    ? and(eq(hikes.slug, params.id), eq(hikes.status, "approved"))
+    : eq(hikes.slug, params.id);
 
   const [updatedHike] = await db
     .update(hikes)
@@ -28,7 +28,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 
   if (!updatedHike) {
     // Could be not found, or not approved (when featuring)
-    const exists = await db.query.hikes.findFirst({ where: eq(hikes.id, params.id) });
+    const exists = await db.query.hikes.findFirst({ where: eq(hikes.slug, params.id) });
     if (!exists) throw error(404, "Hike not found");
     throw error(400, "Only approved hikes can be featured");
   }

@@ -16,7 +16,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
   }
 
   const entry = await db.query.backpacking.findFirst({
-    where: eq(backpacking.id, params.id),
+    where: eq(backpacking.slug, params.id),
   });
 
   if (!entry) {
@@ -33,7 +33,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       featured,
       updatedAt: new Date(),
     })
-    .where(eq(backpacking.id, params.id))
+    .where(eq(backpacking.id, entry.id))
     .returning();
 
   return json(updated);

@@ -17,8 +17,8 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 
   // Atomic update: only feature approved camping sites, unfeaturing is always allowed
   const whereCondition = featured
-    ? and(eq(campingSites.id, params.id), eq(campingSites.status, "approved"))
-    : eq(campingSites.id, params.id);
+    ? and(eq(campingSites.slug, params.id), eq(campingSites.status, "approved"))
+    : eq(campingSites.slug, params.id);
 
   const [updatedCampingSite] = await db
     .update(campingSites)
@@ -28,7 +28,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 
   if (!updatedCampingSite) {
     const exists = await db.query.campingSites.findFirst({
-      where: eq(campingSites.id, params.id),
+      where: eq(campingSites.slug, params.id),
     });
     if (!exists) throw error(404, "Camping site not found");
     throw error(400, "Only approved camping sites can be featured");
