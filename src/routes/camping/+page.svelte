@@ -4,7 +4,16 @@
   import CampingSiteCard from "$lib/components/CampingSiteCard.svelte";
   import CampingFilters from "$lib/components/CampingFilters.svelte";
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
-  import { Tent, Plus, BookOpen, LayoutGrid, List, Map, ChevronLeft, ChevronRight } from "lucide-svelte";
+  import {
+    Tent,
+    Plus,
+    BookOpen,
+    LayoutGrid,
+    List,
+    Map,
+    ChevronLeft,
+    ChevronRight,
+  } from "lucide-svelte";
   import { navigating, page as pageStore } from "$app/stores";
   import ListingMap from "$lib/components/ListingMap.svelte";
 
@@ -51,9 +60,15 @@
 
 <svelte:head>
   <title>Camping Sites — Adventure Spark</title>
-  <meta name="description" content="Browse scout camping sites by amenities, facilities, pet policy, and location. Find the perfect campsite for your next adventure." />
+  <meta
+    name="description"
+    content="Browse scout camping sites by amenities, facilities, pet policy, and location. Find the perfect campsite for your next adventure."
+  />
   <meta property="og:title" content="Camping Sites — Adventure Spark" />
-  <meta property="og:description" content="Browse scout camping sites by amenities, facilities, pet policy, and location. Find the perfect campsite for your next adventure." />
+  <meta
+    property="og:description"
+    content="Browse scout camping sites by amenities, facilities, pet policy, and location. Find the perfect campsite for your next adventure."
+  />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary" />
 </svelte:head>
@@ -66,7 +81,7 @@
         <div class="flex items-center gap-4">
           <div
             class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm"
-            style="background: linear-gradient(135deg, #059669, #34d399);"
+            style="background: linear-gradient(135deg, #60a5fa, #6366f1, #9333ea);"
           >
             <Tent size={22} class="text-white" />
           </div>
@@ -86,8 +101,8 @@
           </a>
           <a
             href="/submit?type=camping_site"
-            class="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-2 rounded-full text-xs font-bold text-stone-950 transition-all hover:scale-105"
-            style="background: linear-gradient(135deg, #86efac, #34d399);"
+            class="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-2 rounded-full text-xs font-bold text-slate-100 transition-all hover:scale-105"
+            style="background: linear-gradient(135deg, #60a5fa, #6366f1, #9333ea);"
           >
             <Plus size={13} />
             <span class="hidden sm:inline">Submit</span>
@@ -201,10 +216,11 @@
                 {:else}
                   <a
                     href={pageUrl(pg)}
-                    class="min-w-[36px] h-9 flex items-center justify-center rounded-lg text-sm font-bold transition-colors {pg === data.page
+                    class="min-w-[36px] h-9 flex items-center justify-center rounded-lg text-sm font-bold transition-colors {pg ===
+                    data.page
                       ? 'bg-indigo-600 text-white'
                       : 'text-stone-600 hover:bg-stone-200'}"
-                    aria-current={pg === data.page ? 'page' : undefined}
+                    aria-current={pg === data.page ? "page" : undefined}
                   >
                     {pg}
                   </a>

@@ -69,9 +69,30 @@
 
   const navLinks = [
     { href: "/hikes", label: "Hikes", icon: MountainIcon, activeColor: "emerald" },
-    { href: "/camping", label: "Camping Sites", icon: Tent, activeColor: "emerald" },
+    { href: "/camping", label: "Camping Sites", icon: Tent, activeColor: "blue" },
     { href: "/backpacking", label: "Backpacking", icon: Backpack, activeColor: "amber" },
   ];
+
+  const activeColors: Record<string, { desktopLight: string; desktopDark: string; mobileLight: string; mobileDark: string }> = {
+    emerald: {
+      desktopLight: "border-emerald-500 text-emerald-600",
+      desktopDark: "border-emerald-400 text-emerald-300",
+      mobileLight: "bg-emerald-50 text-emerald-700",
+      mobileDark: "bg-emerald-500/15 text-emerald-300",
+    },
+    blue: {
+      desktopLight: "border-blue-500 text-blue-600",
+      desktopDark: "border-blue-400 text-blue-300",
+      mobileLight: "bg-blue-50 text-blue-700",
+      mobileDark: "bg-blue-500/15 text-blue-300",
+    },
+    amber: {
+      desktopLight: "border-amber-500 text-amber-600",
+      desktopDark: "border-amber-400 text-amber-300",
+      mobileLight: "bg-amber-50 text-amber-700",
+      mobileDark: "bg-amber-500/15 text-amber-300",
+    },
+  };
 </script>
 
 <svelte:window on:click={handleClickOutside} on:keydown={handleKeydown} on:scroll={onScroll} />
@@ -104,45 +125,21 @@
         </div>
         <!-- Desktop nav links (md+) -->
         <div class="hidden md:ml-8 md:flex md:space-x-1">
-          <a
-            href="/hikes"
-            class="{currentPath.startsWith('/hikes')
-              ? isDark
-                ? 'border-emerald-400 text-emerald-300'
-                : 'border-sky-500 text-sky-600'
-              : isDark
-                ? 'border-transparent text-stone-200 hover:border-stone-400 hover:text-white'
-                : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-800'} inline-flex items-center px-4 pt-1 border-b-2 text-sm font-semibold transition-colors"
-          >
-            <MountainIcon size={16} class="mr-1.5" />
-            Hikes
-          </a>
-          <a
-            href="/camping"
-            class="{currentPath.startsWith('/camping')
-              ? isDark
-                ? 'border-emerald-400 text-emerald-300'
-                : 'border-emerald-500 text-emerald-600'
-              : isDark
-                ? 'border-transparent text-stone-200 hover:border-stone-400 hover:text-white'
-                : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-800'} inline-flex items-center px-4 pt-1 border-b-2 text-sm font-semibold transition-colors"
-          >
-            <Tent size={16} class="mr-1.5" />
-            Camping Sites
-          </a>
-          <a
-            href="/backpacking"
-            class="{currentPath.startsWith('/backpacking')
-              ? isDark
-                ? 'border-amber-400 text-amber-300'
-                : 'border-amber-500 text-amber-600'
-              : isDark
-                ? 'border-transparent text-stone-200 hover:border-stone-400 hover:text-white'
-                : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-800'} inline-flex items-center px-4 pt-1 border-b-2 text-sm font-semibold transition-colors"
-          >
-            <Backpack size={16} class="mr-1.5" />
-            Backpacking
-          </a>
+          {#each navLinks as link}
+            {@const isActive = currentPath.startsWith(link.href)}
+            {@const colors = activeColors[link.activeColor]}
+            <a
+              href={link.href}
+              class="{isActive
+                ? isDark ? colors.desktopDark : colors.desktopLight
+                : isDark
+                  ? 'border-transparent text-stone-200 hover:border-stone-400 hover:text-white'
+                  : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-800'} inline-flex items-center px-4 pt-1 border-b-2 text-sm font-semibold transition-colors"
+            >
+              <svelte:component this={link.icon} size={16} class="mr-1.5" />
+              {link.label}
+            </a>
+          {/each}
         </div>
       </div>
 
@@ -280,51 +277,23 @@
     {isDark ? 'bg-stone-950/97 border-white/10' : 'bg-white border-slate-200'}"
   >
     <div class="max-w-7xl mx-auto px-4 py-3 space-y-1">
-      <a
-        href="/hikes"
-        on:click={closeMobileMenu}
-        class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-colors
-        {currentPath.startsWith('/hikes')
-          ? isDark
-            ? 'bg-emerald-500/15 text-emerald-300'
-            : 'bg-emerald-50 text-emerald-700'
-          : isDark
-            ? 'text-stone-300 hover:bg-white/5 hover:text-white'
-            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}"
-      >
-        <MountainIcon size={18} />
-        Hikes
-      </a>
-      <a
-        href="/camping"
-        on:click={closeMobileMenu}
-        class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-colors
-        {currentPath.startsWith('/camping')
-          ? isDark
-            ? 'bg-emerald-500/15 text-emerald-300'
-            : 'bg-emerald-50 text-emerald-700'
-          : isDark
-            ? 'text-stone-300 hover:bg-white/5 hover:text-white'
-            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}"
-      >
-        <Tent size={18} />
-        Camping Sites
-      </a>
-      <a
-        href="/backpacking"
-        on:click={closeMobileMenu}
-        class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-colors
-        {currentPath.startsWith('/backpacking')
-          ? isDark
-            ? 'bg-amber-500/15 text-amber-300'
-            : 'bg-amber-50 text-amber-700'
-          : isDark
-            ? 'text-stone-300 hover:bg-white/5 hover:text-white'
-            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}"
-      >
-        <Backpack size={18} />
-        Backpacking
-      </a>
+      {#each navLinks as link}
+        {@const isActive = currentPath.startsWith(link.href)}
+        {@const colors = activeColors[link.activeColor]}
+        <a
+          href={link.href}
+          on:click={closeMobileMenu}
+          class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-colors
+          {isActive
+            ? isDark ? colors.mobileDark : colors.mobileLight
+            : isDark
+              ? 'text-stone-300 hover:bg-white/5 hover:text-white'
+              : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}"
+        >
+          <svelte:component this={link.icon} size={18} />
+          {link.label}
+        </a>
+      {/each}
     </div>
   </div>
 {/if}
