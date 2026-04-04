@@ -9,7 +9,10 @@ import { deleteFile } from "$lib/storage/blob";
 import { getAttribution } from "$lib/server/attribution";
 import { generateUniqueSlug } from "$lib/server/slug";
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export const GET: RequestHandler = async ({ params, locals }) => {
+  const isUuid = UUID_RE.test(params.id);
   const rows = await db
     .select({
       id: hikes.id,
@@ -71,7 +74,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     .leftJoin(addresses, eq(hikes.addressId, addresses.id))
     .leftJoin(councils, eq(hikes.councilId, councils.id))
     .leftJoin(ratingAggregates, eq(hikes.id, ratingAggregates.hikeId))
-    .where(eq(hikes.id, params.id))
+    .where(isUuid ? eq(hikes.id, params.id) : eq(hikes.slug, params.id))
     .limit(1);
 
   const hike = rows[0];
