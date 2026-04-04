@@ -49,7 +49,7 @@ export const SECURITY_HEADERS: Record<string, string> = {
     "script-src 'self' 'unsafe-inline' https://app.termly.io https://www.googletagmanager.com https://pagead2.googlesyndication.com https://partner.googleadservices.com https://tpc.googlesyndication.com https://static.cloudflareinsights.com",
     "style-src 'self' 'unsafe-inline' https://unpkg.com",
     "img-src 'self' blob: data: https://files.adventurespark.org https://*.tile.openstreetmap.org https://pagead2.googlesyndication.com https://tpc.googlesyndication.com",
-    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://pagead2.googlesyndication.com https://ep1.adtrafficquality.google",
+    "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://pagead2.googlesyndication.com https://ep1.adtrafficquality.google https://app.termly.io https://us.consent.api.termly.io",
     "frame-src https://googleads.g.doubleclick.net https://tpc.googlesyndication.com",
     "font-src 'self'",
     "frame-ancestors 'none'",
