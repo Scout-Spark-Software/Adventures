@@ -35,18 +35,21 @@ export const GET: RequestHandler = async ({ locals, url }) => {
         columns: {
           id: true,
           name: true,
+          slug: true,
         },
       },
       campingSite: {
         columns: {
           id: true,
           name: true,
+          slug: true,
         },
       },
       backpacking: {
         columns: {
           id: true,
           name: true,
+          slug: true,
         },
       },
     },
