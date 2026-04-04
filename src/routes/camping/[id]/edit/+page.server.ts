@@ -9,7 +9,7 @@ export const load: PageServerLoad = async (event) => {
   const user = requireAuth(event);
 
   const campingSite = await db.query.campingSites.findFirst({
-    where: eq(campingSites.id, event.params.id),
+    where: eq(campingSites.slug, event.params.id),
   });
 
   if (!campingSite) {
@@ -79,7 +79,7 @@ export const actions: Actions = {
       }
 
       const campingSite = await db.query.campingSites.findFirst({
-        where: eq(campingSites.id, event.params.id),
+        where: eq(campingSites.slug, event.params.id),
       });
 
       if (!campingSite) {
@@ -123,7 +123,7 @@ export const actions: Actions = {
           await db
             .update(campingSites)
             .set({ addressId: newAddress.id })
-            .where(eq(campingSites.id, event.params.id));
+            .where(eq(campingSites.id, campingSite.id));
         }
 
         return { success: true, message: "Location updated successfully!" };
@@ -149,7 +149,7 @@ export const actions: Actions = {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            campingSiteId: event.params.id,
+            campingSiteId: campingSite.id,
             fieldName: "location",
             oldValue: oldAddress
               ? JSON.stringify({
@@ -201,7 +201,7 @@ export const actions: Actions = {
     } else {
       // Regular user submits alteration
       const campingSite = await db.query.campingSites.findFirst({
-        where: eq(campingSites.id, event.params.id),
+        where: eq(campingSites.slug, event.params.id),
       });
 
       if (!campingSite) {
@@ -212,7 +212,7 @@ export const actions: Actions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          campingSiteId: event.params.id,
+          campingSiteId: campingSite.id,
           fieldName,
           oldValue: String((campingSite as any)[fieldName] || ""),
           newValue,

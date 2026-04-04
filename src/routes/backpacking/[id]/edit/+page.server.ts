@@ -9,7 +9,7 @@ export const load: PageServerLoad = async (event) => {
   const user = requireAuth(event);
 
   const entry = await db.query.backpacking.findFirst({
-    where: eq(backpacking.id, event.params.id),
+    where: eq(backpacking.slug, event.params.id),
   });
 
   if (!entry) {
@@ -78,7 +78,7 @@ export const actions: Actions = {
       }
 
       const entry = await db.query.backpacking.findFirst({
-        where: eq(backpacking.id, event.params.id),
+        where: eq(backpacking.slug, event.params.id),
       });
 
       if (!entry) {
@@ -118,7 +118,7 @@ export const actions: Actions = {
           await db
             .update(backpacking)
             .set({ addressId: newAddress.id })
-            .where(eq(backpacking.id, event.params.id));
+            .where(eq(backpacking.id, entry.id));
         }
 
         return { success: true, message: "Location updated successfully!" };
@@ -143,7 +143,7 @@ export const actions: Actions = {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            backpackingId: event.params.id,
+            backpackingId: entry.id,
             fieldName: "location",
             oldValue: oldAddress
               ? JSON.stringify({
@@ -205,7 +205,7 @@ export const actions: Actions = {
       return { success: true, message: "Backpacking route updated successfully!" };
     } else {
       const entry = await db.query.backpacking.findFirst({
-        where: eq(backpacking.id, event.params.id),
+        where: eq(backpacking.slug, event.params.id),
       });
 
       if (!entry) {
@@ -216,7 +216,7 @@ export const actions: Actions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          backpackingId: event.params.id,
+          backpackingId: entry.id,
           fieldName,
           oldValue: String((entry as any)[fieldName] || ""),
           newValue,

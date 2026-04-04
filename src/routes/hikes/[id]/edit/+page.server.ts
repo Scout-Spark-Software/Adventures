@@ -9,7 +9,7 @@ export const load: PageServerLoad = async (event) => {
   const user = requireAuth(event);
 
   const hike = await db.query.hikes.findFirst({
-    where: eq(hikes.id, event.params.id),
+    where: eq(hikes.slug, event.params.id),
   });
 
   if (!hike) {
@@ -79,7 +79,7 @@ export const actions: Actions = {
       }
 
       const hike = await db.query.hikes.findFirst({
-        where: eq(hikes.id, event.params.id),
+        where: eq(hikes.slug, event.params.id),
       });
 
       if (!hike) {
@@ -123,7 +123,7 @@ export const actions: Actions = {
           await db
             .update(hikes)
             .set({ addressId: newAddress.id })
-            .where(eq(hikes.id, event.params.id));
+            .where(eq(hikes.id, hike.id));
         }
 
         return { success: true, message: "Location updated successfully!" };
@@ -149,7 +149,7 @@ export const actions: Actions = {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            hikeId: event.params.id,
+            hikeId: hike.id,
             fieldName: "location",
             oldValue: oldAddress
               ? JSON.stringify({
@@ -201,7 +201,7 @@ export const actions: Actions = {
     } else {
       // Regular user submits alteration
       const hike = await db.query.hikes.findFirst({
-        where: eq(hikes.id, event.params.id),
+        where: eq(hikes.slug, event.params.id),
       });
 
       if (!hike) {
@@ -212,7 +212,7 @@ export const actions: Actions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          hikeId: event.params.id,
+          hikeId: hike.id,
           fieldName,
           oldValue: String((hike as any)[fieldName] || ""),
           newValue,
