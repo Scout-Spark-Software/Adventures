@@ -5,6 +5,7 @@ import { sanitizeAuthError } from "$lib/security";
 import { zxcvbn, zxcvbnOptions } from "@zxcvbn-ts/core";
 import * as zxcvbnCommonPackage from "@zxcvbn-ts/language-common";
 import * as zxcvbnEnPackage from "@zxcvbn-ts/language-en";
+import { MIN_PASSWORD_LENGTH } from "$lib/utils/consts";
 
 zxcvbnOptions.setOptions({
   translations: zxcvbnEnPackage.translations,
@@ -72,8 +73,8 @@ export const actions: Actions = {
       return fail(400, { error: "Passwords do not match" });
     }
 
-    if (password.length < 12) {
-      return fail(400, { error: "Password must be at least 12 characters long" });
+    if (password.length < MIN_PASSWORD_LENGTH) {
+      return fail(400, { error: `Password must be at least ${MIN_PASSWORD_LENGTH} characters long` });
     }
 
     const { score } = zxcvbn(password);

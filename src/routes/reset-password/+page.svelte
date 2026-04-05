@@ -1,6 +1,7 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
   import type { ActionData, PageData } from "./$types";
+  import { MIN_PASSWORD_LENGTH } from "$lib/utils/consts";
 
   export let data: PageData;
   export let form: ActionData;
@@ -170,8 +171,8 @@
                 type={showPassword ? "text" : "password"}
                 autocomplete="new-password"
                 required
-                minlength="8"
-                placeholder="At least 8 characters"
+                minlength={MIN_PASSWORD_LENGTH}
+                placeholder="At least {MIN_PASSWORD_LENGTH} characters"
                 class="dark-input w-full rounded-xl px-4 py-3 pr-11 text-sm"
               />
               <button
@@ -223,7 +224,7 @@
                 type={showConfirm ? "text" : "password"}
                 autocomplete="new-password"
                 required
-                minlength="8"
+                minlength={MIN_PASSWORD_LENGTH}
                 placeholder="Repeat your password"
                 class="dark-input w-full rounded-xl px-4 py-3 pr-11 text-sm"
               />

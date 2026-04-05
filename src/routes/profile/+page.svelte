@@ -9,6 +9,7 @@
   import { zxcvbn, zxcvbnOptions } from "@zxcvbn-ts/core";
   import * as zxcvbnCommonPackage from "@zxcvbn-ts/language-common";
   import * as zxcvbnEnPackage from "@zxcvbn-ts/language-en";
+  import { MIN_PASSWORD_LENGTH } from "$lib/utils/consts";
 
   zxcvbnOptions.setOptions({
     translations: zxcvbnEnPackage.translations,
@@ -45,7 +46,7 @@
   const strengthColors = ["#ef4444", "#f97316", "#eab308", "#10b981", "#10b981"];
 
   $: passwordsMatch = confirmPassword.length > 0 && newPassword === confirmPassword;
-  $: canSubmit = newPassword.length >= 12 && strengthScore >= MIN_STRENGTH && passwordsMatch;
+  $: canSubmit = newPassword.length >= MIN_PASSWORD_LENGTH && strengthScore >= MIN_STRENGTH && passwordsMatch;
 
   async function handleLogout() {
     await fetch("/logout", { method: "POST" });
@@ -341,7 +342,7 @@
                     id="newPassword"
                     name="newPassword"
                     required
-                    minlength="12"
+                    minlength={MIN_PASSWORD_LENGTH}
                     bind:value={newPassword}
                     class="w-full px-4 py-3 border border-stone-200 rounded-xl bg-stone-50 text-stone-900 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent focus:bg-white transition-all outline-none"
                   />
@@ -359,8 +360,8 @@
                         <span class="text-xs font-medium" style="color: {strengthColors[strengthScore]};">
                           {strengthLabels[strengthScore]}
                         </span>
-                        {#if newPassword.length < 12}
-                          <span class="text-xs text-stone-400">12+ characters required</span>
+                        {#if newPassword.length < MIN_PASSWORD_LENGTH}
+                          <span class="text-xs text-stone-400">{MIN_PASSWORD_LENGTH}+ characters required</span>
                         {:else if strengthScore < MIN_STRENGTH}
                           <span class="text-xs text-stone-400">Too weak</span>
                         {/if}
@@ -389,7 +390,7 @@
                     id="confirmPassword"
                     name="confirmPassword"
                     required
-                    minlength="12"
+                    minlength={MIN_PASSWORD_LENGTH}
                     bind:value={confirmPassword}
                     class="w-full px-4 py-3 border border-stone-200 rounded-xl bg-stone-50 text-stone-900 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent focus:bg-white transition-all outline-none"
                     class:border-emerald-400={passwordsMatch}

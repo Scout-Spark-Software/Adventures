@@ -4,6 +4,7 @@
   import { zxcvbn, zxcvbnOptions } from "@zxcvbn-ts/core";
   import * as zxcvbnCommonPackage from "@zxcvbn-ts/language-common";
   import * as zxcvbnEnPackage from "@zxcvbn-ts/language-en";
+  import { MIN_PASSWORD_LENGTH } from "$lib/utils/consts";
 
   zxcvbnOptions.setOptions({
     translations: zxcvbnEnPackage.translations,
@@ -39,7 +40,7 @@
   const strengthLabels = ["Very weak", "Weak", "Fair", "Strong", "Very strong"];
   const strengthColors = ["#ef4444", "#f97316", "#eab308", "#34d399", "#34d399"];
 
-  $: hasMinLength = password.length >= 12;
+  $: hasMinLength = password.length >= MIN_PASSWORD_LENGTH;
   $: passwordsMatch = confirmPassword.length > 0 && password === confirmPassword;
   $: allRequirementsMet = hasMinLength && strengthScore >= MIN_STRENGTH;
 
@@ -270,7 +271,7 @@
                       {strengthLabels[strengthScore]}
                     </span>
                     {#if !hasMinLength}
-                      <span class="text-xs" style="color: rgba(245,240,232,0.35);">12+ characters required</span>
+                      <span class="text-xs" style="color: rgba(245,240,232,0.35);">{MIN_PASSWORD_LENGTH}+ characters required</span>
                     {:else if strengthScore < MIN_STRENGTH}
                       <span class="text-xs" style="color: rgba(245,240,232,0.35);">Too weak for signup</span>
                     {/if}

@@ -2,6 +2,7 @@ import { fail, redirect } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";
 import { workosAuth } from "$lib/server/workos";
 import { sanitizeAuthError } from "$lib/security";
+import { MIN_PASSWORD_LENGTH } from "$lib/utils/consts";
 
 export const load: PageServerLoad = async ({ url }) => {
   const token = url.searchParams.get("token");
@@ -27,8 +28,8 @@ export const actions: Actions = {
       return fail(400, { error: "Passwords do not match", token });
     }
 
-    if (password.length < 8) {
-      return fail(400, { error: "Password must be at least 8 characters", token });
+    if (password.length < MIN_PASSWORD_LENGTH) {
+      return fail(400, { error: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`, token });
     }
 
     try {
