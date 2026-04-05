@@ -35,10 +35,18 @@ test.describe('Submit adventure – authenticated user', () => {
     await page.fill('#city', 'Bend');
     await page.fill('#state', 'OR');
 
-    // Fill in the three required enum fields (pet_policy, site_type, fire_policy)
-    await page.selectOption('#pet_policy', 'allowed');
-    await page.selectOption('#site_type', 'public');
-    await page.selectOption('#fire_policy', 'allowed');
+    // Fill in the three required enum fields (pet_policy, site_type, fire_policy).
+    // Explicitly dispatch 'change' after each selectOption to guarantee Svelte's bind:value
+    // propagates through the FormSelect component boundary before validateForm() runs.
+    await page.locator('#pet_policy').selectOption('allowed');
+    await page.locator('#pet_policy').dispatchEvent('change');
+    await page.locator('#site_type').selectOption('public');
+    await page.locator('#site_type').dispatchEvent('change');
+    await page.locator('#fire_policy').selectOption('allowed');
+    await page.locator('#fire_policy').dispatchEvent('change');
+
+    // Brief wait to let Svelte flush reactive updates before submit
+    await page.waitForTimeout(150);
 
     // Submit the camping site form
     await page.click('form[action="?/submitCampingSite"] button[type="submit"]');

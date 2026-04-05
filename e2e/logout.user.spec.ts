@@ -14,10 +14,19 @@ test.describe('Logout – authenticated user', () => {
     // Click the Log Out button inside the form that POSTs to /logout
     const logoutButton = page.locator('form[action="/logout"] button[type="submit"]');
     await expect(logoutButton).toBeVisible();
-    await logoutButton.click();
 
-    // Should redirect to homepage after logout
+    // Wait for navigation — the form POSTs to /logout which redirects 303 to /
+    // We were already on /, so we must explicitly wait for the reload to complete
+    await Promise.all([
+      page.waitForNavigation(),
+      logoutButton.click(),
+    ]);
+
+    // Should be on homepage after logout
     await expect(page).toHaveURL('/');
+
+    // Wait for the page to fully settle before checking nav state
+    await page.waitForLoadState('networkidle');
 
     // The "Login" link should now be visible — user is no longer authenticated
     await expect(page.locator('nav a[href="/login"]')).toBeVisible();
