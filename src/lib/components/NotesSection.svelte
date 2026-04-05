@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, createEventDispatcher } from "svelte";
-  import { MapPin, Home } from "lucide-svelte";
+  import { MapPin, Home, Backpack } from "lucide-svelte";
   import type { Note } from "$lib/db/schemas";
 
   export let hikeId: string | undefined = undefined;
@@ -13,6 +13,7 @@
   type NoteWithLocation = Note & {
     hike?: { id: string; slug: string; name: string } | null;
     campingSite?: { id: string; slug: string; name: string } | null;
+    backpacking?: { id: string; slug: string; name: string } | null;
   };
 
   let notes: NoteWithLocation[] = [];
@@ -25,7 +26,7 @@
   let showPreview = false;
   let editShowPreview = false;
   let isCreating = false;
-  let filterType: "all" | "hikes" | "camping" = "all";
+  let filterType: "all" | "hikes" | "camping" | "backpacking" = "all";
   let deletingNoteId: string = "";
   let isDeleting = false;
   let updatingNoteId: string | null = null;
@@ -61,6 +62,8 @@
       filteredNotes = notes.filter((note) => note.hikeId);
     } else if (filterType === "camping") {
       filteredNotes = notes.filter((note) => note.campingSiteId);
+    } else if (filterType === "backpacking") {
+      filteredNotes = notes.filter((note) => note.backpackingId);
     }
   }
 
@@ -111,6 +114,7 @@
       updatedAt: new Date(),
       hike: null,
       campingSite: null,
+      backpacking: null,
     };
 
     const contentToSubmit = newNoteContent;
@@ -386,6 +390,15 @@
         >
           Camping ({notes.filter((n) => n.campingSiteId).length})
         </button>
+        <button
+          on:click={() => (filterType = "backpacking")}
+          class="px-4 py-2 text-sm font-medium transition-colors border-b-2 {filterType ===
+          'backpacking'
+            ? 'border-indigo-600 text-indigo-600'
+            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}"
+        >
+          Backpacking ({notes.filter((n) => n.backpackingId).length})
+        </button>
       </div>
     {/if}
 
@@ -459,7 +472,7 @@
           {:else}
             <!-- View Mode -->
             <!-- Location badge -->
-            {#if note.hike || note.campingSite}
+            {#if note.hike || note.campingSite || note.backpacking}
               <div class="mb-3">
                 {#if note.hike}
                   <a
@@ -476,6 +489,14 @@
                   >
                     <Home size={16} />
                     {note.campingSite.name}
+                  </a>
+                {:else if note.backpacking}
+                  <a
+                    href="/backpacking/{note.backpacking.slug}"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium"
+                  >
+                    <Backpack size={16} />
+                    {note.backpacking.name}
                   </a>
                 {/if}
               </div>
