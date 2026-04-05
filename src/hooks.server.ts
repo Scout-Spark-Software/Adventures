@@ -69,7 +69,7 @@ const authHandle: Handle = async ({ event, resolve }) => {
             path: "/",
             httpOnly: true,
             sameSite: "lax" as const,
-            secure: process.env.NODE_ENV === "production",
+            secure: event.url.protocol === "https:",
           };
 
           event.cookies.set("workos_access_token", newAccessToken, {
@@ -123,7 +123,7 @@ const authHandle: Handle = async ({ event, resolve }) => {
         path: "/",
         httpOnly: true,
         sameSite: "lax" as const,
-        secure: process.env.NODE_ENV === "production",
+        secure: event.url.protocol === "https:",
       };
 
       event.cookies.set("workos_access_token", newAccessToken, {

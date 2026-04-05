@@ -7,9 +7,11 @@ import { requireAuth, requireModerator } from "$lib/auth/middleware";
 import { updateModerationStatus } from "$lib/moderation";
 import { isAllowedAlterationField } from "$lib/allowed-fields";
 
-export const GET: RequestHandler = async ({ params }) => {
+export const GET: RequestHandler = async (event) => {
+  requireAuth(event);
+
   const alteration = await db.query.alterations.findFirst({
-    where: eq(alterations.id, params.id),
+    where: eq(alterations.id, event.params.id),
   });
 
   if (!alteration) {

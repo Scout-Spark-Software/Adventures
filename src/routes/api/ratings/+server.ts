@@ -2,7 +2,7 @@ import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
 import { ratings, ratingAggregates } from "$lib/db/schemas";
-import { eq, and, avg, count, sql, desc } from "drizzle-orm";
+import { eq, and, sql, desc } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 import { sanitizeReview } from "$lib/utils/profanity-filter";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
@@ -192,50 +192,58 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
   return json({ success: true });
 };
 
-// Helper function to update aggregates (2-query upsert)
+// Atomically recompute and upsert rating aggregates for one entity using a
+// single INSERT ... SELECT ... ON CONFLICT DO UPDATE statement, eliminating
+// the race window that existed between the old two-query approach.
 async function updateRatingAggregates(
   hikeId: string | null,
   campingSiteId: string | null,
   backpackingId: string | null = null
 ) {
-  const conditions = [];
-  if (hikeId) conditions.push(eq(ratings.hikeId, hikeId));
-  if (campingSiteId) conditions.push(eq(ratings.campingSiteId, campingSiteId));
-  if (backpackingId) conditions.push(eq(ratings.backpackingId, backpackingId));
-
-  const stats = await db
-    .select({
-      avgRating: avg(ratings.rating),
-      totalCount: count(),
-      reviewCount: sql<number>`COUNT(CASE WHEN ${ratings.reviewText} IS NOT NULL THEN 1 END)`,
-    })
-    .from(ratings)
-    .where(conditions.length > 0 ? and(...conditions) : undefined);
-
-  const { avgRating, totalCount, reviewCount } = stats[0];
-
-  const conflictTarget = hikeId
-    ? [ratingAggregates.hikeId]
-    : backpackingId
-      ? [ratingAggregates.backpackingId]
-      : [ratingAggregates.campingSiteId];
-
-  await db
-    .insert(ratingAggregates)
-    .values({
-      hikeId: hikeId || null,
-      campingSiteId: campingSiteId || null,
-      backpackingId: backpackingId || null,
-      averageRating: avgRating ? avgRating.toString() : null,
-      totalRatings: totalCount,
-      totalReviews: reviewCount,
-    })
-    .onConflictDoUpdate({
-      target: conflictTarget,
-      set: {
-        averageRating: avgRating ? avgRating.toString() : null,
-        totalRatings: totalCount,
-        totalReviews: reviewCount,
-      },
-    });
+  if (hikeId) {
+    await db.execute(sql`
+      INSERT INTO rating_aggregates (hike_id, average_rating, total_ratings, total_reviews)
+      SELECT
+        ${hikeId}::uuid,
+        CAST(AVG(rating::numeric) AS text),
+        COUNT(*)::integer,
+        COUNT(review_text)::integer
+      FROM ratings
+      WHERE hike_id = ${hikeId}::uuid
+      ON CONFLICT (hike_id) DO UPDATE SET
+        average_rating = EXCLUDED.average_rating,
+        total_ratings  = EXCLUDED.total_ratings,
+        total_reviews  = EXCLUDED.total_reviews
+    `);
+  } else if (campingSiteId) {
+    await db.execute(sql`
+      INSERT INTO rating_aggregates (camping_site_id, average_rating, total_ratings, total_reviews)
+      SELECT
+        ${campingSiteId}::uuid,
+        CAST(AVG(rating::numeric) AS text),
+        COUNT(*)::integer,
+        COUNT(review_text)::integer
+      FROM ratings
+      WHERE camping_site_id = ${campingSiteId}::uuid
+      ON CONFLICT (camping_site_id) DO UPDATE SET
+        average_rating = EXCLUDED.average_rating,
+        total_ratings  = EXCLUDED.total_ratings,
+        total_reviews  = EXCLUDED.total_reviews
+    `);
+  } else if (backpackingId) {
+    await db.execute(sql`
+      INSERT INTO rating_aggregates (backpacking_id, average_rating, total_ratings, total_reviews)
+      SELECT
+        ${backpackingId}::uuid,
+        CAST(AVG(rating::numeric) AS text),
+        COUNT(*)::integer,
+        COUNT(review_text)::integer
+      FROM ratings
+      WHERE backpacking_id = ${backpackingId}::uuid
+      ON CONFLICT (backpacking_id) DO UPDATE SET
+        average_rating = EXCLUDED.average_rating,
+        total_ratings  = EXCLUDED.total_ratings,
+        total_reviews  = EXCLUDED.total_reviews
+    `);
+  }
 }

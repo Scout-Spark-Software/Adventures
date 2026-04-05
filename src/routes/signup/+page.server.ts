@@ -3,7 +3,10 @@ import type { PageServerLoad, Actions } from "./$types";
 import { workosAuth } from "$lib/server/workos";
 import { sanitizeAuthError } from "$lib/security";
 
-export const load: PageServerLoad = async ({ url }) => {
+// 30-minute window for the verification flow
+const VERIFICATION_COOKIE_MAX_AGE = 30 * 60;
+
+export const load: PageServerLoad = async ({ url, cookies }) => {
   const email = url.searchParams.get("email");
   const needsVerification = url.searchParams.get("needsVerification") === "true";
 
@@ -20,6 +23,14 @@ export const load: PageServerLoad = async ({ url }) => {
         console.error("Failed to send verification email:", error);
       }
 
+      // Bind the userId server-side so verify/resend actions don't trust form data
+      cookies.set("pending_verification_user_id", user.id, {
+        path: "/",
+        httpOnly: true,
+        sameSite: "lax",
+        maxAge: VERIFICATION_COOKIE_MAX_AGE,
+      });
+
       return {
         needsVerification: true,
         email,
@@ -32,7 +43,7 @@ export const load: PageServerLoad = async ({ url }) => {
 };
 
 export const actions: Actions = {
-  signup: async ({ request }) => {
+  signup: async ({ request, cookies, url }) => {
     const formData = await request.formData();
     const name = formData.get("name")?.toString();
     const email = formData.get("email")?.toString();
@@ -70,6 +81,15 @@ export const actions: Actions = {
       // Send verification email
       await workosAuth.sendVerificationEmail(user.id);
 
+      // Bind the userId server-side so verify/resend actions don't trust form data
+      cookies.set("pending_verification_user_id", user.id, {
+        path: "/",
+        httpOnly: true,
+        sameSite: "lax",
+        secure: url.protocol === "https:",
+        maxAge: VERIFICATION_COOKIE_MAX_AGE,
+      });
+
       // Return data to show verification form on same page
       return {
         needsVerification: true,
@@ -87,11 +107,13 @@ export const actions: Actions = {
     }
   },
 
-  verify: async ({ request }) => {
+  verify: async ({ request, cookies }) => {
     const formData = await request.formData();
     const code = formData.get("code")?.toString();
-    const userId = formData.get("userId")?.toString();
     const email = formData.get("email")?.toString();
+
+    // Read userId from the server-set cookie, not from form data
+    const userId = cookies.get("pending_verification_user_id");
 
     if (!code || !userId || !email) {
       return fail(400, {
@@ -115,6 +137,9 @@ export const actions: Actions = {
       // Verify the email with WorkOS
       await workosAuth.verifyEmail(userId, code);
 
+      // Clear the verification cookie
+      cookies.delete("pending_verification_user_id", { path: "/" });
+
       // Email verified successfully - redirect to login
       throw redirect(303, "/login?verified=true");
     } catch (error) {
@@ -134,10 +159,12 @@ export const actions: Actions = {
     }
   },
 
-  resend: async ({ request }) => {
+  resend: async ({ request, cookies }) => {
     const formData = await request.formData();
-    const userId = formData.get("userId")?.toString();
     const email = formData.get("email")?.toString();
+
+    // Read userId from the server-set cookie, not from form data
+    const userId = cookies.get("pending_verification_user_id");
 
     if (!userId) {
       return fail(400, {

@@ -2,13 +2,24 @@ import { fail, redirect } from "@sveltejs/kit";
 import type { PageServerLoad, Actions } from "./$types";
 import { workosAuth } from "$lib/server/workos";
 
-export const load: PageServerLoad = async ({ url }) => {
+const VERIFICATION_COOKIE_MAX_AGE = 30 * 60;
+
+export const load: PageServerLoad = async ({ url, cookies }) => {
   const email = url.searchParams.get("email");
   const userId = url.searchParams.get("userId");
 
   if (!email || !userId) {
     throw redirect(303, "/signup");
   }
+
+  // Bind the userId server-side so verify/resend actions don't trust URL params
+  cookies.set("pending_verification_user_id", userId, {
+    path: "/",
+    httpOnly: true,
+    sameSite: "lax",
+    secure: url.protocol === "https:",
+    maxAge: VERIFICATION_COOKIE_MAX_AGE,
+  });
 
   return {
     email,
@@ -17,11 +28,13 @@ export const load: PageServerLoad = async ({ url }) => {
 };
 
 export const actions: Actions = {
-  verify: async ({ request, url }) => {
+  verify: async ({ request, url, cookies }) => {
     const formData = await request.formData();
     const code = formData.get("code")?.toString();
-    const userId = url.searchParams.get("userId");
     const email = url.searchParams.get("email");
+
+    // Read userId from the server-set cookie, not from URL/form params
+    const userId = cookies.get("pending_verification_user_id");
 
     if (!code || !userId || !email) {
       return fail(400, {
@@ -36,6 +49,9 @@ export const actions: Actions = {
     try {
       // Verify the email with WorkOS
       await workosAuth.verifyEmail(userId, code);
+
+      // Clear the verification cookie
+      cookies.delete("pending_verification_user_id", { path: "/" });
 
       // Email verified successfully - redirect to login
       throw redirect(303, "/login?verified=true");
@@ -54,8 +70,9 @@ export const actions: Actions = {
     }
   },
 
-  resend: async ({ url }) => {
-    const userId = url.searchParams.get("userId");
+  resend: async ({ cookies }) => {
+    // Read userId from the server-set cookie, not from URL params
+    const userId = cookies.get("pending_verification_user_id");
 
     if (!userId) {
       return fail(400, { error: "Missing user information" });

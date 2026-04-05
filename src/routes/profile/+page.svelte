@@ -260,18 +260,6 @@
             </div>
           {:else if activeTab === "security"}
             <div class="pb-6">
-              {#if form?.success}
-                <div
-                  class="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-3"
-                >
-                  <div
-                    class="w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0"
-                  >
-                    <Check size={13} class="text-white" />
-                  </div>
-                  <p class="text-sm font-semibold text-emerald-800">{form.message}</p>
-                </div>
-              {/if}
               {#if form?.error}
                 <div
                   class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3"

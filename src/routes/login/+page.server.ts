@@ -3,8 +3,53 @@ import type { Actions } from "./$types";
 import { workosAuth } from "$lib/server/workos";
 import { sanitizeAuthError } from "$lib/security";
 
+// Best-effort rate limiting per IP. Not globally consistent across Cloudflare
+// isolates — use Cloudflare WAF rate-limit rules for a production-grade solution.
+const MAX_ATTEMPTS = 5;
+const WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+
+const loginAttempts = new Map<string, { count: number; resetAt: number }>();
+
+function getClientIp(request: Request): string {
+  return (
+    request.headers.get("cf-connecting-ip") ||
+    request.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
+    "unknown"
+  );
+}
+
+function checkRateLimit(ip: string): { limited: boolean; retryAfterSeconds: number } {
+  const now = Date.now();
+  const entry = loginAttempts.get(ip);
+
+  if (!entry || now >= entry.resetAt) {
+    loginAttempts.set(ip, { count: 1, resetAt: now + WINDOW_MS });
+    return { limited: false, retryAfterSeconds: 0 };
+  }
+
+  if (entry.count >= MAX_ATTEMPTS) {
+    return { limited: true, retryAfterSeconds: Math.ceil((entry.resetAt - now) / 1000) };
+  }
+
+  entry.count++;
+  return { limited: false, retryAfterSeconds: 0 };
+}
+
+function clearRateLimit(ip: string) {
+  loginAttempts.delete(ip);
+}
+
 export const actions: Actions = {
-  login: async ({ request, cookies }) => {
+  login: async ({ request, cookies, url }) => {
+    const ip = getClientIp(request);
+    const { limited, retryAfterSeconds } = checkRateLimit(ip);
+
+    if (limited) {
+      return fail(429, {
+        error: `Too many login attempts. Please try again in ${Math.ceil(retryAfterSeconds / 60)} minute(s).`,
+      });
+    }
+
     const formData = await request.formData();
     const email = formData.get("email")?.toString();
     const password = formData.get("password")?.toString();
@@ -17,12 +62,15 @@ export const actions: Actions = {
       // Sign in with WorkOS
       const { user: _user, accessToken, refreshToken } = await workosAuth.signIn(email, password);
 
+      // Successful login — clear the rate-limit counter for this IP
+      clearRateLimit(ip);
+
       // Set cookie options
       const cookieOptions = {
         path: "/",
         httpOnly: true,
         sameSite: "lax" as const,
-        secure: process.env.NODE_ENV === "production",
+        secure: url.protocol === "https:",
       };
 
       // Set the access token cookie (1 hour)

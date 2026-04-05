@@ -1,4 +1,4 @@
-import { fail } from "@sveltejs/kit";
+import { fail, redirect } from "@sveltejs/kit";
 import type { PageServerLoad, Actions } from "./$types";
 import { requireAuth } from "$lib/auth/middleware";
 import { workosAuth } from "$lib/server/workos";
@@ -26,7 +26,7 @@ export const load: PageServerLoad = async (event) => {
 };
 
 export const actions: Actions = {
-  changePassword: async ({ request, locals }) => {
+  changePassword: async ({ request, locals, cookies }) => {
     if (!locals.user) {
       return fail(401, { error: "Not authenticated" });
     }
@@ -80,7 +80,16 @@ export const actions: Actions = {
       // Step 2: Update password
       await workosAuth.updatePassword(locals.user.id, newPassword);
 
-      return { success: true, message: "Password updated successfully" };
+      // Step 3: Revoke the current session so other devices/tabs are logged out
+      const accessToken = cookies.get("workos_access_token");
+      if (accessToken) {
+        const sessionId = await workosAuth.extractSessionId(accessToken);
+        await workosAuth.signOut(sessionId);
+      }
+      cookies.delete("workos_access_token", { path: "/" });
+      cookies.delete("workos_refresh_token", { path: "/" });
+
+      throw redirect(303, "/login?passwordChanged=true");
     } catch (error) {
       console.error("Password change error:", error instanceof Error ? error.message : "unknown");
       return fail(400, { error: sanitizeAuthError(error) });
