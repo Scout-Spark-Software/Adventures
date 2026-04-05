@@ -2,6 +2,20 @@ import { fail, redirect } from "@sveltejs/kit";
 import type { PageServerLoad, Actions } from "./$types";
 import { workosAuth } from "$lib/server/workos";
 import { sanitizeAuthError } from "$lib/security";
+import { zxcvbn, zxcvbnOptions } from "@zxcvbn-ts/core";
+import * as zxcvbnCommonPackage from "@zxcvbn-ts/language-common";
+import * as zxcvbnEnPackage from "@zxcvbn-ts/language-en";
+
+zxcvbnOptions.setOptions({
+  translations: zxcvbnEnPackage.translations,
+  graphs: zxcvbnCommonPackage.adjacencyGraphs,
+  dictionary: {
+    ...zxcvbnCommonPackage.dictionary,
+    ...zxcvbnEnPackage.dictionary,
+  },
+});
+
+const MIN_STRENGTH = 3;
 
 // 30-minute window for the verification flow
 const VERIFICATION_COOKIE_MAX_AGE = 30 * 60;
@@ -62,10 +76,10 @@ export const actions: Actions = {
       return fail(400, { error: "Password must be at least 12 characters long" });
     }
 
-    if (!/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password)) {
+    const { score } = zxcvbn(password);
+    if (score < MIN_STRENGTH) {
       return fail(400, {
-        error:
-          "Password must contain at least one uppercase letter, one lowercase letter, and one number",
+        error: "Password is too weak. Try using a more unique phrase or mixing unrelated words.",
       });
     }
 

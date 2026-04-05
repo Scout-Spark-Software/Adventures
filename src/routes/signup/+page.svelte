@@ -1,6 +1,18 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
   import type { PageData, ActionData } from "./$types";
+  import { zxcvbn, zxcvbnOptions } from "@zxcvbn-ts/core";
+  import * as zxcvbnCommonPackage from "@zxcvbn-ts/language-common";
+  import * as zxcvbnEnPackage from "@zxcvbn-ts/language-en";
+
+  zxcvbnOptions.setOptions({
+    translations: zxcvbnEnPackage.translations,
+    graphs: zxcvbnCommonPackage.adjacencyGraphs,
+    dictionary: {
+      ...zxcvbnCommonPackage.dictionary,
+      ...zxcvbnEnPackage.dictionary,
+    },
+  });
 
   export let data: PageData;
   export let form: ActionData;
@@ -17,13 +29,19 @@
   let showPassword = false;
   let showConfirmPassword = false;
 
-  // Password requirement checks
+  const MIN_STRENGTH = 3;
+
+  $: strengthResult = password.length > 0 ? zxcvbn(password) : null;
+  $: strengthScore = strengthResult?.score ?? 0;
+  $: strengthFeedback = strengthResult?.feedback?.suggestions ?? [];
+  $: strengthWarning = strengthResult?.feedback?.warning ?? "";
+
+  const strengthLabels = ["Very weak", "Weak", "Fair", "Strong", "Very strong"];
+  const strengthColors = ["#ef4444", "#f97316", "#eab308", "#34d399", "#34d399"];
+
   $: hasMinLength = password.length >= 12;
-  $: hasUppercase = /[A-Z]/.test(password);
-  $: hasLowercase = /[a-z]/.test(password);
-  $: hasNumber = /[0-9]/.test(password);
   $: passwordsMatch = confirmPassword.length > 0 && password === confirmPassword;
-  $: allRequirementsMet = hasMinLength && hasUppercase && hasLowercase && hasNumber;
+  $: allRequirementsMet = hasMinLength && strengthScore >= MIN_STRENGTH;
 
   // Check if we're in verification mode from server load or form response
   $: if (data.needsVerification || form?.needsVerification) {
@@ -232,56 +250,42 @@
                 {/if}
               </button>
 
-              <!-- Requirements tooltip — right of field on sm+, below on mobile -->
+              <!-- Strength meter -->
               {#if password.length > 0}
-                <div class="sm:absolute sm:left-full sm:top-0 sm:ml-3 sm:w-52 sm:z-50 mt-2 sm:mt-0">
-                  <div class="relative">
-                    <!-- Arrow (desktop only) -->
-                    <div
-                      class="hidden sm:block absolute -left-1.5 top-3.5 w-3 h-3 rotate-45"
-                      style="background: rgba(12,20,14,0.97); border-left: 1px solid rgba(245,240,232,0.15); border-bottom: 1px solid rgba(245,240,232,0.15);"
-                    ></div>
-                    <div
-                      class="rounded-xl p-3 space-y-2"
-                      style="background: rgba(12,20,14,0.97); border: 1px solid rgba(245,240,232,0.15); backdrop-filter: blur(12px);"
-                    >
-                      <p
-                        class="text-xs font-semibold tracking-wide uppercase"
-                        style="color: rgba(245,240,232,0.4);"
-                      >
-                        Password must have:
-                      </p>
-                      {#each [{ met: hasMinLength, label: "12+ characters" }, { met: hasUppercase, label: "Uppercase letter" }, { met: hasLowercase, label: "Lowercase letter" }, { met: hasNumber, label: "Number" }] as req (req.label)}
-                        <div class="flex items-center gap-2">
-                          {#if req.met}
-                            <svg
-                              class="h-3.5 w-3.5 flex-shrink-0"
-                              fill="none"
-                              stroke="#34d399"
-                              stroke-width="2.5"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M5 13l4 4L19 7"
-                              />
-                            </svg>
-                          {:else}
-                            <div
-                              class="h-3.5 w-3.5 flex-shrink-0 rounded-full"
-                              style="border: 1.5px solid rgba(245,240,232,0.2);"
-                            ></div>
-                          {/if}
-                          <span
-                            class="text-xs"
-                            style="color: {req.met ? '#6ee7b7' : 'rgba(245,240,232,0.4)'};"
-                            >{req.label}</span
-                          >
-                        </div>
-                      {/each}
-                    </div>
+                <div class="mt-2.5 space-y-1.5">
+                  <!-- Bar -->
+                  <div class="flex gap-1">
+                    {#each [0, 1, 2, 3, 4] as i (i)}
+                      <div
+                        class="h-1.5 flex-1 rounded-full transition-colors duration-200"
+                        style="background: {i <= strengthScore
+                          ? strengthColors[strengthScore]
+                          : 'rgba(245,240,232,0.1)'};"
+                      ></div>
+                    {/each}
                   </div>
+                  <!-- Label row -->
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs" style="color: {strengthColors[strengthScore]};">
+                      {strengthLabels[strengthScore]}
+                    </span>
+                    {#if !hasMinLength}
+                      <span class="text-xs" style="color: rgba(245,240,232,0.35);">12+ characters required</span>
+                    {:else if strengthScore < MIN_STRENGTH}
+                      <span class="text-xs" style="color: rgba(245,240,232,0.35);">Too weak for signup</span>
+                    {/if}
+                  </div>
+                  <!-- Feedback -->
+                  {#if strengthWarning}
+                    <p class="text-xs" style="color: rgba(245,240,232,0.4);">{strengthWarning}</p>
+                  {/if}
+                  {#if strengthFeedback.length > 0 && strengthScore < MIN_STRENGTH}
+                    <ul class="space-y-0.5">
+                      {#each strengthFeedback as suggestion (suggestion)}
+                        <li class="text-xs" style="color: rgba(245,240,232,0.4);">• {suggestion}</li>
+                      {/each}
+                    </ul>
+                  {/if}
                 </div>
               {/if}
             </div>

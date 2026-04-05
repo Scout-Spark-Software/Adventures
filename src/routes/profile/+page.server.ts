@@ -6,6 +6,20 @@ import { sanitizeAuthError } from "$lib/security";
 import { db } from "$lib/db";
 import { userProfiles, councils } from "$lib/db/schemas";
 import { eq, asc } from "drizzle-orm";
+import { zxcvbn, zxcvbnOptions } from "@zxcvbn-ts/core";
+import * as zxcvbnCommonPackage from "@zxcvbn-ts/language-common";
+import * as zxcvbnEnPackage from "@zxcvbn-ts/language-en";
+
+zxcvbnOptions.setOptions({
+  translations: zxcvbnEnPackage.translations,
+  graphs: zxcvbnCommonPackage.adjacencyGraphs,
+  dictionary: {
+    ...zxcvbnCommonPackage.dictionary,
+    ...zxcvbnEnPackage.dictionary,
+  },
+});
+
+const MIN_STRENGTH = 3;
 
 export const load: PageServerLoad = async (event) => {
   const user = requireAuth(event);
@@ -54,15 +68,13 @@ export const actions: Actions = {
     }
 
     if (newPassword.length < 12) {
-      return fail(400, {
-        error: "Password must be at least 12 characters long",
-      });
+      return fail(400, { error: "Password must be at least 12 characters long" });
     }
 
-    if (!/[A-Z]/.test(newPassword) || !/[a-z]/.test(newPassword) || !/[0-9]/.test(newPassword)) {
+    const { score } = zxcvbn(newPassword);
+    if (score < MIN_STRENGTH) {
       return fail(400, {
-        error:
-          "Password must contain at least one uppercase letter, one lowercase letter, and one number",
+        error: "Password is too weak. Try using a more unique phrase or mixing unrelated words.",
       });
     }
 

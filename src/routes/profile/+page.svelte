@@ -6,6 +6,18 @@
   import NotesSection from "$lib/components/NotesSection.svelte";
   import { Check, CircleAlertIcon, LogOut, Lock, Mail, UserCircle, Shield } from "lucide-svelte";
   import CouncilSelect from "$lib/components/CouncilSelect.svelte";
+  import { zxcvbn, zxcvbnOptions } from "@zxcvbn-ts/core";
+  import * as zxcvbnCommonPackage from "@zxcvbn-ts/language-common";
+  import * as zxcvbnEnPackage from "@zxcvbn-ts/language-en";
+
+  zxcvbnOptions.setOptions({
+    translations: zxcvbnEnPackage.translations,
+    graphs: zxcvbnCommonPackage.adjacencyGraphs,
+    dictionary: {
+      ...zxcvbnCommonPackage.dictionary,
+      ...zxcvbnEnPackage.dictionary,
+    },
+  });
 
   export let data: PageData;
   export let form: ActionData;
@@ -19,6 +31,21 @@
 
   let isChangingPassword = false;
   let isSavingProfile = false;
+
+  const MIN_STRENGTH = 3;
+  let newPassword = "";
+  let confirmPassword = "";
+
+  $: strengthResult = newPassword.length > 0 ? zxcvbn(newPassword) : null;
+  $: strengthScore = strengthResult?.score ?? 0;
+  $: strengthFeedback = strengthResult?.feedback?.suggestions ?? [];
+  $: strengthWarning = strengthResult?.feedback?.warning ?? "";
+
+  const strengthLabels = ["Very weak", "Weak", "Fair", "Strong", "Very strong"];
+  const strengthColors = ["#ef4444", "#f97316", "#eab308", "#10b981", "#10b981"];
+
+  $: passwordsMatch = confirmPassword.length > 0 && newPassword === confirmPassword;
+  $: canSubmit = newPassword.length >= 12 && strengthScore >= MIN_STRENGTH && passwordsMatch;
 
   async function handleLogout() {
     await fetch("/logout", { method: "POST" });
@@ -314,10 +341,42 @@
                     id="newPassword"
                     name="newPassword"
                     required
-                    minlength="8"
+                    minlength="12"
+                    bind:value={newPassword}
                     class="w-full px-4 py-3 border border-stone-200 rounded-xl bg-stone-50 text-stone-900 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent focus:bg-white transition-all outline-none"
                   />
-                  <p class="mt-1.5 text-xs text-stone-400">At least 8 characters</p>
+                  {#if newPassword.length > 0}
+                    <div class="mt-2 space-y-1.5">
+                      <div class="flex gap-1">
+                        {#each [0, 1, 2, 3, 4] as i (i)}
+                          <div
+                            class="h-1.5 flex-1 rounded-full transition-colors duration-200"
+                            style="background: {i <= strengthScore ? strengthColors[strengthScore] : '#e7e5e4'};"
+                          ></div>
+                        {/each}
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-xs font-medium" style="color: {strengthColors[strengthScore]};">
+                          {strengthLabels[strengthScore]}
+                        </span>
+                        {#if newPassword.length < 12}
+                          <span class="text-xs text-stone-400">12+ characters required</span>
+                        {:else if strengthScore < MIN_STRENGTH}
+                          <span class="text-xs text-stone-400">Too weak</span>
+                        {/if}
+                      </div>
+                      {#if strengthWarning}
+                        <p class="text-xs text-stone-400">{strengthWarning}</p>
+                      {/if}
+                      {#if strengthFeedback.length > 0 && strengthScore < MIN_STRENGTH}
+                        <ul class="space-y-0.5">
+                          {#each strengthFeedback as suggestion (suggestion)}
+                            <li class="text-xs text-stone-400">• {suggestion}</li>
+                          {/each}
+                        </ul>
+                      {/if}
+                    </div>
+                  {/if}
                 </div>
                 <div>
                   <label
@@ -330,14 +389,20 @@
                     id="confirmPassword"
                     name="confirmPassword"
                     required
-                    minlength="8"
+                    minlength="12"
+                    bind:value={confirmPassword}
                     class="w-full px-4 py-3 border border-stone-200 rounded-xl bg-stone-50 text-stone-900 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent focus:bg-white transition-all outline-none"
+                    class:border-emerald-400={passwordsMatch}
+                    class:border-red-300={confirmPassword.length > 0 && !passwordsMatch}
                   />
+                  {#if confirmPassword.length > 0 && !passwordsMatch}
+                    <p class="mt-1.5 text-xs text-red-500">Passwords do not match</p>
+                  {/if}
                 </div>
                 <div class="pt-2">
                   <button
                     type="submit"
-                    disabled={isChangingPassword}
+                    disabled={isChangingPassword || !canSubmit}
                     class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold text-stone-950 transition-all hover:opacity-90 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                     style="background: linear-gradient(135deg, #86efac, #34d399);"
                   >
