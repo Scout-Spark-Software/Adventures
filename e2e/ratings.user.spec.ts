@@ -15,7 +15,7 @@ test.describe('Ratings – authenticated user', () => {
     await page.waitForLoadState('networkidle');
 
     // Click the Reviews tab to ensure the component is mounted
-    await page.getByRole('button', { name: 'Reviews' }).click();
+    await page.getByRole('tab', { name: 'Reviews' }).click();
     await page.waitForLoadState('networkidle');
 
     // If there is an existing rating, delete it — look inside the "Your Rating" card
@@ -36,7 +36,7 @@ test.describe('Ratings – authenticated user', () => {
     await page.waitForLoadState('networkidle');
 
     // Click the Reviews tab
-    await page.getByRole('button', { name: 'Reviews' }).click();
+    await page.getByRole('tab', { name: 'Reviews' }).click();
     await page.waitForLoadState('networkidle');
 
     // The UserRatingCard should be in edit mode (no existing rating)
@@ -64,7 +64,7 @@ test.describe('Ratings – authenticated user', () => {
     await page.waitForLoadState('networkidle');
 
     // Click the Reviews tab
-    await page.getByRole('button', { name: 'Reviews' }).click();
+    await page.getByRole('tab', { name: 'Reviews' }).click();
     await page.waitForLoadState('networkidle');
 
     const yourRatingCard = page.locator('.bg-indigo-50');
@@ -94,7 +94,7 @@ test.describe('Ratings – authenticated user', () => {
     await page.waitForLoadState('networkidle');
 
     // Click the Reviews tab
-    await page.getByRole('button', { name: 'Reviews' }).click();
+    await page.getByRole('tab', { name: 'Reviews' }).click();
     await page.waitForLoadState('networkidle');
 
     const yourRatingCard = page.locator('.bg-indigo-50');

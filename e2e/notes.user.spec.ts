@@ -14,7 +14,7 @@ test.describe('Notes – authenticated user', () => {
     await page.waitForLoadState('networkidle');
 
     // Navigate to the My Notes tab
-    await page.getByRole('button', { name: /My Notes/ }).click();
+    await page.getByRole('tab', { name: /My Notes/ }).click();
     await page.waitForLoadState('networkidle');
 
     // Delete all existing notes
@@ -39,7 +39,7 @@ test.describe('Notes – authenticated user', () => {
     await page.waitForLoadState('networkidle');
 
     // Open the My Notes tab
-    await page.getByRole('button', { name: /My Notes/ }).click();
+    await page.getByRole('tab', { name: /My Notes/ }).click();
     await page.waitForLoadState('networkidle');
 
     // Fill in the new note textarea
@@ -66,7 +66,7 @@ test.describe('Notes – authenticated user', () => {
     await page.waitForLoadState('networkidle');
 
     // Open the My Notes tab
-    await page.getByRole('button', { name: /My Notes/ }).click();
+    await page.getByRole('tab', { name: /My Notes/ }).click();
     await page.waitForLoadState('networkidle');
 
     // Create a note first
@@ -105,7 +105,7 @@ test.describe('Notes – authenticated user', () => {
     await page.waitForLoadState('networkidle');
 
     // Open the My Notes tab
-    await page.getByRole('button', { name: /My Notes/ }).click();
+    await page.getByRole('tab', { name: /My Notes/ }).click();
     await page.waitForLoadState('networkidle');
 
     // Create a note

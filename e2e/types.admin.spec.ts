@@ -1,9 +1,31 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, request as baseRequest } from "@playwright/test";
 
 const TEST_AMENITY_NAME = "Test Amenity E2E Playwright";
 const TEST_AMENITY_KEY = "testAmenityE2EPlaywright";
 
 test.describe("Type management", () => {
+  test.beforeAll(async () => {
+    const baseURL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:5173';
+    const adminContext = await baseRequest.newContext({
+      baseURL,
+      storageState: 'e2e/.auth/admin.json',
+    });
+
+    try {
+      const res = await adminContext.get('/api/amenity-types');
+      if (res.ok()) {
+        const types: Array<{ id: string; name: string; key: string }> = await res.json();
+        for (const t of types) {
+          if (t.name === TEST_AMENITY_NAME || t.key === TEST_AMENITY_KEY) {
+            await adminContext.delete(`/api/amenity-types/${t.id}`);
+          }
+        }
+      }
+    } finally {
+      await adminContext.dispose();
+    }
+  });
+
   test("admin can view the types management page", async ({ page }) => {
     await page.goto("/admin/types");
     await expect(page.locator("h1")).toHaveText("Manage Types");

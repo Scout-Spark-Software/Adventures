@@ -180,7 +180,7 @@
               d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <p class="text-sm" style="color: #fca5a5;">{form.error}</p>
+          <p class="text-sm" style="color: #fca5a5;" data-testid="login-error">{form.error}</p>
         </div>
       {/if}
 
