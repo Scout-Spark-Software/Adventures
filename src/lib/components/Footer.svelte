@@ -1,5 +1,5 @@
 <script lang="ts">
-  import logo from "$lib/assets/Adventure_Spark_Logo.png";
+  import logo from "$lib/assets/Adventure_Spark_Logo.webp";
   import { MountainIcon, Tent, Backpack, BookOpen, Plus, Heart, User } from "lucide-svelte";
 
   export let user: {
