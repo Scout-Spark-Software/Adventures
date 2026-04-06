@@ -29,8 +29,8 @@
         </a>
       </div>
       <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {#each routes as route (route.id)}
-          <BackpackingCard backpacking={route} />
+        {#each routes as route, i (route.id)}
+          <BackpackingCard backpacking={route} priority={i === 0} />
         {/each}
       </div>
     </div>

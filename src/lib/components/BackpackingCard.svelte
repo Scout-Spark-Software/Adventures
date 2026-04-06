@@ -8,6 +8,7 @@
     bannerImageUrl?: string | null;
   };
   export let listView: boolean = false;
+  export let priority: boolean = false;
 
   $: locationText = backpacking.address
     ? [backpacking.address.city, backpacking.address.state].filter(Boolean).join(", ")
@@ -42,6 +43,8 @@
           src={backpacking.bannerImageUrl}
           alt={backpacking.name}
           class="absolute inset-0 w-full h-full object-cover"
+          width="144"
+          height="144"
           loading="lazy"
           decoding="async"
         />
@@ -121,8 +124,11 @@
           src={backpacking.bannerImageUrl}
           alt={backpacking.name}
           class="absolute inset-0 w-full h-full object-cover"
-          loading="lazy"
-          decoding="async"
+          width="400"
+          height="128"
+          loading={priority ? "eager" : "lazy"}
+          fetchpriority={priority ? "high" : "auto"}
+          decoding={priority ? "sync" : "async"}
         />
       {:else}
         <!-- Decorative mountain shapes -->
