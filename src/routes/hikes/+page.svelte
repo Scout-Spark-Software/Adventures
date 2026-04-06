@@ -125,7 +125,7 @@
           userRole={data.userRole}
         />
         <div class="hidden lg:block">
-          <AdSenseUnit slot="8311253407" />
+          <AdSenseUnit adSlot="8311253407" />
         </div>
       </aside>
 
