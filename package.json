@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "vite dev ",
+    "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -29,6 +29,7 @@
     "test:e2e:ui": "dotenv -e .env.test -- playwright test --ui",
     "test:e2e:headed": "dotenv -e .env.test -- playwright test --headed",
     "test:e2e:report": "playwright show-report",
+    "test:unit": "vitest run src",
     "test:e2e:ci": "playwright test"
   },
   "devDependencies": {
@@ -77,6 +78,9 @@
     "@neondatabase/neon-js": "^0.1.0-beta.18",
     "@neondatabase/serverless": "^1.0.2",
     "@workos-inc/node": "^7.77.0",
+    "@zxcvbn-ts/core": "^3.0.4",
+    "@zxcvbn-ts/language-common": "^3.0.4",
+    "@zxcvbn-ts/language-en": "^3.0.2",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
     "jose": "^6.1.3",

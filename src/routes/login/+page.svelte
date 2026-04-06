@@ -10,6 +10,7 @@
 
   $: verified = $page.url.searchParams.get("verified") === "true";
   $: passwordReset = $page.url.searchParams.get("passwordReset") === "true";
+  $: passwordChanged = $page.url.searchParams.get("passwordChanged") === "true";
 </script>
 
 <svelte:head>
@@ -137,6 +138,30 @@
         </div>
       {/if}
 
+      {#if passwordChanged}
+        <div
+          class="rounded-xl p-4 flex items-start gap-3"
+          style="background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.25);"
+        >
+          <svg
+            class="h-5 w-5 flex-shrink-0 mt-0.5"
+            fill="none"
+            stroke="#34d399"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <p class="text-sm font-medium" style="color: #6ee7b7;">
+            Password updated. Please sign in with your new password.
+          </p>
+        </div>
+      {/if}
+
       {#if form?.error}
         <div
           class="rounded-xl p-4 flex items-start gap-3"
@@ -155,7 +180,7 @@
               d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <p class="text-sm" style="color: #fca5a5;">{form.error}</p>
+          <p class="text-sm" style="color: #fca5a5;" data-testid="login-error">{form.error}</p>
         </div>
       {/if}
 

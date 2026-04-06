@@ -8,6 +8,7 @@
     bannerImageUrl?: string | null;
   };
   export let listView: boolean = false;
+  export let priority: boolean = false;
 
   $: locationText = hike.address
     ? [hike.address.city, hike.address.state].filter(Boolean).join(", ")
@@ -41,6 +42,8 @@
           src={hike.bannerImageUrl}
           alt={hike.name}
           class="absolute inset-0 w-full h-full object-cover"
+          width="144"
+          height="144"
           loading="lazy"
           decoding="async"
         />
@@ -119,8 +122,11 @@
           src={hike.bannerImageUrl}
           alt={hike.name}
           class="absolute inset-0 w-full h-full object-cover"
-          loading="lazy"
-          decoding="async"
+          width="400"
+          height="128"
+          loading={priority ? "eager" : "lazy"}
+          fetchpriority={priority ? "high" : "auto"}
+          decoding={priority ? "sync" : "async"}
         />
       {:else}
         <!-- Decorative mountain shapes -->

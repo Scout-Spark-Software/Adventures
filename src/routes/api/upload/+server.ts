@@ -4,7 +4,7 @@ import { requireAuth } from "$lib/auth/middleware";
 import { uploadFile } from "$lib/storage/blob";
 import { sanitizeFilename } from "$lib/security";
 import { db } from "$lib/db";
-import { files } from "$lib/db/schemas";
+import { files, hikes, campingSites, backpacking } from "$lib/db/schemas";
 import { eq, and, count } from "drizzle-orm";
 
 const MAX_PHOTOS_PER_ENTITY = 6;
@@ -33,6 +33,24 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
   if (!fileType || !["image", "document"].includes(fileType)) {
     throw error(400, 'file_type must be "image" or "document"');
+  }
+
+  // Verify the target entity exists before accepting the upload
+  const entityExists =
+    entityType === "hike"
+      ? await db.query.hikes.findFirst({ columns: { id: true }, where: eq(hikes.id, entityId) })
+      : entityType === "camping_site"
+        ? await db.query.campingSites.findFirst({
+            columns: { id: true },
+            where: eq(campingSites.id, entityId),
+          })
+        : await db.query.backpacking.findFirst({
+            columns: { id: true },
+            where: eq(backpacking.id, entityId),
+          });
+
+  if (!entityExists) {
+    throw error(404, "Entity not found");
   }
 
   // Enforce photo limit for images

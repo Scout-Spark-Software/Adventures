@@ -61,13 +61,28 @@ export const SECURITY_HEADERS: Record<string, string> = {
  * Prevents leaking authentication implementation details to clients.
  */
 export function sanitizeAuthError(error: unknown): string {
+  // Check WorkOS nested errors array first (e.g. email_not_available, password_too_weak)
+  if (typeof error === "object" && error !== null && "errors" in error) {
+    const errors = (error as { errors: { code: string }[] }).errors;
+    if (Array.isArray(errors)) {
+      for (const e of errors) {
+        if (e.code === "email_not_available") {
+          return "An account with that email already exists.";
+        }
+        if (e.code === "password_too_weak" || e.code === "password_strength_error") {
+          return "Password is too weak. Try using a more unique phrase or mixing unrelated words.";
+        }
+      }
+    }
+  }
+
   const msg = error instanceof Error ? error.message : String(error);
 
   if (msg.includes("email") && (msg.includes("verif") || msg.includes("ownership"))) {
     return "Please verify your email address before logging in.";
   }
   if (
-    msg.includes("password") ||
+    msg.toLowerCase().includes("password") ||
     msg.includes("credentials") ||
     msg.includes("invalid") ||
     msg.includes("not found") ||

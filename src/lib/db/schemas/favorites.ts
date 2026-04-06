@@ -9,9 +9,11 @@ export const favorites = pgTable(
   {
     id: uuid("id").defaultRandom().primaryKey(),
     userId: text("user_id").notNull(),
-    hikeId: uuid("hike_id").references(() => hikes.id),
-    campingSiteId: uuid("camping_site_id").references(() => campingSites.id),
-    backpackingId: uuid("backpacking_id").references(() => backpacking.id),
+    hikeId: uuid("hike_id").references(() => hikes.id, { onDelete: "cascade" }),
+    campingSiteId: uuid("camping_site_id").references(() => campingSites.id, {
+      onDelete: "cascade",
+    }),
+    backpackingId: uuid("backpacking_id").references(() => backpacking.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => ({

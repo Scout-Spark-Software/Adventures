@@ -8,7 +8,7 @@ test.describe('Login form – anonymous', () => {
     await page.click('button[type="submit"]');
 
     // Error message is rendered inside the form card when form.error is set
-    await expect(page.locator('form p').first()).toBeVisible();
+    await expect(page.getByTestId('login-error')).toBeVisible();
     await expect(page).toHaveURL(/\/login/);
   });
 

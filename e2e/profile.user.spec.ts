@@ -34,7 +34,7 @@ test.describe("Profile page", () => {
 
     await page.click('button[type="submit"]:has-text("Update Password")');
 
-    await expect(page.locator("text=New passwords do not match")).toBeVisible();
+    await expect(page.locator("text=Passwords do not match")).toBeVisible();
   });
 
   test("too-short/weak password shows error message", async ({ page }) => {
@@ -50,8 +50,6 @@ test.describe("Profile page", () => {
     await page.click('button[type="submit"]:has-text("Update Password")');
 
     // Should show length or complexity error
-    await expect(
-      page.locator("text=Password must be at least 12 characters long")
-    ).toBeVisible();
+    await expect(page.locator("text=12+ characters required")).toBeVisible();
   });
 });

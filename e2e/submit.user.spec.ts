@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, request } from '@playwright/test';
 
 test.describe('Submit adventure – authenticated user', () => {
   test('submits a new hike and shows success state', async ({ page }) => {
@@ -35,10 +35,18 @@ test.describe('Submit adventure – authenticated user', () => {
     await page.fill('#city', 'Bend');
     await page.fill('#state', 'OR');
 
-    // Fill in the three required enum fields (pet_policy, site_type, fire_policy)
-    await page.selectOption('#pet_policy', 'allowed');
-    await page.selectOption('#site_type', 'public');
-    await page.selectOption('#fire_policy', 'allowed');
+    // Fill in the three required enum fields (pet_policy, site_type, fire_policy).
+    // Explicitly dispatch 'change' after each selectOption to guarantee Svelte's bind:value
+    // propagates through the FormSelect component boundary before validateForm() runs.
+    await page.locator('#pet_policy').selectOption('allowed');
+    await page.locator('#pet_policy').dispatchEvent('change');
+    await page.locator('#site_type').selectOption('public');
+    await page.locator('#site_type').dispatchEvent('change');
+    await page.locator('#fire_policy').selectOption('allowed');
+    await page.locator('#fire_policy').dispatchEvent('change');
+
+    // Brief wait to let Svelte flush reactive updates before submit
+    await page.waitForTimeout(150);
 
     // Submit the camping site form
     await page.click('form[action="?/submitCampingSite"] button[type="submit"]');
@@ -47,4 +55,32 @@ test.describe('Submit adventure – authenticated user', () => {
     await expect(page.locator('h3.success-text')).toContainText('Success!', { timeout: 10000 });
     await expect(page.locator('text=Your camping site has been submitted for review!')).toBeVisible();
   });
+});
+
+test.afterAll(async () => {
+  const baseURL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:5173';
+  const adminContext = await request.newContext({
+    baseURL,
+    storageState: 'e2e/.auth/admin.json',
+  });
+
+  try {
+    const hikesRes = await adminContext.get('/api/hikes?status=pending&limit=100');
+    if (hikesRes.ok()) {
+      const { data } = await hikesRes.json();
+      for (const hike of (data ?? []).filter((h: { name: string }) => h.name === 'Test Hike E2E')) {
+        await adminContext.delete(`/api/hikes/${hike.id}`);
+      }
+    }
+
+    const campingRes = await adminContext.get('/api/camping-sites?status=pending&limit=100');
+    if (campingRes.ok()) {
+      const { data } = await campingRes.json();
+      for (const site of (data ?? []).filter((s: { name: string }) => s.name === 'Test Camping Site E2E')) {
+        await adminContext.delete(`/api/camping-sites/${site.id}`);
+      }
+    }
+  } finally {
+    await adminContext.dispose();
+  }
 });

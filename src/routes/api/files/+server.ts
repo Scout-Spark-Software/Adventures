@@ -23,6 +23,9 @@ export const GET: RequestHandler = async ({ url }) => {
     where: and(...conditions),
   });
 
+  // Strip the uploader's user ID from the public response
+  const publicResults = results.map(({ uploadedBy: _uploadedBy, ...rest }) => rest);
+
   // Cache responses for approved entities
   const entity =
     entityType === "hike"
@@ -36,12 +39,12 @@ export const GET: RequestHandler = async ({ url }) => {
         });
 
   if (entity?.status === "approved") {
-    return json(results, {
+    return json(publicResults, {
       headers: {
         "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
       },
     });
   }
 
-  return json(results);
+  return json(publicResults);
 };

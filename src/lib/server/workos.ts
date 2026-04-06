@@ -82,7 +82,7 @@ export const workosAuth = {
 
       return user;
     } catch (error) {
-      throw new Error(error instanceof Error ? error.message : "Failed to create user");
+      throw error;
     }
   },
 
