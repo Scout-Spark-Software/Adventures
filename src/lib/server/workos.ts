@@ -253,6 +253,29 @@ export const workosAuth = {
     }
   },
 
+  // Get AuthKit authorization URL (hosted UI)
+  async getAuthorizationUrl(redirectUri: string, screenHint?: "sign-in" | "sign-up") {
+    return workos.userManagement.getAuthorizationUrl({
+      clientId: workosConfig.clientId,
+      redirectUri,
+      provider: "authkit",
+      ...(screenHint && { screenHint }),
+    });
+  },
+
+  // Exchange authorization code for tokens (AuthKit callback)
+  async authenticateWithCode(code: string) {
+    const authResponse = await workos.userManagement.authenticateWithCode({
+      clientId: workosConfig.clientId,
+      code,
+    });
+    return {
+      user: authResponse.user,
+      accessToken: authResponse.accessToken,
+      refreshToken: authResponse.refreshToken,
+    };
+  },
+
   // Get user by email
   async getUserByEmail(email: string) {
     try {
