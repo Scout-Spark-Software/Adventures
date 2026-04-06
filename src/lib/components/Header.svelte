@@ -1,5 +1,5 @@
 <script lang="ts">
-  import navLogo from "$lib/assets/Adventure_Spark_Nav_Image.png";
+  import navLogo from "$lib/assets/Adventure_Spark_Nav_Image.webp";
   import { page } from "$app/stores";
   import {
     Tent,
