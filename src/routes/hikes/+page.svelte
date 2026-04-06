@@ -4,7 +4,16 @@
   import HikeCard from "$lib/components/HikeCard.svelte";
   import HikeFilters from "$lib/components/HikeFilters.svelte";
   import LoadingSpinner from "$lib/components/LoadingSpinner.svelte";
-  import { MountainIcon, Plus, BookOpen, LayoutGrid, List, Map, ChevronLeft, ChevronRight } from "lucide-svelte";
+  import {
+    MountainIcon,
+    Plus,
+    BookOpen,
+    LayoutGrid,
+    List,
+    Map,
+    ChevronLeft,
+    ChevronRight,
+  } from "lucide-svelte";
   import { navigating, page as pageStore } from "$app/stores";
   import ListingMap from "$lib/components/ListingMap.svelte";
 
@@ -51,9 +60,15 @@
 
 <svelte:head>
   <title>Hiking Trails — Adventure Spark</title>
-  <meta name="description" content="Browse scout hiking trails by difficulty, distance, trail type, and location. Find your next outdoor adventure." />
+  <meta
+    name="description"
+    content="Browse scout hiking trails by difficulty, distance, trail type, and location. Find your next outdoor adventure."
+  />
   <meta property="og:title" content="Hiking Trails — Adventure Spark" />
-  <meta property="og:description" content="Browse scout hiking trails by difficulty, distance, trail type, and location. Find your next outdoor adventure." />
+  <meta
+    property="og:description"
+    content="Browse scout hiking trails by difficulty, distance, trail type, and location. Find your next outdoor adventure."
+  />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary" />
 </svelte:head>
@@ -108,6 +123,23 @@
           currentFilters={data.currentFilters}
           userRole={data.userRole}
         />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6855584270685805"
+          crossorigin="anonymous"
+        ></script>
+        <!-- AdventureSpark-Filter -->
+        <ins
+          class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-6855584270685805"
+          data-ad-slot="8311253407"
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        ></ins>
+        <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
       </aside>
 
       <!-- Main Content -->
@@ -200,10 +232,11 @@
                 {:else}
                   <a
                     href={pageUrl(pg)}
-                    class="min-w-[36px] h-9 flex items-center justify-center rounded-lg text-sm font-bold transition-colors {pg === data.page
+                    class="min-w-[36px] h-9 flex items-center justify-center rounded-lg text-sm font-bold transition-colors {pg ===
+                    data.page
                       ? 'bg-emerald-600 text-white'
                       : 'text-stone-600 hover:bg-stone-200'}"
-                    aria-current={pg === data.page ? 'page' : undefined}
+                    aria-current={pg === data.page ? "page" : undefined}
                   >
                     {pg}
                   </a>
