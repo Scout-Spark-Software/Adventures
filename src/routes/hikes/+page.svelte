@@ -16,6 +16,7 @@
   } from "lucide-svelte";
   import { navigating, page as pageStore } from "$app/stores";
   import ListingMap from "$lib/components/ListingMap.svelte";
+  import AdSenseUnit from "$lib/components/AdSenseUnit.svelte";
 
   export let data: PageData;
 
@@ -123,23 +124,7 @@
           currentFilters={data.currentFilters}
           userRole={data.userRole}
         />
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6855584270685805"
-          crossorigin="anonymous"
-        ></script>
-        <!-- AdventureSpark-Filter -->
-        <ins
-          class="adsbygoogle"
-          style="display:block"
-          data-ad-client="ca-pub-6855584270685805"
-          data-ad-slot="8311253407"
-          data-ad-format="auto"
-          data-full-width-responsive="true"
-        ></ins>
-        <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
+        <AdSenseUnit slot="8311253407" />
       </aside>
 
       <!-- Main Content -->
@@ -275,6 +260,7 @@
         currentFilters={data.currentFilters}
         userRole={data.userRole}
       />
+      <AdSenseUnit slot="8311253407" />
     </div>
   </div>
 </div>
