@@ -100,8 +100,8 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Two-column layout: filters sidebar + content -->
     <div class="lg:grid lg:grid-cols-[280px_1fr] lg:gap-6">
-      <!-- Filter Sidebar (desktop) -->
-      <aside class="hidden lg:block">
+      <!-- Filter Sidebar -->
+      <aside>
         <BackpackingFilters
           featureTypes={data.featureTypes}
           councils={data.councils}
@@ -234,13 +234,5 @@
       </main>
     </div>
 
-    <!-- Mobile Filter Component -->
-    <div class="lg:hidden">
-      <BackpackingFilters
-        councils={data.councils}
-        currentFilters={data.currentFilters}
-        userRole={data.userRole}
-      />
-    </div>
   </div>
 </div>
