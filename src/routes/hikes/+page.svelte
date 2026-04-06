@@ -116,15 +116,17 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Two-column layout: filters sidebar + content -->
     <div class="lg:grid lg:grid-cols-[280px_1fr] lg:gap-6">
-      <!-- Filter Sidebar (desktop) -->
-      <aside class="hidden lg:block">
+      <!-- Filter Sidebar -->
+      <aside>
         <HikeFilters
           featureTypes={data.featureTypes}
           councils={data.councils}
           currentFilters={data.currentFilters}
           userRole={data.userRole}
         />
-        <AdSenseUnit slot="8311253407" />
+        <div class="hidden lg:block">
+          <AdSenseUnit slot="8311253407" />
+        </div>
       </aside>
 
       <!-- Main Content -->
@@ -252,15 +254,5 @@
       </main>
     </div>
 
-    <!-- Mobile Filter Component -->
-    <div class="lg:hidden">
-      <HikeFilters
-        featureTypes={data.featureTypes}
-        councils={data.councils}
-        currentFilters={data.currentFilters}
-        userRole={data.userRole}
-      />
-      <AdSenseUnit slot="8311253407" />
-    </div>
   </div>
 </div>
