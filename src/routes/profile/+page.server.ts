@@ -1,26 +1,11 @@
-import { fail, redirect } from "@sveltejs/kit";
+import { fail } from "@sveltejs/kit";
 import type { PageServerLoad, Actions } from "./$types";
 import { requireAuth } from "$lib/auth/middleware";
 import { workosAuth } from "$lib/server/workos";
-import { sanitizeAuthError } from "$lib/security";
 import { db } from "$lib/db";
 import { userProfiles, councils } from "$lib/db/schemas";
 import { eq, asc } from "drizzle-orm";
-import { zxcvbn, zxcvbnOptions } from "@zxcvbn-ts/core";
-import * as zxcvbnCommonPackage from "@zxcvbn-ts/language-common";
-import * as zxcvbnEnPackage from "@zxcvbn-ts/language-en";
-import { MIN_PASSWORD_LENGTH } from "$lib/utils/consts";
-
-zxcvbnOptions.setOptions({
-  translations: zxcvbnEnPackage.translations,
-  graphs: zxcvbnCommonPackage.adjacencyGraphs,
-  dictionary: {
-    ...zxcvbnCommonPackage.dictionary,
-    ...zxcvbnEnPackage.dictionary,
-  },
-});
-
-const MIN_STRENGTH = 3;
+import { env } from "$env/dynamic/private";
 
 export const load: PageServerLoad = async (event) => {
   const user = requireAuth(event);
@@ -41,71 +26,19 @@ export const load: PageServerLoad = async (event) => {
 };
 
 export const actions: Actions = {
-  changePassword: async ({ request, locals, cookies }) => {
+  requestPasswordReset: async ({ locals, url }) => {
     if (!locals.user) {
-      return fail(401, { error: "Not authenticated" });
-    }
-
-    const formData = await request.formData();
-    const currentPassword = formData.get("currentPassword");
-    const newPassword = formData.get("newPassword");
-    const confirmPassword = formData.get("confirmPassword");
-
-    // Validation
-    if (!currentPassword || !newPassword || !confirmPassword) {
-      return fail(400, { error: "All fields are required" });
-    }
-
-    if (
-      typeof currentPassword !== "string" ||
-      typeof newPassword !== "string" ||
-      typeof confirmPassword !== "string"
-    ) {
-      return fail(400, { error: "Invalid input" });
-    }
-
-    if (newPassword !== confirmPassword) {
-      return fail(400, { error: "New passwords do not match" });
-    }
-
-    if (newPassword.length < MIN_PASSWORD_LENGTH) {
-      return fail(400, { error: `Password must be at least ${MIN_PASSWORD_LENGTH} characters long` });
-    }
-
-    const { score } = zxcvbn(newPassword);
-    if (score < MIN_STRENGTH) {
-      return fail(400, {
-        error: "Password is too weak. Try using a more unique phrase or mixing unrelated words.",
-      });
-    }
-
-    if (currentPassword === newPassword) {
-      return fail(400, {
-        error: "New password must be different from current password",
-      });
+      return fail(401, { resetError: "Not authenticated" });
     }
 
     try {
-      // Step 1: Verify current password by attempting sign in
-      // This is required because WorkOS updateUser doesn't verify the old password
-      await workosAuth.signIn(locals.user.email, currentPassword);
-
-      // Step 2: Update password
-      await workosAuth.updatePassword(locals.user.id, newPassword);
-
-      // Step 3: Revoke the current session so other devices/tabs are logged out
-      const accessToken = cookies.get("workos_access_token");
-      if (accessToken) {
-        const sessionId = await workosAuth.extractSessionId(accessToken);
-        await workosAuth.signOut(sessionId);
-      }
-      cookies.delete("workos_access_token", { path: "/" });
-      cookies.delete("workos_refresh_token", { path: "/" });
-
-      throw redirect(303, "/login?passwordChanged=true");
-    } catch (error) {
-      console.error("Password change error:", error instanceof Error ? error.message : "unknown");
-      return fail(400, { error: sanitizeAuthError(error) });
+      const origin = env.ORIGIN || url.origin;
+      const resetPasswordUrl = new URL("/reset-password", origin).toString();
+      await workosAuth.sendPasswordResetEmail(locals.user.email, resetPasswordUrl);
+      return { resetSuccess: true };
+    } catch (err) {
+      console.error("Password reset error:", err instanceof Error ? err.message : "unknown");
+      return fail(500, { resetError: "Unable to send password reset email. Please try again." });
     }
   },
 
