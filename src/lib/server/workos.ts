@@ -254,11 +254,12 @@ export const workosAuth = {
   },
 
   // Get AuthKit authorization URL (hosted UI)
-  async getAuthorizationUrl(redirectUri: string, screenHint?: "sign-in" | "sign-up") {
+  async getAuthorizationUrl(redirectUri: string, state: string, screenHint?: "sign-in" | "sign-up") {
     return workos.userManagement.getAuthorizationUrl({
       clientId: workosConfig.clientId,
       redirectUri,
       provider: "authkit",
+      state,
       ...(screenHint && { screenHint }),
     });
   },

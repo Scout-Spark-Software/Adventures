@@ -5,6 +5,14 @@ import { workosAuth } from "$lib/server/workos";
 export const GET: RequestHandler = async ({ url, cookies }) => {
   const code = url.searchParams.get("code");
   const error = url.searchParams.get("error");
+  const returnedState = url.searchParams.get("state");
+  const expectedState = cookies.get("oauth_state");
+
+  // Validate state to prevent login CSRF
+  cookies.delete("oauth_state", { path: "/" });
+  if (!returnedState || !expectedState || returnedState !== expectedState) {
+    throw redirect(303, "/login?error=auth_failed");
+  }
 
   if (error || !code) {
     throw redirect(303, "/login?error=auth_failed");
