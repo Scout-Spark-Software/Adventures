@@ -33,12 +33,12 @@ export const actions: Actions = {
 
     try {
       const origin = env.ORIGIN || url.origin;
-      await workosAuth.sendPasswordResetEmail(locals.user.email, `${origin}/reset-password`);
+      const resetPasswordUrl = new URL("/reset-password", origin).toString();
+      await workosAuth.sendPasswordResetEmail(locals.user.email, resetPasswordUrl);
       return { resetSuccess: true };
-    } catch (error) {
-      console.error("Password reset error:", error instanceof Error ? error.message : "unknown");
-      // Always succeed to avoid leaking whether the email exists
-      return { resetSuccess: true };
+    } catch (err) {
+      console.error("Password reset error:", err instanceof Error ? err.message : "unknown");
+      return fail(500, { resetError: "Unable to send password reset email. Please try again." });
     }
   },
 

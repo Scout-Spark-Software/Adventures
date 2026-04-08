@@ -5,10 +5,10 @@
 import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { workosAuth } from "$lib/server/workos";
-import { env } from "$env/dynamic/private";
 
 export const POST: RequestHandler = async ({ request, cookies, url }) => {
-  if (env.NODE_ENV === "production") {
+  // Statically replaced by Vite at build time — always false in production builds
+  if (!import.meta.env.DEV) {
     throw error(404, "Not found");
   }
 

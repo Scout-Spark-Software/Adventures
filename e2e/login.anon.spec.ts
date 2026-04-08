@@ -1,10 +1,13 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Login page – anonymous', () => {
-  test('redirects to WorkOS AuthKit hosted UI', async ({ page }) => {
-    // /login auto-redirects to the WorkOS hosted UI — we land on an external URL
-    await page.goto('/login');
-    await expect(page).not.toHaveURL(/localhost/);
+  test('redirects to WorkOS AuthKit hosted UI', async ({ request }) => {
+    // Check the redirect without following it to avoid CI network dependency on WorkOS
+    const response = await request.get('/login', { maxRedirects: 0 });
+    expect(response.status()).toBe(302);
+    const location = response.headers()['location'] ?? '';
+    expect(location).not.toMatch(/localhost/);
+    expect(location.length).toBeGreaterThan(0);
   });
 
   test('shows error banner when ?error param is present', async ({ page }) => {
@@ -29,7 +32,7 @@ test.describe('Login page – anonymous', () => {
     const button = page.getByRole('link', { name: 'Continue to Sign In' });
     await expect(button).toBeVisible();
     // Clicking it navigates away from localhost (to WorkOS hosted UI)
-    const [response] = await Promise.all([
+    await Promise.all([
       page.waitForURL((url) => !url.hostname.includes('localhost')),
       button.click(),
     ]);
