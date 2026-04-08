@@ -274,6 +274,18 @@
                   </p>
                 </div>
               {/if}
+              {#if form?.resetError}
+                <div
+                  class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3"
+                >
+                  <div
+                    class="w-7 h-7 rounded-full bg-red-500 flex items-center justify-center flex-shrink-0"
+                  >
+                    <CircleAlertIcon size={13} class="text-white" />
+                  </div>
+                  <p class="text-sm font-semibold text-red-800">{form.resetError}</p>
+                </div>
+              {/if}
 
               <p class="text-sm text-stone-500 mb-2">
                 To change your password, we'll send a reset link to:

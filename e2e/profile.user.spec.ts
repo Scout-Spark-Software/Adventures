@@ -22,34 +22,27 @@ test.describe("Profile page", () => {
     await expect(page.locator("text=Unit info saved!")).toBeVisible();
   });
 
-  test("mismatched passwords shows error message", async ({ page }) => {
+  test("Security tab shows Send Password Reset Email button", async ({ page }) => {
     await page.goto("/profile");
 
     // Switch to Security tab
     await page.click("button:has-text('Security')");
 
-    await page.fill("#currentPassword", "SomeCurrentPassword1");
-    await page.fill("#newPassword", "NewPassword123!");
-    await page.fill("#confirmPassword", "DifferentPassword456!");
-
-    await page.click('button[type="submit"]:has-text("Update Password")');
-
-    await expect(page.locator("text=Passwords do not match")).toBeVisible();
+    const resetButton = page.getByRole("button", { name: "Send Password Reset Email" });
+    await expect(resetButton).toBeVisible();
   });
 
-  test("too-short/weak password shows error message", async ({ page }) => {
+  test("clicking Send Password Reset Email shows success message", async ({ page }) => {
     await page.goto("/profile");
 
     // Switch to Security tab
     await page.click("button:has-text('Security')");
 
-    await page.fill("#currentPassword", "SomeCurrentPassword1");
-    await page.fill("#newPassword", "short1A");
-    await page.fill("#confirmPassword", "short1A");
+    await page.click('button:has-text("Send Password Reset Email")');
 
-    await page.click('button[type="submit"]:has-text("Update Password")');
-
-    // Should show length or complexity error
-    await expect(page.locator("text=12+ characters required")).toBeVisible();
+    // Success banner should appear
+    await expect(
+      page.getByText("Password reset email sent! Check your inbox for a link to set a new password.")
+    ).toBeVisible();
   });
 });

@@ -1,29 +1,38 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Login form – anonymous', () => {
-  test('shows error for wrong credentials', async ({ page }) => {
+test.describe('Login page – anonymous', () => {
+  test('redirects to WorkOS AuthKit hosted UI', async ({ page }) => {
+    // /login auto-redirects to the WorkOS hosted UI — we land on an external URL
     await page.goto('/login');
-    await page.fill('#email', 'wrong@example.com');
-    await page.fill('#password', 'wrongpassword123');
-    await page.click('button[type="submit"]');
-
-    // Error message is rendered inside the form card when form.error is set
-    await expect(page.getByTestId('login-error')).toBeVisible();
-    await expect(page).toHaveURL(/\/login/);
+    await expect(page).not.toHaveURL(/localhost/);
   });
 
-  test('logs in with valid credentials and redirects to homepage', async ({ page }) => {
-    const email = process.env.TEST_USER_EMAIL;
-    const password = process.env.TEST_USER_PASSWORD;
-    if (!email || !password) {
-      test.skip(true, 'TEST_USER_EMAIL / TEST_USER_PASSWORD not set in environment');
-    }
+  test('shows error banner when ?error param is present', async ({ page }) => {
+    // When WorkOS returns an error, the callback redirects to /login?error=...
+    // which causes the load function to render the page instead of redirecting
+    await page.goto('/login?error=access_denied');
+    await expect(page).toHaveURL(/\/login/);
+    // The error banner should be visible
+    await expect(page.getByText('Sign in failed. Please try again.')).toBeVisible();
+  });
 
-    await page.goto('/login');
-    await page.fill('#email', email!);
-    await page.fill('#password', password!);
-    await page.click('button[type="submit"]');
+  test('shows password reset banner when ?passwordReset=true', async ({ page }) => {
+    await page.goto('/login?passwordReset=true');
+    await expect(page).toHaveURL(/\/login/);
+    await expect(
+      page.getByText('Password reset! You can now sign in with your new password.')
+    ).toBeVisible();
+  });
 
-    await expect(page).toHaveURL('/');
+  test('"Continue to Sign In" button is present on flash pages', async ({ page }) => {
+    await page.goto('/login?error=access_denied');
+    const button = page.getByRole('link', { name: 'Continue to Sign In' });
+    await expect(button).toBeVisible();
+    // Clicking it navigates away from localhost (to WorkOS hosted UI)
+    const [response] = await Promise.all([
+      page.waitForURL((url) => !url.hostname.includes('localhost')),
+      button.click(),
+    ]);
+    await expect(page).not.toHaveURL(/localhost/);
   });
 });

@@ -6,10 +6,12 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
   const code = url.searchParams.get("code");
   const error = url.searchParams.get("error");
   const returnedState = url.searchParams.get("state");
-  const expectedState = cookies.get("oauth_state");
+  const expectedState =
+    cookies.get("oauth_state_sign_in") ?? cookies.get("oauth_state_sign_up");
 
   // Validate state to prevent login CSRF
-  cookies.delete("oauth_state", { path: "/" });
+  cookies.delete("oauth_state_sign_in", { path: "/" });
+  cookies.delete("oauth_state_sign_up", { path: "/" });
   if (!returnedState || !expectedState || returnedState !== expectedState) {
     throw redirect(303, "/login?error=auth_failed");
   }
