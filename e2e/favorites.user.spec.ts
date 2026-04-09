@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures/base-test';
 import { getHikeId } from './fixtures/helpers';
 
 test.describe('Favorites – authenticated user', () => {
@@ -7,7 +7,7 @@ test.describe('Favorites – authenticated user', () => {
     const hikeId = getHikeId();
     await page.goto(`/hikes/${hikeId}`);
     // Wait for the page to settle and FavoriteButton to load its state
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
 
     // If currently favorited, unfavorite it so tests start from a clean state
     const btn = page.getByRole('button', { name: 'Remove from favorites' });
@@ -16,14 +16,14 @@ test.describe('Favorites – authenticated user', () => {
         page.waitForResponse((r) => r.url().includes('/api/favorites') && r.status() < 300),
         btn.click(),
       ]);
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('load');
     }
   });
 
   test('toggles a hike as favorite from the detail page', async ({ page }) => {
     const hikeId = getHikeId();
     await page.goto(`/hikes/${hikeId}`);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
 
     // Should start unfavorited
     const addBtn = page.getByRole('button', { name: 'Add to favorites' });
@@ -42,7 +42,7 @@ test.describe('Favorites – authenticated user', () => {
   test('favorited hike appears on the /favorites page', async ({ page }) => {
     const hikeId = getHikeId();
     await page.goto(`/hikes/${hikeId}`);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
 
     // Add to favorites
     const addBtn = page.getByRole('button', { name: 'Add to favorites' });
@@ -53,7 +53,7 @@ test.describe('Favorites – authenticated user', () => {
 
     // Navigate to the favorites page
     await page.goto('/favorites');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
 
     // The "Favorite Hikes" section should contain at least one hike card linking to our hike
     await expect(page.locator(`a[href="/hikes/${hikeId}"]`).first()).toBeVisible();
@@ -62,7 +62,7 @@ test.describe('Favorites – authenticated user', () => {
   test('removes the hike from favorites from the detail page', async ({ page }) => {
     const hikeId = getHikeId();
     await page.goto(`/hikes/${hikeId}`);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
 
     // First, add to favorites
     const addBtn = page.getByRole('button', { name: 'Add to favorites' });

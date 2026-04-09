@@ -1,4 +1,5 @@
-import { test, expect, request as baseRequest } from "@playwright/test";
+import { test, expect } from "./fixtures/base-test";
+import { request as baseRequest } from "@playwright/test";
 
 const TEST_AMENITY_NAME = "Test Amenity E2E Playwright";
 const TEST_AMENITY_KEY = "testAmenityE2EPlaywright";
@@ -48,8 +49,11 @@ test.describe("Type management", () => {
     await page.fill("#name", TEST_AMENITY_NAME);
     await page.fill("#key", TEST_AMENITY_KEY);
 
-    // Save
-    await page.click('button:has-text("Save")');
+    // Save — wait for the POST to complete before asserting
+    await Promise.all([
+      page.waitForResponse((r) => r.url().includes('/api/amenity-types') && r.request().method() === 'POST'),
+      page.click('button:has-text("Save")'),
+    ]);
 
     // The new item should appear in the list
     await expect(page.locator(`text=${TEST_AMENITY_NAME}`)).toBeVisible();

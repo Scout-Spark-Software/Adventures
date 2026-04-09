@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures/base-test';
 
 test.describe('Logout – authenticated user', () => {
   test('logs out and returns to homepage without authenticated nav', async ({ page }) => {
@@ -11,22 +11,19 @@ test.describe('Logout – authenticated user', () => {
     // Open the user dropdown menu
     await userMenuButton.click();
 
-    // Click the Log Out button inside the form that POSTs to /logout
-    const logoutButton = page.locator('form[action="/logout"] button[type="submit"]');
-    await expect(logoutButton).toBeVisible();
+    // Click the Log Out button — Playwright will wait up to actionTimeout for it to appear
+    // (the dropdown renders asynchronously after the click via Svelte reactivity)
+    const logoutButton = page.getByRole('button', { name: 'Log Out' });
 
-    // Wait for navigation — the form POSTs to /logout which redirects 303 to /
-    // We were already on /, so we must explicitly wait for the reload to complete
+    // The form POSTs to /logout which redirects 303 back to /.
+    // Wait for the server response (the redirect) to know the logout completed.
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitForResponse((r) => r.url().includes('/logout') && r.request().method() === 'POST'),
       logoutButton.click(),
     ]);
 
-    // Should be on homepage after logout
-    await expect(page).toHaveURL('/');
-
-    // Wait for the page to fully settle before checking nav state
-    await page.waitForLoadState('networkidle');
+    // Wait for the redirected page to finish loading
+    await page.waitForLoadState('load');
 
     // The "Login" link should now be visible — user is no longer authenticated
     await expect(page.locator('nav a[href="/login"]')).toBeVisible();

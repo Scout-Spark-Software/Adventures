@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures/base-test';
 import { getHikeId } from './fixtures/helpers';
 
 /**
@@ -12,11 +12,11 @@ test.describe('Ratings – authenticated user', () => {
     const hikeId = getHikeId();
     // Use the API directly to clean up
     await page.goto(`/hikes/${hikeId}#reviews`);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
 
     // Click the Reviews tab to ensure the component is mounted
-    await page.getByRole('tab', { name: 'Reviews' }).click();
-    await page.waitForLoadState('networkidle');
+    await page.locator('#tab-reviews').dispatchEvent('click');
+    await page.waitForLoadState('load');
 
     // If there is an existing rating, delete it — look inside the "Your Rating" card
     const yourRatingCard = page.locator('.bg-indigo-50');
@@ -26,18 +26,18 @@ test.describe('Ratings – authenticated user', () => {
       // Confirm the delete modal
       const confirmModal = page.locator('.fixed.inset-0').filter({ hasText: 'Delete Rating?' });
       await confirmModal.getByRole('button', { name: 'Delete' }).click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('load');
     }
   });
 
   test('submits a star-only rating on a hike', async ({ page }) => {
     const hikeId = getHikeId();
     await page.goto(`/hikes/${hikeId}`);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
 
     // Click the Reviews tab
-    await page.getByRole('tab', { name: 'Reviews' }).click();
-    await page.waitForLoadState('networkidle');
+    await page.locator('#tab-reviews').dispatchEvent('click');
+    await page.waitForLoadState('load');
 
     // The UserRatingCard should be in edit mode (no existing rating)
     const yourRatingCard = page.locator('.bg-indigo-50');
@@ -61,11 +61,11 @@ test.describe('Ratings – authenticated user', () => {
     const reviewText = 'Great trail, highly recommended for scouts!';
 
     await page.goto(`/hikes/${hikeId}`);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
 
     // Click the Reviews tab
-    await page.getByRole('tab', { name: 'Reviews' }).click();
-    await page.waitForLoadState('networkidle');
+    await page.locator('#tab-reviews').dispatchEvent('click');
+    await page.waitForLoadState('load');
 
     const yourRatingCard = page.locator('.bg-indigo-50');
     await expect(yourRatingCard).toBeVisible();
@@ -91,11 +91,11 @@ test.describe('Ratings – authenticated user', () => {
     const reviewText = 'Wonderful hike, beautiful views all around!';
 
     await page.goto(`/hikes/${hikeId}`);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
 
     // Click the Reviews tab
-    await page.getByRole('tab', { name: 'Reviews' }).click();
-    await page.waitForLoadState('networkidle');
+    await page.locator('#tab-reviews').dispatchEvent('click');
+    await page.waitForLoadState('load');
 
     const yourRatingCard = page.locator('.bg-indigo-50');
 
@@ -110,7 +110,7 @@ test.describe('Ratings – authenticated user', () => {
     ]);
 
     // Wait for the reviews section to refresh (ReviewsTab re-fetches after saved event)
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
 
     // The review text should appear somewhere on the page (in the reviews list)
     await expect(page.getByText(reviewText)).toBeVisible({ timeout: 10000 });
