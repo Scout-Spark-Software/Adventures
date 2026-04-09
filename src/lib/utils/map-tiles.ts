@@ -1,14 +1,12 @@
-export type TileLayerId = "street" | "topo" | "esri-topo" | "satellite";
-
-export interface TileLayer {
-  id: TileLayerId;
+interface TileLayerDef {
+  id: string;
   label: string;
   url: string;
   attribution: string;
   maxZoom: number;
 }
 
-export const TILE_LAYERS: TileLayer[] = [
+export const TILE_LAYERS = [
   {
     id: "street",
     label: "Street",
@@ -37,7 +35,17 @@ export const TILE_LAYERS: TileLayer[] = [
     attribution: "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
     maxZoom: 18,
   },
+] as const satisfies readonly TileLayerDef[];
 
-];
+export type TileLayerId = (typeof TILE_LAYERS)[number]["id"];
+export type TileLayer = (typeof TILE_LAYERS)[number];
+
+export function getTileLayer(id: TileLayerId): TileLayer {
+  const layer = TILE_LAYERS.find((t) => t.id === id);
+  if (!layer) {
+    throw new Error(`Unknown tile layer id: ${id}`);
+  }
+  return layer as TileLayer;
+}
 
 export const DEFAULT_TILE_LAYER = TILE_LAYERS[0];

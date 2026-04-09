@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import type L from "leaflet";
-  import { TILE_LAYERS, DEFAULT_TILE_LAYER, type TileLayerId } from "$lib/utils/map-tiles";
+  import { TILE_LAYERS, DEFAULT_TILE_LAYER, getTileLayer, type TileLayerId } from "$lib/utils/map-tiles";
 
   export let latitude: number;
   export let longitude: number;
@@ -29,7 +29,7 @@
 
   function switchLayer(id: TileLayerId) {
     if (!map || !leaflet || id === activeLayerId) return;
-    const def = TILE_LAYERS.find((t) => t.id === id)!;
+    const def = getTileLayer(id);
     if (activeTileLayer) {
       activeTileLayer.remove();
     }
@@ -61,7 +61,7 @@
   });
 
   // Update map when coordinates change
-  $: if (map && leaflet && latitude && longitude) {
+  $: if (map && leaflet && latitude != null && longitude != null) {
     map.setView([latitude, longitude], 13);
     if (marker) {
       marker.setLatLng([latitude, longitude]);
@@ -87,10 +87,11 @@
 
 <!-- Tile layer toggle -->
 <div class="mt-1.5 flex justify-end">
-  <div class="flex rounded-md overflow-hidden border border-gray-200 shadow-sm">
+  <div role="group" aria-label="Map tile layer" class="flex rounded-md overflow-hidden border border-gray-200 shadow-sm">
     {#each TILE_LAYERS as layer}
       <button
         type="button"
+        aria-pressed={activeLayerId === layer.id}
         on:click={() => switchLayer(layer.id)}
         class="px-2.5 py-1 text-xs font-medium border-r border-gray-200 last:border-r-0 transition-colors
           {activeLayerId === layer.id
