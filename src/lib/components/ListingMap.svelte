@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import type L from "leaflet";
+  import { TILE_LAYERS, DEFAULT_TILE_LAYER, type TileLayerId } from "$lib/utils/map-tiles";
 
   export let markers: Array<{
     id: string;
@@ -22,15 +23,34 @@
   let map: L.Map | null = null;
   let leaflet: typeof L | null = null;
   let markerLayer: L.LayerGroup | null = null;
+  let activeTileLayer: L.TileLayer | null = null;
+  let activeLayerId: TileLayerId = DEFAULT_TILE_LAYER.id;
 
   function makeIcon(color: string) {
     const hex = colorMap[color] ?? colorMap.emerald;
     return leaflet!.divIcon({
       className: "",
-      html: `<div style="width:14px;height:14px;border-radius:50%;background:${hex};border:2.5px solid white;box-shadow:0 1px 5px rgba(0,0,0,0.45);"></div>`,
-      iconAnchor: [7, 7],
-      popupAnchor: [0, -12],
+      html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 32" width="24" height="32" style="filter:drop-shadow(0 2px 4px rgba(0,0,0,0.35))">
+        <path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 20 12 20S24 21 24 12C24 5.4 18.6 0 12 0z" fill="${hex}"/>
+        <circle cx="12" cy="11" r="4" fill="white" opacity="0.9"/>
+      </svg>`,
+      iconSize: [24, 32],
+      iconAnchor: [12, 32],
+      popupAnchor: [0, -32],
     });
+  }
+
+  function switchLayer(id: TileLayerId) {
+    if (!map || !leaflet || id === activeLayerId) return;
+    const def = TILE_LAYERS.find((t) => t.id === id)!;
+    if (activeTileLayer) {
+      activeTileLayer.remove();
+    }
+    activeTileLayer = leaflet.tileLayer(def.url, {
+      attribution: def.attribution,
+      maxZoom: def.maxZoom,
+    }).addTo(map);
+    activeLayerId = id;
   }
 
   function renderMarkers() {
@@ -69,12 +89,9 @@
 
     map = leaflet.map(mapContainer).setView([39.5, -98.35], 4);
 
-    leaflet
-      .tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 19,
-      })
+    const def = DEFAULT_TILE_LAYER;
+    activeTileLayer = leaflet
+      .tileLayer(def.url, { attribution: def.attribution, maxZoom: def.maxZoom })
       .addTo(map);
 
     markerLayer = leaflet.layerGroup().addTo(map);
@@ -100,11 +117,25 @@
   />
 </svelte:head>
 
-<div
-  bind:this={mapContainer}
-  style="height: {height};"
-  class="w-full rounded-xl overflow-hidden"
-></div>
+<div class="relative isolate w-full rounded-xl overflow-hidden" style="height: {height};">
+  <div bind:this={mapContainer} class="w-full h-full"></div>
+
+  <!-- Tile layer toggle -->
+  <div class="absolute bottom-2 right-2 z-[1000] flex rounded-md overflow-hidden shadow-md">
+    {#each TILE_LAYERS as layer}
+      <button
+        type="button"
+        on:click={() => switchLayer(layer.id)}
+        class="px-2 py-1 text-xs font-medium border-r border-gray-200 last:border-r-0 transition-colors
+          {activeLayerId === layer.id
+            ? 'bg-indigo-600 text-white'
+            : 'bg-white text-gray-700 hover:bg-gray-50'}"
+      >
+        {layer.label}
+      </button>
+    {/each}
+  </div>
+</div>
 
 <style>
   :global(.leaflet-container) {

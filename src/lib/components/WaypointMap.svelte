@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
+  import { TILE_LAYERS, DEFAULT_TILE_LAYER, type TileLayerId } from "$lib/utils/map-tiles";
 
   type Waypoint = {
     lat: number;
@@ -31,6 +32,21 @@
   let drawnMarkers: any[] = [];
   let polyline: any = null;
   let referenceMarker: any = null;
+  let activeTileLayer: any = null;
+  let activeLayerId: TileLayerId = DEFAULT_TILE_LAYER.id;
+
+  function switchLayer(id: TileLayerId) {
+    if (!map || !leaflet || id === activeLayerId) return;
+    const def = TILE_LAYERS.find((t) => t.id === id)!;
+    if (activeTileLayer) {
+      activeTileLayer.remove();
+    }
+    activeTileLayer = leaflet.tileLayer(def.url, {
+      attribution: def.attribution,
+      maxZoom: def.maxZoom,
+    }).addTo(map);
+    activeLayerId = id;
+  }
 
   function emitChange() {
     waypoints = [...waypoints];
@@ -39,33 +55,24 @@
   function buildIcon(index: number) {
     return leaflet.divIcon({
       className: "",
-      html: `<div style="
-        width:28px;height:28px;
-        background:#4f46e5;
-        border:2px solid white;
-        border-radius:50%;
-        display:flex;align-items:center;justify-content:center;
-        color:white;font-size:11px;font-weight:700;
-        box-shadow:0 2px 6px rgba(0,0,0,.4);
-      ">${index + 1}</div>`,
-      iconSize: [28, 28],
-      iconAnchor: [14, 14],
+      html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 32" width="24" height="32" style="filter:drop-shadow(0 2px 4px rgba(0,0,0,0.35))">
+        <path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 20 12 20S24 21 24 12C24 5.4 18.6 0 12 0z" fill="#4f46e5"/>
+        <text x="12" y="15" text-anchor="middle" fill="white" font-size="10" font-weight="700" font-family="sans-serif">${index + 1}</text>
+      </svg>`,
+      iconSize: [24, 32],
+      iconAnchor: [12, 32],
     });
   }
 
   function buildReferenceIcon() {
     return leaflet.divIcon({
       className: "",
-      html: `<div style="
-        width:22px;height:22px;
-        background:#f59e0b;
-        border:2px solid white;
-        border-radius:50%;
-        display:flex;align-items:center;justify-content:center;
-        box-shadow:0 2px 6px rgba(0,0,0,.4);
-      "><svg viewBox="0 0 24 24" width="12" height="12" fill="white"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>`,
-      iconSize: [22, 22],
-      iconAnchor: [11, 11],
+      html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 32" width="24" height="32" style="filter:drop-shadow(0 2px 4px rgba(0,0,0,0.35))">
+        <path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 20 12 20S24 21 24 12C24 5.4 18.6 0 12 0z" fill="#f59e0b"/>
+        <circle cx="12" cy="11" r="4" fill="white" opacity="0.9"/>
+      </svg>`,
+      iconSize: [24, 32],
+      iconAnchor: [12, 32],
     });
   }
 
@@ -147,12 +154,9 @@
 
     map = leaflet.map(mapContainer).setView([centerLat, centerLng], zoom);
 
-    leaflet
-      .tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 19,
-      })
+    const def = DEFAULT_TILE_LAYER;
+    activeTileLayer = leaflet
+      .tileLayer(def.url, { attribution: def.attribution, maxZoom: def.maxZoom })
       .addTo(map);
 
     if (editable) {
@@ -183,7 +187,25 @@
 </svelte:head>
 
 <div class="relative">
-  <div bind:this={mapContainer} style="height: {height};" class="w-full rounded-lg"></div>
+  <div class="relative isolate w-full rounded-lg overflow-hidden" style="height: {height};">
+    <div bind:this={mapContainer} class="w-full h-full"></div>
+
+    <!-- Tile layer toggle -->
+    <div class="absolute bottom-2 right-2 z-[1000] flex rounded-md overflow-hidden shadow-md">
+      {#each TILE_LAYERS as layer}
+        <button
+          type="button"
+          on:click={() => switchLayer(layer.id)}
+          class="px-2 py-1 text-xs font-medium border-r border-gray-200 last:border-r-0 transition-colors
+            {activeLayerId === layer.id
+              ? 'bg-indigo-600 text-white'
+              : 'bg-white text-gray-700 hover:bg-gray-50'}"
+        >
+          {layer.label}
+        </button>
+      {/each}
+    </div>
+  </div>
 
   {#if editable}
     <div class="mt-2 flex items-center justify-between text-xs text-gray-500">
