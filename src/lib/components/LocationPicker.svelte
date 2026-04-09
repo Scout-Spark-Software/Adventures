@@ -2,6 +2,7 @@
   import { onMount, onDestroy } from "svelte";
   import { MapPin } from "lucide-svelte";
   import type L from "leaflet";
+  import { TILE_LAYERS, DEFAULT_TILE_LAYER, getTileLayer, type TileLayerId } from "$lib/utils/map-tiles";
 
   export let address = "";
   export let city = "";
@@ -15,6 +16,21 @@
   let map: L.Map | null = null;
   let marker: L.Marker | null = null;
   let leaflet: typeof L | null = null;
+  let activeTileLayer: L.TileLayer | null = null;
+  let activeLayerId: TileLayerId = DEFAULT_TILE_LAYER.id;
+
+  function switchLayer(id: TileLayerId) {
+    if (!map || !leaflet || id === activeLayerId) return;
+    const def = getTileLayer(id);
+    if (activeTileLayer) {
+      activeTileLayer.remove();
+    }
+    activeTileLayer = leaflet.tileLayer(def.url, {
+      attribution: def.attribution,
+      maxZoom: def.maxZoom,
+    }).addTo(map);
+    activeLayerId = id;
+  }
 
   onMount(async () => {
     // Dynamically import Leaflet to avoid SSR issues
@@ -26,13 +42,10 @@
 
     map = leaflet.map(mapContainer).setView([defaultLat, defaultLng], latitude ? 13 : 4);
 
-    // Add OpenStreetMap tiles
-    leaflet
-      .tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 19,
-      })
+    // Add default tile layer
+    const def = DEFAULT_TILE_LAYER;
+    activeTileLayer = leaflet
+      .tileLayer(def.url, { attribution: def.attribution, maxZoom: def.maxZoom })
       .addTo(map);
 
     // Add marker if coordinates exist
@@ -125,7 +138,7 @@
     }
   }
 
-  $: if (map && latitude && longitude && leaflet) {
+  $: if (map && latitude != null && longitude != null && leaflet) {
     map.setView([latitude, longitude], 13);
     if (marker) {
       marker.setLatLng([latitude, longitude]);
@@ -174,10 +187,29 @@
   </div>
 
   <!-- Interactive Map -->
-  <div class="border rounded-lg overflow-hidden bg-gray-100 mb-4" style="isolation: isolate;">
+  <div class="border rounded-lg overflow-hidden bg-gray-100" style="isolation: isolate;">
     <div bind:this={mapContainer} class="h-64 w-full"></div>
     <div class="bg-gray-50 px-3 py-2 text-xs text-gray-600 border-t">
       💡 Click on the map to set location, or drag the marker to adjust
+    </div>
+  </div>
+
+  <!-- Tile layer toggle -->
+  <div class="mb-4 flex justify-end">
+    <div role="group" aria-label="Map tile layer" class="flex rounded-md overflow-hidden border border-gray-200 shadow-sm">
+      {#each TILE_LAYERS as layer}
+        <button
+          type="button"
+          aria-pressed={activeLayerId === layer.id}
+          on:click={() => switchLayer(layer.id)}
+          class="px-2.5 py-1 text-xs font-medium border-r border-gray-200 last:border-r-0 transition-colors
+            {activeLayerId === layer.id
+              ? 'bg-indigo-600 text-white'
+              : 'bg-white text-gray-600 hover:bg-gray-50'}"
+        >
+          {layer.label}
+        </button>
+      {/each}
     </div>
   </div>
 
