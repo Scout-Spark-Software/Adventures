@@ -6,7 +6,7 @@
 
   onMount(() => {
     try {
-      // @ts-ignore
+      // @ts-expect-error ads by google
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch {
       // AdSense not loaded

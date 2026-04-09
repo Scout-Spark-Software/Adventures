@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures/base-test';
 import { getHikeId } from './fixtures/helpers';
 
 /**
@@ -11,11 +11,11 @@ test.describe('Notes – authenticated user', () => {
     // Clean up any existing notes for the test hike via the Notes tab
     const hikeId = getHikeId();
     await page.goto(`/hikes/${hikeId}`);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
 
     // Navigate to the My Notes tab
-    await page.getByRole('tab', { name: /My Notes/ }).click();
-    await page.waitForLoadState('networkidle');
+    await page.locator('#tab-notes').click({ force: true });
+    await page.waitForLoadState('load');
 
     // Delete all existing notes
     let deleteButtons = await page.getByRole('button', { name: 'Delete' }).all();
@@ -25,7 +25,7 @@ test.describe('Notes – authenticated user', () => {
       const modal = page.locator('.fixed.inset-0').filter({ hasText: 'Delete Note?' });
       await modal.waitFor({ state: 'visible', timeout: 3000 });
       await modal.getByRole('button', { name: 'Delete' }).click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('load');
       // Refresh the list of delete buttons
       deleteButtons = await page.getByRole('button', { name: 'Delete' }).all();
     }
@@ -36,11 +36,11 @@ test.describe('Notes – authenticated user', () => {
     const noteContent = 'Bring extra water and sunscreen for this trail.';
 
     await page.goto(`/hikes/${hikeId}`);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
 
     // Open the My Notes tab
-    await page.getByRole('tab', { name: /My Notes/ }).click();
-    await page.waitForLoadState('networkidle');
+    await page.locator('#tab-notes').dispatchEvent('click');
+    await page.waitForLoadState('load');
 
     // Fill in the new note textarea
     const newNoteTextarea = page.locator('textarea[placeholder*="Write your note"]');
@@ -63,11 +63,11 @@ test.describe('Notes – authenticated user', () => {
     const updatedContent = 'Updated note content after editing.';
 
     await page.goto(`/hikes/${hikeId}`);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
 
     // Open the My Notes tab
-    await page.getByRole('tab', { name: /My Notes/ }).click();
-    await page.waitForLoadState('networkidle');
+    await page.locator('#tab-notes').dispatchEvent('click');
+    await page.waitForLoadState('load');
 
     // Create a note first
     const newNoteTextarea = page.locator('textarea[placeholder*="Write your note"]');
@@ -102,11 +102,11 @@ test.describe('Notes – authenticated user', () => {
     const noteContent = 'This note will be deleted.';
 
     await page.goto(`/hikes/${hikeId}`);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
 
     // Open the My Notes tab
-    await page.getByRole('tab', { name: /My Notes/ }).click();
-    await page.waitForLoadState('networkidle');
+    await page.locator('#tab-notes').dispatchEvent('click');
+    await page.waitForLoadState('load');
 
     // Create a note
     const newNoteTextarea = page.locator('textarea[placeholder*="Write your note"]');

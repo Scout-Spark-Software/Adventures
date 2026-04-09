@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./fixtures/base-test";
 
 test.describe("Profile page", () => {
   test("profile page loads with a heading", async ({ page }) => {
@@ -22,27 +22,32 @@ test.describe("Profile page", () => {
     await expect(page.locator("text=Unit info saved!")).toBeVisible();
   });
 
-  test("Security tab shows Send Password Reset Email button", async ({ page }) => {
+  test("mismatched passwords shows error message", async ({ page }) => {
     await page.goto("/profile");
 
-    // Switch to Security tab
-    await page.click("button:has-text('Security')");
+    // Switch to Security tab.
+    // Use dispatchEvent to bypass Playwright 1.58's ARIA actionability check that
+    // refuses to click role="tab" elements with aria-selected="false".
+    await page.locator('#tab-security').dispatchEvent('click');
+    await expect(page.locator('#newPassword')).toBeVisible();
 
-    const resetButton = page.getByRole("button", { name: "Send Password Reset Email" });
-    await expect(resetButton).toBeVisible();
+    await page.fill("#newPassword", "NewPassword123!");
+    await page.fill("#confirmPassword", "DifferentPassword456!");
+
+    // Message appears reactively as soon as confirm password is filled in with a mismatch
+    await expect(page.locator("text=Passwords do not match")).toBeVisible();
   });
 
-  test("clicking Send Password Reset Email shows success message", async ({ page }) => {
+  test("too-short/weak password shows error message", async ({ page }) => {
     await page.goto("/profile");
 
-    // Switch to Security tab
-    await page.click("button:has-text('Security')");
+    // Switch to Security tab — see comment above about dispatchEvent
+    await page.locator('#tab-security').dispatchEvent('click');
+    await expect(page.locator('#newPassword')).toBeVisible();
 
-    await page.click('button:has-text("Send Password Reset Email")');
+    await page.fill("#newPassword", "short1A");
 
-    // Success banner should appear
-    await expect(
-      page.getByText("Password reset email sent! Check your inbox for a link to set a new password.")
-    ).toBeVisible();
+    // Message appears reactively as soon as the password is too short
+    await expect(page.locator("text=10+ characters required")).toBeVisible();
   });
 });
