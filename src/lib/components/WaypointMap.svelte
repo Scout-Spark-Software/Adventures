@@ -187,32 +187,21 @@
 </svelte:head>
 
 <div class="relative">
-  <div class="relative isolate w-full rounded-lg overflow-hidden" style="height: {height};">
+  <div class="isolate w-full rounded-lg overflow-hidden" style="height: {height};">
     <div bind:this={mapContainer} class="w-full h-full"></div>
-
-    <!-- Tile layer toggle -->
-    <div class="absolute bottom-2 right-2 z-[1000] flex rounded-md overflow-hidden shadow-md">
-      {#each TILE_LAYERS as layer}
-        <button
-          type="button"
-          on:click={() => switchLayer(layer.id)}
-          class="px-2 py-1 text-xs font-medium border-r border-gray-200 last:border-r-0 transition-colors
-            {activeLayerId === layer.id
-              ? 'bg-indigo-600 text-white'
-              : 'bg-white text-gray-700 hover:bg-gray-50'}"
-        >
-          {layer.label}
-        </button>
-      {/each}
-    </div>
   </div>
 
-  {#if editable}
-    <div class="mt-2 flex items-center justify-between text-xs text-gray-500">
-      <span
+  <div class="mt-1.5 flex items-center justify-between">
+    {#if editable}
+      <span class="text-xs text-gray-500"
         >Click map to add waypoints &bull; Right-click a marker to remove &bull; Drag to reposition</span
       >
-      {#if waypoints.length > 0}
+    {:else}
+      <span></span>
+    {/if}
+
+    <div class="flex items-center gap-2">
+      {#if editable && waypoints.length > 0}
         <button
           type="button"
           on:click={() => {
@@ -220,13 +209,29 @@
             emitChange();
             redraw();
           }}
-          class="text-red-500 hover:text-red-700 font-medium"
+          class="text-xs text-red-500 hover:text-red-700 font-medium"
         >
           Clear all
         </button>
       {/if}
+
+      <!-- Tile layer toggle -->
+      <div class="flex rounded-md overflow-hidden border border-gray-200 shadow-sm">
+        {#each TILE_LAYERS as layer}
+          <button
+            type="button"
+            on:click={() => switchLayer(layer.id)}
+            class="px-2.5 py-1 text-xs font-medium border-r border-gray-200 last:border-r-0 transition-colors
+              {activeLayerId === layer.id
+                ? 'bg-indigo-600 text-white'
+                : 'bg-white text-gray-600 hover:bg-gray-50'}"
+          >
+            {layer.label}
+          </button>
+        {/each}
+      </div>
     </div>
-  {/if}
+  </div>
 </div>
 
 <style>

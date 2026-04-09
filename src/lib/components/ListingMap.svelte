@@ -117,19 +117,21 @@
   />
 </svelte:head>
 
-<div class="relative isolate w-full rounded-xl overflow-hidden" style="height: {height};">
+<div class="isolate w-full rounded-xl overflow-hidden" style="height: {height};">
   <div bind:this={mapContainer} class="w-full h-full"></div>
+</div>
 
-  <!-- Tile layer toggle -->
-  <div class="absolute bottom-2 right-2 z-[1000] flex rounded-md overflow-hidden shadow-md">
+<!-- Tile layer toggle -->
+<div class="mt-1.5 flex justify-end">
+  <div class="flex rounded-md overflow-hidden border border-gray-200 shadow-sm">
     {#each TILE_LAYERS as layer}
       <button
         type="button"
         on:click={() => switchLayer(layer.id)}
-        class="px-2 py-1 text-xs font-medium border-r border-gray-200 last:border-r-0 transition-colors
+        class="px-2.5 py-1 text-xs font-medium border-r border-gray-200 last:border-r-0 transition-colors
           {activeLayerId === layer.id
             ? 'bg-indigo-600 text-white'
-            : 'bg-white text-gray-700 hover:bg-gray-50'}"
+            : 'bg-white text-gray-600 hover:bg-gray-50'}"
       >
         {layer.label}
       </button>
