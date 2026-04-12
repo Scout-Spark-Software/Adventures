@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Scouts Adventures Platform - A SvelteKit application for scouts to discover, submit, and manage hiking trails and camping sites.
+Scouts Adventures Platform - A SvelteKit application for scouts to discover, submit, and manage hiking trails, camping sites, and backpacking trips.
 
 ## Commands
 
@@ -53,20 +53,24 @@ npm run seed:camping         # Seed camping sites from CSV
 - `src/lib/moderation.ts` - Content moderation queue helpers
 - `src/lib/allowed-fields.ts` - Allowlists for alteration proposals (prevents altering `status`, `featured`, etc.)
 - `src/lib/server/detail-page-loader.ts` - Shared server utility for hike/camping detail pages
+- `src/lib/server/slug.ts` - `generateUniqueSlug()` helper for creating unique slugs on all three content types
 - `src/lib/utils/pagination.ts` - `parseLimit()`, `parseOffset()` for list endpoints
 - `src/lib/utils/detail-page-helpers.ts` - `buildHikeBadges()`, `buildHikeStats()`, `buildCampingBadges()`, `buildCampingStats()`
 - `src/lib/utils/profanity-filter.ts` - `checkProfanity()`, `sanitizeReview()` using the `obscenity` package
+- `src/lib/utils/slugify.ts` - `toSlug()`, `hasProfanityInSlug()` utilities
 
 ### Data Model
 
-Two main content types share common patterns:
+Three main content types share common patterns:
 
 - **Hikes**: Trails with difficulty, distance, duration, elevation, trail type, features
 - **Camping Sites**: Sites with amenities, facilities, policies, costs, pet/fire policies
+- **Backpacking**: Multi-day trips (schema mirrors hikes/camping patterns)
 
-Both use:
+All three use:
 
 - Linked `addresses` table for location data (lat/lng, city, state, `searchVector` tsvector)
+- `slug` column (NOT NULL) — generated on create/update via `generateUniqueSlug()`; all public URLs and API routes use slug only (no UUID fallback)
 - `status` field for moderation workflow (pending → approved/rejected)
 - `featured` boolean for homepage display
 - `searchVector` tsvector column for PostgreSQL full-text search
@@ -76,8 +80,9 @@ Both use:
 
 - `enums.ts` - All shared pg enums: `statusEnum`, `entityTypeEnum`, `fileEntityTypeEnum`, `fileTypeEnum`, `difficultyEnum`, `trailTypeEnum`, `petPolicyEnum`, `firePolicyEnum`, `siteTypeEnum`, plus label maps `SITE_TYPE_LABELS`, `TRAIL_TYPE_LABELS`, `VALID_STATUSES`
 - `addresses.ts` - Location table with geocoordinates and `searchVector`
-- `hikes.ts` - Hike schema with `searchVector`
-- `camping-sites.ts` - Camping schema with `searchVector`, `baseFee`, `operatingSeasonStart/End`, `petPolicy`, `firePolicy`, `siteType`
+- `hikes.ts` - Hike schema with `searchVector`, `slug`
+- `camping-sites.ts` - Camping schema with `searchVector`, `slug`, `baseFee`, `operatingSeasonStart/End`, `petPolicy`, `firePolicy`, `siteType`
+- `backpacking.ts` - Backpacking schema with `searchVector`, `slug`
 - `files.ts` - File/image tracking: `entityType`, `entityId`, `isBanner`, `fileUrl`, `uploadedBy`
 - `image-flags.ts` - User-reportable image flags (linked to `files`, cascade delete)
 - `favorites.ts` - User favorites for hikes and camping sites (unique per user per entity)
@@ -109,17 +114,22 @@ REST endpoints in `src/routes/api/` follow SvelteKit conventions:
 - List endpoints use `parseLimit()`/`parseOffset()` from `$lib/utils/pagination.ts`
 - Approved public endpoints set `Cache-Control` headers (e.g. `s-maxage=300, stale-while-revalidate=600`)
 - Review text is sanitized via `sanitizeReview()` before storage
+- `[id]` path segments in API routes are **slugs only** — UUID fallback has been removed
+- Delete handlers also delete related `moderationQueue` rows to avoid orphans
 
 #### API Endpoints
 
 ```
 GET/POST          /api/hikes
-GET/PUT/DELETE    /api/hikes/[id]
+GET/PUT/DELETE    /api/hikes/[id]                 - [id] is slug
 PUT               /api/hikes/[id]/featured        - Admin toggle featured
 
 GET/POST          /api/camping-sites
-GET/PUT/DELETE    /api/camping-sites/[id]
+GET/PUT/DELETE    /api/camping-sites/[id]          - [id] is slug
 PUT               /api/camping-sites/[id]/featured
+
+GET/POST          /api/backpacking
+GET/PUT/DELETE    /api/backpacking/[id]            - [id] is slug
 
 GET/POST          /api/alterations                - Field-level change proposals
 GET/PUT/DELETE    /api/alterations/[id]
@@ -169,13 +179,16 @@ PUT               /api/users/[id]/role            - Admin role assignment
 /logout                - Server logout
 /profile               - User profile + change password
 /hikes                 - Hike listing with filters
-/hikes/[id]            - Hike detail
-/hikes/[id]/edit       - Edit hike (creator or admin)
+/hikes/[slug]          - Hike detail
+/hikes/[slug]/edit     - Edit hike (creator or admin)
 /camping               - Camping listing with filters
-/camping/[id]          - Camping detail
-/camping/[id]/edit     - Edit camping site (creator or admin)
+/camping/[slug]        - Camping detail
+/camping/[slug]/edit   - Edit camping site (creator or admin)
+/backpacking           - Backpacking listing with filters
+/backpacking/[slug]    - Backpacking detail
+/backpacking/[slug]/edit - Edit backpacking trip (creator or admin)
 /favorites             - User's saved favorites
-/submit                - Submit new hike or camping site
+/submit                - Submit new hike, camping site, or backpacking trip
 /essentials            - Static "Six Essentials" scout gear guide
 /admin                 - Admin dashboard
 /admin/moderation      - Moderation queue
@@ -184,6 +197,8 @@ PUT               /api/users/[id]/role            - Admin role assignment
 /admin/types           - Manage feature/amenity/facility/trail types
 /admin/users           - User management + role assignment
 ```
+
+Note: `[id]` route segments use **slugs** in the URL. Visiting a UUID-based URL redirects to the slug equivalent.
 
 ## Environment Variables
 
@@ -194,10 +209,18 @@ Required in `.env` (see `.env.example`):
 - `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `R2_ACCOUNT_ID` - Cloudflare R2 storage
 - `NODE_ENV` - Environment
 
+## CI/CD
+
+- `.github/workflows/deploy-preview.yml` — triggers on `preview` branch; builds and deploys to Cloudflare Pages with `--branch preview`
+- `.github/workflows/deploy-prod.yml` — triggers on `main`; runs `migrate` job first, then deploys (deploy blocked if migrate fails)
+
 ## Conventions
 
 - Schema files export type aliases: `type Hike = typeof hikes.$inferSelect`
 - Components in `src/lib/components/` with subdirectories: `hikes/`, `camping/`, `detail-pages/`, `ratings/`
 - Form submissions create entities with `status: "pending"` and add to moderation queue
-- Delete operations on hikes/camping sites also cascade-delete all associated R2 files
+- Delete operations on hikes/camping/backpacking also cascade-delete all associated R2 files and `moderationQueue` rows
 - Alteration proposals are validated against per-entity allowlists in `src/lib/allowed-fields.ts`
+- All content types generate a unique slug on create/update; slugs are the canonical URL identifier
+- SEO metadata, `sitemap.xml`, and `robots.txt` are generated by the app
+- Error page at `src/routes/+error.svelte` shows contextual 404 messages based on current section

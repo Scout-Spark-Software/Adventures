@@ -8,7 +8,8 @@
 
   export let data: LayoutData;
   $: user = data.user;
-  $: canonicalUrl = $page.url.origin + $page.url.pathname;
+  const BASE_URL = "https://www.adventurespark.org";
+  $: canonicalUrl = (data.isPreview ? $page.url.origin : BASE_URL) + $page.url.pathname;
 </script>
 
 <svelte:head>
