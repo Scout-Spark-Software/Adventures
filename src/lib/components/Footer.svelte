@@ -26,7 +26,7 @@
   </div>
 
   <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-10">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-10 mb-12">
       <!-- Brand -->
       <div class="md:col-span-1 flex flex-col items-center text-center">
         <a href="/" class="flex flex-col items-center mb-4 group">
@@ -171,6 +171,39 @@
         </ul>
       </div>
 
+      <!-- Legal -->
+      <div>
+        <h3
+          class="text-xs font-bold tracking-widest uppercase mb-5"
+          style="color: rgba(245,240,232,0.35);"
+        >
+          Legal
+        </h3>
+        <ul class="space-y-3">
+          <li>
+            <a
+              href="/privacy"
+              class="group inline-flex items-center gap-2 text-sm font-medium transition-colors"
+              style="color: rgba(245,240,232,0.6);"
+            >
+              <span class="group-hover:text-emerald-300 transition-colors">Privacy Policy</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="/cookies"
+              class="group inline-flex items-center gap-2 text-sm font-medium transition-colors"
+              style="color: rgba(245,240,232,0.6);"
+            >
+              <span class="group-hover:text-emerald-300 transition-colors">Cookie Policy</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="termly-display-preferences text-gray-300">Consent Preferences</a>
+          </li>
+        </ul>
+      </div>
+
       <!-- CTA card -->
       <div class="md:col-span-1">
         <div class="rounded-2xl p-5 border cta-card">
@@ -216,12 +249,9 @@
         <p class="text-xs" style="color: rgba(245,240,232,0.25);">
           &copy; {new Date().getFullYear()} Adventure Spark. All rights reserved.
         </p>
-        <div class="flex items-center gap-4">
-          <a href="#" class="termly-display-preferences text-gray-300">Consent Preferences</a>
-          <p class="text-xs" style="color: rgba(245,240,232,0.2);">
-            Made with ❤️ for scouts everywhere
-          </p>
-        </div>
+        <p class="text-xs" style="color: rgba(245,240,232,0.2);">
+          Made with ❤️ for scouts everywhere
+        </p>
       </div>
     </div>
   </div>
@@ -251,5 +281,14 @@
   }
   .footer-consent-link:hover {
     color: rgba(245, 240, 232, 0.5);
+  }
+  :global(.termly-display-preferences) {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(245, 240, 232, 0.6) !important;
+    transition: color 0.15s;
+  }
+  :global(.termly-display-preferences:hover) {
+    color: #6ee7b7 !important;
   }
 </style>
