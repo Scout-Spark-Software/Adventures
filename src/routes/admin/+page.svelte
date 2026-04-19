@@ -1,5 +1,6 @@
 <script lang="ts">
   import {
+    BookOpen,
     ChevronRight,
     CircleAlert,
     Flag,
@@ -209,6 +210,26 @@
           size={16}
           class="text-stone-600 group-hover:text-emerald-400 transition-colors"
         />
+      </a>
+
+      <a
+        href="/admin/blog"
+        class="group flex items-center justify-between bg-white/5 border border-white/10 backdrop-blur-sm rounded-xl px-5 py-4 hover:bg-white/10 hover:border-emerald-500/30 transition-all duration-200"
+      >
+        <div class="flex items-center gap-4">
+          <div class="p-2 bg-indigo-500/15 border border-indigo-500/25 rounded-lg">
+            <BookOpen size={18} class="text-indigo-400" />
+          </div>
+          <div>
+            <h3 class="text-sm font-semibold text-stone-100">Blog</h3>
+            <p class="text-xs text-stone-500 mt-0.5">
+              {stats.publishedPosts} published · {stats.draftPosts} draft{stats.scheduledPosts > 0
+                ? ` · ${stats.scheduledPosts} scheduled`
+                : ""}
+            </p>
+          </div>
+        </div>
+        <ChevronRight size={16} class="text-stone-600 group-hover:text-emerald-400 transition-colors" />
       </a>
 
       <a

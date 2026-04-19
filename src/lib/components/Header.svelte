@@ -11,6 +11,7 @@
     LogOut,
     MountainIcon,
     Backpack,
+    BookOpen,
     Menu,
     X,
   } from "lucide-svelte";
@@ -31,6 +32,7 @@
     currentPath === "/essentials" ||
     currentPath === "/login" ||
     currentPath === "/signup" ||
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     currentPath.startsWith("/admin");
 
   let scrolled = false;
@@ -71,9 +73,13 @@
     { href: "/hikes", label: "Hikes", icon: MountainIcon, activeColor: "emerald" },
     { href: "/camping", label: "Camping Sites", icon: Tent, activeColor: "blue" },
     { href: "/backpacking", label: "Backpacking", icon: Backpack, activeColor: "amber" },
+    // { href: "/blog", label: "Blog", icon: BookOpen, activeColor: "indigo" },
   ];
 
-  const activeColors: Record<string, { desktopLight: string; desktopDark: string; mobileLight: string; mobileDark: string }> = {
+  const activeColors: Record<
+    string,
+    { desktopLight: string; desktopDark: string; mobileLight: string; mobileDark: string }
+  > = {
     emerald: {
       desktopLight: "border-emerald-500 text-emerald-600",
       desktopDark: "border-emerald-400 text-emerald-300",
@@ -91,6 +97,12 @@
       desktopDark: "border-amber-400 text-amber-300",
       mobileLight: "bg-amber-50 text-amber-700",
       mobileDark: "bg-amber-500/15 text-amber-300",
+    },
+    indigo: {
+      desktopLight: "border-indigo-500 text-indigo-600",
+      desktopDark: "border-indigo-400 text-indigo-300",
+      mobileLight: "bg-indigo-50 text-indigo-700",
+      mobileDark: "bg-indigo-500/15 text-indigo-300",
     },
   };
 </script>
@@ -131,7 +143,9 @@
             <a
               href={link.href}
               class="{isActive
-                ? isDark ? colors.desktopDark : colors.desktopLight
+                ? isDark
+                  ? colors.desktopDark
+                  : colors.desktopLight
                 : isDark
                   ? 'border-transparent text-stone-200 hover:border-stone-400 hover:text-white'
                   : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-800'} inline-flex items-center px-4 pt-1 border-b-2 text-sm font-semibold transition-colors"
@@ -285,7 +299,9 @@
           on:click={closeMobileMenu}
           class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-colors
           {isActive
-            ? isDark ? colors.mobileDark : colors.mobileLight
+            ? isDark
+              ? colors.mobileDark
+              : colors.mobileLight
             : isDark
               ? 'text-stone-300 hover:bg-white/5 hover:text-white'
               : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}"

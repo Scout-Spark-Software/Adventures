@@ -1,7 +1,7 @@
 import type { PageServerLoad } from "./$types";
 import { requireAdmin } from "$lib/auth/middleware";
 import { db } from "$lib/db";
-import { hikes, campingSites, moderationQueue, favorites, imageFlags, backpacking } from "$lib/db/schemas";
+import { hikes, campingSites, moderationQueue, favorites, imageFlags, backpacking, posts } from "$lib/db/schemas";
 import { count, eq, and } from "drizzle-orm";
 
 export const load: PageServerLoad = async (event) => {
@@ -20,6 +20,9 @@ export const load: PageServerLoad = async (event) => {
     pendingAlterations,
     totalFavorites,
     pendingImageFlags,
+    publishedPosts,
+    draftPosts,
+    scheduledPosts,
   ] = await Promise.all([
     db.select({ count: count() }).from(hikes).where(eq(hikes.status, "approved")),
     db.select({ count: count() }).from(campingSites).where(eq(campingSites.status, "approved")),
@@ -56,6 +59,9 @@ export const load: PageServerLoad = async (event) => {
       ),
     db.select({ count: count() }).from(favorites),
     db.select({ count: count() }).from(imageFlags).where(eq(imageFlags.status, "pending")),
+    db.select({ count: count() }).from(posts).where(eq(posts.status, "published")),
+    db.select({ count: count() }).from(posts).where(eq(posts.status, "draft")),
+    db.select({ count: count() }).from(posts).where(eq(posts.status, "scheduled")),
   ]);
 
   return {
@@ -72,6 +78,9 @@ export const load: PageServerLoad = async (event) => {
       pendingAlterations: pendingAlterations[0].count,
       totalFavorites: totalFavorites[0].count,
       pendingImageFlags: pendingImageFlags[0].count,
+      publishedPosts: publishedPosts[0].count,
+      draftPosts: draftPosts[0].count,
+      scheduledPosts: scheduledPosts[0].count,
     },
   };
 };

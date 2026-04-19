@@ -52,3 +52,11 @@ export const CAMPING_STYLE_LABELS: Record<string, string> = {
   designated_sites: "Designated Sites",
   hut_to_hut: "Hut to Hut",
 };
+
+export const postStatusEnum = pgEnum("post_status", [
+  "draft",
+  "scheduled",
+  "published",
+  "archived",
+]);
+export type PostStatus = (typeof postStatusEnum.enumValues)[number];

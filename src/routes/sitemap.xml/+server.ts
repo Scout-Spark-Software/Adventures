@@ -1,6 +1,6 @@
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
-import { hikes, campingSites, backpacking } from "$lib/db/schemas";
+import { hikes, campingSites, backpacking, posts } from "$lib/db/schemas";
 import { eq } from "drizzle-orm";
 
 const BASE_URL = "https://www.adventurespark.org";
@@ -10,11 +10,12 @@ const STATIC_PAGES = [
   { url: "/hikes", priority: "0.9", changefreq: "daily" },
   { url: "/camping", priority: "0.9", changefreq: "daily" },
   { url: "/backpacking", priority: "0.9", changefreq: "daily" },
+  { url: "/blog", priority: "0.8", changefreq: "weekly" },
   { url: "/essentials", priority: "0.6", changefreq: "monthly" },
 ];
 
 export const GET: RequestHandler = async () => {
-  const [hikeList, campingList, backpackingList] = await Promise.all([
+  const [hikeList, campingList, backpackingList, postList] = await Promise.all([
     db
       .select({ slug: hikes.slug, updatedAt: hikes.updatedAt })
       .from(hikes)
@@ -27,6 +28,10 @@ export const GET: RequestHandler = async () => {
       .select({ slug: backpacking.slug, updatedAt: backpacking.updatedAt })
       .from(backpacking)
       .where(eq(backpacking.status, "approved")),
+    db
+      .select({ slug: posts.slug, updatedAt: posts.updatedAt })
+      .from(posts)
+      .where(eq(posts.status, "published")),
   ]);
 
   const formatDate = (d: Date | null) =>
@@ -45,6 +50,7 @@ ${STATIC_PAGES.map((p) => urlEntry(`${BASE_URL}${p.url}`, undefined, p.priority,
 ${hikeList.map((h) => urlEntry(`${BASE_URL}/hikes/${h.slug}`, formatDate(h.updatedAt))).join("\n")}
 ${campingList.map((c) => urlEntry(`${BASE_URL}/camping/${c.slug}`, formatDate(c.updatedAt))).join("\n")}
 ${backpackingList.map((b) => urlEntry(`${BASE_URL}/backpacking/${b.slug}`, formatDate(b.updatedAt))).join("\n")}
+${postList.map((p) => urlEntry(`${BASE_URL}/blog/${p.slug}`, formatDate(p.updatedAt), "0.7", "monthly")).join("\n")}
 </urlset>`;
 
   return new Response(xml, {
