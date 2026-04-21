@@ -20,9 +20,7 @@ npm run format       # Auto-format with prettier
 
 # Database
 npm run db:migrate   # Push schema changes to database (drizzle-kit push)
-npm run db:generate  # Generate migration files (drizzle-kit generate:pg)
 npm run db:studio    # Open Drizzle Studio GUI
-npm run migrate      # Run migration scripts via tsx
 
 # Admin utilities
 npm run set-admin <user-id>  # Grant admin role to a user
