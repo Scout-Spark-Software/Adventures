@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { page } from "$app/stores";
   import SeriesSidebar from "$lib/components/blog/SeriesSidebar.svelte";
   import TableOfContents from "$lib/components/blog/TableOfContents.svelte";
   import type { PageData } from "./$types";
@@ -21,6 +22,18 @@
   <title>{post.title} - Adventure Spark</title>
   {#if post.excerpt}
     <meta name="description" content={post.excerpt} />
+  {/if}
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="{post.title} - Adventure Spark" />
+  <meta property="og:url" content={$page.url.href} />
+  {#if post.excerpt}
+    <meta property="og:description" content={post.excerpt} />
+  {/if}
+  {#if post.coverImageUrl}
+    <meta property="og:image" content={post.coverImageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+  {:else}
+    <meta name="twitter:card" content="summary" />
   {/if}
 </svelte:head>
 
@@ -54,6 +67,13 @@
           {/if}
         </div>
         <h1 class="text-3xl font-bold text-stone-900 mb-8">{post.title}</h1>
+        {#if post.coverImageUrl}
+          <img
+            src={post.coverImageUrl}
+            alt=""
+            class="w-full rounded-xl object-cover max-h-80 mb-8 border border-stone-100"
+          />
+        {/if}
         <div class="prose prose-stone max-w-none">
           {@html data.content}
         </div>
