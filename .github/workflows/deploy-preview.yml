@@ -10,6 +10,7 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     environment: preview
+    needs: migrate
 
     steps:
       - name: Checkout code
@@ -58,10 +59,34 @@ jobs:
           path: playwright-report/
           retention-days: 7
 
+  migrate:
+    name: Run DB migrations
+    runs-on: ubuntu-latest
+    environment: preview
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run migrations
+        run: npm run migrate all
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
   deploy:
     name: Deploy to Cloudflare Pages (preview)
     runs-on: ubuntu-latest
     environment: preview
+    needs: [migrate, test]
 
     steps:
       - name: Checkout code
