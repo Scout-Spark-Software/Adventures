@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from "$app/stores";
-  import { Mountain, Tent, Backpack } from "lucide-svelte";
+  import { Mountain, Tent, Backpack, BookOpen } from "lucide-svelte";
 
   const contexts = {
     hikes: {
@@ -24,6 +24,13 @@
       browseLabel: "Browse routes",
       browseHref: "/backpacking",
     },
+    blog: {
+      icon: BookOpen,
+      heading: "Post not found",
+      body: "This blog post doesn't exist. It may have been removed or the link might be wrong.",
+      browseLabel: "Browse blog",
+      browseHref: "/blog",
+    },
   } as const;
 
   $: section = $page.url.pathname.startsWith("/camping")
@@ -32,9 +39,11 @@
       ? "backpacking"
       : $page.url.pathname.startsWith("/hikes")
         ? "hikes"
-        : null;
+        : $page.url.pathname.startsWith("/blog")
+          ? "blog"
+          : null;
 
-  $: ctx = section ? contexts[section] : null;
+  $: ctx = section ? contexts[section as keyof typeof contexts] : null;
 </script>
 
 <div class="min-h-[70vh] flex flex-col items-center justify-center px-4 py-24 text-center">

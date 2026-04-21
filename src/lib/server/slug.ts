@@ -1,10 +1,10 @@
 import { eq, and, ne } from "drizzle-orm";
 import { db } from "$lib/db";
-import { hikes, campingSites, backpacking } from "$lib/db/schemas";
+import { hikes, campingSites, backpacking, posts, series } from "$lib/db/schemas";
 import { toSlug, hasProfanityInSlug } from "$lib/utils/slugify";
 import { error } from "@sveltejs/kit";
 
-type SlugTable = "hike" | "camping_site" | "backpacking";
+type SlugTable = "hike" | "camping_site" | "backpacking" | "post" | "series";
 
 /**
  * Generate a unique, profanity-free slug for an entity.
@@ -50,11 +50,25 @@ export async function generateUniqueSlug(
           : eq(campingSites.slug, candidate),
         columns: { id: true },
       });
-    } else {
+    } else if (entityType === "backpacking") {
       existing = await db.query.backpacking.findFirst({
         where: excludeId
           ? and(eq(backpacking.slug, candidate), ne(backpacking.id, excludeId))
           : eq(backpacking.slug, candidate),
+        columns: { id: true },
+      });
+    } else if (entityType === "post") {
+      existing = await db.query.posts.findFirst({
+        where: excludeId
+          ? and(eq(posts.slug, candidate), ne(posts.id, excludeId))
+          : eq(posts.slug, candidate),
+        columns: { id: true },
+      });
+    } else {
+      existing = await db.query.series.findFirst({
+        where: excludeId
+          ? and(eq(series.slug, candidate), ne(series.id, excludeId))
+          : eq(series.slug, candidate),
         columns: { id: true },
       });
     }

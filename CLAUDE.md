@@ -207,12 +207,25 @@ Required in `.env` (see `.env.example`):
 - `DATABASE_URL` - Neon PostgreSQL connection string
 - `WORKOS_API_KEY`, `WORKOS_CLIENT_ID`, `WORKOS_ORGANIZATION_ID`, `WORKOS_COOKIE_PASSWORD` - Auth
 - `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `R2_ACCOUNT_ID` - Cloudflare R2 storage
+- `CRON_SECRET` - Shared secret between the app and the scheduler Worker (generate with `openssl rand -base64 32`)
 - `NODE_ENV` - Environment
 
 ## CI/CD
 
 - `.github/workflows/deploy-preview.yml` — triggers on `preview` branch; builds and deploys to Cloudflare Pages with `--branch preview`
-- `.github/workflows/deploy-prod.yml` — triggers on `main`; runs `migrate` job first, then deploys (deploy blocked if migrate fails)
+- `.github/workflows/deploy-prod.yml` — triggers on `main`; runs `migrate` job first, then deploys (deploy blocked if migrate fails); also deploys the scheduler Worker (`workers/scheduler/`)
+
+### Scheduler Worker secrets
+
+The `adventures-scheduler` Cloudflare Worker (`workers/scheduler/`) requires two secrets set via Wrangler — these are **not** `.env` variables and must be configured once per environment:
+
+```bash
+npx wrangler secret put APP_URL --config workers/scheduler/wrangler.toml
+# e.g. https://www.adventurespark.org
+
+npx wrangler secret put CRON_SECRET --config workers/scheduler/wrangler.toml
+# Must match CRON_SECRET in the app's Cloudflare Pages environment variables
+```
 
 ## Conventions
 
