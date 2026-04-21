@@ -86,7 +86,7 @@ jobs:
     name: Deploy to Cloudflare Pages (preview)
     runs-on: ubuntu-latest
     environment: preview
-    needs: migrate
+    needs: [migrate, test]
 
     steps:
       - name: Checkout code
