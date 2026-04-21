@@ -9,7 +9,20 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
   if (!res.ok) throw error(res.status, "Failed to load post");
 
   const { seriesData, ...post } = await res.json();
-  const content = await marked(post.body);
+  const rawContent = String(await marked(post.body));
+
+  // Inject IDs into headings and build ToC
+  const toc: { id: string; text: string; level: number }[] = [];
+  const content = rawContent.replace(/<h([2-4])>(.*?)<\/h\1>/gs, (_, lvl, inner) => {
+    const plainText = inner.replace(/<[^>]+>/g, "");
+    const id = plainText
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, "")
+      .trim()
+      .replace(/\s+/g, "-");
+    toc.push({ id, text: plainText, level: Number(lvl) });
+    return `<h${lvl} id="${id}">${inner}</h${lvl}>`;
+  });
 
   let authorName: string | null = null;
   try {
@@ -23,5 +36,5 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
     // WorkOS lookup failed — omit gracefully
   }
 
-  return { post, content, seriesData: seriesData ?? null, authorName };
+  return { post, content, toc, seriesData: seriesData ?? null, authorName };
 };

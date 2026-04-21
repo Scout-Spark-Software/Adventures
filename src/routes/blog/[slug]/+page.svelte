@@ -1,10 +1,13 @@
 <script lang="ts">
+  import { page } from "$app/stores";
   import SeriesSidebar from "$lib/components/blog/SeriesSidebar.svelte";
+  import TableOfContents from "$lib/components/blog/TableOfContents.svelte";
   import type { PageData } from "./$types";
   export let data: PageData;
 
   $: post = data.post;
   $: seriesData = data.seriesData;
+  $: hasSidebar = (seriesData && seriesData.posts.length > 1) || data.toc.length > 0;
 
   function formatDate(d: string) {
     return new Date(d).toLocaleDateString("en-US", {
@@ -19,6 +22,18 @@
   <title>{post.title} - Adventure Spark</title>
   {#if post.excerpt}
     <meta name="description" content={post.excerpt} />
+  {/if}
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="{post.title} - Adventure Spark" />
+  <meta property="og:url" content={$page.url.href} />
+  {#if post.excerpt}
+    <meta property="og:description" content={post.excerpt} />
+  {/if}
+  {#if post.coverImageUrl}
+    <meta property="og:image" content={post.coverImageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+  {:else}
+    <meta name="twitter:card" content="summary" />
   {/if}
 </svelte:head>
 
@@ -52,23 +67,43 @@
           {/if}
         </div>
         <h1 class="text-3xl font-bold text-stone-900 mb-8">{post.title}</h1>
+        {#if post.coverImageUrl}
+          <img
+            src={post.coverImageUrl}
+            alt=""
+            class="w-full rounded-xl object-cover max-h-80 mb-8 border border-stone-100"
+          />
+        {/if}
         <div class="prose prose-stone max-w-none">
           {@html data.content}
         </div>
       </article>
 
-      <!-- Series sidebar -->
-      {#if seriesData && seriesData.posts.length > 1}
-        <aside class="lg:w-64 shrink-0">
-          <div class="lg:sticky lg:top-8">
-            <SeriesSidebar
-              seriesName={seriesData.series.name}
-              seriesPosts={seriesData.posts}
-              currentSlug={post.slug}
-            />
+      <!-- Sidebar: series nav + table of contents -->
+      {#if hasSidebar}
+        <aside class="lg:w-56 shrink-0">
+          <div class="lg:sticky lg:top-24 flex flex-col gap-6">
+            {#if seriesData && seriesData.posts.length > 1}
+              <SeriesSidebar
+                seriesName={seriesData.series.name}
+                seriesPosts={seriesData.posts}
+                currentSlug={post.slug}
+              />
+            {/if}
+            {#if data.toc.length > 0}
+              <div class="bg-stone-50 border border-stone-200 rounded-xl p-5">
+                <TableOfContents toc={data.toc} />
+              </div>
+            {/if}
           </div>
         </aside>
       {/if}
     </div>
   </div>
 </div>
+
+<style>
+  :global(.prose h2, .prose h3, .prose h4) {
+    scroll-margin-top: 6rem;
+  }
+</style>
