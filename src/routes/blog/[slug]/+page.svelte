@@ -1,10 +1,12 @@
 <script lang="ts">
   import SeriesSidebar from "$lib/components/blog/SeriesSidebar.svelte";
+  import TableOfContents from "$lib/components/blog/TableOfContents.svelte";
   import type { PageData } from "./$types";
   export let data: PageData;
 
   $: post = data.post;
   $: seriesData = data.seriesData;
+  $: hasSidebar = (seriesData && seriesData.posts.length > 1) || data.toc.length > 0;
 
   function formatDate(d: string) {
     return new Date(d).toLocaleDateString("en-US", {
@@ -57,18 +59,31 @@
         </div>
       </article>
 
-      <!-- Series sidebar -->
-      {#if seriesData && seriesData.posts.length > 1}
-        <aside class="lg:w-64 shrink-0">
-          <div class="lg:sticky lg:top-8">
-            <SeriesSidebar
-              seriesName={seriesData.series.name}
-              seriesPosts={seriesData.posts}
-              currentSlug={post.slug}
-            />
+      <!-- Sidebar: series nav + table of contents -->
+      {#if hasSidebar}
+        <aside class="lg:w-56 shrink-0">
+          <div class="lg:sticky lg:top-24 flex flex-col gap-6">
+            {#if seriesData && seriesData.posts.length > 1}
+              <SeriesSidebar
+                seriesName={seriesData.series.name}
+                seriesPosts={seriesData.posts}
+                currentSlug={post.slug}
+              />
+            {/if}
+            {#if data.toc.length > 0}
+              <div class="bg-stone-50 border border-stone-200 rounded-xl p-5">
+                <TableOfContents toc={data.toc} />
+              </div>
+            {/if}
           </div>
         </aside>
       {/if}
     </div>
   </div>
 </div>
+
+<style>
+  :global(.prose h2, .prose h3, .prose h4) {
+    scroll-margin-top: 6rem;
+  }
+</style>
