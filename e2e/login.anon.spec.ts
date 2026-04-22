@@ -6,7 +6,7 @@ test.describe('Login page – anonymous', () => {
     const response = await request.get('/login', { maxRedirects: 0 });
     expect(response.status()).toBe(302);
     const location = response.headers()['location'] ?? '';
-    expect(location).not.toMatch(/localhost/);
+    expect(location).toMatch(/workos\.com|authkit\.app/);
     expect(location.length).toBeGreaterThan(0);
   });
 
@@ -33,9 +33,9 @@ test.describe('Login page – anonymous', () => {
     await expect(button).toBeVisible();
     // Clicking it navigates away from localhost (to WorkOS hosted UI)
     await Promise.all([
-      page.waitForURL((url) => !url.hostname.includes('localhost')),
+      page.waitForURL((url) => /workos\.com|authkit\.app/.test(url.hostname)),
       button.click(),
     ]);
-    await expect(page).not.toHaveURL(/localhost/);
+    await expect(page).toHaveURL(/workos\.com|authkit\.app/);
   });
 });
