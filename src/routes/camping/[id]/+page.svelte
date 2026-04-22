@@ -1,5 +1,6 @@
 <script lang="ts">
   import { browser } from "$app/environment";
+  import { replaceState } from "$app/navigation";
   import type { PageData } from "./$types";
   import FavoriteButton from "$lib/components/FavoriteButton.svelte";
   import ModerationBadge from "$lib/components/ModerationBadge.svelte";
@@ -86,7 +87,7 @@
   $: if (browser) {
     const newHash = `#${activeTab}`;
     if (window.location.hash !== newHash) {
-      history.replaceState(null, "", newHash);
+      replaceState(newHash, {});
     }
   }
 

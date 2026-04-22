@@ -179,6 +179,11 @@ const securityHandle: Handle = async ({ event, resolve }) => {
   if (!["GET", "HEAD", "OPTIONS"].includes(event.request.method)) {
     response.headers.set("Cache-Control", "no-store");
   }
+  // HTML pages must not be cached — hashed asset filenames break after a new
+  // deploy because Cloudflare Pages doesn't keep old deployments' files alive.
+  if (response.headers.get("content-type")?.includes("text/html")) {
+    response.headers.set("Cache-Control", "no-store");
+  }
   return response;
 };
 
