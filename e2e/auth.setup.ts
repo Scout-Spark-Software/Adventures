@@ -19,7 +19,8 @@ async function authenticate(
 ) {
   // POST credentials — the server sets httpOnly session cookies on this domain
   const response = await page.request.post('/api/auth/test-session', {
-    data: { email, password },
+    data: JSON.stringify({ email, password }),
+    headers: { 'content-type': 'application/json' },
   });
 
   if (!response.ok()) {
@@ -35,20 +36,26 @@ async function authenticate(
   await page.context().storageState({ path: storageFile });
 }
 
+function requireEnv(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(
+      `Required env var ${name} is not set. ` +
+        'Add it to .env.test locally or as a GitHub Actions secret in the preview environment.'
+    );
+  }
+  return value;
+}
+
 setup('authenticate as regular user', async ({ page }) => {
-  await authenticate(
-    page,
-    process.env.TEST_USER_EMAIL!,
-    process.env.TEST_USER_PASSWORD!,
-    userFile
-  );
+  await authenticate(page, requireEnv('TEST_USER_EMAIL'), requireEnv('TEST_USER_PASSWORD'), userFile);
 });
 
 setup('authenticate as admin', async ({ page }) => {
   await authenticate(
     page,
-    process.env.TEST_ADMIN_EMAIL!,
-    process.env.TEST_ADMIN_PASSWORD!,
+    requireEnv('TEST_ADMIN_EMAIL'),
+    requireEnv('TEST_ADMIN_PASSWORD'),
     adminFile
   );
 });

@@ -13,8 +13,12 @@ export const POST: RequestHandler = async ({ request, cookies, url }) => {
   }
 
   const body = await request.json().catch(() => null);
+  if (body === null) {
+    throw error(400, "Request body could not be parsed as JSON. Ensure Content-Type: application/json is set.");
+  }
   if (!body?.email || !body?.password) {
-    throw error(400, "email and password are required");
+    const missing = [!body.email && "email", !body.password && "password"].filter(Boolean).join(", ");
+    throw error(400, `Missing or empty credentials: ${missing}. Check TEST_USER_EMAIL / TEST_USER_PASSWORD / TEST_ADMIN_EMAIL / TEST_ADMIN_PASSWORD env vars.`);
   }
 
   const { accessToken, refreshToken } = await workosAuth.signIn(body.email, body.password);
