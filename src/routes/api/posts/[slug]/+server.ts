@@ -3,6 +3,7 @@ import { requireAdmin } from "$lib/auth/middleware";
 import { db } from "$lib/db";
 import { posts, series } from "$lib/db/schemas";
 import { generateUniqueSlug } from "$lib/server/slug";
+import { deleteFile, listFiles } from "$lib/storage/blob";
 import { error, json } from "@sveltejs/kit";
 import { asc, eq, max } from "drizzle-orm";
 import type { RequestHandler } from "./$types";
@@ -149,6 +150,18 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
   if (!post) throw error(404, "Post not found");
 
   await db.delete(posts).where(eq(posts.id, post.id));
+
+  // Delete all R2 objects stored under posts/{slug}/
+  const objects = await listFiles(`posts/${post.slug}/`);
+  const deletions = objects
+    .filter((o) => o.Key)
+    .map((o) => deleteFile(o.Key!));
+  const results = await Promise.allSettled(deletions);
+  results.forEach((result, i) => {
+    if (result.status === "rejected") {
+      console.error(`Failed to delete R2 object ${objects[i].Key}:`, result.reason);
+    }
+  });
 
   return json({ success: true });
 };
