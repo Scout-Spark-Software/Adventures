@@ -151,8 +151,8 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 
   await db.delete(posts).where(eq(posts.id, post.id));
 
-  // Delete all R2 objects stored under posts/{slug}/
-  const objects = await listFiles(`posts/${post.slug}/`);
+  // Delete all R2 objects stored under posts/{id}/ (stable across slug renames)
+  const objects = await listFiles(`posts/${post.id}/`);
   const deletions = objects
     .filter((o) => o.Key)
     .map((o) => deleteFile(o.Key!));

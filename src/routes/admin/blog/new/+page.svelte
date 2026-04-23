@@ -15,6 +15,7 @@
   let coverUploading = false;
   let inlineImageUploading = false;
   let saving = false;
+  let canceling = false;
   let errorMsg = "";
   let renderedPreview = "";
 
@@ -79,6 +80,7 @@
     try {
       const fd = new FormData();
       fd.append("file", file);
+      fd.append("postId", data.draft.id);
       const res = await fetch("/api/posts/cover", { method: "POST", body: fd });
       if (res.ok) {
         const d = await res.json();
@@ -108,6 +110,7 @@
     coverUploading = true;
     const fd = new FormData();
     fd.append("file", file);
+    fd.append("postId", data.draft.id);
     const res = await fetch("/api/posts/cover", { method: "POST", body: fd });
     coverUploading = false;
     if (res.ok) {
@@ -126,8 +129,8 @@
     errorMsg = "";
     saving = true;
 
-    const res = await fetch("/api/posts", {
-      method: "POST",
+    const res = await fetch(`/api/posts/${data.draft.slug}`, {
+      method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         title,
@@ -149,6 +152,12 @@
       const d = await res.json().catch(() => ({}));
       errorMsg = d.message ?? "Failed to save post";
     }
+  }
+
+  async function cancel() {
+    canceling = true;
+    await fetch(`/api/posts/${data.draft.slug}`, { method: "DELETE" });
+    goto("/admin/blog");
   }
 </script>
 
@@ -379,12 +388,14 @@
         >
           {saving ? "Saving…" : "Save Post"}
         </button>
-        <a
-          href="/admin/blog"
-          class="px-6 py-2.5 bg-white/5 border border-white/10 text-stone-300 text-sm font-semibold rounded-lg hover:bg-white/10 transition-colors"
+        <button
+          type="button"
+          on:click={cancel}
+          disabled={canceling}
+          class="px-6 py-2.5 bg-white/5 border border-white/10 text-stone-300 text-sm font-semibold rounded-lg hover:bg-white/10 disabled:opacity-50 transition-colors"
         >
-          Cancel
-        </a>
+          {canceling ? "Canceling…" : "Cancel"}
+        </button>
       </div>
     </div>
   </div>

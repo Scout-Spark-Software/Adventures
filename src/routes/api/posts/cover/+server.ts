@@ -14,12 +14,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
   validateFile(file, "image");
 
-  const slug = formData.get("slug");
-  const folder = slug ? `posts/${slug}` : "posts/_draft";
+  const postId = formData.get("postId") as string | null;
+  if (!postId) throw error(400, "postId is required");
 
   const timestamp = Date.now();
   const safeName = sanitizeFilename(file.name);
-  const path = `${folder}/${timestamp}-${safeName}`;
+  const path = `posts/${postId}/${timestamp}-${safeName}`;
 
   const { url } = await uploadFile(file, "image", path);
 

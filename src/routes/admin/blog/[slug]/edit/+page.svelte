@@ -99,7 +99,7 @@
     try {
       const fd = new FormData();
       fd.append("file", file);
-      fd.append("slug", data.post.slug);
+      fd.append("postId", data.post.id);
       const res = await fetch("/api/posts/cover", { method: "POST", body: fd });
       if (res.ok) {
         const d = await res.json();
@@ -129,7 +129,7 @@
     coverUploading = true;
     const fd = new FormData();
     fd.append("file", file);
-    fd.append("slug", data.post.slug);
+    fd.append("postId", data.post.id);
     const res = await fetch("/api/posts/cover", { method: "POST", body: fd });
     coverUploading = false;
     if (res.ok) {

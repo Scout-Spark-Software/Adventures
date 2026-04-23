@@ -3,7 +3,6 @@ import {
   PutObjectCommand,
   DeleteObjectCommand,
   ListObjectsV2Command,
-  CopyObjectCommand,
   type _Object,
 } from "@aws-sdk/client-s3";
 import { error } from "@sveltejs/kit";
@@ -123,20 +122,6 @@ export async function deleteFile(pathname: string): Promise<void> {
       Key: toKey(pathname),
     })
   );
-}
-
-export async function moveFile(sourceKey: string, destKey: string): Promise<string> {
-  const client = getS3Client();
-  const bucket = getBucketName();
-  const src = toKey(sourceKey);
-  const dst = toKey(destKey);
-
-  await client.send(
-    new CopyObjectCommand({ Bucket: bucket, CopySource: `${bucket}/${src}`, Key: dst })
-  );
-  await client.send(new DeleteObjectCommand({ Bucket: bucket, Key: src }));
-
-  return getPublicUrl(dst);
 }
 
 export async function listFiles(prefix: string): Promise<_Object[]> {
