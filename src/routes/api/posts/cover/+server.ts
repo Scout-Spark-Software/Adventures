@@ -14,9 +14,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
   validateFile(file, "image");
 
+  const slug = formData.get("slug");
+  const folder = slug ? `posts/${slug}` : "posts/_draft";
+
   const timestamp = Date.now();
   const safeName = sanitizeFilename(file.name);
-  const path = `posts/covers/${timestamp}-${safeName}`;
+  const path = `${folder}/${timestamp}-${safeName}`;
 
   const { url } = await uploadFile(file, "image", path);
 

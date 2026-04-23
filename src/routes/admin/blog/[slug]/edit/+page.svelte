@@ -96,24 +96,30 @@
     const file = input.files?.[0];
     if (!file) return;
     inlineImageUploading = true;
-    const fd = new FormData();
-    fd.append("file", file);
-    const res = await fetch("/api/posts/cover", { method: "POST", body: fd });
-    inlineImageUploading = false;
-    if (res.ok) {
-      const d = await res.json();
-      const md = `![image](${d.url})`;
-      const start = editorEl.selectionStart ?? body.length;
-      const end = editorEl.selectionEnd ?? body.length;
-      body = body.slice(0, start) + md + body.slice(end);
-      requestAnimationFrame(() => {
-        editorEl.selectionStart = editorEl.selectionEnd = start + md.length;
-        editorEl.focus();
-      });
-    } else {
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("slug", data.post.slug);
+      const res = await fetch("/api/posts/cover", { method: "POST", body: fd });
+      if (res.ok) {
+        const d = await res.json();
+        const md = `![image](${d.url})`;
+        const start = editorEl.selectionStart ?? body.length;
+        const end = editorEl.selectionEnd ?? body.length;
+        body = body.slice(0, start) + md + body.slice(end);
+        requestAnimationFrame(() => {
+          editorEl.selectionStart = editorEl.selectionEnd = start + md.length;
+          editorEl.focus();
+        });
+      } else {
+        errorMsg = "Failed to upload image";
+      }
+    } catch {
       errorMsg = "Failed to upload image";
+    } finally {
+      inlineImageUploading = false;
+      input.value = "";
     }
-    input.value = "";
   }
 
   async function onCoverFileChange(e: Event) {
@@ -123,6 +129,7 @@
     coverUploading = true;
     const fd = new FormData();
     fd.append("file", file);
+    fd.append("slug", data.post.slug);
     const res = await fetch("/api/posts/cover", { method: "POST", body: fd });
     coverUploading = false;
     if (res.ok) {
