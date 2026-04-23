@@ -156,8 +156,12 @@
 
   async function cancel() {
     canceling = true;
-    await fetch(`/api/posts/${data.draft.slug}`, { method: "DELETE" });
-    goto("/admin/blog");
+    try {
+      await fetch(`/api/posts/${data.draft.slug}`, { method: "DELETE" });
+      await goto("/admin/blog");
+    } catch {
+      await goto("/admin/blog");
+    }
   }
 </script>
 
@@ -170,9 +174,9 @@
 <div class="relative z-10 min-h-screen pt-16 pb-16">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center gap-3 mb-8">
-      <a href="/admin/blog" class="text-sm text-stone-500 hover:text-stone-300 transition-colors">
+      <button type="button" on:click={cancel} class="text-sm text-stone-500 hover:text-stone-300 transition-colors">
         ← Blog
-      </a>
+      </button>
       <span class="text-stone-700">/</span>
       <h1 class="text-xl font-bold text-stone-100">New Post</h1>
     </div>
