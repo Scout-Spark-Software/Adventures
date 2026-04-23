@@ -179,7 +179,7 @@
     const res = await fetch(`/api/posts/${data.post.id}`, { method: "DELETE" });
     deleting = false;
     if (res.ok) {
-      goto("/admin/blog");
+      goto("/admin/blog", { invalidateAll: true });
     } else {
       errorMsg = "Failed to delete post";
     }
