@@ -129,7 +129,7 @@
     errorMsg = "";
     saving = true;
 
-    const res = await fetch(`/api/posts/${data.draft.slug}`, {
+    const res = await fetch(`/api/posts/${data.draft.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -158,8 +158,8 @@
     errorMsg = "";
     canceling = true;
     try {
-      const res = await fetch(`/api/posts/${data.draft.slug}`, { method: "DELETE" });
-      if (res.ok) {
+      const res = await fetch(`/api/posts/${data.draft.id}`, { method: "DELETE" });
+      if (res.ok || res.status === 404) {
         await goto("/admin/blog");
       } else {
         errorMsg = "Failed to delete draft. Please try again.";

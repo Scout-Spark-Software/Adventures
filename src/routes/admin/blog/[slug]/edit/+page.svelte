@@ -148,7 +148,7 @@
     errorMsg = "";
     saving = true;
 
-    const res = await fetch(`/api/posts/${data.post.slug}`, {
+    const res = await fetch(`/api/posts/${data.post.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -176,7 +176,7 @@
   async function deletePost() {
     if (!confirm("Delete this post? This cannot be undone.")) return;
     deleting = true;
-    const res = await fetch(`/api/posts/${data.post.slug}`, { method: "DELETE" });
+    const res = await fetch(`/api/posts/${data.post.id}`, { method: "DELETE" });
     deleting = false;
     if (res.ok) {
       goto("/admin/blog");
