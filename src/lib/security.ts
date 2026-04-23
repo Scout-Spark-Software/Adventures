@@ -48,7 +48,7 @@ export const SECURITY_HEADERS: Record<string, string> = {
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline' https://app.termly.io https://www.googletagmanager.com https://pagead2.googlesyndication.com https://partner.googleadservices.com https://tpc.googlesyndication.com https://googleads.g.doubleclick.net https://ep2.adtrafficquality.google https://static.cloudflareinsights.com",
     "style-src 'self' 'unsafe-inline' https://unpkg.com",
-    "img-src 'self' blob: data: https://previewfiles.adventurespark.org https://files.adventurespark.org https://file.adventurespark.org https://*.tile.openstreetmap.org https://*.tile.opentopomap.org https://server.arcgisonline.com https://pagead2.googlesyndication.com https://tpc.googlesyndication.com https://ep1.adtrafficquality.google",
+    "img-src 'self' blob: data: https://previewfiles.adventurespark.org https://files.adventurespark.org https://*.tile.openstreetmap.org https://*.tile.opentopomap.org https://server.arcgisonline.com https://pagead2.googlesyndication.com https://tpc.googlesyndication.com https://ep1.adtrafficquality.google",
     "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://pagead2.googlesyndication.com https://ep1.adtrafficquality.google https://app.termly.io https://us.consent.api.termly.io",
     "frame-src https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://ep2.adtrafficquality.google https://www.google.com",
     "font-src 'self'",
