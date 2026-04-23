@@ -3,10 +3,47 @@ import { requireAdmin } from "$lib/auth/middleware";
 import { db } from "$lib/db";
 import { posts, series } from "$lib/db/schemas";
 import { generateUniqueSlug } from "$lib/server/slug";
+import { moveFile } from "$lib/storage/blob";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
 import { error, json } from "@sveltejs/kit";
 import { and, count, desc, eq, inArray, max } from "drizzle-orm";
 import type { RequestHandler } from "./$types";
+
+// After a slug is known, move any images uploaded to posts/_draft/ into posts/{slug}/
+// and rewrite the URLs in the markdown body and cover URL.
+async function relocateDraftImages(
+  slug: string,
+  postBody: string,
+  coverImageUrl: string | null
+): Promise<{ body: string; coverImageUrl: string | null }> {
+  const draftPattern = /(https?:\/\/[^\s)"]+\/posts\/_draft\/[^\s)"]+)/g;
+
+  const allUrls = new Set<string>();
+  for (const [, url] of postBody.matchAll(draftPattern)) allUrls.add(url);
+  if (coverImageUrl?.includes("/posts/_draft/")) allUrls.add(coverImageUrl);
+
+  if (allUrls.size === 0) return { body: postBody, coverImageUrl };
+
+  const urlMap = new Map<string, string>();
+  await Promise.all(
+    [...allUrls].map(async (url) => {
+      const srcKey = new URL(url).pathname.replace(/^\/+/, "");
+      const filename = srcKey.split("/").pop()!;
+      const destKey = `posts/${slug}/${filename}`;
+      const newUrl = await moveFile(srcKey, destKey);
+      urlMap.set(url, newUrl);
+    })
+  );
+
+  let body = postBody;
+  let cover = coverImageUrl;
+  for (const [oldUrl, newUrl] of urlMap) {
+    body = body.split(oldUrl).join(newUrl);
+    if (cover === oldUrl) cover = newUrl;
+  }
+
+  return { body, coverImageUrl: cover };
+}
 
 export const GET: RequestHandler = async ({ url, locals }) => {
   const privileged = isPrivilegedUser(locals.user);
@@ -75,6 +112,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
   const slug = await generateUniqueSlug(title, "post");
 
+  const { body: finalBody, coverImageUrl: finalCoverImageUrl } = await relocateDraftImages(
+    slug,
+    postBody,
+    coverImageUrl || null
+  );
+
   // Auto-assign series order if a series is given but no order provided
   let resolvedOrder: number | null = null;
   if (seriesId) {
@@ -95,7 +138,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       title,
       slug,
       excerpt: excerpt || null,
-      body: postBody,
+      body: finalBody,
       status: status || "draft",
       scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
       publishedAt: status === "published" ? new Date() : null,
@@ -103,7 +146,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       authorId: locals.user!.id,
       seriesId: seriesId || null,
       seriesOrder: resolvedOrder,
-      coverImageUrl: coverImageUrl || null,
+      coverImageUrl: finalCoverImageUrl,
     })
     .returning();
 
