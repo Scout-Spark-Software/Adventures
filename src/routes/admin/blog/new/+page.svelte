@@ -155,12 +155,19 @@
   }
 
   async function cancel() {
+    errorMsg = "";
     canceling = true;
     try {
-      await fetch(`/api/posts/${data.draft.slug}`, { method: "DELETE" });
-      await goto("/admin/blog");
+      const res = await fetch(`/api/posts/${data.draft.slug}`, { method: "DELETE" });
+      if (res.ok) {
+        await goto("/admin/blog");
+      } else {
+        errorMsg = "Failed to delete draft. Please try again.";
+        canceling = false;
+      }
     } catch {
-      await goto("/admin/blog");
+      errorMsg = "Failed to delete draft. Please try again.";
+      canceling = false;
     }
   }
 </script>

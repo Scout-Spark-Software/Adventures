@@ -127,13 +127,21 @@ export async function deleteFile(pathname: string): Promise<void> {
 export async function listFiles(prefix: string): Promise<_Object[]> {
   const client = getS3Client();
   const bucket = getBucketName();
+  const key = toKey(prefix);
+  const all: _Object[] = [];
+  let continuationToken: string | undefined;
 
-  const response = await client.send(
-    new ListObjectsV2Command({
-      Bucket: bucket,
-      Prefix: toKey(prefix),
-    })
-  );
+  do {
+    const response = await client.send(
+      new ListObjectsV2Command({
+        Bucket: bucket,
+        Prefix: key,
+        ContinuationToken: continuationToken,
+      })
+    );
+    all.push(...(response.Contents ?? []));
+    continuationToken = response.IsTruncated ? response.NextContinuationToken : undefined;
+  } while (continuationToken);
 
-  return response.Contents ?? [];
+  return all;
 }

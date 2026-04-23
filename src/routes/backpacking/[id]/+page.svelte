@@ -1,6 +1,6 @@
 <script lang="ts">
   import { browser } from "$app/environment";
-  import { replaceState } from "$app/navigation";
+  import { replaceState, goto } from "$app/navigation";
   import type { PageData } from "./$types";
   import FavoriteButton from "$lib/components/FavoriteButton.svelte";
   import ModerationBadge from "$lib/components/ModerationBadge.svelte";
@@ -33,7 +33,6 @@
   import FileUpload from "$lib/components/FileUpload.svelte";
   import ImageLightbox from "$lib/components/ImageLightbox.svelte";
   import { Flag, X, Trash2, Shield } from "lucide-svelte";
-  import { goto } from "$app/navigation";
 
   export let data: PageData;
 

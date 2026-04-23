@@ -153,13 +153,11 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 
   // Delete all R2 objects stored under posts/{id}/ (stable across slug renames)
   const objects = await listFiles(`posts/${post.id}/`);
-  const deletions = objects
-    .filter((o) => o.Key)
-    .map((o) => deleteFile(o.Key!));
-  const results = await Promise.allSettled(deletions);
+  const keyedObjects = objects.filter((o) => o.Key);
+  const results = await Promise.allSettled(keyedObjects.map((o) => deleteFile(o.Key!)));
   results.forEach((result, i) => {
     if (result.status === "rejected") {
-      console.error(`Failed to delete R2 object ${objects[i].Key}:`, result.reason);
+      console.error(`Failed to delete R2 object ${keyedObjects[i].Key}:`, result.reason);
     }
   });
 
