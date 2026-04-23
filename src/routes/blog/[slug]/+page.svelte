@@ -106,4 +106,7 @@
   :global(.prose h2, .prose h3, .prose h4) {
     scroll-margin-top: 6rem;
   }
+  :global(.prose img) {
+    border-radius: 0.75rem;
+  }
 </style>

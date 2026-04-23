@@ -14,9 +14,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
   validateFile(file, "image");
 
+  const postId = formData.get("postId");
+  if (typeof postId !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(postId)) {
+    throw error(400, "postId must be a valid UUID");
+  }
+
   const timestamp = Date.now();
   const safeName = sanitizeFilename(file.name);
-  const path = `posts/covers/${timestamp}-${safeName}`;
+  const path = `posts/${postId}/${timestamp}-${safeName}`;
 
   const { url } = await uploadFile(file, "image", path);
 

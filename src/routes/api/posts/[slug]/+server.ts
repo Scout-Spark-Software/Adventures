@@ -3,17 +3,21 @@ import { requireAdmin } from "$lib/auth/middleware";
 import { db } from "$lib/db";
 import { posts, series } from "$lib/db/schemas";
 import { generateUniqueSlug } from "$lib/server/slug";
+import { deleteFile, listFiles } from "$lib/storage/blob";
 import { error, json } from "@sveltejs/kit";
 import { asc, eq, max } from "drizzle-orm";
 import type { RequestHandler } from "./$types";
 
-async function getPostBySlug(slug: string) {
-  const [post] = await db.select().from(posts).where(eq(posts.slug, slug)).limit(1);
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+async function getPost(slugOrId: string) {
+  const col = UUID_RE.test(slugOrId) ? posts.id : posts.slug;
+  const [post] = await db.select().from(posts).where(eq(col, slugOrId)).limit(1);
   return post ?? null;
 }
 
 export const GET: RequestHandler = async ({ params, locals }) => {
-  const post = await getPostBySlug(params.slug);
+  const post = await getPost(params.slug);
   if (!post) throw error(404, "Post not found");
 
   const privileged = isPrivilegedUser(locals.user);
@@ -69,7 +73,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 export const PUT: RequestHandler = async ({ params, request, locals }) => {
   requireAdmin({ locals } as any);
 
-  const post = await getPostBySlug(params.slug);
+  const post = await getPost(params.slug);
   if (!post) throw error(404, "Post not found");
 
   const body = await request.json();
@@ -145,10 +149,24 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 export const DELETE: RequestHandler = async ({ params, locals }) => {
   requireAdmin({ locals } as any);
 
-  const post = await getPostBySlug(params.slug);
+  const post = await getPost(params.slug);
   if (!post) throw error(404, "Post not found");
 
   await db.delete(posts).where(eq(posts.id, post.id));
+
+  // R2 cleanup is best-effort — don't let storage errors fail the delete response
+  try {
+    const objects = await listFiles(`posts/${post.id}/`);
+    const keyedObjects = objects.filter((o) => o.Key);
+    const results = await Promise.allSettled(keyedObjects.map((o) => deleteFile(o.Key!)));
+    results.forEach((result, i) => {
+      if (result.status === "rejected") {
+        console.error(`Failed to delete R2 object ${keyedObjects[i].Key}:`, result.reason);
+      }
+    });
+  } catch (e) {
+    console.error(`Failed to clean up R2 objects for post ${post.id}:`, e);
+  }
 
   return json({ success: true });
 };
