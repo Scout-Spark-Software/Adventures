@@ -1,6 +1,18 @@
 import { checkProfanity } from "./profanity-filter";
 
 /**
+ * Converts EditorJS heading text (may contain inline HTML) to a stable anchor ID.
+ */
+export function headingId(text: string): string {
+  return String(text)
+    .replace(/<[^>]+>/g, "")
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
+/**
  * Convert a name to a URL-safe slug.
  * e.g. "Sunset Trail (WA)" → "sunset-trail-wa"
  */

@@ -2,20 +2,12 @@ import { marked } from "marked";
 import sanitizeHtml from "sanitize-html";
 import { error } from "@sveltejs/kit";
 import { workosAuth } from "$lib/server/workos";
+import { headingId } from "$lib/utils/slugify";
 import type { PageServerLoad } from "./$types";
 
 interface Block {
   type: string;
   data: Record<string, unknown>;
-}
-
-function headingId(text: string): string {
-  return String(text)
-    .replace(/<[^>]+>/g, "")
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-");
 }
 
 export const load: PageServerLoad = async ({ params, fetch }) => {
@@ -40,7 +32,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
       if (block.type === "header") {
         const text = String(block.data.text ?? "");
         const level = Number(block.data.level) || 2;
-        if (level >= 2 && level <= 4) {
+        if (level >= 1 && level <= 4) {
           toc.push({ id: headingId(text), text: text.replace(/<[^>]+>/g, ""), level });
         }
       }
@@ -53,7 +45,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
         if (block.type === "header") {
           const text = String(block.data.text ?? "");
           const level = Number(block.data.level) || 2;
-          if (level >= 2 && level <= 4) {
+          if (level >= 1 && level <= 4) {
             toc.push({ id: headingId(text), text: text.replace(/<[^>]+>/g, ""), level });
           }
         }

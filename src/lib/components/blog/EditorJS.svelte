@@ -59,8 +59,8 @@
                 const { url } = await res.json();
                 return { success: 1, file: { url } };
               },
-              async uploadByUrl(url: string) {
-                return { success: 1, file: { url } };
+              async uploadByUrl() {
+                return { success: 0, file: { url: "" } };
               },
             },
           },

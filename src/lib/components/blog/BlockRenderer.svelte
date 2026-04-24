@@ -7,6 +7,7 @@
 
 <script lang="ts">
   import ListItems from "./ListItems.svelte";
+  import { headingId } from "$lib/utils/slugify";
   export let blocks: Block[];
 
   function externalLinks(node: HTMLElement) {
@@ -21,15 +22,6 @@
     const observer = new MutationObserver(patch);
     observer.observe(node, { childList: true, subtree: true });
     return { destroy: () => observer.disconnect() };
-  }
-
-  function headingId(text: string): string {
-    return String(text)
-      .replace(/<[^>]+>/g, "")
-      .toLowerCase()
-      .replace(/[^\w\s-]/g, "")
-      .trim()
-      .replace(/\s+/g, "-");
   }
 </script>
 
