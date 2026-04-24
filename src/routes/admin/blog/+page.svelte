@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { PenSquare, Plus } from "lucide-svelte";
+  import { PenSquare, Plus, Trash2 } from "lucide-svelte";
   import type { PageData } from "./$types";
   export let data: PageData;
 
@@ -17,6 +17,30 @@
       day: "numeric",
       year: "numeric",
     });
+  }
+
+  let confirmPost: typeof data.posts[0] | null = null;
+  let deleting = false;
+  let deleteError = "";
+
+  function promptDelete(post: typeof data.posts[0]) {
+    confirmPost = post;
+    deleteError = "";
+  }
+
+  async function confirmDelete() {
+    if (!confirmPost) return;
+    deleting = true;
+    deleteError = "";
+    const res = await fetch(`/api/posts/${confirmPost.id}`, { method: "DELETE" });
+    deleting = false;
+    if (res.ok) {
+      data.posts = data.posts.filter((p) => p.id !== confirmPost!.id);
+      data.total -= 1;
+      confirmPost = null;
+    } else {
+      deleteError = "Failed to delete post. Please try again.";
+    }
   }
 </script>
 
@@ -95,12 +119,54 @@
             >
               <PenSquare size={16} />
             </a>
+            <button
+              type="button"
+              on:click={() => promptDelete(post)}
+              class="p-2 text-stone-500 hover:text-red-400 transition-colors"
+              title="Delete post"
+            >
+              <Trash2 size={16} />
+            </button>
           </div>
         {/each}
       </div>
     {/if}
   </div>
 </div>
+
+{#if confirmPost}
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <button type="button" class="absolute inset-0 bg-black/60" on:click={() => (confirmPost = null)}></button>
+    <div class="relative w-full max-w-sm bg-stone-900 border border-white/10 rounded-2xl p-6 shadow-2xl">
+      <h2 class="text-base font-bold text-stone-100 mb-2">Delete post?</h2>
+      <p class="text-sm text-stone-400 mb-1">
+        <span class="text-stone-200 font-medium">"{confirmPost.title}"</span> will be permanently deleted along with all its files.
+      </p>
+      <p class="text-xs text-stone-500 mb-5">This cannot be undone.</p>
+      {#if deleteError}
+        <p class="text-xs text-red-400 mb-4">{deleteError}</p>
+      {/if}
+      <div class="flex gap-3">
+        <button
+          type="button"
+          on:click={confirmDelete}
+          disabled={deleting}
+          class="flex-1 py-2 bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white text-sm font-semibold rounded-lg transition-colors"
+        >
+          {deleting ? "Deleting…" : "Delete"}
+        </button>
+        <button
+          type="button"
+          on:click={() => (confirmPost = null)}
+          disabled={deleting}
+          class="flex-1 py-2 bg-white/5 border border-white/10 text-stone-300 text-sm font-semibold rounded-lg hover:bg-white/10 transition-colors"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+{/if}
 
 <style>
   .grain {

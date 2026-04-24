@@ -77,7 +77,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
   if (!post) throw error(404, "Post not found");
 
   const body = await request.json();
-  const { title, excerpt, postBody, status, scheduledAt, featured, seriesId, seriesOrder, coverImageUrl } = body;
+  const { title, excerpt, blocks, status, scheduledAt, featured, seriesId, seriesOrder, coverImageUrl } = body;
 
   if (status === "scheduled" && !scheduledAt && !post.scheduledAt) {
     throw error(400, "scheduledAt is required when status is scheduled");
@@ -125,7 +125,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       title: title ?? post.title,
       slug: newSlug,
       excerpt: excerpt !== undefined ? excerpt : post.excerpt,
-      body: postBody ?? post.body,
+      blocks: blocks !== undefined ? { blocks } : post.blocks,
       status: status ?? post.status,
       scheduledAt:
         scheduledAt !== undefined

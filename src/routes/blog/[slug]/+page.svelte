@@ -2,6 +2,7 @@
   import { page } from "$app/stores";
   import SeriesSidebar from "$lib/components/blog/SeriesSidebar.svelte";
   import TableOfContents from "$lib/components/blog/TableOfContents.svelte";
+  import BlockRenderer from "$lib/components/blog/BlockRenderer.svelte";
   import type { PageData } from "./$types";
   export let data: PageData;
 
@@ -74,9 +75,13 @@
             class="w-full rounded-xl object-cover max-h-80 mb-8 border border-stone-100"
           />
         {/if}
-        <div class="prose prose-stone max-w-none">
-          {@html data.content}
-        </div>
+        {#if data.blocks && data.blocks.length > 0}
+          <BlockRenderer blocks={data.blocks} />
+        {:else if data.content}
+          <div class="prose prose-stone max-w-none">
+            {@html data.content}
+          </div>
+        {/if}
       </article>
 
       <!-- Sidebar: series nav + table of contents -->
