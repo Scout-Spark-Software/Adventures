@@ -1,12 +1,12 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
+  import EditorJS from "$lib/components/blog/EditorJS.svelte";
   import type { PageData } from "./$types";
   export let data: PageData;
 
   let title = "";
   let excerpt = "";
-  let body = "";
   let status = "draft";
   let scheduledAt = "";
   let featured = false;
@@ -14,57 +14,17 @@
   let seriesOrder = "";
   let coverImageUrl = "";
   let coverUploading = false;
-  let inlineImageUploading = false;
   let saving = false;
   let deleting = false;
   let errorMsg = "";
-  let renderedPreview = "";
+  let initialEditorData: Record<string, unknown> | null = null;
 
-  // Split-pane scroll sync
-  let editorEl: HTMLTextAreaElement;
-  let previewEl: HTMLDivElement;
-  let syncing = false;
-
-  function onEditorScroll() {
-    if (syncing) return;
-    syncing = true;
-    requestAnimationFrame(() => {
-      if (editorEl && previewEl) {
-        const ratio =
-          editorEl.scrollTop / Math.max(1, editorEl.scrollHeight - editorEl.clientHeight);
-        previewEl.scrollTop = ratio * Math.max(0, previewEl.scrollHeight - previewEl.clientHeight);
-      }
-      syncing = false;
-    });
-  }
-
-  function onPreviewScroll() {
-    if (syncing) return;
-    syncing = true;
-    requestAnimationFrame(() => {
-      if (editorEl && previewEl) {
-        const ratio =
-          previewEl.scrollTop / Math.max(1, previewEl.scrollHeight - previewEl.clientHeight);
-        editorEl.scrollTop = ratio * Math.max(0, editorEl.scrollHeight - editorEl.clientHeight);
-      }
-      syncing = false;
-    });
-  }
-
-  // Reactive preview — update on every body change
-  $: if (body !== undefined) {
-    import("marked").then(({ marked }) => {
-      Promise.resolve(marked(body)).then((html) => {
-        renderedPreview = html as string;
-      });
-    });
-  }
+  let editorComponent: EditorJS;
 
   onMount(() => {
     const p = data.post;
     title = p.title;
     excerpt = p.excerpt ?? "";
-    body = p.body;
     status = p.status;
     featured = p.featured;
     seriesId = p.seriesId ?? "";
@@ -72,6 +32,15 @@
     coverImageUrl = p.coverImageUrl ?? "";
     if (p.scheduledAt) {
       scheduledAt = new Date(p.scheduledAt).toISOString().slice(0, 16);
+    }
+    if (p.blocks) {
+      initialEditorData = p.blocks as Record<string, unknown>;
+    } else if (p.body) {
+      try {
+        initialEditorData = JSON.parse(p.body);
+      } catch {
+        // legacy markdown — leave initialEditorData null
+      }
     }
   });
 
@@ -88,37 +57,6 @@
       const sd = await res.json();
       const maxOrder = sd.posts.reduce((m: number, p: any) => Math.max(m, p.seriesOrder ?? 0), 0);
       seriesOrder = String(maxOrder + 1);
-    }
-  }
-
-  async function onInlineImageChange(e: Event) {
-    const input = e.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
-    inlineImageUploading = true;
-    try {
-      const fd = new FormData();
-      fd.append("file", file);
-      fd.append("postId", data.post.id);
-      const res = await fetch("/api/posts/cover", { method: "POST", body: fd });
-      if (res.ok) {
-        const d = await res.json();
-        const md = `![image](${d.url})`;
-        const start = editorEl.selectionStart ?? body.length;
-        const end = editorEl.selectionEnd ?? body.length;
-        body = body.slice(0, start) + md + body.slice(end);
-        requestAnimationFrame(() => {
-          editorEl.selectionStart = editorEl.selectionEnd = start + md.length;
-          editorEl.focus();
-        });
-      } else {
-        errorMsg = "Failed to upload image";
-      }
-    } catch {
-      errorMsg = "Failed to upload image";
-    } finally {
-      inlineImageUploading = false;
-      input.value = "";
     }
   }
 
@@ -143,10 +81,13 @@
 
   async function save() {
     if (!title.trim()) { errorMsg = "Title is required"; return; }
-    if (!body.trim()) { errorMsg = "Body is required"; return; }
     if (status === "scheduled" && !scheduledAt) { errorMsg = "Schedule date is required"; return; }
     errorMsg = "";
     saving = true;
+
+    const editorData = await editorComponent.getData() as { blocks?: unknown[] };
+    const blocks = editorData.blocks ?? [];
+    if (blocks.length === 0) { errorMsg = "Body is required"; saving = false; return; }
 
     const res = await fetch(`/api/posts/${data.post.id}`, {
       method: "PUT",
@@ -154,7 +95,7 @@
       body: JSON.stringify({
         title,
         excerpt: excerpt || null,
-        postBody: body,
+        blocks,
         status,
         scheduledAt: scheduledAt || null,
         featured,
@@ -354,53 +295,12 @@
         </div>
       </div>
 
-      <!-- Body — split pane editor -->
+      <!-- Body — Editor.js -->
       <div>
-        <label class="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-2" for="body">
-          Body <span class="text-stone-600 normal-case font-normal">(Markdown)</span>
-        </label>
-        <div class="border border-white/10 rounded-lg overflow-hidden">
-          <!-- Panel headers -->
-          <div class="grid grid-cols-2 border-b border-white/10">
-            <div class="px-4 py-2 border-r border-white/10 bg-white/[0.03] flex items-center justify-between">
-              <span class="text-xs font-semibold text-stone-500 uppercase tracking-wider">Markdown</span>
-              <label class="flex items-center gap-1.5 text-xs text-stone-500 hover:text-stone-300 cursor-pointer transition-colors {inlineImageUploading ? 'opacity-50 pointer-events-none' : ''}">
-                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                {inlineImageUploading ? "Uploading…" : "Insert image"}
-                <input type="file" accept="image/jpeg,image/jpg,image/png,image/webp" on:change={onInlineImageChange} class="sr-only" />
-              </label>
-            </div>
-            <div class="px-4 py-2 bg-white/[0.02]">
-              <span class="text-xs font-semibold text-stone-500 uppercase tracking-wider">Preview</span>
-            </div>
-          </div>
-          <!-- Panels -->
-          <div class="grid grid-cols-2 h-[600px]">
-            <textarea
-              id="body"
-              bind:this={editorEl}
-              bind:value={body}
-              on:scroll={onEditorScroll}
-              class="font-mono text-sm bg-white/5 border-r border-white/10 px-4 py-4 text-stone-100 placeholder-stone-600 focus:outline-none resize-none overflow-y-auto leading-relaxed"
-              placeholder="Write in Markdown…"
-            ></textarea>
-            <div
-              bind:this={previewEl}
-              on:scroll={onPreviewScroll}
-              class="overflow-y-auto px-4 py-4 bg-white/[0.02]"
-            >
-              {#if renderedPreview}
-                <div class="prose prose-invert prose-stone max-w-none">
-                  {@html renderedPreview}
-                </div>
-              {:else}
-                <p class="text-stone-600 text-sm italic">Start writing to see the preview…</p>
-              {/if}
-            </div>
-          </div>
-        </div>
+        <span id="body-editor-label" class="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-2">
+          Body
+        </span>
+        <EditorJS bind:this={editorComponent} postId={data.post.id} initialData={initialEditorData} ariaLabelledby="body-editor-label" />
       </div>
 
       <!-- Actions -->
