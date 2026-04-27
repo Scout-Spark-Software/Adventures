@@ -125,7 +125,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       title: title ?? post.title,
       slug: newSlug,
       excerpt: excerpt !== undefined ? excerpt : post.excerpt,
-      blocks: blocks !== undefined ? { blocks } : post.blocks,
+      blocks: blocks !== undefined ? (Array.isArray(blocks) ? { blocks } : post.blocks) : post.blocks,
       status: status ?? post.status,
       scheduledAt:
         scheduledAt !== undefined

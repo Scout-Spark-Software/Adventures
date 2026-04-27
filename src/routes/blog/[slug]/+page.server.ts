@@ -10,6 +10,41 @@ interface Block {
   data: Record<string, unknown>;
 }
 
+const INLINE_ALLOWLIST: sanitizeHtml.IOptions = {
+  allowedTags: ["b", "strong", "i", "em", "u", "s", "del", "a", "code", "mark", "span", "br"],
+  allowedAttributes: { a: ["href", "target", "rel"], span: ["class"], code: [] },
+};
+
+function sanitizeBlockText(html: string): string {
+  return sanitizeHtml(html, INLINE_ALLOWLIST);
+}
+
+function sanitizeBlock(block: Block): Block {
+  const { type, data } = block;
+  if (type === "paragraph" || type === "quote") {
+    return { type, data: { ...data, text: sanitizeBlockText(String(data.text ?? "")) } };
+  }
+  if (type === "header") {
+    return { type, data: { ...data, text: sanitizeBlockText(String(data.text ?? "")) } };
+  }
+  if (type === "list" && Array.isArray(data.items)) {
+    const sanitizeItem = (item: unknown): unknown => {
+      if (typeof item === "string") return sanitizeBlockText(item);
+      if (item && typeof item === "object") {
+        const it = item as Record<string, unknown>;
+        return {
+          ...it,
+          content: sanitizeBlockText(String(it.content ?? "")),
+          items: Array.isArray(it.items) ? it.items.map(sanitizeItem) : it.items,
+        };
+      }
+      return item;
+    };
+    return { type, data: { ...data, items: data.items.map(sanitizeItem) } };
+  }
+  return block;
+}
+
 export const load: PageServerLoad = async ({ params, fetch }) => {
   const res = await fetch(`/api/posts/${params.slug}`);
   if (res.status === 404) throw error(404, "Post not found");
@@ -26,8 +61,8 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
     ? (post.blocks as { blocks?: Block[] }).blocks ?? []
     : null;
 
-  if (rawBlocks) {
-    blocks = rawBlocks;
+  if (Array.isArray(rawBlocks) && rawBlocks.length > 0) {
+    blocks = rawBlocks.map(sanitizeBlock);
     for (const block of blocks) {
       if (block.type === "header") {
         const text = String(block.data.text ?? "");
@@ -40,7 +75,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
   } else if (post.body) {
     try {
       const parsed = JSON.parse(post.body);
-      blocks = parsed.blocks ?? [];
+      blocks = (parsed.blocks ?? []).map(sanitizeBlock);
       for (const block of blocks) {
         if (block.type === "header") {
           const text = String(block.data.text ?? "");

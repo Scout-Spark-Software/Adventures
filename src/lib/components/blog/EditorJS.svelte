@@ -3,9 +3,11 @@
 
   export let postId: string;
   export let initialData: Record<string, unknown> | null = null;
+  export let ariaLabelledby: string | undefined = undefined;
 
   let editorContainer: HTMLDivElement;
   let editor: import("@editorjs/editorjs").default | null = null;
+  let destroyed = false;
 
   onMount(async () => {
     const [
@@ -25,6 +27,8 @@
       import("@editorjs/image"),
       import("@editorjs/delimiter"),
     ]);
+
+    if (destroyed) return;
 
     editor = new EditorJS({
       holder: editorContainer,
@@ -71,6 +75,7 @@
   });
 
   onDestroy(() => {
+    destroyed = true;
     editor?.destroy();
   });
 
@@ -82,6 +87,7 @@
 
 <div
   bind:this={editorContainer}
+  aria-labelledby={ariaLabelledby}
   class="editorjs-wrapper min-h-[400px] bg-white rounded-lg py-2"
 ></div>
 

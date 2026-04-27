@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   const { title, excerpt, blocks, status, scheduledAt, featured, seriesId, seriesOrder, coverImageUrl } = body;
 
   if (!title) throw error(400, "Title is required");
-  if (!blocks || !Array.isArray(blocks) || blocks.length === 0) throw error(400, "Body is required");
+  if (!blocks || !Array.isArray(blocks) || blocks.length === 0) throw error(400, "Blocks are required");
   if (status === "scheduled" && !scheduledAt) {
     throw error(400, "scheduledAt is required when status is scheduled");
   }

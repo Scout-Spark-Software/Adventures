@@ -32,14 +32,19 @@
     if (!confirmPost) return;
     deleting = true;
     deleteError = "";
-    const res = await fetch(`/api/posts/${confirmPost.id}`, { method: "DELETE" });
-    deleting = false;
-    if (res.ok) {
-      data.posts = data.posts.filter((p) => p.id !== confirmPost!.id);
-      data.total -= 1;
-      confirmPost = null;
-    } else {
+    try {
+      const res = await fetch(`/api/posts/${confirmPost.id}`, { method: "DELETE" });
+      if (res.ok) {
+        data.posts = data.posts.filter((p: (typeof data.posts)[0]) => p.id !== confirmPost!.id);
+        data.total -= 1;
+        confirmPost = null;
+      } else {
+        deleteError = "Failed to delete post. Please try again.";
+      }
+    } catch {
       deleteError = "Failed to delete post. Please try again.";
+    } finally {
+      deleting = false;
     }
   }
 </script>
@@ -136,9 +141,9 @@
 
 {#if confirmPost}
   <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
-    <button type="button" class="absolute inset-0 bg-black/60" on:click={() => (confirmPost = null)}></button>
-    <div class="relative w-full max-w-sm bg-stone-900 border border-white/10 rounded-2xl p-6 shadow-2xl">
-      <h2 class="text-base font-bold text-stone-100 mb-2">Delete post?</h2>
+    <button type="button" aria-label="Close delete confirmation dialog" class="absolute inset-0 bg-black/60" on:click={() => (confirmPost = null)}></button>
+    <div role="dialog" aria-modal="true" aria-labelledby="delete-post-dialog-title" class="relative w-full max-w-sm bg-stone-900 border border-white/10 rounded-2xl p-6 shadow-2xl">
+      <h2 id="delete-post-dialog-title" class="text-base font-bold text-stone-100 mb-2">Delete post?</h2>
       <p class="text-sm text-stone-400 mb-1">
         <span class="text-stone-200 font-medium">"{confirmPost.title}"</span> will be permanently deleted along with all its files.
       </p>

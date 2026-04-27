@@ -275,10 +275,10 @@
 
       <!-- Body — Editor.js -->
       <div>
-        <span class="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-2">
+        <span id="post-body-label" class="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-2">
           Body
         </span>
-        <EditorJS bind:this={editorComponent} postId={data.draft.id} />
+        <EditorJS bind:this={editorComponent} postId={data.draft.id} ariaLabelledby="post-body-label" />
       </div>
 
       <!-- Actions -->

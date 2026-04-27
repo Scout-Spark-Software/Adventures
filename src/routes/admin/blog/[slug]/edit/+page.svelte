@@ -297,10 +297,10 @@
 
       <!-- Body — Editor.js -->
       <div>
-        <span class="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-2">
+        <span id="body-editor-label" class="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-2">
           Body
         </span>
-        <EditorJS bind:this={editorComponent} postId={data.post.id} initialData={initialEditorData} />
+        <EditorJS bind:this={editorComponent} postId={data.post.id} initialData={initialEditorData} ariaLabelledby="body-editor-label" />
       </div>
 
       <!-- Actions -->
