@@ -35,7 +35,7 @@ export async function getUserRole(userId: string): Promise<UserRole> {
  * This function makes an async call to WorkOS which is unnecessary since the role
  * is already available in `event.locals.user.role`.
  */
-export async function isAdmin(userId: string): Promise<boolean> {
+async function isAdmin(userId: string): Promise<boolean> {
   const role = await getUserRole(userId);
   return role === "admin";
 }
@@ -44,7 +44,7 @@ export async function isAdmin(userId: string): Promise<boolean> {
  * @deprecated Use `event.locals.user.role === 'admin'`
  * in route handlers instead. For route-level checks, use `requireAdmin()` from `$lib/auth/middleware`.
  */
-export async function isModerator(userId: string): Promise<boolean> {
+async function isModerator(userId: string): Promise<boolean> {
   const role = await getUserRole(userId);
   return role === "admin";
 }

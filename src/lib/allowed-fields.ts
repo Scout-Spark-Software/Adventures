@@ -1,6 +1,6 @@
 /** Fields that can be altered via the alterations API, scoped per entity type. */
 
-export const HIKE_ALTERABLE_FIELDS = [
+const HIKE_ALTERABLE_FIELDS = [
   "name",
   "description",
   "councilId",
@@ -20,7 +20,7 @@ export const HIKE_ALTERABLE_FIELDS = [
   "dogFriendly",
 ] as const;
 
-export const CAMPING_SITE_ALTERABLE_FIELDS = [
+const CAMPING_SITE_ALTERABLE_FIELDS = [
   "name",
   "description",
   "councilId",
@@ -38,7 +38,7 @@ export const CAMPING_SITE_ALTERABLE_FIELDS = [
   "firePolicy",
 ] as const;
 
-export const BACKPACKING_ALTERABLE_FIELDS = [
+const BACKPACKING_ALTERABLE_FIELDS = [
   "name",
   "description",
   "councilId",
