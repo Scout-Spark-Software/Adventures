@@ -31,7 +31,7 @@
   <ol class="space-y-0.5">
     {#each toc as { id, text, level } (id)}
       {@const isActive = id === activeId}
-      <li style="padding-left: {(level - 2) * 12}px">
+      <li style="padding-left: {(level - 1) * 12}px">
         <a
           href="#{id}"
           class="block py-1 px-2 rounded text-xs leading-snug transition-colors {isActive
