@@ -73,7 +73,7 @@
     { href: "/hikes", label: "Hikes", icon: MountainIcon, activeColor: "emerald" },
     { href: "/camping", label: "Camping Sites", icon: Tent, activeColor: "blue" },
     { href: "/backpacking", label: "Backpacking", icon: Backpack, activeColor: "amber" },
-    // { href: "/blog", label: "Blog", icon: BookOpen, activeColor: "indigo" },
+    { href: "/blog", label: "Blog", icon: BookOpen, activeColor: "indigo" },
   ];
 
   const activeColors: Record<
