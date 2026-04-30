@@ -24,6 +24,8 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
     throw redirect(303, "/login?error=auth_failed");
   }
 
+  const isSignUp = !!expectedSignUpState && returnedState === expectedSignUpState;
+
   try {
     const { accessToken, refreshToken } = await workosAuth.authenticateWithCode(code);
 
@@ -44,7 +46,8 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
       maxAge: 60 * 60 * 24 * 7, // 7 days
     });
 
-    throw redirect(303, "/");
+    const destination = isSignUp ? "/setup" : "/";
+    throw redirect(303, destination);
   } catch (err) {
     // Re-throw SvelteKit redirects
     if (typeof err === "object" && err !== null && "status" in err && "location" in err) {
