@@ -3,6 +3,7 @@
   import { replaceState, goto } from "$app/navigation";
   import type { PageData } from "./$types";
   import FavoriteButton from "$lib/components/FavoriteButton.svelte";
+  import ShareButton from "$lib/components/ShareButton.svelte";
   import ModerationBadge from "$lib/components/ModerationBadge.svelte";
   import Badge from "$lib/components/Badge.svelte";
   import Card from "$lib/components/Card.svelte";
@@ -265,7 +266,8 @@
     <meta name="geo.position" content="{data.address.latitude};{data.address.longitude}" />
     <meta name="ICBM" content="{data.address.latitude}, {data.address.longitude}" />
   {/if}
-  {@html `<script type="application/ld+json">${JSON.stringify({
+  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+  {@html `<${'script'} type="application/ld+json">${JSON.stringify({
     "@context": "https://schema.org",
     "@type": "TouristAttraction",
     "name": data.backpacking.name,
@@ -295,7 +297,7 @@
         "worstRating": "1",
       },
     } : {}),
-  })}</script>`}
+  })}</${'script'}>`}
 </svelte:head>
 
 <div class="min-h-screen bg-gray-100">
@@ -309,6 +311,7 @@
         <ChevronLeft size={24} class="text-indigo-600" />
       </a>
       <div class="flex items-center gap-2">
+        <ShareButton title={data.backpacking.name} description={data.backpacking.description ?? ""} />
         <FavoriteButton backpackingId={data.backpacking.id} userId={data.userId} />
         <ModerationBadge status={data.backpacking.status} userRole={typedUserRole} />
         {#if isAdmin && data.backpacking.status === "rejected"}

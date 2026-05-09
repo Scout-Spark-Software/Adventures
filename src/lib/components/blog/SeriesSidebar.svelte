@@ -19,7 +19,7 @@
   <p class="text-sm font-bold text-stone-900 mb-4">{seriesName}</p>
 
   <ol class="space-y-1">
-    {#each seriesPosts as post}
+    {#each seriesPosts as post (post.slug)}
       {@const isCurrent = post.slug === currentSlug}
       <li>
         {#if isCurrent}

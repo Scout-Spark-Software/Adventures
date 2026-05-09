@@ -79,6 +79,7 @@
           <BlockRenderer blocks={data.blocks} />
         {:else if data.content}
           <div class="prose prose-stone max-w-none">
+            <!-- eslint-disable-next-line svelte/no-at-html-tags -->
             {@html data.content}
           </div>
         {/if}

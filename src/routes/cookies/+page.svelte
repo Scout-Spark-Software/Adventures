@@ -65,6 +65,7 @@
     <div class="space-y-10">
       <!-- Termly cookie policy legal content -->
       <div class="termly-policy">
+        <!-- eslint-disable-next-line svelte/no-at-html-tags -->
         {@html cookieHtml}
       </div>
 
