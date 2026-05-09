@@ -262,7 +262,8 @@
     <meta name="geo.position" content="{data.address.latitude};{data.address.longitude}" />
     <meta name="ICBM" content="{data.address.latitude}, {data.address.longitude}" />
   {/if}
-  {@html `<script type="application/ld+json">${JSON.stringify({
+  <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+  {@html `<${'script'} type="application/ld+json">${JSON.stringify({
     "@context": "https://schema.org",
     "@type": "TouristAttraction",
     "name": data.hike.name,
@@ -292,7 +293,7 @@
         "worstRating": "1",
       },
     } : {}),
-  })}</script>`}
+  })}</${'script'}>`}
 </svelte:head>
 
 <div class="min-h-screen bg-gray-100">

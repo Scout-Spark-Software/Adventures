@@ -64,26 +64,20 @@ const JWKS = new Proxy(function () {} as unknown as WorkosInstance["JWKS"], {
 export const workosAuth = {
   // Sign up new user in the organization
   async signUp(email: string, password: string, firstName?: string, lastName?: string) {
-    try {
-      // Create user (email verification required)
-      const user = await workos.userManagement.createUser({
-        email,
-        password,
-        firstName,
-        lastName,
-        emailVerified: false, // Require email verification
-      });
+    const user = await workos.userManagement.createUser({
+      email,
+      password,
+      firstName,
+      lastName,
+      emailVerified: false,
+    });
 
-      // Add user to the organization as a member
-      await workos.userManagement.createOrganizationMembership({
-        userId: user.id,
-        organizationId: workosConfig.organizationId,
-      });
+    await workos.userManagement.createOrganizationMembership({
+      userId: user.id,
+      organizationId: workosConfig.organizationId,
+    });
 
-      return user;
-    } catch (error) {
-      throw error;
-    }
+    return user;
   },
 
   // Sign in existing user

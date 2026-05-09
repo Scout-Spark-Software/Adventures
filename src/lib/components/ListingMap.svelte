@@ -124,7 +124,7 @@
 <!-- Tile layer toggle -->
 <div class="mt-1.5 flex justify-end">
   <div role="group" aria-label="Map tile layer" class="flex rounded-md overflow-hidden border border-gray-200 shadow-sm">
-    {#each TILE_LAYERS as layer}
+    {#each TILE_LAYERS as layer (layer.id)}
       <button
         type="button"
         aria-pressed={activeLayerId === layer.id}

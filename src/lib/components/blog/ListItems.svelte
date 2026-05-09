@@ -16,7 +16,7 @@
   }
 </script>
 
-{#each items as raw}
+{#each items as raw, i (i)}
   {@const item = toItem(raw)}
   {#if style === "checklist"}
     <li class="flex items-start gap-2.5 text-stone-800">
@@ -27,10 +27,12 @@
           </svg>
         {/if}
       </span>
+      <!-- eslint-disable-next-line svelte/no-at-html-tags -->
       <span class={item.meta?.checked ? "line-through text-stone-400" : ""}>{@html item.content ?? ""}</span>
     </li>
   {:else}
     <li>
+      <!-- eslint-disable-next-line svelte/no-at-html-tags -->
       {@html item.content ?? ""}
       {#if item.items && item.items.length > 0}
         {#if style === "ordered"}

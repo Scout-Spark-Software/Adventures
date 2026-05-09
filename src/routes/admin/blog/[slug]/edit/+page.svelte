@@ -224,7 +224,7 @@
                   class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-stone-100 focus:outline-none focus:border-emerald-500/50 transition-colors"
                 >
                   <option value="">None</option>
-                  {#each data.allSeries as s}
+                  {#each data.allSeries as s (s.id)}
                     <option value={s.id}>{s.name}</option>
                   {/each}
                 </select>

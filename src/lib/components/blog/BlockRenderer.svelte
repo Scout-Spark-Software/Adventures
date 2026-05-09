@@ -26,19 +26,24 @@
 </script>
 
 <div use:externalLinks>
-{#each blocks as block}
+{#each blocks as block, i (block.id ?? i)}
   {#if block.type === "paragraph"}
+    <!-- eslint-disable-next-line svelte/no-at-html-tags -->
     <p class="mb-4 text-stone-800 leading-relaxed">{@html block.data.text}</p>
   {:else if block.type === "header"}
     {@const id = headingId(String(block.data.text))}
     {@const level = Number(block.data.level) || 2}
     {#if level === 1}
+      <!-- eslint-disable-next-line svelte/no-at-html-tags -->
       <h1 {id} class="text-3xl font-extrabold text-stone-900 mt-12 mb-4 scroll-mt-20">{@html block.data.text}</h1>
     {:else if level === 2}
+      <!-- eslint-disable-next-line svelte/no-at-html-tags -->
       <h2 {id} class="text-2xl font-bold text-stone-900 mt-10 mb-4 scroll-mt-20">{@html block.data.text}</h2>
     {:else if level === 3}
+      <!-- eslint-disable-next-line svelte/no-at-html-tags -->
       <h3 {id} class="text-xl font-bold text-stone-900 mt-8 mb-3 scroll-mt-20">{@html block.data.text}</h3>
     {:else if level === 4}
+      <!-- eslint-disable-next-line svelte/no-at-html-tags -->
       <h4 {id} class="text-lg font-semibold text-stone-900 mt-6 mb-2 scroll-mt-20">{@html block.data.text}</h4>
     {/if}
   {:else if block.type === "list"}
@@ -71,6 +76,7 @@
     </figure>
   {:else if block.type === "quote"}
     <blockquote class="my-6 border-l-4 border-emerald-500 pl-5 py-1">
+      <!-- eslint-disable-next-line svelte/no-at-html-tags -->
       <p class="text-stone-700 italic text-lg leading-relaxed">{@html block.data.text}</p>
       {#if block.data.caption}
         <cite class="block mt-2 text-sm text-stone-500 not-italic">— {block.data.caption}</cite>

@@ -68,6 +68,7 @@
     <div class="space-y-10">
       <!-- Termly privacy policy legal content -->
       <div class="termly-policy">
+        <!-- eslint-disable-next-line svelte/no-at-html-tags -->
         {@html privacyHtml}
       </div>
 

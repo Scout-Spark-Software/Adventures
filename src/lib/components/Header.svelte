@@ -137,7 +137,7 @@
         </div>
         <!-- Desktop nav links (md+) -->
         <div class="hidden md:ml-8 md:flex md:space-x-1">
-          {#each navLinks as link}
+          {#each navLinks as link (link.href)}
             {@const isActive = currentPath.startsWith(link.href)}
             {@const colors = activeColors[link.activeColor]}
             <a
@@ -291,7 +291,7 @@
     {isDark ? 'bg-stone-950/97 border-white/10' : 'bg-white border-slate-200'}"
   >
     <div class="max-w-7xl mx-auto px-4 py-3 space-y-1">
-      {#each navLinks as link}
+      {#each navLinks as link (link.href)}
         {@const isActive = currentPath.startsWith(link.href)}
         {@const colors = activeColors[link.activeColor]}
         <a

@@ -105,7 +105,7 @@
         <p class="text-stone-500 text-sm">No series yet.</p>
       {/if}
 
-      {#each data.series as s}
+      {#each data.series as s (s.id)}
         <div class="bg-white/5 border border-white/10 rounded-xl px-5 py-4">
           {#if editingId === s.id}
             <!-- Inline edit form -->
