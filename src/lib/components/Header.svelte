@@ -32,7 +32,7 @@
     currentPath === "/essentials" ||
     currentPath === "/login" ||
     currentPath === "/signup" ||
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+     
     currentPath.startsWith("/admin");
 
   let scrolled = false;

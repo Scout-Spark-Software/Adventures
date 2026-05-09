@@ -3,6 +3,7 @@
   import { replaceState, invalidateAll, goto } from "$app/navigation";
   import type { PageData } from "./$types";
   import FavoriteButton from "$lib/components/FavoriteButton.svelte";
+  import ShareButton from "$lib/components/ShareButton.svelte";
   import ModerationBadge from "$lib/components/ModerationBadge.svelte";
   import Badge from "$lib/components/Badge.svelte";
   import Card from "$lib/components/Card.svelte";
@@ -305,6 +306,7 @@
         <ChevronLeft size={24} class="text-indigo-600" />
       </a>
       <div class="flex items-center gap-2">
+        <ShareButton title={data.hike.name} description={data.hike.description ?? ""} />
         <FavoriteButton hikeId={data.hike.id} userId={data.userId} />
         <ModerationBadge status={data.hike.status} userRole={typedUserRole} />
         {#if isAdmin && data.hike.status === "rejected"}

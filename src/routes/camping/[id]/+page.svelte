@@ -3,6 +3,7 @@
   import { replaceState, goto } from "$app/navigation";
   import type { PageData } from "./$types";
   import FavoriteButton from "$lib/components/FavoriteButton.svelte";
+  import ShareButton from "$lib/components/ShareButton.svelte";
   import ModerationBadge from "$lib/components/ModerationBadge.svelte";
   import Badge from "$lib/components/Badge.svelte";
   import Tabs from "$lib/components/Tabs.svelte";
@@ -312,6 +313,7 @@
         <ChevronLeft size={24} class="text-indigo-600" />
       </a>
       <div class="flex items-center gap-2">
+        <ShareButton title={data.campingSite.name} description={data.campingSite.description ?? ""} />
         <FavoriteButton campingSiteId={data.campingSite.id} userId={data.userId} />
         <ModerationBadge status={data.campingSite.status} userRole={typedUserRole} />
         {#if isAdmin && data.campingSite.status === "rejected"}

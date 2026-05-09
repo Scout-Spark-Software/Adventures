@@ -1,4 +1,4 @@
-import { test as base, expect } from '@playwright/test';
+import { test as base } from '@playwright/test';
 
 /**
  * Extended test fixture that blocks third-party scripts which interfere with tests:
