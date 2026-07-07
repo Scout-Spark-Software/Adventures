@@ -2,6 +2,12 @@ import type { Handle } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
 import { workosAuth } from "$lib/server/workos";
 import { SECURITY_HEADERS } from "$lib/security";
+import {
+  checkRateLimit,
+  resolveTier,
+  TIER_PERIOD_SECONDS,
+  type Tier,
+} from "$lib/server/rate-limit";
 
 const authHandle: Handle = async ({ event, resolve }) => {
   // Get the access token from cookies
@@ -170,7 +176,7 @@ const authHandle: Handle = async ({ event, resolve }) => {
   return resolve(event);
 };
 
-const securityHandle: Handle = async ({ event, resolve }) => {
+export const securityHandle: Handle = async ({ event, resolve }) => {
   const response = await resolve(event);
   for (const [header, value] of Object.entries(SECURITY_HEADERS)) {
     response.headers.set(header, value);
@@ -187,4 +193,30 @@ const securityHandle: Handle = async ({ event, resolve }) => {
   return response;
 };
 
-export const handle: Handle = sequence(authHandle, securityHandle);
+// Runs last in the sequence so a short-circuited 429 still passes back
+// out through securityHandle's header-setting code on its way out
+// (SvelteKit's sequence() nests each handle inside the previous one).
+export const rateLimitHandle: Handle = async ({ event, resolve }) => {
+  if (!event.route.id?.startsWith("/api/")) {
+    return resolve(event);
+  }
+
+  const tier = resolveTier(event.route.id, event.request.method);
+  const { allowed } = await checkRateLimit(event, tier);
+
+  if (!allowed) {
+    const periodSeconds =
+      tier === "exempt" ? 60 : TIER_PERIOD_SECONDS[tier as Exclude<Tier, "exempt">];
+    return new Response(JSON.stringify({ error: "Too Many Requests" }), {
+      status: 429,
+      headers: {
+        "Content-Type": "application/json",
+        "Retry-After": String(periodSeconds),
+      },
+    });
+  }
+
+  return resolve(event);
+};
+
+export const handle: Handle = sequence(authHandle, securityHandle, rateLimitHandle);

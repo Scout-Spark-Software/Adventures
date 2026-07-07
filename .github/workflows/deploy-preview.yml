@@ -10,7 +10,7 @@ env:
 
 jobs:
   test:
-    name: Test
+    name: Unit Tests
     runs-on: ubuntu-latest
     environment: preview
     needs: migrate
@@ -31,36 +31,19 @@ jobs:
       - name: Run unit tests
         run: npm run test:unit
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+  e2e:
+    name: E2E Tests (local dev server)
+    needs: migrate
+    uses: ./.github/workflows/e2e-tests.yml
+    secrets: inherit
 
-      - name: Run E2E tests
-        run: npm run test:e2e:ci
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          WORKOS_API_KEY: ${{ secrets.WORKOS_API_KEY }}
-          WORKOS_CLIENT_ID: ${{ secrets.WORKOS_CLIENT_ID }}
-          WORKOS_ORGANIZATION_ID: ${{ secrets.WORKOS_ORGANIZATION_ID }}
-          WORKOS_COOKIE_PASSWORD: ${{ secrets.WORKOS_COOKIE_PASSWORD }}
-          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
-          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
-          NODE_ENV: preview
-          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
-          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
-          TEST_ADMIN_EMAIL: ${{ secrets.TEST_ADMIN_EMAIL }}
-          TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
-          TEST_HIKE_ID: ${{ secrets.TEST_HIKE_ID }}
-          TEST_CAMPING_ID: ${{ secrets.TEST_CAMPING_ID }}
-
-      - name: Upload Playwright report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 7
+  e2e-deployed:
+    name: E2E Tests (deployed preview)
+    needs: deploy
+    uses: ./.github/workflows/e2e-tests.yml
+    secrets: inherit
+    with:
+      base-url: https://preview.adventurespark.org
 
   migrate:
     name: Run DB migrations
@@ -86,7 +69,7 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
   deploy:
-    name: Deploy to Cloudflare Pages (preview)
+    name: Deploy to Cloudflare Workers (preview)
     runs-on: ubuntu-latest
     environment: preview
     needs: [migrate]
@@ -109,8 +92,8 @@ jobs:
         env:
           NODE_ENV: preview
 
-      - name: Deploy to Cloudflare Pages
-        run: npx wrangler pages deploy .svelte-kit/cloudflare --project-name adventure-spark --branch preview
+      - name: Deploy to Cloudflare Workers
+        run: npx wrangler deploy --env preview
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}

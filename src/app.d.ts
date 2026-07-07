@@ -20,9 +20,10 @@ declare global {
         role: "admin" | "member";
       } | null;
     }
+    interface Platform {
+      env: Env;
+    }
     // interface Error {}
-    // interface PageData {}
-    // interface Platform {}
   }
 }
 

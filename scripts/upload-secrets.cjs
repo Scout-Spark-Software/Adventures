@@ -24,13 +24,16 @@ for (const line of fs.readFileSync(envFile, "utf8").split("\n")) {
 }
 
 fs.writeFileSync("secrets.json", JSON.stringify(obj, null, 2));
-console.log(`Uploading ${Object.keys(obj).length} secrets to Cloudflare Pages (${env})...`);
+console.log(`Uploading ${Object.keys(obj).length} secrets to the Worker (${env})...`);
+
+// The top-level wrangler.jsonc config *is* production -- only "preview"
+// is a named `env` block, so production omits the --env flag entirely
+// rather than passing --env production (which wrangler.jsonc doesn't
+// declare as a named environment).
+const envFlag = env === "production" ? "" : ` --env ${env}`;
 
 try {
-  execSync(
-    `wrangler pages secret bulk secrets.json --project-name adventure-spark --env ${env}`,
-    { stdio: "inherit" }
-  );
+  execSync(`wrangler secret bulk secrets.json${envFlag}`, { stdio: "inherit" });
   console.log("Secrets uploaded successfully.");
 } finally {
   fs.unlinkSync("secrets.json");
