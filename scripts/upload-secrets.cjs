@@ -10,12 +10,19 @@ if (!fs.existsSync(envFile)) {
   process.exit(1);
 }
 
+// R2_PUBLIC_URL is intentionally declared per-environment in wrangler.jsonc's
+// `vars` (files.adventurespark.org vs previewfiles.adventurespark.org).
+// Secrets take precedence over vars with the same binding name, so uploading
+// it here would silently override that environment-specific value.
+const SKIP_KEYS = new Set(["R2_PUBLIC_URL"]);
+
 const obj = {};
 for (const line of fs.readFileSync(envFile, "utf8").split("\n")) {
   if (!line || line.startsWith("#")) continue;
   const idx = line.indexOf("=");
   if (idx === -1) continue;
   const key = line.slice(0, idx).trim();
+  if (SKIP_KEYS.has(key)) continue;
   const val = line
     .slice(idx + 1)
     .trim()
