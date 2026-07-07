@@ -46,6 +46,7 @@
         "binding": "ASSETS",
         "run_worker_first": ["/api/*"],
       },
+      "routes": [{ "pattern": "preview.adventurespark.org", "custom_domain": true }],
       "vars": {
         "R2_PUBLIC_URL": "https://previewfiles.adventurespark.org",
       },
