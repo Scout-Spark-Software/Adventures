@@ -7,39 +7,54 @@ import { test, expect } from "./fixtures/base-test";
 const IMAGE_TIER_LIMIT = 20;
 const IMAGE_TIER_WINDOW_SECONDS = 60;
 
-test.describe("Anonymous — rate limiting on the image tier", () => {
-  // Requires U1's RATE_LIMIT_KV binding to actually be provisioned and
-  // present in the environment under test (see the plan's U1/U5 execution
-  // notes) -- without it, checkRateLimit fails open and every request
-  // below returns 400, never 429, which would make this test pass for the
-  // wrong reason.
-  test("enforces the limit, returns 429 at the boundary, and recovers after the window", async ({
-    request,
-  }) => {
-    test.setTimeout(90_000);
+// Cloudflare's native Rate Limiting binding (env.RATE_LIMITER_IMAGE) is
+// eventually consistent, not an exact counter: requests get load-balanced
+// across multiple backing machines at the edge, each keeping its own local
+// count, so there's no guaranteed exact boundary where request N+1 is the
+// first 429. Empirically this took ~76 requests to trip a 20/60s limit on
+// preview and ~64 on production during manual verification -- so this test
+// sends generous headroom and asserts a 429 shows up *eventually*, not at
+// a precise request count.
+const REQUEST_BUDGET = IMAGE_TIER_LIMIT * 5;
 
-    // Phase 1: happy path -- requests under the threshold all reach the
-    // route handler (400, since no entity_type/entity_id were supplied --
-    // never 429).
-    for (let i = 0; i < IMAGE_TIER_LIMIT - 1; i++) {
+test.describe("Anonymous — rate limiting on the image tier", () => {
+  // Requires the RATE_LIMITER_IMAGE binding to actually be provisioned and
+  // present in the environment under test -- without it (e.g. local `npm
+  // run dev`, which has no Cloudflare bindings), checkRateLimit fails open
+  // and every request below returns 400, never 429, so the budget is
+  // exhausted and the assertion below fails with a clear message instead
+  // of silently passing for the wrong reason.
+  test("eventually enforces the limit and recovers after the window", async ({ request }) => {
+    test.setTimeout(150_000);
+
+    let limitedResponse: Awaited<ReturnType<typeof request.get>> | null = null;
+    for (let i = 0; i < REQUEST_BUDGET; i++) {
       const response = await request.get("/api/files");
-      expect(response.status()).not.toBe(429);
+      if (response.status() === 429) {
+        limitedResponse = response;
+        break;
+      }
+      // Requests under the limit reach the route handler -- 400, since no
+      // entity_type/entity_id were supplied -- never anything else.
+      expect(response.status()).toBe(400);
     }
 
-    // Phase 2: boundary -- the Nth request (at the configured limit) still
-    // succeeds; the N+1th is rate limited.
-    const atLimit = await request.get("/api/files");
-    expect(atLimit.status()).not.toBe(429);
+    expect(limitedResponse, `expected a 429 within ${REQUEST_BUDGET} requests`).not.toBeNull();
+    expect(limitedResponse!.headers()["retry-after"]).toBe(String(IMAGE_TIER_WINDOW_SECONDS));
 
-    const overLimit = await request.get("/api/files");
-    expect(overLimit.status()).toBe(429);
-    expect(overLimit.headers()["retry-after"]).toBe(String(IMAGE_TIER_WINDOW_SECONDS));
-
-    // Phase 3: recovery -- once the window elapses, a subsequent request
-    // succeeds again.
+    // Recovery -- once the window elapses, requests succeed again. Retry a
+    // few times since the machine serving this request post-wait isn't
+    // guaranteed to be the one that was limited.
     await new Promise((resolve) => setTimeout(resolve, IMAGE_TIER_WINDOW_SECONDS * 1000));
 
-    const recovered = await request.get("/api/files");
-    expect(recovered.status()).not.toBe(429);
+    let recovered = false;
+    for (let i = 0; i < 5; i++) {
+      const response = await request.get("/api/files");
+      if (response.status() !== 429) {
+        recovered = true;
+        break;
+      }
+    }
+    expect(recovered, "expected requests to succeed again after the rate-limit window").toBe(true);
   });
 });
