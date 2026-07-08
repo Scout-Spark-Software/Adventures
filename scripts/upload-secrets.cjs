@@ -10,12 +10,19 @@ if (!fs.existsSync(envFile)) {
   process.exit(1);
 }
 
+// R2_PUBLIC_URL is intentionally declared per-environment in wrangler.jsonc's
+// `vars` (files.adventurespark.org vs previewfiles.adventurespark.org).
+// Secrets take precedence over vars with the same binding name, so uploading
+// it here would silently override that environment-specific value.
+const SKIP_KEYS = new Set(["R2_PUBLIC_URL"]);
+
 const obj = {};
 for (const line of fs.readFileSync(envFile, "utf8").split("\n")) {
   if (!line || line.startsWith("#")) continue;
   const idx = line.indexOf("=");
   if (idx === -1) continue;
   const key = line.slice(0, idx).trim();
+  if (SKIP_KEYS.has(key)) continue;
   const val = line
     .slice(idx + 1)
     .trim()
@@ -24,13 +31,16 @@ for (const line of fs.readFileSync(envFile, "utf8").split("\n")) {
 }
 
 fs.writeFileSync("secrets.json", JSON.stringify(obj, null, 2));
-console.log(`Uploading ${Object.keys(obj).length} secrets to Cloudflare Pages (${env})...`);
+console.log(`Uploading ${Object.keys(obj).length} secrets to the Worker (${env})...`);
+
+// The top-level wrangler.jsonc config *is* production -- only "preview"
+// is a named `env` block, so production omits the --env flag entirely
+// rather than passing --env production (which wrangler.jsonc doesn't
+// declare as a named environment).
+const envFlag = env === "production" ? "" : ` --env ${env}`;
 
 try {
-  execSync(
-    `wrangler pages secret bulk secrets.json --project-name adventure-spark --env ${env}`,
-    { stdio: "inherit" }
-  );
+  execSync(`wrangler secret bulk secrets.json${envFlag}`, { stdio: "inherit" });
   console.log("Secrets uploaded successfully.");
 } finally {
   fs.unlinkSync("secrets.json");

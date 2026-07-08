@@ -1,0 +1,77 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "adventure-spark",
+  "main": ".svelte-kit/cloudflare/_worker.js",
+  "compatibility_date": "2026-01-01",
+  "compatibility_flags": ["nodejs_als"],
+  "assets": {
+    "directory": ".svelte-kit/cloudflare",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"],
+  },
+  "ratelimits": [
+    {
+      "name": "RATE_LIMITER_IMAGE",
+      "namespace_id": "1001",
+      "simple": { "limit": 20, "period": 60 },
+    },
+    {
+      "name": "RATE_LIMITER_WRITE",
+      "namespace_id": "1002",
+      "simple": { "limit": 30, "period": 60 },
+    },
+    {
+      "name": "RATE_LIMITER_READ",
+      "namespace_id": "1003",
+      "simple": { "limit": 120, "period": 60 },
+    },
+    {
+      "name": "RATE_LIMITER_PRIVILEGED",
+      "namespace_id": "1004",
+      "simple": { "limit": 60, "period": 60 },
+    },
+  ],
+  // R2_PUBLIC_URL matches the R2 custom domains already referenced in
+  // src/lib/security.ts's CSP img-src (files.adventurespark.org for
+  // production, previewfiles.adventurespark.org for preview).
+  "vars": {
+    "R2_PUBLIC_URL": "https://files.adventurespark.org",
+  },
+  "env": {
+    "preview": {
+      "main": ".svelte-kit/cloudflare/_worker.js",
+      "compatibility_flags": ["nodejs_als"],
+      "assets": {
+        "directory": ".svelte-kit/cloudflare",
+        "binding": "ASSETS",
+        "run_worker_first": ["/api/*"],
+      },
+      "routes": [{ "pattern": "preview.adventurespark.org", "custom_domain": true }],
+      "vars": {
+        "R2_PUBLIC_URL": "https://previewfiles.adventurespark.org",
+      },
+      "ratelimits": [
+        {
+          "name": "RATE_LIMITER_IMAGE",
+          "namespace_id": "2001",
+          "simple": { "limit": 20, "period": 60 },
+        },
+        {
+          "name": "RATE_LIMITER_WRITE",
+          "namespace_id": "2002",
+          "simple": { "limit": 30, "period": 60 },
+        },
+        {
+          "name": "RATE_LIMITER_READ",
+          "namespace_id": "2003",
+          "simple": { "limit": 120, "period": 60 },
+        },
+        {
+          "name": "RATE_LIMITER_PRIVILEGED",
+          "namespace_id": "2004",
+          "simple": { "limit": 60, "period": 60 },
+        },
+      ],
+    },
+  },
+}
