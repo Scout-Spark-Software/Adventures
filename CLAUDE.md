@@ -39,7 +39,7 @@ npm run seed:camping         # Seed camping sites from CSV
 - **Styling**: Tailwind CSS with forms/typography plugins
 - **Maps**: Leaflet for interactive maps and location picking
 - **Icons**: `lucide-svelte`
-- **Deployment**: Cloudflare Pages (adapter-cloudflare)
+- **Deployment**: Cloudflare Workers with static assets (adapter-cloudflare)
 
 ### Key Directories
 
@@ -210,8 +210,9 @@ Required in `.env` (see `.env.example`):
 
 ## CI/CD
 
-- `.github/workflows/deploy-preview.yml` — triggers on `preview` branch; builds and deploys to Cloudflare Pages with `--branch preview`
-- `.github/workflows/deploy-prod.yml` — triggers on `main`; runs `migrate` job first, then deploys (deploy blocked if migrate fails); also deploys the scheduler Worker (`workers/scheduler/`)
+- `.github/workflows/deploy-preview.yml` — triggers on `preview` branch; runs `migrate`, then `wrangler deploy --env preview`, then validates the deployed URL via the reusable e2e workflow (`.github/workflows/e2e-tests.yml`)
+- `.github/workflows/deploy-prod.yml` — triggers on `main`; runs `migrate` job first, then deploys via `wrangler deploy` (deploy blocked if migrate fails); also deploys the scheduler Worker (`workers/scheduler/`)
+- The original Cloudflare Pages project (`adventure-spark`) is intentionally left intact and dormant as a rollback safety net (detach the affected custom domain from the Worker and reattach it to Pages). This rollback path is only guaranteed safe up until the next `db:migrate` run against the shared Neon database — see the Open Question in `docs/plans/2026-07-07-001-refactor-pages-to-workers-migration-plan.md` for when it's safe to delete the Pages project entirely.
 
 ### Scheduler Worker secrets
 
@@ -222,7 +223,7 @@ npx wrangler secret put APP_URL --config workers/scheduler/wrangler.toml
 # e.g. https://www.adventurespark.org
 
 npx wrangler secret put CRON_SECRET --config workers/scheduler/wrangler.toml
-# Must match CRON_SECRET in the app's Cloudflare Pages environment variables
+# Must match CRON_SECRET in the app's Cloudflare Worker secrets (set via `npm run secrets:upload:prod`)
 ```
 
 ## Conventions
