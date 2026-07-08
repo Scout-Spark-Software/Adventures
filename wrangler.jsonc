@@ -9,6 +9,10 @@
     "binding": "ASSETS",
     "run_worker_first": ["/api/*"],
   },
+  "routes": [
+    { "pattern": "adventurespark.org", "custom_domain": true },
+    { "pattern": "www.adventurespark.org", "custom_domain": true },
+  ],
   "ratelimits": [
     {
       "name": "RATE_LIMITER_IMAGE",
