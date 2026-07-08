@@ -13,6 +13,10 @@
     { "pattern": "adventurespark.org", "custom_domain": true },
     { "pattern": "www.adventurespark.org", "custom_domain": true },
   ],
+  // Custom domain routes above are confirmed working; disable the default
+  // workers.dev URL so it can't bypass zone-level protections scoped to
+  // the custom domains.
+  "workers_dev": false,
   "ratelimits": [
     {
       "name": "RATE_LIMITER_IMAGE",
