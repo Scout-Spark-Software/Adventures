@@ -104,6 +104,11 @@ export const ROUTE_TIERS: Record<string, Tier> = {
   // user-keyed "write" bucket better than the IP-keyed "read" bucket.
   "/api/ratings/my-rating": "write",
   "/api/alterations/[id]": "write",
+  // Whole route: GET is always scoped to the caller's own completions
+  // (never public), same reasoning as /api/ratings/my-rating above.
+  "/api/completions": "write",
+  "/api/completions/[id]": "write",
+  "/api/completions/my-stats": "write",
 
   // --- privileged tier: whole route, admin/moderator-only ---
   "/api/moderation": "privileged",
