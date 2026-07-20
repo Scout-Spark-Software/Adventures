@@ -8,6 +8,40 @@ import { parseLimit, parseOffset } from "$lib/utils/pagination";
 import { recomputeCompletionStats } from "$lib/server/completions";
 import { requireExactlyOneEntityRef } from "$lib/server/entity-refs";
 
+const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+// Parses the optional "day the trip actually happened" from the request body,
+// defaulting to today and rejecting future dates (users can't log a trip
+// before they've taken it). Local-date comparison is fine here since the
+// column is a plain SQL date with no time component.
+function parseCompletedAt(value: unknown): string {
+  const today = new Date().toISOString().slice(0, 10);
+  if (value === undefined || value === null || value === "") {
+    return today;
+  }
+  if (typeof value !== "string" || !ISO_DATE_RE.test(value)) {
+    throw error(400, "completedAt must be a date in YYYY-MM-DD format");
+  }
+  if (value > today) {
+    throw error(400, "completedAt cannot be in the future");
+  }
+  return value;
+}
+
+// Users may override the snapshot distance copied from the listing (e.g. they
+// hiked a spur trail or turned back early). Returns null when not provided,
+// so the caller falls back to the listing's own distance.
+function parseDistanceOverride(value: unknown): string | null {
+  if (value === undefined || value === null || value === "") {
+    return null;
+  }
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    throw error(400, "distance must be a positive number");
+  }
+  return parsed.toString();
+}
+
 // POST /api/completions - Log a hike, camping site, or backpacking trip as completed
 export const POST: RequestHandler = async ({ request, locals, url }) => {
   const user = requireAuth({ locals, url } as any);
@@ -21,6 +55,9 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
     { missing: exactlyOneMessage, tooMany: exactlyOneMessage }
   );
 
+  const completedAt = parseCompletedAt(body.completedAt);
+  const distanceOverride = parseDistanceOverride(body.distance);
+
   let distance: string | null = null;
   let distanceUnit: "miles" | "kilometers" | null = null;
   let duration: string | null = null;
@@ -32,7 +69,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
   if (hikeId) {
     const listing = await db.query.hikes.findFirst({ where: eq(hikes.id, hikeId) });
     if (!listing) throw error(404, "Hike not found");
-    distance = listing.distance;
+    distance = distanceOverride ?? listing.distance;
     distanceUnit = listing.distanceUnit;
     duration = listing.duration;
     durationUnit = listing.durationUnit;
@@ -43,7 +80,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
       where: eq(backpacking.id, backpackingId),
     });
     if (!listing) throw error(404, "Backpacking trip not found");
-    distance = listing.distance;
+    distance = distanceOverride ?? listing.distance;
     distanceUnit = listing.distanceUnit;
     duration = listing.duration;
     durationUnit = listing.durationUnit;
@@ -77,6 +114,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
       elevation,
       elevationUnit,
       nights: validatedNights,
+      completedAt,
     })
     .returning();
 
@@ -113,7 +151,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
   const results = await db.query.tripCompletions.findMany({
     where: and(...conditions),
-    orderBy: [desc(tripCompletions.createdAt)],
+    orderBy: [desc(tripCompletions.completedAt), desc(tripCompletions.createdAt)],
     limit,
     offset,
     with: {

@@ -3,6 +3,7 @@ import {
   uuid,
   text,
   timestamp,
+  date,
   numeric,
   integer,
   check,
@@ -33,6 +34,12 @@ export const tripCompletions = pgTable(
     elevation: numeric("elevation"),
     elevationUnit: elevationUnitEnum("elevation_unit"),
     nights: integer("nights"),
+    // The day the trip actually happened, as reported by the user — distinct
+    // from createdAt (when the log entry was recorded), since users can log
+    // a past trip after the fact.
+    completedAt: date("completed_at")
+      .notNull()
+      .default(sql`CURRENT_DATE`),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => ({

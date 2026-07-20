@@ -1,8 +1,15 @@
 import { test, expect } from "./fixtures/base-test";
 import { getHikeId, getCampingId } from "./fixtures/helpers";
 
+function countFromLabel(label: string | null): number {
+  const match = label?.match(/logged (\d+) time/);
+  return match ? Number(match[1]) : 0;
+}
+
 test.describe("Trip completion log – authenticated user", () => {
-  test("logs a hike as completed and increments the visible count", async ({ page }) => {
+  test("logs a hike as completed via the modal and increments the visible count", async ({
+    page,
+  }) => {
     const hikeId = getHikeId();
     await page.goto(`/hikes/${hikeId}`);
     await page.waitForLoadState("load");
@@ -10,9 +17,10 @@ test.describe("Trip completion log – authenticated user", () => {
     const logBtn = page.getByRole("button", { name: /Log as completed/ });
     await expect(logBtn).toBeVisible();
 
-    const initialText = (await logBtn.textContent()) ?? "";
-    const initialMatch = initialText.match(/logged (\d+) time/);
-    const initialCount = initialMatch ? Number(initialMatch[1]) : 0;
+    const initialCount = countFromLabel(await logBtn.getAttribute("aria-label"));
+
+    await logBtn.click();
+    await expect(page.getByRole("button", { name: "Log completion" })).toBeVisible();
 
     await Promise.all([
       page.waitForResponse(
@@ -21,10 +29,13 @@ test.describe("Trip completion log – authenticated user", () => {
           r.request().method() === "POST" &&
           r.status() < 300
       ),
-      logBtn.click(),
+      page.getByRole("button", { name: "Log completion" }).click(),
     ]);
 
-    await expect(page.getByText(`logged ${initialCount + 1} time`)).toBeVisible();
+    await expect(logBtn).toHaveAttribute(
+      "aria-label",
+      new RegExp(`logged ${initialCount + 1} time`)
+    );
   });
 
   test("clicking the log button repeatedly creates independent entries, not a toggle", async ({
@@ -35,11 +46,11 @@ test.describe("Trip completion log – authenticated user", () => {
     await page.waitForLoadState("load");
 
     const logBtn = page.getByRole("button", { name: /Log as completed/ });
-    const initialText = (await logBtn.textContent()) ?? "";
-    const initialMatch = initialText.match(/logged (\d+) time/);
-    const initialCount = initialMatch ? Number(initialMatch[1]) : 0;
+    const initialCount = countFromLabel(await logBtn.getAttribute("aria-label"));
 
     for (let i = 1; i <= 2; i++) {
+      await logBtn.click();
+      await expect(page.getByRole("button", { name: "Log completion" })).toBeVisible();
       await Promise.all([
         page.waitForResponse(
           (r) =>
@@ -47,9 +58,12 @@ test.describe("Trip completion log – authenticated user", () => {
             r.request().method() === "POST" &&
             r.status() < 300
         ),
-        logBtn.click(),
+        page.getByRole("button", { name: "Log completion" }).click(),
       ]);
-      await expect(page.getByText(`logged ${initialCount + i} time`)).toBeVisible();
+      await expect(logBtn).toHaveAttribute(
+        "aria-label",
+        new RegExp(`logged ${initialCount + i} time`)
+      );
     }
   });
 
@@ -71,7 +85,7 @@ test.describe("Trip completion log – authenticated user", () => {
     await page.getByRole("button", { name: "Log completion" }).click();
     await expect(page.getByText("Enter a whole number of nights between 1 and 90")).toBeVisible();
 
-    // Valid input succeeds and collapses the form
+    // Valid input succeeds and closes the modal
     await nightsInput.fill("3");
     await Promise.all([
       page.waitForResponse(
@@ -94,6 +108,7 @@ test.describe("Trip completion log – authenticated user", () => {
     await page.goto(`/hikes/${hikeId}`);
     await page.waitForLoadState("load");
     const logBtn = page.getByRole("button", { name: /Log as completed/ });
+    await logBtn.click();
     await Promise.all([
       page.waitForResponse(
         (r) =>
@@ -101,7 +116,7 @@ test.describe("Trip completion log – authenticated user", () => {
           r.request().method() === "POST" &&
           r.status() < 300
       ),
-      logBtn.click(),
+      page.getByRole("button", { name: "Log completion" }).click(),
     ]);
 
     // Switch to the My Adventures tab on the profile page
