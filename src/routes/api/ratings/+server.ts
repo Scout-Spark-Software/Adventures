@@ -4,9 +4,11 @@ import { db } from "$lib/db";
 import { ratings, ratingAggregates } from "$lib/db/schemas";
 import { eq, and, sql, desc } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
+import { requireExactlyOneEntityRef } from "$lib/server/entity-refs";
 import { sanitizeReview } from "$lib/utils/profanity-filter";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
 import { getAttributions } from "$lib/server/attribution";
+import { isValidUuid } from "$lib/utils/uuid";
 
 // GET /api/ratings?hike_id=xxx or ?camping_site_id=xxx or ?backpacking_id=xxx
 // Returns all ratings for an entity (paginated)
@@ -81,13 +83,22 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   const { hikeId, campingSiteId, backpackingId, rating, reviewText } = body;
 
   // Validation
-  if (!hikeId && !campingSiteId && !backpackingId) {
-    throw error(400, "Either hikeId, campingSiteId, or backpackingId is required");
-  }
+  requireExactlyOneEntityRef(
+    { hikeId, campingSiteId, backpackingId },
+    {
+      missing: "Either hikeId, campingSiteId, or backpackingId is required",
+      tooMany: "Cannot rate more than one entity at once",
+    }
+  );
 
-  const entityCount = [hikeId, campingSiteId, backpackingId].filter(Boolean).length;
-  if (entityCount > 1) {
-    throw error(400, "Cannot rate more than one entity at once");
+  if (hikeId && !isValidUuid(hikeId)) {
+    throw error(400, "hikeId must be a valid UUID");
+  }
+  if (campingSiteId && !isValidUuid(campingSiteId)) {
+    throw error(400, "campingSiteId must be a valid UUID");
+  }
+  if (backpackingId && !isValidUuid(backpackingId)) {
+    throw error(400, "backpackingId must be a valid UUID");
   }
 
   if (!rating || typeof rating !== "number") {

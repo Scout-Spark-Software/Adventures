@@ -8,6 +8,7 @@ export const userProfiles = pgTable("user_profiles", {
   unitType: text("unit_type"),
   unitNumber: text("unit_number"),
   showUnitInfo: boolean("show_unit_info").default(true).notNull(),
+  shareCompletionStats: boolean("share_completion_stats").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

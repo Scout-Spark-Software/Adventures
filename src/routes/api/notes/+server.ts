@@ -4,6 +4,8 @@ import { db } from "$lib/db";
 import { notes } from "$lib/db/schemas";
 import { eq, and, desc } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
+import { requireExactlyOneEntityRef } from "$lib/server/entity-refs";
+import { isValidUuid } from "$lib/utils/uuid";
 
 // GET /api/notes?hike_id=xxx or ?camping_site_id=xxx or ?backpacking_id=xxx or neither (all user notes)
 export const GET: RequestHandler = async ({ locals, url }) => {
@@ -66,13 +68,22 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   const { hikeId, campingSiteId, backpackingId, content } = body;
 
   // Validation
-  if (!hikeId && !campingSiteId && !backpackingId) {
-    throw error(400, "Either hikeId, campingSiteId, or backpackingId is required");
-  }
+  requireExactlyOneEntityRef(
+    { hikeId, campingSiteId, backpackingId },
+    {
+      missing: "Either hikeId, campingSiteId, or backpackingId is required",
+      tooMany: "Cannot create note for more than one entity at once",
+    }
+  );
 
-  const entityCount = [hikeId, campingSiteId, backpackingId].filter(Boolean).length;
-  if (entityCount > 1) {
-    throw error(400, "Cannot create note for more than one entity at once");
+  if (hikeId && !isValidUuid(hikeId)) {
+    throw error(400, "hikeId must be a valid UUID");
+  }
+  if (campingSiteId && !isValidUuid(campingSiteId)) {
+    throw error(400, "campingSiteId must be a valid UUID");
+  }
+  if (backpackingId && !isValidUuid(backpackingId)) {
+    throw error(400, "backpackingId must be a valid UUID");
   }
 
   if (!content || typeof content !== "string") {

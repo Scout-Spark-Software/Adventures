@@ -17,5 +17,7 @@ export * from "./ratings";
 export * from "./rating-aggregates";
 export * from "./image-flags";
 export * from "./user-profiles";
+export * from "./completions";
+export * from "./completion-stats";
 export * from "./series";
 export * from "./posts";

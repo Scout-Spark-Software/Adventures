@@ -4,6 +4,8 @@ import { db } from "$lib/db";
 import { favorites } from "$lib/db/schemas";
 import { eq, and } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
+import { requireExactlyOneEntityRef } from "$lib/server/entity-refs";
+import { isValidUuid } from "$lib/utils/uuid";
 
 export const GET: RequestHandler = async ({ locals, url }) => {
   const user = requireAuth({ locals } as any);
@@ -39,13 +41,22 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   const body = await request.json();
   const { hikeId, campingSiteId, backpackingId } = body;
 
-  if (!hikeId && !campingSiteId && !backpackingId) {
-    throw error(400, "Either hikeId, campingSiteId, or backpackingId is required");
-  }
+  requireExactlyOneEntityRef(
+    { hikeId, campingSiteId, backpackingId },
+    {
+      missing: "Either hikeId, campingSiteId, or backpackingId is required",
+      tooMany: "Cannot favorite more than one entity at once",
+    }
+  );
 
-  const entityCount = [hikeId, campingSiteId, backpackingId].filter(Boolean).length;
-  if (entityCount > 1) {
-    throw error(400, "Cannot favorite more than one entity at once");
+  if (hikeId && !isValidUuid(hikeId)) {
+    throw error(400, "hikeId must be a valid UUID");
+  }
+  if (campingSiteId && !isValidUuid(campingSiteId)) {
+    throw error(400, "campingSiteId must be a valid UUID");
+  }
+  if (backpackingId && !isValidUuid(backpackingId)) {
+    throw error(400, "backpackingId must be a valid UUID");
   }
 
   const [newFavorite] = await db

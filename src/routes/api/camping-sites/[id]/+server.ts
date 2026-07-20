@@ -1,13 +1,22 @@
 import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
-import { campingSites, addresses, ratingAggregates, files, councils, moderationQueue } from "$lib/db/schemas";
+import {
+  campingSites,
+  addresses,
+  ratingAggregates,
+  files,
+  councils,
+  moderationQueue,
+  tripCompletions,
+} from "$lib/db/schemas";
 import { eq, sql, and } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 import { isPrivilegedUser } from "$lib/auth/helpers";
 import { deleteFile } from "$lib/storage/blob";
 import { getAttribution } from "$lib/server/attribution";
 import { generateUniqueSlug } from "$lib/server/slug";
+import { recomputeCompletionStats } from "$lib/server/completions";
 
 export const GET: RequestHandler = async ({ params, locals }) => {
   const rows = await db
@@ -216,6 +225,14 @@ export const DELETE: RequestHandler = async (event) => {
     await db.delete(files).where(eq(files.entityId, campingSite.id));
   }
 
+  // Capture which users logged completions against this camping site before
+  // the delete cascades away their trip_completions rows, so lifetime totals
+  // can be recomputed afterward instead of going stale.
+  const affectedUsers = await db
+    .selectDistinct({ userId: tripCompletions.userId })
+    .from(tripCompletions)
+    .where(eq(tripCompletions.campingSiteId, campingSite.id));
+
   await db.delete(campingSites).where(eq(campingSites.id, campingSite.id));
   await db
     .delete(moderationQueue)
@@ -225,6 +242,17 @@ export const DELETE: RequestHandler = async (event) => {
         eq(moderationQueue.entityId, campingSite.id)
       )
     );
+
+  for (const u of affectedUsers) {
+    try {
+      await recomputeCompletionStats(u.userId);
+    } catch (err) {
+      console.error(
+        `Failed to recompute completion stats for user ${u.userId} after deleting camping site ${campingSite.id}:`,
+        err
+      );
+    }
+  }
 
   return json({ success: true });
 };
