@@ -5,6 +5,7 @@ import { favorites } from "$lib/db/schemas";
 import { eq, and } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 import { requireExactlyOneEntityRef } from "$lib/server/entity-refs";
+import { isValidUuid } from "$lib/utils/uuid";
 
 export const GET: RequestHandler = async ({ locals, url }) => {
   const user = requireAuth({ locals } as any);
@@ -47,6 +48,16 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       tooMany: "Cannot favorite more than one entity at once",
     }
   );
+
+  if (hikeId && !isValidUuid(hikeId)) {
+    throw error(400, "hikeId must be a valid UUID");
+  }
+  if (campingSiteId && !isValidUuid(campingSiteId)) {
+    throw error(400, "campingSiteId must be a valid UUID");
+  }
+  if (backpackingId && !isValidUuid(backpackingId)) {
+    throw error(400, "backpackingId must be a valid UUID");
+  }
 
   const [newFavorite] = await db
     .insert(favorites)

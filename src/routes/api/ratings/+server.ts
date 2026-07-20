@@ -8,6 +8,7 @@ import { requireExactlyOneEntityRef } from "$lib/server/entity-refs";
 import { sanitizeReview } from "$lib/utils/profanity-filter";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
 import { getAttributions } from "$lib/server/attribution";
+import { isValidUuid } from "$lib/utils/uuid";
 
 // GET /api/ratings?hike_id=xxx or ?camping_site_id=xxx or ?backpacking_id=xxx
 // Returns all ratings for an entity (paginated)
@@ -89,6 +90,16 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       tooMany: "Cannot rate more than one entity at once",
     }
   );
+
+  if (hikeId && !isValidUuid(hikeId)) {
+    throw error(400, "hikeId must be a valid UUID");
+  }
+  if (campingSiteId && !isValidUuid(campingSiteId)) {
+    throw error(400, "campingSiteId must be a valid UUID");
+  }
+  if (backpackingId && !isValidUuid(backpackingId)) {
+    throw error(400, "backpackingId must be a valid UUID");
+  }
 
   if (!rating || typeof rating !== "number") {
     throw error(400, "Rating is required and must be a number");

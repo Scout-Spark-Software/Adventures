@@ -5,6 +5,7 @@ import { notes } from "$lib/db/schemas";
 import { eq, and, desc } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 import { requireExactlyOneEntityRef } from "$lib/server/entity-refs";
+import { isValidUuid } from "$lib/utils/uuid";
 
 // GET /api/notes?hike_id=xxx or ?camping_site_id=xxx or ?backpacking_id=xxx or neither (all user notes)
 export const GET: RequestHandler = async ({ locals, url }) => {
@@ -74,6 +75,16 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       tooMany: "Cannot create note for more than one entity at once",
     }
   );
+
+  if (hikeId && !isValidUuid(hikeId)) {
+    throw error(400, "hikeId must be a valid UUID");
+  }
+  if (campingSiteId && !isValidUuid(campingSiteId)) {
+    throw error(400, "campingSiteId must be a valid UUID");
+  }
+  if (backpackingId && !isValidUuid(backpackingId)) {
+    throw error(400, "backpackingId must be a valid UUID");
+  }
 
   if (!content || typeof content !== "string") {
     throw error(400, "Content is required");

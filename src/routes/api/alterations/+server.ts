@@ -8,6 +8,7 @@ import { requireExactlyOneEntityRef } from "$lib/server/entity-refs";
 import { addToModerationQueue } from "$lib/moderation";
 import { isAllowedAlterationField } from "$lib/allowed-fields";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
+import { isValidUuid } from "$lib/utils/uuid";
 
 export const GET: RequestHandler = async ({ url }) => {
   const status = url.searchParams.get("status");
@@ -62,6 +63,16 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       tooMany: "Cannot alter more than one entity at once",
     }
   );
+
+  if (hikeId && !isValidUuid(hikeId)) {
+    throw error(400, "hikeId must be a valid UUID");
+  }
+  if (campingSiteId && !isValidUuid(campingSiteId)) {
+    throw error(400, "campingSiteId must be a valid UUID");
+  }
+  if (backpackingId && !isValidUuid(backpackingId)) {
+    throw error(400, "backpackingId must be a valid UUID");
+  }
 
   // Validate fieldName against entity-specific allowlist to prevent
   // privilege escalation via fields like 'status', 'featured', 'createdBy'

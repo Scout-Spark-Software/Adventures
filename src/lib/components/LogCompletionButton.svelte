@@ -10,8 +10,8 @@
   export let defaultDistance: string | null = null;
   export let defaultDistanceUnit: "miles" | "kilometers" | null = null;
 
-  const isCamping = !!campingSiteId;
-  const distanceLabel = defaultDistanceUnit === "kilometers" ? "Kilometers hiked" : "Miles hiked";
+  $: isCamping = !!campingSiteId;
+  $: distanceLabel = defaultDistanceUnit === "kilometers" ? "Kilometers hiked" : "Miles hiked";
 
   let count = 0;
   let showTooltip = false;
@@ -217,6 +217,7 @@
             type="date"
             bind:value={dateInput}
             max={todayLocal()}
+            autofocus
             class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
           />
         </div>
