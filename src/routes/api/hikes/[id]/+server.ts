@@ -242,7 +242,9 @@ export const DELETE: RequestHandler = async (event) => {
     .delete(moderationQueue)
     .where(and(eq(moderationQueue.entityType, "hike"), eq(moderationQueue.entityId, hike.id)));
 
-  await Promise.all(affectedUsers.map((u) => recomputeCompletionStats(u.userId)));
+  for (const u of affectedUsers) {
+    await recomputeCompletionStats(u.userId);
+  }
 
   return json({ success: true });
 };

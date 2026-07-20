@@ -7,6 +7,7 @@ import { requireAuth } from "$lib/auth/middleware";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
 import { recomputeCompletionStats } from "$lib/server/completions";
 import { requireExactlyOneEntityRef } from "$lib/server/entity-refs";
+import { isValidUuid } from "$lib/utils/uuid";
 
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -54,6 +55,16 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
     { hikeId, campingSiteId, backpackingId },
     { missing: exactlyOneMessage, tooMany: exactlyOneMessage }
   );
+
+  if (hikeId && !isValidUuid(hikeId)) {
+    throw error(400, "hikeId must be a valid UUID");
+  }
+  if (campingSiteId && !isValidUuid(campingSiteId)) {
+    throw error(400, "campingSiteId must be a valid UUID");
+  }
+  if (backpackingId && !isValidUuid(backpackingId)) {
+    throw error(400, "backpackingId must be a valid UUID");
+  }
 
   const completedAt = parseCompletedAt(body.completedAt);
   const distanceOverride = parseDistanceOverride(body.distance);
@@ -135,6 +146,16 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   const countOnly = url.searchParams.get("count_only") === "true";
   const limit = parseLimit(url.searchParams.get("limit"));
   const offset = parseOffset(url.searchParams.get("offset"));
+
+  if (hikeId && !isValidUuid(hikeId)) {
+    throw error(400, "hike_id must be a valid UUID");
+  }
+  if (campingSiteId && !isValidUuid(campingSiteId)) {
+    throw error(400, "camping_site_id must be a valid UUID");
+  }
+  if (backpackingId && !isValidUuid(backpackingId)) {
+    throw error(400, "backpacking_id must be a valid UUID");
+  }
 
   const conditions = [eq(tripCompletions.userId, user.id)];
   if (hikeId) conditions.push(eq(tripCompletions.hikeId, hikeId));

@@ -13,6 +13,7 @@
     entityName: string | null;
     entitySlug: string | null;
     distance: string | null;
+    distanceUnit: "miles" | "kilometers" | null;
     nights: number | null;
     completedAt: string;
     createdAt: string;
@@ -130,7 +131,8 @@
               <p class="text-xs text-stone-400">
                 {new Date(`${entry.completedAt}T00:00:00`).toLocaleDateString()}
                 {#if entry.distance}
-                  · {Math.round(Number(entry.distance) * 10) / 10} mi
+                  · {Math.round(Number(entry.distance) * 10) / 10}
+                  {entry.distanceUnit === "kilometers" ? "km" : "mi"}
                 {/if}
                 {#if entry.nights}
                   · {entry.nights} {entry.nights === 1 ? "night" : "nights"}

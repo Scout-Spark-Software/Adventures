@@ -167,7 +167,6 @@
     on:mouseleave={() => (showTooltip = false)}
     on:focus={() => (showTooltip = true)}
     on:blur={() => (showTooltip = false)}
-    aria-disabled={!userId || undefined}
     aria-label={tooltipText}
     class="relative inline-flex items-center justify-center w-9 h-9 rounded-full text-emerald-700 hover:bg-emerald-50 focus:outline-none focus:ring-2 focus:ring-emerald-400 transition-colors {!userId
       ? 'opacity-50 cursor-not-allowed'
