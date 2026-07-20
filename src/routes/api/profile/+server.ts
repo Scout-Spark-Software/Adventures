@@ -38,6 +38,15 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
     throw error(400, "unitNumber must be 10 characters or fewer");
   }
 
+  // Validate boolean fields — coercing with Boolean(x) would turn any
+  // truthy-but-non-boolean value (e.g. the string "false") into true.
+  if (showUnitInfo !== undefined && typeof showUnitInfo !== "boolean") {
+    throw error(400, "showUnitInfo must be a boolean");
+  }
+  if (shareCompletionStats !== undefined && typeof shareCompletionStats !== "boolean") {
+    throw error(400, "shareCompletionStats must be a boolean");
+  }
+
   const now = new Date();
 
   const values: typeof userProfiles.$inferInsert = {
@@ -48,9 +57,8 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
   if (councilId !== undefined) values.councilId = councilId || null;
   if (unitType !== undefined) values.unitType = unitType || null;
   if (unitNumber !== undefined) values.unitNumber = unitNumber || null;
-  if (showUnitInfo !== undefined) values.showUnitInfo = Boolean(showUnitInfo);
-  if (shareCompletionStats !== undefined)
-    values.shareCompletionStats = Boolean(shareCompletionStats);
+  if (showUnitInfo !== undefined) values.showUnitInfo = showUnitInfo;
+  if (shareCompletionStats !== undefined) values.shareCompletionStats = shareCompletionStats;
 
   const [profile] = await db
     .insert(userProfiles)
@@ -61,10 +69,8 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
         ...(councilId !== undefined && { councilId: councilId || null }),
         ...(unitType !== undefined && { unitType: unitType || null }),
         ...(unitNumber !== undefined && { unitNumber: unitNumber || null }),
-        ...(showUnitInfo !== undefined && { showUnitInfo: Boolean(showUnitInfo) }),
-        ...(shareCompletionStats !== undefined && {
-          shareCompletionStats: Boolean(shareCompletionStats),
-        }),
+        ...(showUnitInfo !== undefined && { showUnitInfo }),
+        ...(shareCompletionStats !== undefined && { shareCompletionStats }),
         updatedAt: now,
       },
     })

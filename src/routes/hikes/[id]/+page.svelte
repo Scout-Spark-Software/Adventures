@@ -1,6 +1,6 @@
 <script lang="ts">
   import { browser } from "$app/environment";
-  import { replaceState, invalidateAll, goto } from "$app/navigation";
+  import { replaceState, goto } from "$app/navigation";
   import type { PageData } from "./$types";
   import FavoriteButton from "$lib/components/FavoriteButton.svelte";
   import LogCompletionButton from "$lib/components/LogCompletionButton.svelte";
