@@ -3,6 +3,7 @@
   import { replaceState, invalidateAll, goto } from "$app/navigation";
   import type { PageData } from "./$types";
   import FavoriteButton from "$lib/components/FavoriteButton.svelte";
+  import LogCompletionButton from "$lib/components/LogCompletionButton.svelte";
   import ShareButton from "$lib/components/ShareButton.svelte";
   import ModerationBadge from "$lib/components/ModerationBadge.svelte";
   import Badge from "$lib/components/Badge.svelte";
@@ -243,57 +244,83 @@
 </script>
 
 <svelte:head>
-  <title>{data.hike.name}{locationString ? ` – ${locationString}` : ''} | Hiking Trail – Adventure Spark</title>
-  <meta name="description" content={[
-    data.hike.description ? data.hike.description.slice(0, 140).replace(/\s\S*$/, '') + '…' : null,
-    difficultyLabel ? `${difficultyLabel} difficulty.` : null,
-    data.hike.distance ? `${data.hike.distance}${data.hike.distanceUnit === 'kilometers' ? 'km' : 'mi'}.` : null,
-    locationString || null,
-  ].filter(Boolean).join(' ') || `Explore the ${data.hike.name} hiking trail on Adventure Spark.`} />
-  <meta property="og:title" content="{data.hike.name}{locationString ? ` – ${locationString}` : ''}" />
-  <meta property="og:description" content={data.hike.description ? data.hike.description.slice(0, 200) : `Explore the ${data.hike.name} hiking trail on Adventure Spark.`} />
+  <title
+    >{data.hike.name}{locationString ? ` – ${locationString}` : ""} | Hiking Trail – Adventure Spark</title
+  >
+  <meta
+    name="description"
+    content={[
+      data.hike.description
+        ? data.hike.description.slice(0, 140).replace(/\s\S*$/, "") + "…"
+        : null,
+      difficultyLabel ? `${difficultyLabel} difficulty.` : null,
+      data.hike.distance
+        ? `${data.hike.distance}${data.hike.distanceUnit === "kilometers" ? "km" : "mi"}.`
+        : null,
+      locationString || null,
+    ]
+      .filter(Boolean)
+      .join(" ") || `Explore the ${data.hike.name} hiking trail on Adventure Spark.`}
+  />
+  <meta
+    property="og:title"
+    content="{data.hike.name}{locationString ? ` – ${locationString}` : ''}"
+  />
+  <meta
+    property="og:description"
+    content={data.hike.description
+      ? data.hike.description.slice(0, 200)
+      : `Explore the ${data.hike.name} hiking trail on Adventure Spark.`}
+  />
   <meta property="og:type" content="article" />
   {#if data.hike.bannerImageUrl}
     <meta property="og:image" content={data.hike.bannerImageUrl} />
     <meta name="twitter:image" content={data.hike.bannerImageUrl} />
   {/if}
-  <meta name="twitter:card" content={data.hike.bannerImageUrl ? 'summary_large_image' : 'summary'} />
+  <meta
+    name="twitter:card"
+    content={data.hike.bannerImageUrl ? "summary_large_image" : "summary"}
+  />
   {#if data.address?.latitude && data.address?.longitude}
     <meta name="geo.position" content="{data.address.latitude};{data.address.longitude}" />
     <meta name="ICBM" content="{data.address.latitude}, {data.address.longitude}" />
   {/if}
   <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-  {@html `<${'script'} type="application/ld+json">${JSON.stringify({
+  {@html `<${"script"} type="application/ld+json">${JSON.stringify({
     "@context": "https://schema.org",
     "@type": "TouristAttraction",
-    "name": data.hike.name,
-    "description": data.hike.description || undefined,
-    "url": `https://www.adventurespark.org/hikes/${data.hike.slug}`,
-    ...(data.hike.bannerImageUrl ? { "image": data.hike.bannerImageUrl } : {}),
-    ...(data.address?.latitude && data.address?.longitude ? {
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": data.address.latitude,
-        "longitude": data.address.longitude,
-      },
-      "address": {
-        "@type": "PostalAddress",
-        ...(data.address.city ? { "addressLocality": data.address.city } : {}),
-        ...(data.address.state ? { "addressRegion": data.address.state } : {}),
-        "addressCountry": "US",
-      },
-    } : {}),
-    ...(data.ratingAggregate && data.ratingAggregate.totalRatings > 0 ? {
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": parseFloat(String(data.ratingAggregate.averageRating)).toFixed(1),
-        "ratingCount": data.ratingAggregate.totalRatings,
-        "reviewCount": data.ratingAggregate.totalReviews,
-        "bestRating": "5",
-        "worstRating": "1",
-      },
-    } : {}),
-  })}</${'script'}>`}
+    name: data.hike.name,
+    description: data.hike.description || undefined,
+    url: `https://www.adventurespark.org/hikes/${data.hike.slug}`,
+    ...(data.hike.bannerImageUrl ? { image: data.hike.bannerImageUrl } : {}),
+    ...(data.address?.latitude && data.address?.longitude
+      ? {
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: data.address.latitude,
+            longitude: data.address.longitude,
+          },
+          address: {
+            "@type": "PostalAddress",
+            ...(data.address.city ? { addressLocality: data.address.city } : {}),
+            ...(data.address.state ? { addressRegion: data.address.state } : {}),
+            addressCountry: "US",
+          },
+        }
+      : {}),
+    ...(data.ratingAggregate && data.ratingAggregate.totalRatings > 0
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: parseFloat(String(data.ratingAggregate.averageRating)).toFixed(1),
+            ratingCount: data.ratingAggregate.totalRatings,
+            reviewCount: data.ratingAggregate.totalReviews,
+            bestRating: "5",
+            worstRating: "1",
+          },
+        }
+      : {}),
+  })}</${"script"}>`}
 </svelte:head>
 
 <div class="min-h-screen bg-gray-100">
@@ -309,6 +336,7 @@
       <div class="flex items-center gap-2">
         <ShareButton title={data.hike.name} description={data.hike.description ?? ""} />
         <FavoriteButton hikeId={data.hike.id} userId={data.userId} />
+        <LogCompletionButton hikeId={data.hike.id} userId={data.userId} />
         <ModerationBadge status={data.hike.status} userRole={typedUserRole} />
         {#if isAdmin && data.hike.status === "rejected"}
           <button

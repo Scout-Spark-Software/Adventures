@@ -23,7 +23,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
   const user = requireAuth({ locals } as any);
 
   const body = await request.json();
-  const { councilId, unitType, unitNumber, showUnitInfo } = body;
+  const { councilId, unitType, unitNumber, showUnitInfo, shareCompletionStats } = body;
 
   // Validate unitType
   if (unitType !== undefined && !VALID_UNIT_TYPES.includes(unitType)) {
@@ -49,6 +49,8 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
   if (unitType !== undefined) values.unitType = unitType || null;
   if (unitNumber !== undefined) values.unitNumber = unitNumber || null;
   if (showUnitInfo !== undefined) values.showUnitInfo = Boolean(showUnitInfo);
+  if (shareCompletionStats !== undefined)
+    values.shareCompletionStats = Boolean(shareCompletionStats);
 
   const [profile] = await db
     .insert(userProfiles)
@@ -60,6 +62,9 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
         ...(unitType !== undefined && { unitType: unitType || null }),
         ...(unitNumber !== undefined && { unitNumber: unitNumber || null }),
         ...(showUnitInfo !== undefined && { showUnitInfo: Boolean(showUnitInfo) }),
+        ...(shareCompletionStats !== undefined && {
+          shareCompletionStats: Boolean(shareCompletionStats),
+        }),
         updatedAt: now,
       },
     })

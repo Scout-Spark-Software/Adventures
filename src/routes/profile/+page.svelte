@@ -4,6 +4,7 @@
   import { enhance } from "$app/forms";
   import Tabs from "$lib/components/Tabs.svelte";
   import NotesSection from "$lib/components/NotesSection.svelte";
+  import MyAdventures from "$lib/components/MyAdventures.svelte";
   import { Check, CircleAlertIcon, LogOut, Mail, UserCircle, Shield } from "lucide-svelte";
   import CouncilSelect from "$lib/components/CouncilSelect.svelte";
 
@@ -15,6 +16,7 @@
     { id: "profile", label: "Profile" },
     { id: "security", label: "Security" },
     { id: "notes", label: "My Notes" },
+    { id: "adventures", label: "My Adventures" },
   ];
 
   let isRequestingReset = false;
@@ -316,6 +318,12 @@
           {:else if activeTab === "notes"}
             <div class="pb-6">
               <NotesSection userId={data.user.id} />
+            </div>
+          {:else if activeTab === "adventures"}
+            <div class="pb-6">
+              <MyAdventures
+                initialShareCompletionStats={data.profile?.shareCompletionStats ?? false}
+              />
             </div>
           {/if}
         </Tabs>

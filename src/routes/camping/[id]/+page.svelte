@@ -3,6 +3,7 @@
   import { replaceState, goto } from "$app/navigation";
   import type { PageData } from "./$types";
   import FavoriteButton from "$lib/components/FavoriteButton.svelte";
+  import LogCompletionButton from "$lib/components/LogCompletionButton.svelte";
   import ShareButton from "$lib/components/ShareButton.svelte";
   import ModerationBadge from "$lib/components/ModerationBadge.svelte";
   import Badge from "$lib/components/Badge.svelte";
@@ -251,56 +252,83 @@
 </script>
 
 <svelte:head>
-  <title>{data.campingSite.name}{campingLocationString ? ` – ${campingLocationString}` : ''} | Camping Site – Adventure Spark</title>
-  <meta name="description" content={[
-    data.campingSite.description ? data.campingSite.description.slice(0, 140).replace(/\s\S*$/, '') + '…' : null,
-    data.campingSite.siteType ? `${SITE_TYPE_LABELS[data.campingSite.siteType] ?? data.campingSite.siteType} campsite.` : null,
-    campingLocationString || null,
-  ].filter(Boolean).join(' ') || `Explore ${data.campingSite.name} camping site on Adventure Spark.`} />
-  <meta property="og:title" content="{data.campingSite.name}{campingLocationString ? ` – ${campingLocationString}` : ''}" />
-  <meta property="og:description" content={data.campingSite.description ? data.campingSite.description.slice(0, 200) : `Explore ${data.campingSite.name} camping site on Adventure Spark.`} />
+  <title
+    >{data.campingSite.name}{campingLocationString ? ` – ${campingLocationString}` : ""} | Camping Site
+    – Adventure Spark</title
+  >
+  <meta
+    name="description"
+    content={[
+      data.campingSite.description
+        ? data.campingSite.description.slice(0, 140).replace(/\s\S*$/, "") + "…"
+        : null,
+      data.campingSite.siteType
+        ? `${SITE_TYPE_LABELS[data.campingSite.siteType] ?? data.campingSite.siteType} campsite.`
+        : null,
+      campingLocationString || null,
+    ]
+      .filter(Boolean)
+      .join(" ") || `Explore ${data.campingSite.name} camping site on Adventure Spark.`}
+  />
+  <meta
+    property="og:title"
+    content="{data.campingSite.name}{campingLocationString ? ` – ${campingLocationString}` : ''}"
+  />
+  <meta
+    property="og:description"
+    content={data.campingSite.description
+      ? data.campingSite.description.slice(0, 200)
+      : `Explore ${data.campingSite.name} camping site on Adventure Spark.`}
+  />
   <meta property="og:type" content="article" />
   {#if data.campingSite.bannerImageUrl}
     <meta property="og:image" content={data.campingSite.bannerImageUrl} />
     <meta name="twitter:image" content={data.campingSite.bannerImageUrl} />
   {/if}
-  <meta name="twitter:card" content={data.campingSite.bannerImageUrl ? 'summary_large_image' : 'summary'} />
+  <meta
+    name="twitter:card"
+    content={data.campingSite.bannerImageUrl ? "summary_large_image" : "summary"}
+  />
   {#if data.address?.latitude && data.address?.longitude}
     <meta name="geo.position" content="{data.address.latitude};{data.address.longitude}" />
     <meta name="ICBM" content="{data.address.latitude}, {data.address.longitude}" />
   {/if}
   <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-  {@html `<${'script'} type="application/ld+json">${JSON.stringify({
+  {@html `<${"script"} type="application/ld+json">${JSON.stringify({
     "@context": "https://schema.org",
     "@type": "Campground",
-    "name": data.campingSite.name,
-    "description": data.campingSite.description || undefined,
-    "url": `https://www.adventurespark.org/camping/${data.campingSite.slug}`,
-    ...(data.campingSite.bannerImageUrl ? { "image": data.campingSite.bannerImageUrl } : {}),
-    ...(data.address?.latitude && data.address?.longitude ? {
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": data.address.latitude,
-        "longitude": data.address.longitude,
-      },
-      "address": {
-        "@type": "PostalAddress",
-        ...(data.address.city ? { "addressLocality": data.address.city } : {}),
-        ...(data.address.state ? { "addressRegion": data.address.state } : {}),
-        "addressCountry": "US",
-      },
-    } : {}),
-    ...(data.ratingAggregate && data.ratingAggregate.totalRatings > 0 ? {
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": parseFloat(String(data.ratingAggregate.averageRating)).toFixed(1),
-        "ratingCount": data.ratingAggregate.totalRatings,
-        "reviewCount": data.ratingAggregate.totalReviews,
-        "bestRating": "5",
-        "worstRating": "1",
-      },
-    } : {}),
-  })}</${'script'}>`}
+    name: data.campingSite.name,
+    description: data.campingSite.description || undefined,
+    url: `https://www.adventurespark.org/camping/${data.campingSite.slug}`,
+    ...(data.campingSite.bannerImageUrl ? { image: data.campingSite.bannerImageUrl } : {}),
+    ...(data.address?.latitude && data.address?.longitude
+      ? {
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: data.address.latitude,
+            longitude: data.address.longitude,
+          },
+          address: {
+            "@type": "PostalAddress",
+            ...(data.address.city ? { addressLocality: data.address.city } : {}),
+            ...(data.address.state ? { addressRegion: data.address.state } : {}),
+            addressCountry: "US",
+          },
+        }
+      : {}),
+    ...(data.ratingAggregate && data.ratingAggregate.totalRatings > 0
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: parseFloat(String(data.ratingAggregate.averageRating)).toFixed(1),
+            ratingCount: data.ratingAggregate.totalRatings,
+            reviewCount: data.ratingAggregate.totalReviews,
+            bestRating: "5",
+            worstRating: "1",
+          },
+        }
+      : {}),
+  })}</${"script"}>`}
 </svelte:head>
 
 <div class="min-h-screen bg-gray-100">
@@ -314,8 +342,12 @@
         <ChevronLeft size={24} class="text-indigo-600" />
       </a>
       <div class="flex items-center gap-2">
-        <ShareButton title={data.campingSite.name} description={data.campingSite.description ?? ""} />
+        <ShareButton
+          title={data.campingSite.name}
+          description={data.campingSite.description ?? ""}
+        />
         <FavoriteButton campingSiteId={data.campingSite.id} userId={data.userId} />
+        <LogCompletionButton campingSiteId={data.campingSite.id} userId={data.userId} />
         <ModerationBadge status={data.campingSite.status} userRole={typedUserRole} />
         {#if isAdmin && data.campingSite.status === "rejected"}
           <button
