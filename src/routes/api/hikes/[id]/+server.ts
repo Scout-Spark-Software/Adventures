@@ -243,7 +243,14 @@ export const DELETE: RequestHandler = async (event) => {
     .where(and(eq(moderationQueue.entityType, "hike"), eq(moderationQueue.entityId, hike.id)));
 
   for (const u of affectedUsers) {
-    await recomputeCompletionStats(u.userId);
+    try {
+      await recomputeCompletionStats(u.userId);
+    } catch (err) {
+      console.error(
+        `Failed to recompute completion stats for user ${u.userId} after deleting hike ${hike.id}:`,
+        err
+      );
+    }
   }
 
   return json({ success: true });

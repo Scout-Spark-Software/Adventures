@@ -12,18 +12,24 @@ import { isValidUuid } from "$lib/utils/uuid";
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 // Parses the optional "day the trip actually happened" from the request body,
-// defaulting to today and rejecting future dates (users can't log a trip
-// before they've taken it). Local-date comparison is fine here since the
-// column is a plain SQL date with no time component.
+// defaulting to today (UTC) and rejecting future dates (users can't log a
+// trip before they've taken it). The client's date picker uses the browser's
+// local calendar date, which can already be "tomorrow" relative to the
+// server's UTC date for any timezone ahead of UTC (up to UTC+14). Rather than
+// threading the client's timezone through the request, the future-date check
+// tolerates values up to 1 day ahead of UTC-today, which safely covers every
+// legitimate local "today" while still rejecting genuinely future dates.
 function parseCompletedAt(value: unknown): string {
-  const today = new Date().toISOString().slice(0, 10);
+  const now = new Date();
+  const today = now.toISOString().slice(0, 10);
   if (value === undefined || value === null || value === "") {
     return today;
   }
   if (typeof value !== "string" || !ISO_DATE_RE.test(value)) {
     throw error(400, "completedAt must be a date in YYYY-MM-DD format");
   }
-  if (value > today) {
+  const maxAllowedDate = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  if (value > maxAllowedDate) {
     throw error(400, "completedAt cannot be in the future");
   }
   return value;

@@ -244,7 +244,14 @@ export const DELETE: RequestHandler = async (event) => {
     );
 
   for (const u of affectedUsers) {
-    await recomputeCompletionStats(u.userId);
+    try {
+      await recomputeCompletionStats(u.userId);
+    } catch (err) {
+      console.error(
+        `Failed to recompute completion stats for user ${u.userId} after deleting camping site ${campingSite.id}:`,
+        err
+      );
+    }
   }
 
   return json({ success: true });
