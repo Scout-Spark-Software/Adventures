@@ -346,7 +346,12 @@
           description={data.backpacking.description ?? ""}
         />
         <FavoriteButton backpackingId={data.backpacking.id} userId={data.userId} />
-        <LogCompletionButton backpackingId={data.backpacking.id} userId={data.userId} />
+        <LogCompletionButton
+          backpackingId={data.backpacking.id}
+          userId={data.userId}
+          defaultDistance={data.backpacking.distance}
+          defaultDistanceUnit={data.backpacking.distanceUnit}
+        />
         <ModerationBadge status={data.backpacking.status} userRole={typedUserRole} />
         {#if isAdmin && data.backpacking.status === "rejected"}
           <button

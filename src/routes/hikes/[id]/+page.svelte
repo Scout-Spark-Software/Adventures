@@ -336,7 +336,12 @@
       <div class="flex items-center gap-2">
         <ShareButton title={data.hike.name} description={data.hike.description ?? ""} />
         <FavoriteButton hikeId={data.hike.id} userId={data.userId} />
-        <LogCompletionButton hikeId={data.hike.id} userId={data.userId} />
+        <LogCompletionButton
+          hikeId={data.hike.id}
+          userId={data.userId}
+          defaultDistance={data.hike.distance}
+          defaultDistanceUnit={data.hike.distanceUnit}
+        />
         <ModerationBadge status={data.hike.status} userRole={typedUserRole} />
         {#if isAdmin && data.hike.status === "rejected"}
           <button

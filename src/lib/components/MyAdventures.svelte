@@ -14,6 +14,7 @@
     entitySlug: string | null;
     distance: string | null;
     nights: number | null;
+    completedAt: string;
     createdAt: string;
   };
 
@@ -127,7 +128,7 @@
                 {entry.entityName ?? "Unknown trip"}
               </p>
               <p class="text-xs text-stone-400">
-                {new Date(entry.createdAt).toLocaleDateString()}
+                {new Date(`${entry.completedAt}T00:00:00`).toLocaleDateString()}
                 {#if entry.distance}
                   · {Math.round(Number(entry.distance) * 10) / 10} mi
                 {/if}
