@@ -4,6 +4,7 @@ import { db } from "$lib/db";
 import { alterations } from "$lib/db/schemas";
 import { eq, and, desc } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
+import { requireExactlyOneEntityRef } from "$lib/server/entity-refs";
 import { addToModerationQueue } from "$lib/moderation";
 import { isAllowedAlterationField } from "$lib/allowed-fields";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
@@ -54,14 +55,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     throw error(400, "fieldName and newValue are required");
   }
 
-  if (!hikeId && !campingSiteId && !backpackingId) {
-    throw error(400, "Either hikeId, campingSiteId, or backpackingId is required");
-  }
-
-  const entityCount = [hikeId, campingSiteId, backpackingId].filter(Boolean).length;
-  if (entityCount > 1) {
-    throw error(400, "Cannot alter more than one entity at once");
-  }
+  requireExactlyOneEntityRef(
+    { hikeId, campingSiteId, backpackingId },
+    {
+      missing: "Either hikeId, campingSiteId, or backpackingId is required",
+      tooMany: "Cannot alter more than one entity at once",
+    }
+  );
 
   // Validate fieldName against entity-specific allowlist to prevent
   // privilege escalation via fields like 'status', 'featured', 'createdBy'

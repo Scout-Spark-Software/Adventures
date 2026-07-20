@@ -1,13 +1,22 @@
 import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
-import { hikes, addresses, ratingAggregates, files, councils, moderationQueue } from "$lib/db/schemas";
+import {
+  hikes,
+  addresses,
+  ratingAggregates,
+  files,
+  councils,
+  moderationQueue,
+  tripCompletions,
+} from "$lib/db/schemas";
 import { eq, sql, and } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 import { isPrivilegedUser } from "$lib/auth/helpers";
 import { deleteFile } from "$lib/storage/blob";
 import { getAttribution } from "$lib/server/attribution";
 import { generateUniqueSlug } from "$lib/server/slug";
+import { recomputeCompletionStats } from "$lib/server/completions";
 
 export const GET: RequestHandler = async ({ params, locals }) => {
   const rows = await db
@@ -220,12 +229,20 @@ export const DELETE: RequestHandler = async (event) => {
     await db.delete(files).where(eq(files.entityId, hike.id));
   }
 
+  // Capture which users logged completions against this hike before the
+  // delete cascades away their trip_completions rows, so lifetime totals can
+  // be recomputed afterward instead of going stale.
+  const affectedUsers = await db
+    .selectDistinct({ userId: tripCompletions.userId })
+    .from(tripCompletions)
+    .where(eq(tripCompletions.hikeId, hike.id));
+
   await db.delete(hikes).where(eq(hikes.id, hike.id));
   await db
     .delete(moderationQueue)
-    .where(
-      and(eq(moderationQueue.entityType, "hike"), eq(moderationQueue.entityId, hike.id))
-    );
+    .where(and(eq(moderationQueue.entityType, "hike"), eq(moderationQueue.entityId, hike.id)));
+
+  await Promise.all(affectedUsers.map((u) => recomputeCompletionStats(u.userId)));
 
   return json({ success: true });
 };

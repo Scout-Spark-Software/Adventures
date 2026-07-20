@@ -1,9 +1,12 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { enhance } from "$app/forms";
   import { Trash2, Shield } from "lucide-svelte";
 
   export let initialShareCompletionStats: boolean;
+
+  let shareCompletionStats = initialShareCompletionStats;
+  let isSavingSharing = false;
+  let sharingError: string | null = null;
 
   type CompletionEntry = {
     id: string;
@@ -19,7 +22,6 @@
   let loading = true;
   let confirmingId: string | null = null;
   let deletingId: string | null = null;
-  let isSavingSharing = false;
 
   onMount(loadAdventures);
 
@@ -59,6 +61,32 @@
     } finally {
       deletingId = null;
       confirmingId = null;
+    }
+  }
+
+  async function toggleSharing() {
+    if (isSavingSharing) return;
+
+    // bind:checked already applied the click to shareCompletionStats by the
+    // time this change handler runs, so that IS the optimistic "next" value.
+    const next = shareCompletionStats;
+    const previous = !next;
+    isSavingSharing = true;
+    sharingError = null;
+
+    try {
+      const response = await fetch("/api/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ shareCompletionStats: next }),
+      });
+      if (!response.ok) throw new Error("Failed to save sharing preference");
+    } catch (err) {
+      console.error("Error saving sharing preference:", err);
+      shareCompletionStats = previous; // rollback
+      sharingError = "Couldn't save — try again";
+    } finally {
+      isSavingSharing = false;
     }
   }
 </script>
@@ -154,32 +182,23 @@
       <p class="text-xs text-stone-400">
         When on, your lifetime totals may be shown on your profile. Off by default.
       </p>
+      {#if sharingError}
+        <p class="text-xs text-red-600 mt-1" role="alert">{sharingError}</p>
+      {/if}
     </div>
-    <form
-      method="POST"
-      action="/profile?/saveSharingPreference"
-      use:enhance={() => {
-        isSavingSharing = true;
-        return async ({ update }) => {
-          await update();
-          isSavingSharing = false;
-        };
-      }}
-      on:submit={() => (isSavingSharing = true)}
-    >
+    <div>
       <label class="relative inline-flex items-center cursor-pointer mt-0.5">
         <input
           type="checkbox"
-          name="shareCompletionStats"
           class="sr-only peer"
-          checked={initialShareCompletionStats}
+          bind:checked={shareCompletionStats}
           disabled={isSavingSharing}
-          on:change={(e) => e.currentTarget.form?.requestSubmit()}
+          on:change={toggleSharing}
         />
         <div
           class="w-10 h-6 bg-stone-200 peer-focus:ring-2 peer-focus:ring-emerald-400 rounded-full peer peer-checked:bg-emerald-500 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"
         ></div>
       </label>
-    </form>
+    </div>
   </div>
 </div>

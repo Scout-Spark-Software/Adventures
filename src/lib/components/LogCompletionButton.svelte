@@ -27,10 +27,11 @@
       if (hikeId) params.append("hike_id", hikeId);
       if (campingSiteId) params.append("camping_site_id", campingSiteId);
       if (backpackingId) params.append("backpacking_id", backpackingId);
+      params.append("count_only", "true");
       const response = await fetch(`/api/completions?${params}`);
       if (!response.ok) return;
       const data = await response.json();
-      count = Array.isArray(data.completions) ? data.completions.length : 0;
+      count = typeof data.count === "number" ? data.count : 0;
     } catch (err) {
       console.error("Error fetching completion count:", err);
     }
@@ -72,6 +73,11 @@
         showCampingForm = false;
         nightsInput = "";
       }
+
+      // Reconcile with the authoritative count rather than trusting the
+      // optimistic increment indefinitely (it would otherwise drift after
+      // deletions elsewhere, e.g. the My Adventures history).
+      await fetchCount();
     } catch (err) {
       console.error("Error logging completion:", err);
       count = previousCount; // rollback

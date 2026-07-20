@@ -8,8 +8,8 @@ import { requireAuth } from "$lib/auth/middleware";
 // GET /api/completions/my-stats - The caller's own lifetime completion totals.
 // Returns zeros for a user who hasn't logged any completions yet, rather
 // than a missing/null response.
-export const GET: RequestHandler = async ({ locals }) => {
-  const user = requireAuth({ locals } as any);
+export const GET: RequestHandler = async ({ locals, url }) => {
+  const user = requireAuth({ locals, url } as any);
 
   const stats = await db.query.completionStats.findFirst({
     where: eq(completionStats.userId, user.id),

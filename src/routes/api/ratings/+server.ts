@@ -4,6 +4,7 @@ import { db } from "$lib/db";
 import { ratings, ratingAggregates } from "$lib/db/schemas";
 import { eq, and, sql, desc } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
+import { requireExactlyOneEntityRef } from "$lib/server/entity-refs";
 import { sanitizeReview } from "$lib/utils/profanity-filter";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
 import { getAttributions } from "$lib/server/attribution";
@@ -81,14 +82,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   const { hikeId, campingSiteId, backpackingId, rating, reviewText } = body;
 
   // Validation
-  if (!hikeId && !campingSiteId && !backpackingId) {
-    throw error(400, "Either hikeId, campingSiteId, or backpackingId is required");
-  }
-
-  const entityCount = [hikeId, campingSiteId, backpackingId].filter(Boolean).length;
-  if (entityCount > 1) {
-    throw error(400, "Cannot rate more than one entity at once");
-  }
+  requireExactlyOneEntityRef(
+    { hikeId, campingSiteId, backpackingId },
+    {
+      missing: "Either hikeId, campingSiteId, or backpackingId is required",
+      tooMany: "Cannot rate more than one entity at once",
+    }
+  );
 
   if (!rating || typeof rating !== "number") {
     throw error(400, "Rating is required and must be a number");

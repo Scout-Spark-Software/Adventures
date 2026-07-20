@@ -86,33 +86,4 @@ export const actions: Actions = {
 
     return { profileSuccess: true };
   },
-
-  // Separate from saveProfile so toggling sharing from the Adventures tab
-  // never touches council/unit fields it doesn't have inputs for.
-  saveSharingPreference: async ({ request, locals }) => {
-    if (!locals.user) {
-      return fail(401, { sharingError: "Not authenticated" });
-    }
-
-    const formData = await request.formData();
-    const shareCompletionStats = formData.get("shareCompletionStats") === "on";
-
-    await db
-      .insert(userProfiles)
-      .values({
-        userId: locals.user.id,
-        shareCompletionStats,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })
-      .onConflictDoUpdate({
-        target: userProfiles.userId,
-        set: {
-          shareCompletionStats,
-          updatedAt: new Date(),
-        },
-      });
-
-    return { sharingSuccess: true };
-  },
 };

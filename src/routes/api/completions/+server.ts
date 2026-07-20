@@ -1,23 +1,25 @@
 import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { db } from "$lib/db";
-import { tripCompletions, hikes, backpacking } from "$lib/db/schemas";
-import { eq, and, desc } from "drizzle-orm";
+import { tripCompletions, hikes, campingSites, backpacking } from "$lib/db/schemas";
+import { eq, and, desc, sql } from "drizzle-orm";
 import { requireAuth } from "$lib/auth/middleware";
 import { parseLimit, parseOffset } from "$lib/utils/pagination";
 import { recomputeCompletionStats } from "$lib/server/completions";
+import { requireExactlyOneEntityRef } from "$lib/server/entity-refs";
 
 // POST /api/completions - Log a hike, camping site, or backpacking trip as completed
-export const POST: RequestHandler = async ({ request, locals }) => {
-  const user = requireAuth({ locals } as any);
+export const POST: RequestHandler = async ({ request, locals, url }) => {
+  const user = requireAuth({ locals, url } as any);
 
   const body = await request.json();
   const { hikeId, campingSiteId, backpackingId, nights } = body;
 
-  const entityCount = [hikeId, campingSiteId, backpackingId].filter(Boolean).length;
-  if (entityCount !== 1) {
-    throw error(400, "Exactly one of hikeId, campingSiteId, or backpackingId is required");
-  }
+  const exactlyOneMessage = "Exactly one of hikeId, campingSiteId, or backpackingId is required";
+  requireExactlyOneEntityRef(
+    { hikeId, campingSiteId, backpackingId },
+    { missing: exactlyOneMessage, tooMany: exactlyOneMessage }
+  );
 
   let distance: string | null = null;
   let distanceUnit: "miles" | "kilometers" | null = null;
@@ -48,6 +50,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     elevation = listing.elevation;
     elevationUnit = listing.elevationUnit;
   } else if (campingSiteId) {
+    const listing = await db.query.campingSites.findFirst({
+      where: eq(campingSites.id, campingSiteId),
+    });
+    if (!listing) throw error(404, "Camping site not found");
     if (!Number.isInteger(nights) || nights < 1 || nights > 90) {
       throw error(
         400,
@@ -83,11 +89,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 // Optional entity filters narrow to one listing; with no filter, returns the
 // caller's full history (paginated), newest first, joined to each entity's name.
 export const GET: RequestHandler = async ({ url, locals }) => {
-  const user = requireAuth({ locals } as any);
+  const user = requireAuth({ locals, url } as any);
 
   const hikeId = url.searchParams.get("hike_id");
   const campingSiteId = url.searchParams.get("camping_site_id");
   const backpackingId = url.searchParams.get("backpacking_id");
+  const countOnly = url.searchParams.get("count_only") === "true";
   const limit = parseLimit(url.searchParams.get("limit"));
   const offset = parseOffset(url.searchParams.get("offset"));
 
@@ -95,6 +102,14 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   if (hikeId) conditions.push(eq(tripCompletions.hikeId, hikeId));
   if (campingSiteId) conditions.push(eq(tripCompletions.campingSiteId, campingSiteId));
   if (backpackingId) conditions.push(eq(tripCompletions.backpackingId, backpackingId));
+
+  if (countOnly) {
+    const [row] = await db
+      .select({ count: sql<number>`count(*)::integer` })
+      .from(tripCompletions)
+      .where(and(...conditions));
+    return json({ count: row?.count ?? 0 }, { headers: { "Cache-Control": "no-store" } });
+  }
 
   const results = await db.query.tripCompletions.findMany({
     where: and(...conditions),
