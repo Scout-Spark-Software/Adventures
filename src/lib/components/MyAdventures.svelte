@@ -32,7 +32,9 @@
     try {
       const [statsRes, historyRes] = await Promise.all([
         fetch("/api/completions/my-stats"),
-        fetch("/api/completions"),
+        // Explicit limit=100 (the server's max, see parseLimit) since the
+        // unqualified endpoint defaults to only 50.
+        fetch("/api/completions?limit=100"),
       ]);
       if (statsRes.ok) stats = await statsRes.json();
       if (historyRes.ok) {
