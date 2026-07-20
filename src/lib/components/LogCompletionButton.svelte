@@ -250,7 +250,7 @@
             <input
               id="miles-hiked"
               type="number"
-              min="0"
+              min="0.1"
               step="0.1"
               bind:value={milesInput}
               aria-describedby={milesError ? "miles-hiked-error" : undefined}
