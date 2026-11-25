@@ -406,4 +406,6 @@
       Clear All
     </button>
   </div>
+
+  <slot />
 </div>

@@ -20,3 +20,4 @@ playwright-report/
 test-results/
 .fallow/churn.bin
 .fallow/cache.bin
+.compound-engineering/*.local.yaml

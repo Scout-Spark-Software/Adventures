@@ -123,10 +123,11 @@
           councils={data.councils}
           currentFilters={data.currentFilters}
           userRole={data.userRole}
-        />
-        <div class="hidden lg:block">
-          <AdSenseUnit adSlot="8311253407" />
-        </div>
+        >
+          <div class="hidden lg:block mt-4">
+            <AdSenseUnit adSlot="8311253407" />
+          </div>
+        </HikeFilters>
       </aside>
 
       <!-- Main Content -->
